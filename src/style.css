@@ -1,0 +1,417 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope&display=swap");
+
+a {
+  text-decoration: none !important;
+}
+
+.bg-mainclass {
+  margin-top: 90px;
+  background-color: #f7f7f7;
+  padding-left: 80px;
+  margin-bottom: 20px;
+}
+
+.Page-Heading {
+  margin-left: 5px;
+  padding-top: 20px;
+}
+
+h1.Heading-Cls {
+  font-family: inherit;
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.Heading-P-Cls {
+  padding-right: 7px;
+  border-right: 1px solid #000;
+  margin-right: 7px;
+}
+
+.modal {
+  margin-top: 40px !important;
+}
+
+.modal-dialog {
+  float: right !important;
+  width: 100% !important;
+  max-width: 600px !important;
+  margin-bottom: 0px !important;
+  margin-top: 0px !important;
+}
+
+.modal-content {
+  border-radius: 0px !important;
+  height: 94vh !important;
+}
+
+.modal-header {
+  padding: 12px !important;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+.custom-file-input::before {
+  content: "Select some files";
+  display: inline-block;
+  background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 5px 8px;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  cursor: pointer;
+  text-shadow: 1px 1px #fff;
+  font-weight: 700;
+  font-size: 10pt;
+}
+
+.custom-file-input:hover::before {
+  border-color: black;
+}
+
+.custom-file-input:active::before {
+  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+}
+
+.download-button-btn {
+  /* font-size: 12px !important;
+  
+  padding: 18px !important;
+  width: 250px !important; */
+  margin-right: 175px !important;
+  float: right !important;
+  margin-top: -68px !important;
+}
+.upload-input-btn {
+  font-size: 12px !important;
+  float: right !important;
+  padding: 18px !important;
+  width: 20px !important;
+  margin-top: -68px !important;
+}
+
+.upload-button-btn {
+  float: right !important;
+  margin-top: -68px !important;
+}
+
+/* label.form-label {
+    font-size: 11px !important;
+    position: absolute !important;
+    margin-bottom: 0px !important;
+    margin-left: 28px !important;
+    margin-top: 1px !important;
+}
+input.form-control, select.form-control {
+    font-size: 14px !important;
+    padding-left: 30px !important;
+    padding-top: 12px !important;
+    height: 40px !important;
+}
+
+.form-group > i {
+    position: absolute;
+    margin-top: 8px;
+    font-size: 24px;
+    color: #626262;
+    margin-left: 2px;
+} */
+
+label.form-label {
+  margin-bottom: 0.25rem;
+}
+
+.rdt_TableHeadRow {
+  background-color: #dfdfdf !important;
+}
+
+.react-date-picker__wrapper {
+  border: 0px !important;
+  font-size: 14px !important;
+  padding-left: 14px !important;
+  padding-top: 0px !important;
+  height: 30px !important;
+}
+
+input.react-date-picker__inputGroup__input {
+  background-color: #fff !important;
+}
+input.react-date-picker__inputGroup__input:focus {
+  outline: 0px !important;
+}
+.react-date-picker__calendar.react-date-picker__calendar--open {
+  z-index: 99 !important;
+}
+.react-date-picker__calendar .react-calendar {
+  border-width: thin !important;
+  font-size: 12px !important;
+  border-radius: 5px !important;
+}
+button.react-calendar__tile {
+  padding: 2px !important;
+}
+.react-date-picker__calendar.react-date-picker__calendar--open {
+  width: 270px !important;
+}
+.react-calendar__navigation {
+  margin-bottom: 0px !important;
+}
+
+.react-date-picker__inputGroup {
+  font-size: 16px;
+  margin-left: -10px;
+  padding: 0px !important;
+}
+.react-date-picker__wrapper {
+  margin-top: -3px;
+}
+
+::-webkit-input-placeholder {
+  /* Edge */
+  color: black !important;
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: black !important;
+}
+
+::placeholder {
+  color: black !important;
+}
+
+.rmsc .gray {
+  color: black !important;
+}
+
+.dropdown {
+  position: relative !important;
+}
+
+.dropdown:after {
+  content: "<";
+  font-family: "Manrope", sans-serif;
+  transform: rotate(-90deg);
+  font-size: 29px;
+  color: black;
+  right: 11px;
+  top: -2px;
+  position: absolute;
+  pointer-events: none;
+}
+
+div.filter-row > div.col-md-2 > div.react-date-picker {
+  padding: 5px 0px 0px 0px !important;
+}
+
+div.project-allocation > button.upload-button-btn {
+  margin-top: -50px !important;
+  margin-right: 170px !important;
+}
+
+div.project-allocation > input.upload-input-btn {
+  margin-top: -50px !important;
+  margin-right: 170px !important;
+}
+div.employee > button.upload-button-btn ,div.employee >input.upload-input-btn{
+  margin-right: 135px !important;
+}
+
+div.holiday > button.upload-button-btn ,div.holiday >input.upload-input-btn{
+  margin-right: 120px !important;
+}
+
+div.market > button.upload-button-btn ,div.market >input.upload-input-btn{
+  margin-right: 119px !important;
+}
+
+div.project > button.upload-button-btn ,div.project >input.upload-input-btn{
+  margin-right: 119px !important;
+}
+
+
+
+
+
+
+.dropdown-content {
+  padding: 0px !important;
+  margin: 0px !important;
+}
+
+.rmsc .select-item {
+  padding: 0px 0px 0px 10px !important;
+}
+
+.filter-row > .col-md-2 {
+  width: 12.666667% !important;
+}
+.rmsc.multi-select {
+  font-size: 14px;
+}
+
+.filter-row > .form-group > .form-label {
+  font-size: 14px !important;
+}
+
+.filter-row > .form-group > .dropdown > .form-control {
+  font-size: 14px;
+  height: 40px;
+}
+
+.filter-row > .form-group > .react-date-picker > .react-date-picker__wrapper > .react-date-picker__inputGroup {
+  font-size: 13px;
+}
+.filter-row > .form-group > .react-date-picker > .react-date-picker__wrapper > .react-date-picker__button svg {
+  width: 12px;
+  height: 12px;
+}
+
+.filter-row
+  > .form-group
+  > .react-date-picker
+  > .react-date-picker__wrapper
+  > button.react-date-picker__clear-button.react-date-picker__button {
+  padding: 4px 0px 0px 0px !important;
+}
+.filter-row
+  > .form-group
+  > .react-date-picker
+  > .react-date-picker__wrapper
+  > .react-date-picker__calendar-button.react-date-picker__button {
+  padding: 3px 4px 0px 6px;
+}
+
+.sc-dkrFOg.iSAVrt.rdt_TableHeadRow {
+  font-size: 14px;
+}
+
+/* new styles */
+
+/* h1.Heading-Cls {
+  font-size: 20px;
+  margin-bottom: 0px;
+}
+
+.Page-Heading>p>span {
+  font-size: 13px;
+}
+
+.Page-Heading>p {
+  margin-bottom: 5px;
+} */
+
+/* .sc-dkrFOg.iSAVrt.rdt_TableHeadRow {
+  font-size: 14px;
+  height: 12px;
+  background: white !important;
+  border: black 2px solid !important;
+} */
+
+.btn{
+background-color: #0078d7 !important
+}
+button.btn.btn-primary {
+  font-size: 13px;
+}
+
+.modal{
+  max-height : 1000px !important;
+  height : 600px !important;
+}
+
+.filter-row > .form-group > div.rmsc.multi-select >div.dropdown-container {
+  height: 30px !important;
+  border-radius: 6px !important;
+}
+
+
+
+.filter-row > .form-group > .multi-select>.dropdown-container>.dropdown-heading {
+  height: 30px !important;
+  /* padding-top: 2px !important; */
+}
+
+.filter-row > .form-group > .rmsc > .dropdown-container > .dropdown-heading > .dropdown-heading-value {
+  font-size: 13px !important;
+}
+
+svg.dropdown-heading-dropdown-arrow.gray {
+  margin-top: -4px !important;
+}
+
+.filter-row > .form-group > .dropdown > .form-control {
+  font-size: 13px;
+  height: 30px;
+  border-radius: 6px !important;
+}
+.filter-row>.form-group {
+  padding: 0px 3px 0px 3px !important;
+  margin-bottom: 10px !important;
+}
+
+.filter-row {
+  padding-left: 10px !important;
+  
+}
+
+.dropdown:after {
+  content: "<";
+  font-family: "Manrope", sans-serif;
+  transform: rotate(-90deg);
+  font-size: 29px;
+  color: black;
+  right: 13px;
+  top: -6px;
+  position: absolute;
+  pointer-events: none;
+}
+
+.search-filter>input {
+  border-radius: 6px;
+  height: 26px;
+  font-size: 13px;
+}
+
+label.form-label {
+  font-size: 15px;
+}
+
+.form-control {
+  margin-bottom: -14px;
+}
+
+
+.jmSsVz>button.btn.btn-primary {
+  position: absolute !important;
+  height: 26px !important;
+  font-size: 13px !important;
+  padding: 0px 9px 0px 9px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
+
+.search-btn::-webkit-input-placeholder {
+  /* Edge */
+  color: #686262 !important;
+}
+.fade.modal.show{
+  height : 100% !important;
+}
+
+.modal-dialog {
+  height: 100% !important;
+}
+
+.modal-content {
+  height: 100% !important;
+}
+
+.download-button-btn,.upload-button-btn{
+  font-size: 21px !important;
+  padding: 0px 4px 0px 4px !important;
+}

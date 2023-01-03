@@ -1,0 +1,13 @@
+div.bg{
+    height: 100% !important;
+    /* background-image: url("/src/asset/images/resource-availablity.png") !important; */
+    margin: 0;
+    /* Full height */
+    height: 100% !important;
+  
+    /* Center and scale the image nicely */
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position-y: unset !important;
+  }
