@@ -12,14 +12,22 @@ import { marketActions } from "../../Store/Slices/Market";
 const columns = [
   {
     name: "Market Id",
-    selector: (row: { marketId: any }) => row.marketId,
+    selector: (row: { pkMarketID: any }) => row.pkMarketID,
+    
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
-    name: "Market",
-    selector: (row: { marketCode: any }) => row.marketCode,
+    name: "Market Name",
+    selector: (row: { marketName: any }) => row.marketName,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Market Domain",
+    selector: (row: { marketDomain: any }) => row.marketDomain,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -39,7 +47,7 @@ const customValueRenderer = (selected: any, _options: any) => {
 };
 
 const Market = () => {
-  const marketCodes = [
+  const marketNames = [
     { label: "AppleCare", value: "AppleCare" },
     { label: "Beaver", value: "Beaver" },
     { label: "CA", value: "CA" },
@@ -49,13 +57,18 @@ const Market = () => {
   ];
   const dispatch = useDispatch();
   const markets = useSelector((store: any) => store.Market.data);
-  const marketCodeSelected = useSelector((store: any) => store.Market.marketCode);
+  //const marketNameSelected = useSelector((store: any) => store.Market.marketName);
   const toggle = useSelector((store: any) => store.Market.toggle);
 
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/markets");
+    try{
+      const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
     const dataGet = await response.json();
     dispatch(marketActions.changeData(dataGet));
+    }
+    catch{
+      console.log("Error occured");
+    }
   };
   useEffect(() => {
     getMarketDetails();
@@ -72,31 +85,31 @@ const Market = () => {
               <span>Market</span>
             </p>
             <div className="btns market">
-              <button type="button" className="btn btn-primary upload-button-btn" >
+              {/* <button type="button" className="btn btn-primary upload-button-btn" >
                 <i className="las la-file-upload"></i>
-              </button>
-              <input
+              </button> */}
+              {/* <input
                 type="file"
                 className="btn btn-primary custom-file-input upload-input-btn"
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 
-              />
+              /> */}
               <ModalDialog />
             </div>
           </div>
           <div className="row filter-row">
-            <div className="col-md-2 form-group">
+            {/* <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
-                Market 
+                Market Name
               </label>
               <MultiSelect
-                options={marketCodes}
-                value={marketCodeSelected}
-                onChange={(event: any) => dispatch(marketActions.changeMarketCode(event))}
+                options={marketNames}
+                value={marketNameSelected}
+                onChange={(event: any) => dispatch(marketActions.changeMarketName(event))}
                 labelledBy="Select Market Code"
                 valueRenderer={customValueRenderer}
               />
-            </div>
+            </div> */}
           </div>
           <Table columns={columns} data={markets} />
         </div>
@@ -115,29 +128,44 @@ const ModalDialog = () => {
   function closeModal() {
     return invokeModal(false);
   }
-  const [marketCode, setMarketCode] = useState("");
+  const [marketName, setMarketName] = useState("");
+  const [marketDomain, setMarketDomain] = useState("");
+  const resetFormFields=()=>{
+    setMarketName("");
+    setMarketDomain("");
+  }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
-    let dataPost = {
-      market: marketCode,
+    let payload = {
+      marketName: marketName,
+      marketDomain: marketDomain,
+      createdBy : "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/market", {
+      const response = await fetch("https://localhost:44314/api/v1/Markets/PostMarket", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(dataPost),
+        body: JSON.stringify(payload),
       });
-      console.log(response);
-      dispatch(marketActions.changeToggle());
+      const dataResponse = await response.json();
+      if (dataResponse.length) {
+        if (dataResponse[0].statusCode == "201") {
+          console.log(dataResponse[0].statusReason);
+          console.log(dataResponse[0].recordsCreated);
+
+          dispatch(marketActions.changeToggle());
+          resetFormFields();
+          closeModal();
+        } else console.log(dataResponse[0].errorMessage);
+      } else console.log("Bad response");
     } catch {
-      console.log("Hi");
+      console.log("Error occured while uploading data");
     }
-    // setMarketId("");
-    //   setMarketCode("");
-    //   invokeModal(false);
   };
+
+  
 
   return (
     <>
@@ -159,15 +187,27 @@ const ModalDialog = () => {
           <form onSubmit={formSubmitHandler}>
             <div className="row">
               <div className="col-md-6 form-group">
-                <label className="form-label" htmlFor="marketCode">
-                  Market 
+                <label className="form-label" htmlFor="marketName">
+                  Market Name
                 </label>
                 <input
                   type="text"
                   className="form-control"
-                  id="marketCode"
-                  value={marketCode}
-                  onChange={(event: any) => setMarketCode(event.target.value)}
+                  id="marketName"
+                  value={marketName}
+                  onChange={(event: any) => setMarketName(event.target.value)}
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="marketDomain">
+                  Market Domain
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="marketDomain"
+                  value={marketDomain}
+                  onChange={(event: any) => setMarketDomain(event.target.value)}
                 />
               </div>
             </div>

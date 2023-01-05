@@ -19,10 +19,13 @@ import ProjectReport from "./Reports/ProjectReport/ProjectReport";
 import MarketReport from "./Reports/MarketReport/MarketReport";
 import ExpenseReport from "./Reports/ExpenseReport/ExpenseReport";
 import ProjectAllocation from "./ProjectAllocation/ProjectAllocation";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
     return (
         <div>
+            <ToastContainer/>
             <Navbar></Navbar>
             <BrowserRouter>
                 <Routes>

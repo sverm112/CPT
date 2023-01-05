@@ -36,7 +36,7 @@ const SideBar = () => {
                 <div>
                     <div className="dropdowns" style={{ float: "right" }}>
                         <button className="dropbtns">
-                            <span style={{ padding: "10px 10px 10px 10px", lineHeight: "40px" }}>Subhanshu Verma</span>
+                            <span style={{ padding: "10px 10px 10px 10px", lineHeight: "40px" }}>Test User</span>
                             <div className="header_img" style={{ float: "right" }}>
                                 <img src={nouserimage} alt="" />
                             </div>

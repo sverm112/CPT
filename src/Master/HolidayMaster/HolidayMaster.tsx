@@ -274,15 +274,15 @@ const HolidayMaster = () => {
               <span>Holiday Details</span>
             </p>
             <div className="btns holiday">
-              <button type="button" className="btn btn-primary upload-button-btn" style={{ marginRight: "150px" }}>
+              {/* <button type="button" className="btn btn-primary upload-button-btn" style={{ marginRight: "150px" }}>
                 <i className="las la-file-upload"></i>
-              </button>
-              <input
+              </button> */}
+              {/* <input
                 type="file"
                 className="btn btn-primary custom-file-input upload-input-btn"
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 style={{ marginRight: "150px" }}
-              />
+              /> */}
               <ModalDialog />
             </div>
           </div>

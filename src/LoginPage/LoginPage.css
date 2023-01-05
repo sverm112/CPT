@@ -65,7 +65,7 @@ img{
 .left{
 	background: linear-gradient(-45deg, #dcd7e0, #fff);
 }
-input.submit {
+input.submit,button.submit {
     border: none;
     padding: 15px 70px;
     border-radius: 8px;
