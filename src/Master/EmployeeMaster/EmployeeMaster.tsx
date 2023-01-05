@@ -11,6 +11,7 @@ import { employeeActions } from "../../Store/Slices/Employee";
 import * as FileSaver from "file-saver";
 //import XLSX from 'sheetjs-style';
 import { read, utils, writeFile } from "xlsx";
+import { marketActions } from "../../Store/Slices/Market";
 
 const columns = [
   {
@@ -77,7 +78,7 @@ const columns = [
     filterable: true,
   },
   {
-    name: "Active",
+    name: "Status",
     selector: (row: { isActive: any }) => row.isActive,
     sortable: true,
     reorder: true,
@@ -192,7 +193,7 @@ const EmployeeMaster = () => {
   ];
   const toggle = useSelector((state: any) => state.Employee.toggle);
   const resources = useSelector((state: any) => state.Employee.data);
-
+  const marketList=useSelector((state: any) => state.Market.data);
   const marketSelected = useSelector((state: any) => state.Employee.market);
   const roleSelected = useSelector((state: any) => state.Employee.role);
   const resourceTypeSelected = useSelector((state: any) => state.Employee.resourceType);
@@ -225,6 +226,16 @@ const EmployeeMaster = () => {
   useEffect(() => {
     getEmployeeDetails();
   }, [toggle]);
+
+  const getMarketDetails = async () => {
+    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const dataGet = await response.json();
+    console.log(dataGet);
+    dispatch(marketActions.changeData(dataGet));
+  };
+  useEffect(() => {
+    getMarketDetails();
+  }, []);
 
   const resourceColumns = [
     ["ResourceName", "ResourceType", "Role", "ResourceMarket", "EmailAddress", "Location", "SubLocation", "Manager"],
@@ -686,6 +697,16 @@ const ModalDialog = () => {
       console.log("Error occured while uploading data");
     }
   };
+
+  const getMarketDetails = async () => {
+    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const dataGet = await response.json();
+    console.log(dataGet);
+    dispatch(marketActions.changeData(dataGet));
+  };
+  useEffect(() => {
+    getMarketDetails();
+  }, []);
 
   const resetFormFields = () => {
     setEmployeeName("");

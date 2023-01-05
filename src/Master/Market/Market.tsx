@@ -33,6 +33,20 @@ const columns = [
     filterable: true,
   },
   {
+    name: "Status",
+    selector: (row: { isActive: any }) => row.isActive,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Created Date",
+    selector: (row: { createdDate: any }) => row.createdDate.slice(0, 10),
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
     name: "Created By",
     selector: (row: { createdBy: any }) => row.createdBy,
     sortable: true,

@@ -41,6 +41,7 @@ const Table = (props: any) => {
       subHeaderComponent={subHeaderComponent}
       customStyles={customStyles}
       striped={true}
+      persistTableHead={true}
     />
   );
 };
