@@ -54,8 +54,15 @@ const columns = [
     filterable: true,
   },
   {
-    name: "Active",
+    name: "Status",
     selector: (row: { isActive: any }) => row.isActive,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Created Date",
+    selector: (row: { createdDate: any }) => row.createdDate.slice(0, 10),
     sortable: true,
     reorder: true,
     filterable: true,
@@ -210,7 +217,7 @@ function ModalDialog() {
     return invokeModal(false);
   }
 
-  const marketDetails=useSelector((state: any) => state.Market.data);
+  const marketList=useSelector((state: any) => state.Market.data);
   const [projectCode, setProjectCode] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectModel, setProjectModel] = useState("0");
@@ -343,7 +350,7 @@ function ModalDialog() {
                     onChange={(event: any) => {console.log(projectMarket);setProjectMarket(event.target.value)}}
                   >
                     <option value="0">Select</option>
-                    {marketDetails.map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>
