@@ -9,6 +9,7 @@ import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
 
 import { projectActions } from "../../Store/Slices/Project";
+import { marketActions } from "../../Store/Slices/Market";
 const columns = [
   {
     name: "Project Id",
@@ -54,7 +55,7 @@ const columns = [
   },
   {
     name: "Active",
-    selector: (row: { active: any }) => row.active,
+    selector: (row: { isActive: any }) => row.isActive,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -93,18 +94,41 @@ const ProjectInfo = () => {
   ];
   const projects = useSelector((store: any) => store.Project.data);
   const toggle = useSelector((store: any) => store.Project.toggle);
-  const market = useSelector((store: any) => store.Project.market);
-  const expenseType = useSelector((store: any) => store.Project.expenseType);
-  const status = useSelector((store: any) => store.Project.status);
+  const marketSelected = useSelector((store: any) => store.Project.market);
+  const expenseTypeSelected = useSelector((store: any) => store.Project.expenseType);
+  const statusSelected = useSelector((store: any) => store.Project.status);
 
   const getProjectDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/projects");
-    const dataGet = await response.json();
+    const response = await fetch("https://localhost:44314/api/v1/Projects/GetAllProjects");
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row,projectMarket : row.marketName,projectId : row.pkProjectID, isActive : row.isActive==1 ? "Active" : "Inactive" }));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
     getProjectDetails();
   }, [toggle]);
+
+  const filteredProjects=projects.filter(
+    (project : any)=>{
+
+      const marketOptions=marketSelected.map((market: any)=>market.value);
+      const expenseTypeOptions=expenseTypeSelected.map((expenseType: any)=>expenseType.value);
+      const statusOptions=statusSelected.map((status: any)=>status.value);
+      //const resourceRow=JSON.stringify(resource);
+      console.log(statusOptions);
+      if((!marketSelected.length) ||(marketSelected.length>0 && marketOptions.includes(project.projectMarket)==true))
+      { 
+          if( (!expenseTypeSelected.length) || (expenseTypeSelected.length>0 && expenseTypeOptions.includes(project.expenseType)==true))
+          {
+            
+            if((!statusSelected.length)|| (statusSelected.length>0 && statusOptions.includes(project.isActive) ))
+            return true;
+          }
+        
+      }
+      return false;
+    }
+  );
   return (
     <div>
       <SideBar></SideBar>
@@ -117,7 +141,7 @@ const ProjectInfo = () => {
               <span>Project Info</span>
             </p>
             <div className="btns project">
-              <button type="button" className="btn btn-primary upload-button-btn" style={{ marginRight: "150px" }}>
+              {/* <button type="button" className="btn btn-primary upload-button-btn" style={{ marginRight: "150px" }}>
                 <i className="las la-file-upload"></i>
               </button>
               <input
@@ -125,7 +149,7 @@ const ProjectInfo = () => {
                 className="btn btn-primary custom-file-input upload-input-btn"
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 style={{ marginRight: "150px" }}
-              />
+              /> */}
               <ModalDialog />
             </div>
           </div>
@@ -136,7 +160,7 @@ const ProjectInfo = () => {
               </label>
               <MultiSelect
                 options={markets}
-                value={market}
+                value={marketSelected}
                 onChange={(event: any) => dispatch(projectActions.changeMarket(event))}
                 labelledBy="Select Market"
                 valueRenderer={customValueRenderer}
@@ -149,7 +173,7 @@ const ProjectInfo = () => {
               </label>
               <MultiSelect
                 options={expenseTypes}
-                value={expenseType}
+                value={expenseTypeSelected}
                 onChange={(event: any) => dispatch(projectActions.changeExpenseType(event))}
                 labelledBy="Select Expense Type"
                 valueRenderer={customValueRenderer}
@@ -161,14 +185,14 @@ const ProjectInfo = () => {
               </label>
               <MultiSelect
                 options={statusOptions}
-                value={status}
+                value={statusSelected}
                 onChange={(event: any) => dispatch(projectActions.changeStatus(event))}
                 labelledBy="Select Status"
                 valueRenderer={customValueRenderer}
               />
             </div>
           </div>
-          <Table columns={columns} data={projects} />
+          <Table columns={columns} data={filteredProjects} />
         </div>
       </div>
     </div>
@@ -186,37 +210,64 @@ function ModalDialog() {
     return invokeModal(false);
   }
 
+  const marketDetails=useSelector((state: any) => state.Market.data);
   const [projectCode, setProjectCode] = useState("");
   const [projectName, setProjectName] = useState("");
-  const [projectModal, setProjectModal] = useState("0");
+  const [projectModel, setProjectModel] = useState("0");
   const [projectMarket, setProjectMarket] = useState("0");
   const [expenseType, setExpenseType] = useState("0");
+
+  const resetFormFields =()=>{
+    setProjectCode("");
+    setProjectName("");
+    setProjectModel("0");
+    setProjectMarket("0");
+    setExpenseType("0");
+  }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
-    let dataPost = {
+    let payload = {
       projectCode: projectCode,
       projectName: projectName,
-      projectModal: projectModal,
-      projectMarket: projectMarket,
+      projectModel: projectModel,
       expenseType: expenseType,
+      fkMarketID: projectMarket=="0" ? 0 :Number(projectMarket),
+      createdBy: "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/project", {
+      const response = await fetch("https://localhost:44314/api/v1/Projects/PostProjects", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(dataPost),
+        body: JSON.stringify(payload),
       });
-      console.log(response);
-      dispatch(projectActions.changeToggle());
+      const dataResponse = await response.json();
+      if (dataResponse.length) {
+        if (dataResponse[0].statusCode == "201") {
+          console.log(dataResponse[0].statusReason);
+          console.log(dataResponse[0].recordsCreated);
+
+          dispatch(projectActions.changeToggle());
+          resetFormFields();
+          closeModal();
+        } else console.log(dataResponse[0].errorMessage);
+      } else console.log("Bad response");
     } catch {
-      console.log("Hi");
+      console.log("Error occured while uploading data");
     }
-    // setMarketId("");
-    //   setMarketCode("");
-    //   invokeModal(false);
   };
+    
+
+  const getMarketDetails = async () => {
+    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const data = await response.json();
+    console.log(data);
+    dispatch(marketActions.changeData(data));
+  };
+  useEffect(() => {
+    getMarketDetails();
+  }, []);
 
   return (
     <>
@@ -269,11 +320,11 @@ function ModalDialog() {
                   <select
                     className="form-control"
                     id="projectModel"
-                    value={projectModal}
-                    onChange={(event: any) => setProjectModal(event.target.value)}
+                    value={projectModel}
+                    onChange={(event: any) => setProjectModel(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    <option value="WaterFall">WaterFall</option>
+                    <option value="Waterfall">Waterfall</option>
                     <option value="Kanban">Kanban</option>
                     <option value="Scrum">Scrum</option>
                     <option value="Agile">Agile</option>
@@ -289,15 +340,10 @@ function ModalDialog() {
                     className="form-control"
                     id="projectMarket"
                     value={projectMarket}
-                    onChange={(event: any) => setProjectMarket(event.target.value)}
+                    onChange={(event: any) => {console.log(projectMarket);setProjectMarket(event.target.value)}}
                   >
                     <option value="0">Select</option>
-                    <option value="AppleCare">AppleCare</option>
-                    <option value="Beaver">Beaver</option>
-                    <option value="CA">CA</option>
-                    <option value="HCP">HCP</option>
-                    <option value="Monarch">Monarch</option>
-                    <option value="NAMM">NAMM</option>
+                    {marketDetails.map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>

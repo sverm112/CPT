@@ -27,11 +27,13 @@
 
 a {
     text-decoration: none;
-    color: #afa5d9 !important;
+    color: #fff !important;
 }
 
 a:hover {
-    color: #fff !important;
+    color: #0d6efd !important;
+    background-color: #fff !important;
+    border: 1px solid #0d6efd !important;
 }
 
 .header {

@@ -415,3 +415,7 @@ label.form-label {
   font-size: 21px !important;
   padding: 0px 4px 0px 4px !important;
 }
+
+.Toastify__toast-container--top-right{
+  top : 2.5em !important;
+}
