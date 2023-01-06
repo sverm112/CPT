@@ -30,10 +30,20 @@ a {
     color: #fff !important;
 }
 
-a:hover {
-    color: #0d6efd !important;
-    /* background-color: #fff !important;
-    border: 1px solid #0d6efd !important; */
+.Collapsible-li:hover {
+    color: #0078d7 !important;
+    background-color: #fff !important;
+    background-size: 220px 35px;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(to right, #fff, #fff);
+}
+
+.nav_link:hover {
+    color: #0078d7 !important;
+    background-size: 220px 35px;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(to right, #fff, #fff);
+    background-color: #0078d7 !important;
 }
 
 .header {
@@ -237,16 +247,22 @@ a:hover {
     width: 110% !important;
 }
 
-.sidebardrpdwn .Collapsible:hover {
-    color: #fff !important;
-}
-
 .sidebardrpdwn .Collapsible ul li {
     list-style: none;
 }
 
 .sidebardrpdwn .Collapsible ul {
     padding-left: 10px;
+}
+
+li.Collapsible-li a {
+    padding: 8px 15px 8px 40px;
+    margin-left: -40px;
+    color: #fff !important;
+}
+
+li.Collapsible-li:hover a {
+    color: #0078d7 !important;
 }
 
 li.Collapsible-li {
