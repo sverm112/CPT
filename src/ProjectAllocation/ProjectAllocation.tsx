@@ -9,8 +9,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { projectAllocationActions } from "../Store/Slices/ProjectAllocation";
 import { employeeActions } from "../Store/Slices/Employee";
 import { projectActions } from "../Store/Slices/Project";
+import { marketActions } from "../Store/Slices/Market";
 
 const columns = [
+  {
+    name: "Allocation Id",
+    selector: (row: { pkProjectAllocationID: any }) => row.pkProjectAllocationID,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
   {
     name: "Resource",
     selector: (row: { resourceName: any }) => row.resourceName,
@@ -263,6 +271,7 @@ const ProjectAllocation = () => {
   ];
 
   const dispatch = useDispatch();
+  const marketList=useSelector((state: any) => state.Market.data);
   const toggle = useSelector((store: any) => store.ProjectAllocation.toggle);
   const projectAllocations = useSelector((store: any) => store.ProjectAllocation.data);
   const resourceMarketSelected= useSelector((store: any) => store.ProjectAllocation.resourceMarket)
@@ -306,6 +315,17 @@ const ProjectAllocation = () => {
   useEffect(() => {
     getProjectAllocationDetails();
   }, [toggle]);
+
+  const getMarketDetails = async () => {
+    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const dataGet = await response.json();
+    console.log(dataGet);
+    dispatch(marketActions.changeData(dataGet));
+  };
+  useEffect(() => {
+    getMarketDetails();
+  }, []);
+
 
   const filteredProjectAllocations=projectAllocations.filter((projectAllocation : any)=>{
     const resourceMarketOptions=resourceMarketSelected.map((resourceMarket: any)=> resourceMarket.value);
@@ -359,7 +379,7 @@ const ProjectAllocation = () => {
               Resource Market
             </label>
             <MultiSelect
-              options={resourceMarkets}
+              options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
               value={resourceMarketSelected}
               onChange={changeResourceMarketSelectHandler}
               labelledBy="Select Resource Market"
@@ -396,7 +416,7 @@ const ProjectAllocation = () => {
               Project Market
             </label>
             <MultiSelect
-              options={projectMarkets}
+              options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
               value={projectMarketSelected}
               onChange={changeProjectMarketSelectHandler}
               labelledBy="Select Project Market"

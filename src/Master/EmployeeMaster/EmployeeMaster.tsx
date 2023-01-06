@@ -379,7 +379,7 @@ const EmployeeMaster = () => {
                 Market
               </label>
               <MultiSelect
-                options={markets}
+                options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
                 value={marketSelected}
                 onChange={changeMarketSelectHandler}
                 labelledBy="Select Market"
@@ -643,6 +643,7 @@ const ModalDialog = () => {
 
   
   const dispatch = useDispatch();
+  const marketList=useSelector((state: any) => state.Market.data);
   const [employeeId, setEmployeeId] = useState("");
   const [employeeName, setEmployeeName] = useState("");
   const [role, setRole] = useState("0");
@@ -838,12 +839,7 @@ const ModalDialog = () => {
                     onChange={(event) => setMarket(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    <option value="AppleCare">AppleCare</option>
-                    <option value="Beaver">Beaver</option>
-                    <option value="CA">CA</option>
-                    <option value="HCP">HCP</option>
-                    <option value="Monarch">Monarch</option>
-                    <option value="NAMM">NAMM</option>
+                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>

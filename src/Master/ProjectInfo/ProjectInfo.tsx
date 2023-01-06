@@ -100,6 +100,7 @@ const ProjectInfo = () => {
     { label: "Inactive", value: "Inactive" },
   ];
   const projects = useSelector((store: any) => store.Project.data);
+  const marketList=useSelector((state: any) => state.Market.data);
   const toggle = useSelector((store: any) => store.Project.toggle);
   const marketSelected = useSelector((store: any) => store.Project.market);
   const expenseTypeSelected = useSelector((store: any) => store.Project.expenseType);
@@ -114,6 +115,17 @@ const ProjectInfo = () => {
   useEffect(() => {
     getProjectDetails();
   }, [toggle]);
+
+  const getMarketDetails = async () => {
+    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const dataGet = await response.json();
+    console.log(dataGet);
+    dispatch(marketActions.changeData(dataGet));
+  };
+  useEffect(() => {
+    getMarketDetails();
+  }, []);
+
 
   const filteredProjects=projects.filter(
     (project : any)=>{
@@ -166,7 +178,7 @@ const ProjectInfo = () => {
                 Market
               </label>
               <MultiSelect
-                options={markets}
+                options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
                 value={marketSelected}
                 onChange={(event: any) => dispatch(projectActions.changeMarket(event))}
                 labelledBy="Select Market"

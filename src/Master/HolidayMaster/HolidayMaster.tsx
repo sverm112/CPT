@@ -9,54 +9,69 @@ import { MultiSelect } from "react-multi-select-component";
 import Table from "../../DataTable/DataTable";
 import { holidayActions } from "../../Store/Slices/Holiday";
 import { useDispatch, useSelector } from "react-redux";
+import { marketActions } from "../../Store/Slices/Market";
 
 //Data Table
-const columnsIndia = [
+const columns = [
   {
-    name: "Occasion",
-    selector: (row: { title: any }) => row.title,
+    name: "Id",
+    selector: (row: { pkHolidayID: any }) => row.pkHolidayID,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
-    name: "Date",
-    selector: (row: { date: any }) => row.date,
+    name: "Occasion",
+    selector: (row: { occasionName: any }) => row.occasionName,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Holiday Date",
+    selector: (row: { holidayDate: any }) => row.holidayDate.slice(0,10),
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Sub Location",
+    selector: (row: { subLocationName: any }) => row.subLocationName,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Location",
+    selector: (row: { locationName: any }) => row.locationName,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Market",
-    selector: (row: { market: any }) => row.market,
+    selector: (row: { marketName: any }) => row.marketName,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
-    name: "Haryana",
-    selector: (row: { LocationHR: any }) => row.LocationHR,
+    name: "Status",
+    selector: (row: { isActive: any }) => row.isActive == "1" ? "Active" : "InActive",
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
-    name: "Uttar Pradesh",
-    selector: (row: { LocationUP: any }) => row.LocationUP,
+    name: "Created Date",
+    selector: (row: { createdDate: any }) => row.createdDate.slice(0, 10),
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
-    name: "Telangana",
-    selector: (row: { LocationTLGN: any }) => row.LocationTLGN,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Karnataka",
-    selector: (row: { LocationKRN: any }) => row.LocationKRN,
+    name: "Created By",
+    selector: (row: { createdBy: any }) => row.createdBy,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -116,36 +131,36 @@ const columnsIndia = [
 //   },
 // ];
 
-const columnsUS = [
-  {
-    name: "Occasion",
-    selector: (row: { title: any }) => row.title,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Date",
-    selector: (row: { date: any }) => row.date,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Market",
-    selector: (row: { market: any }) => row.market,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Washington",
-    selector: (row: { LocationWashington: any }) => row.LocationWashington,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-];
+// const columnsUS = [
+//   {
+//     name: "Occasion",
+//     selector: (row: { title: any }) => row.title,
+//     sortable: true,
+//     reorder: true,
+//     filterable: true,
+//   },
+//   {
+//     name: "Date",
+//     selector: (row: { date: any }) => row.date,
+//     sortable: true,
+//     reorder: true,
+//     filterable: true,
+//   },
+//   {
+//     name: "Market",
+//     selector: (row: { market: any }) => row.market,
+//     sortable: true,
+//     reorder: true,
+//     filterable: true,
+//   },
+//   {
+//     name: "Washington",
+//     selector: (row: { LocationWashington: any }) => row.LocationWashington,
+//     sortable: true,
+//     reorder: true,
+//     filterable: true,
+//   },
+// ];
 
 // const dataUS = [
 //   {
@@ -210,58 +225,77 @@ const HolidayMaster = () => {
     { label: "Karnataka", value: "Karnataka" },
   ];
   const dispatch = useDispatch();
-  const countrySelected= useSelector((store: any) => store.Holiday.location);
+  // const countrySelected= useSelector((store: any) => store.Holiday.location);
   const marketSelected= useSelector((store: any) => store.Holiday.market);
-  const year= useSelector((store: any) => store.Holiday.year);
-  const dataUS = useSelector((store: any) => store.Holiday.dataUS);
-  const toggleUS = useSelector((store: any) => store.Holiday.toggleUS);
-  const dataIndia = useSelector((store: any) => store.Holiday.dataIndia);
-  const toggleIndia = useSelector((store: any) => store.Holiday.toggleIndia);
+  // const year= useSelector((store: any) => store.Holiday.year);
+  const holidays = useSelector((store: any) => store.Holiday.data);
+  const toggle = useSelector((store: any) => store.Holiday.toggle);
+  // const dataIndia = useSelector((store: any) => store.Holiday.dataIndia);
+  // const toggleIndia = useSelector((store: any) => store.Holiday.toggleIndia);
 
 
 
-  const changeCountrySelectHandler = (event: any) => {
-    dispatch(holidayActions.changeLocation(event.target.value));
-  };
-  const changeYearSelectHandler = (event: any) => {
-    dispatch(holidayActions.changeYear(event.target.value));
-  };
+  // const changeCountrySelectHandler = (event: any) => {
+  //   dispatch(holidayActions.changeLocation(event.target.value));
+  // };
+  // const changeYearSelectHandler = (event: any) => {
+  //   dispatch(holidayActions.changeYear(event.target.value));
+  // };
   const changeMarketSelectHandler = (event: any) => {
     dispatch(holidayActions.changeMarket(event));
   };
 
   
   
-  const getHolidayDetailsUS = async () => {
-    const response = await fetch("https://localhost:44314/api/holiday/US");
+  const getHolidayDetails = async () => {
+    const response = await fetch("https://localhost:44314/api/v1/HolidaysList/GetAllHolidaysLists");
     const data = await response.json();
     console.log(data);
-    dispatch(holidayActions.changeDataUS(data));
+    dispatch(holidayActions.changeData(data));
   };
   
 
-  const getHolidayDetailsIndia = async () => {
-    const response = await fetch("https://localhost:44314/api/holiday/India");
-    const data = await response.json();
-    console.log(data);
-    dispatch(holidayActions.changeDataIndia(data));
+  // const getHolidayDetailsIndia = async () => {
+  //   const response = await fetch("https://localhost:44314/api/holiday/India");
+  //   const data = await response.json();
+  //   console.log(data);
+  //   dispatch(holidayActions.changeDataIndia(data));
+  // };
+  // useEffect(() => {
+  //   getHolidayDetailsIndia();
+  // }, [toggleIndia]);
+  useEffect(() => {
+    getHolidayDetails();
+  }, [toggle]);
+
+  // let holidays = null;
+  // let columns = null;
+  // if (countrySelected == "2" || countrySelected == "0") {
+  //   holidays = dataIndia;
+  //   columns = columnsIndia;
+  // } else if (countrySelected == "1") {
+  //   holidays = dataUS;
+  //   columns = columnsUS;
+  //}
+  const marketList=useSelector((state: any) => state.Market.data);
+  const getMarketDetails = async () => {
+    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const dataGet = await response.json();
+    console.log(dataGet);
+    dispatch(marketActions.changeData(dataGet));
   };
   useEffect(() => {
-    getHolidayDetailsIndia();
-  }, [toggleIndia]);
-  useEffect(() => {
-    getHolidayDetailsUS();
-  }, [toggleUS]);
+    getMarketDetails();
+  }, []);
 
-  let holidays = null;
-  let columns = null;
-  if (countrySelected == "2" || countrySelected == "0") {
-    holidays = dataIndia;
-    columns = columnsIndia;
-  } else if (countrySelected == "1") {
-    holidays = dataUS;
-    columns = columnsUS;
-  }
+  const filteredHolidays = holidays.filter((holiday: any)=>{
+    const marketOptions=marketSelected.map((market: any)=>market.value);
+    if((!marketSelected.length) ||(marketSelected.length>0 && marketOptions.includes(holiday.marketName)==true))
+    {
+      return true;
+    }
+    return false;
+  })
   return (
     <div>
       <SideBar></SideBar>
@@ -292,14 +326,14 @@ const HolidayMaster = () => {
                 Market
               </label>
               <MultiSelect
-                options={markets}
+                options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
                 value={marketSelected}
                 onChange={changeMarketSelectHandler}
                 labelledBy="Select Market"
                 valueRenderer={customValueRenderer}
               />
             </div>
-            <div className=" col-md-2 form-group">
+            {/* <div className=" col-md-2 form-group">
               <label htmlFor="countrydropdown" className="form-label">
                 Location
               </label>
@@ -340,10 +374,10 @@ const HolidayMaster = () => {
                   <option value="20">2003</option>
                   <option value="21">2002</option>
                   <option value="22">2001</option>
-                  <option value="23">2000</option> */}
+                  <option value="23">2000</option> 
                 </select>
               </div>
-            </div>
+            </div> */}
           </div>
           {/*commented for now
                     <MultiSelect
@@ -353,7 +387,7 @@ const HolidayMaster = () => {
                         labelledBy="Select"
                     />
                     */}
-          <Table columns={columns} data={holidays} />
+          <Table columns={columns} data={filteredHolidays} />
         </div>
       </div>
     </div>
@@ -381,44 +415,71 @@ const ModalDialog = () => {
 
   const USSubLocations = ["Washington"];
   const IndiaSubLocations = ["Haryana", "Uttar Pradesh", "Hyderabad", "Karnataka"];
+
+  const USOptions=[<option value="5">Washington</option>]
+  const IndiaOptions =[<option value="6">Haryana</option>,<option value="3">Uttar Pradesh</option>,<option value="4">Hyderabad</option>,<option value="8">Karnataka</option>]
   let values = null;
   let options = null;
 
   if (location == "1" || location == "0") {
-    values = USSubLocations;
+    options = USOptions;
   } else if (location == "2") {
-    values = IndiaSubLocations;
+    options = IndiaOptions;
   }
-
-  if (values) {
-    options = values.map((el) => <option key={el}>{el}</option>);
+  
+  // if (values) {
+  //   options = values.map((el) => <option key={el}>{el}</option>);
+  // }
+  const resetFormFields=()=>{
+    setOccasion("");
+    setLocation("0");
+    setSubLocation("0");
+    setMarket("0");
+    setDate(new Date());
   }
-
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
-    let data = {
-      occasion: occasion,
-      location: location,
-      subLocation: subLocation,
-      market: market,
-      date: date,
+    let payload = {
+      occasionName: occasion,
+     fkLocationID: location,
+      fkSubLocationID: subLocation,
+      fkMarketID : market,
+      HolidayDate: date,
+      createdBy : "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/holiday", {
+      const response = await fetch("https://localhost:44314/api/v1/HolidaysList/PostHoliday", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
-      console.log(response);
-      if (location == "1") dispatch(holidayActions.changeToggleUS());
-      else dispatch(holidayActions.changeToggleIndia());
+      const dataResponse = await response.json();
+      if (dataResponse.length) {
+        if (dataResponse[0].statusCode == "201") {
+          console.log(dataResponse[0].statusReason);
+          console.log(dataResponse[0].recordsCreated);
+
+          dispatch(holidayActions.changeToggle());
+          resetFormFields();
+          closeModal();
+        } else console.log(dataResponse[0].errorMessage);
+      } else console.log("Bad response");
     } catch {
-      console.log("Hi");
+      console.log("Error occured while uploading data");
     }
   };
-
+  const marketList=useSelector((state: any) => state.Market.data);
+  const getMarketDetails = async () => {
+    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const dataGet = await response.json();
+    console.log(dataGet);
+    dispatch(marketActions.changeData(dataGet));
+  };
+  useEffect(() => {
+    getMarketDetails();
+  }, []);
   return (
     <>
       <Button
@@ -534,12 +595,7 @@ const ModalDialog = () => {
                     onChange={(event: any) => setMarket(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    <option value="AppleCare">AppleCare</option>
-                    <option value="Beaver">Beaver</option>
-                    <option value="CA">CA</option>
-                    <option value="HCP">HCP</option>
-                    <option value="Monarch">Monarch</option>
-                    <option value="NAMM">NAMM</option>
+                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>
