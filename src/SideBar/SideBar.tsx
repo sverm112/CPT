@@ -68,10 +68,9 @@ const SideBar = () => {
                                             </div>
                                             <Collapsible trigger="Master Entry">
                                                 <ul className="Collapsible-ul">
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.EMPLOYEEMASTER) }} > Employee Details</a></li>
-                                                    
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.MARKET) }}>Market</a></li>
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.PROJECTINFO) }}>Project Info</a></li>
+                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.EMPLOYEEMASTER) }} >Employee Details</a></li>
+                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.MARKET) }}>Market Details</a></li>
+                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.PROJECTINFO) }}>Project Details</a></li>
                                                     <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.HOLIDAYMASTER) }}>Holiday Details</a></li>
                                                 </ul>
                                             </Collapsible>
@@ -83,7 +82,7 @@ const SideBar = () => {
                                 <i className="las la-user-circle" aria-hidden="true"></i>
                                 <span className="nav_name">Project Allocation</span>
                             </a>
-                            <a className="nav_link">
+                            <a className="nav_link" id="ReportsList">
                                 <span className="nav_name">
                                     <div className="row">
                                         <div className="col-md-2">
