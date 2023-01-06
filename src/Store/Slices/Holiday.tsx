@@ -4,12 +4,12 @@ const initialState = {
   market: [],
   location: "2",
   year: "0",
-  dataIndia: [],
-  dataUS: [],
+  
+  data: [],
   currentPage: "1",
   pageSize: "10",
-  toggleUS: false,
-  toggleIndia: false,
+  toggle: false,
+  
 };
 
 const holidaySlice = createSlice({
@@ -25,11 +25,9 @@ const holidaySlice = createSlice({
     changeYear(state, action) {
       state.year = action.payload;
     },
-    changeDataIndia(state, action) {
-      state.dataIndia = action.payload;
-    },
-    changeDataUS(state, action) {
-      state.dataUS = action.payload;
+   
+    changeData(state, action) {
+      state.data = action.payload;
     },
     changeCurrentPage(state, action) {
       state.currentPage = action.payload;
@@ -37,12 +35,10 @@ const holidaySlice = createSlice({
     changePageSize(state, action) {
       state.pageSize = action.payload;
     },
-    changeToggleUS(state) {
-      state.toggleUS = !state.toggleUS;
+    changeToggle(state) {
+      state.toggle = !state.toggle;
     },
-    changeToggleIndia(state) {
-      state.toggleIndia = !state.toggleIndia;
-    },
+    
   },
 });
 
