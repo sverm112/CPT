@@ -10,6 +10,7 @@ import Table from "../../DataTable/DataTable";
 import { holidayActions } from "../../Store/Slices/Holiday";
 import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
+import { toast } from "react-toastify";
 
 //Data Table
 const columns = [
@@ -214,20 +215,23 @@ const HolidayMaster = () => {
     { label: "Monarch", value: "Monarch" },
     { label: "NAMM", value: "NAMM" },
   ];
-  const countries = [
+  const locations = [
     { label: "US", value: "US" },
     { label: "India", value: "India" },
   ];
   const USSubLocations = [{ label: "Washington", value: "Washington" }];
-  const IndiaSubLocations = [
-    { label: "Haryana", value: "Haryana" },
-    { label: "Uttar Pradesh", value: "Uttar Pradesh" },
-    { label: "Hyderabad", value: "Hyderabad" },
-    { label: "Karnataka", value: "Karnataka" },
+  const subLocations = [
+    { label: "Washington", value: "Washington" ,location:"US"},
+    { label: "Haryana", value: "Haryana" ,location:"India"},
+    { label: "Uttar Pradesh", value: "Uttar Pradesh" ,location:"India"},
+    { label: "Hyderabad", value: "Hyderabad" , location:"India" },
+    { label: "Karnataka", value: "Karnataka" , location:"India" },
   ];
   const dispatch = useDispatch();
   // const countrySelected= useSelector((store: any) => store.Holiday.location);
   const marketSelected= useSelector((store: any) => store.Holiday.market);
+  const locationSelected= useSelector((store: any) => store.Holiday.location);
+  const subLocationSelected= useSelector((store: any) => store.Holiday.subLocation);
   // const year= useSelector((store: any) => store.Holiday.year);
   const holidays = useSelector((store: any) => store.Holiday.data);
   const toggle = useSelector((store: any) => store.Holiday.toggle);
@@ -236,12 +240,12 @@ const HolidayMaster = () => {
 
 
 
-  // const changeCountrySelectHandler = (event: any) => {
-  //   dispatch(holidayActions.changeLocation(event.target.value));
-  // };
-  // const changeYearSelectHandler = (event: any) => {
-  //   dispatch(holidayActions.changeYear(event.target.value));
-  // };
+  const changeLocationSelectHandler = (event: any) => {
+    dispatch(holidayActions.changeLocation(event));
+  };
+  const changeSubLocationSelectHandler = (event: any) => {
+    dispatch(holidayActions.changeSubLocation(event));
+  };
   const changeMarketSelectHandler = (event: any) => {
     dispatch(holidayActions.changeMarket(event));
   };
@@ -291,12 +295,17 @@ const HolidayMaster = () => {
 
   const filteredHolidays = holidays.filter((holiday: any)=>{
     const marketOptions=marketSelected.map((market: any)=>market.value);
+    const locationOptions=locationSelected.map((location: any)=>location.value)
+    const subLocationOptions=subLocationSelected.map((subLocation:any)=>subLocation.value)
     if((!marketSelected.length) ||(marketSelected.length>0 && marketOptions.includes(holiday.marketName)==true))
     {
+      if((!locationSelected.length) ||(locationSelected.length>0 && locationOptions.includes(holiday.locationName)==true))
+        if((!subLocationSelected.length) ||(subLocationSelected.length>0 && subLocationOptions.includes(holiday.subLocationName)==true))
       return true;
     }
     return false;
   })
+  
   return (
     <div>
       <SideBar></SideBar>
@@ -322,6 +331,30 @@ const HolidayMaster = () => {
             </div>
           </div>
           <div className="row filter-row">
+          <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Location
+              </label>
+              <MultiSelect
+                options={locations}
+                value={locationSelected}
+                onChange={changeLocationSelectHandler}
+                labelledBy="Select Location"
+                valueRenderer={customValueRenderer}
+              />
+             </div>
+             <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Sub Location
+              </label>
+              <MultiSelect
+                options={locationSelected.length==0 ? subLocations : (subLocations.filter((subLocation:any)=> locationSelected.map((location:any)=> location.value).includes(subLocation.location)))}
+                value={subLocationSelected}
+                onChange={changeSubLocationSelectHandler}
+                labelledBy="Select Sub Location"
+                valueRenderer={customValueRenderer}
+              />
+             </div>
             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Market
@@ -334,6 +367,7 @@ const HolidayMaster = () => {
                 valueRenderer={customValueRenderer}
               />
              </div>
+             
              {/*<div className=" col-md-2 form-group">
               <label htmlFor="countrydropdown" className="form-label">
                 Location
@@ -465,10 +499,11 @@ const ModalDialog = () => {
           dispatch(holidayActions.changeToggle());
           resetFormFields();
           closeModal();
-        } else console.log(dataResponse[0].errorMessage);
-      } else console.log("Bad response");
+          toast.success("Holiday Added Successfully");
+        } else toast.error(dataResponse[0].errorMessage);
+      } else toast.error("Some Error occured.");
     } catch {
-      console.log("Error occured while uploading data");
+      toast.error("Some Error occured.");
     }
   };
   const marketList=useSelector((state: any) => state.Market.data);

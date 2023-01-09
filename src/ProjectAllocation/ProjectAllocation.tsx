@@ -10,6 +10,7 @@ import { projectAllocationActions } from "../Store/Slices/ProjectAllocation";
 import { employeeActions } from "../Store/Slices/Employee";
 import { projectActions } from "../Store/Slices/Project";
 import { marketActions } from "../Store/Slices/Market";
+import { toast } from "react-toastify";
 
 const columns = [
   // {
@@ -629,6 +630,7 @@ const ModalDialog = () => {
     let payload = {
     fkResourceID : resourceId=="0" ? 0 : Number(resourceId), 
     fkProjectID : projectId=="0" ? 0 : Number(projectId), 
+    resourceType1 : resourceType1,
     startDate : allocationStartDate, 
     enddDate : allocationEndDate, 
     pTODays : ptoDays=="" ? 0 : Number(ptoDays),
@@ -653,10 +655,11 @@ const ModalDialog = () => {
           dispatch(projectAllocationActions.changeToggle());
           resetFormFields();
           closeModal();
-        } else console.log(dataResponse[0].errorMessage);
-      } else console.log("Bad response");
+          toast.success("Project Allocated Successfully")
+        } else toast.error(dataResponse[0].errorMessage);
+      } else toast.error("Some Error occured.");
     } catch {
-      console.log("Error");
+      toast.error("Some Error occured.");
     }
     
   };

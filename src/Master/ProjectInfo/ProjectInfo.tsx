@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { projectActions } from "../../Store/Slices/Project";
 import { marketActions } from "../../Store/Slices/Market";
+import { toast } from "react-toastify";
 const columns = [
   // {
   //   name: "Project Id",
@@ -99,6 +100,14 @@ const ProjectInfo = () => {
     { label: "Active", value: "Active" },
     { label: "Inactive", value: "Inactive" },
   ];
+
+  const projectModels=[
+    
+    {label :"Waterfall",value:"Waterfall"},
+    {label :"Kanban",value:"Kanban"},
+    {label :"Scrum",value:"Scrum"},
+    {label :"Agile",value:"Agile"},
+  ]
   const projects = useSelector((store: any) => store.Project.data);
   const marketList=useSelector((state: any) => state.Market.data);
   const toggle = useSelector((store: any) => store.Project.toggle);
@@ -131,7 +140,7 @@ const ProjectInfo = () => {
   const filteredProjects=projects.filter(
     (project : any)=>{
 
-      const projectModelOptions=projectModelSelected.map((projectModel: any) => projectModelOptions.value)
+      const projectModelOptions=projectModelSelected.map((projectModel: any) => projectModel.value)
       const marketOptions=marketSelected.map((market: any)=>market.value);
       const expenseTypeOptions=expenseTypeSelected.map((expenseType: any)=>expenseType.value);
       const statusOptions=statusSelected.map((status: any)=>status.value);
@@ -184,7 +193,7 @@ const ProjectInfo = () => {
                 Project Model
               </label>
               <MultiSelect
-                options={expenseTypes}
+                options={projectModels}
                 value={projectModelSelected}
                 onChange={(event: any) => dispatch(projectActions.changeProjectModel(event))}
                 labelledBy="Select Expense Type"
@@ -288,10 +297,11 @@ function ModalDialog() {
           dispatch(projectActions.changeToggle());
           resetFormFields();
           closeModal();
-        } else console.log(dataResponse[0].errorMessage);
-      } else console.log("Bad response");
+          toast.success("Project Added Successfully")
+        } else toast.error(dataResponse[0].errorMessage);
+      } else toast.error("Some Error occured.");
     } catch {
-      console.log("Error occured while uploading data");
+      toast.error("Some Error occured.");
     }
   };
     

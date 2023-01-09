@@ -12,6 +12,7 @@ import * as FileSaver from "file-saver";
 //import XLSX from 'sheetjs-style';
 import { read, utils, writeFile } from "xlsx";
 import { marketActions } from "../../Store/Slices/Market";
+import { toast } from "react-toastify";
 
 const columns = [
   // {
@@ -288,10 +289,11 @@ const EmployeeMaster = () => {
             console.log(dataResponse[0].statusReason);
             console.log(dataResponse[0].recordsCreated);
             dispatch(employeeActions.changeToggle());
-          } else console.log(dataResponse[0].errorMessage);
-        } else console.log("Bad response");
+            toast.success(dataResponse[0].recordsCreated+" Resources Added Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
       } catch {
-        console.log("Error occured while uploading data");
+        toast.error("Some Error occured.");
       }
     }
   };
@@ -374,18 +376,7 @@ const EmployeeMaster = () => {
             </div>
           </div>
           <div className="row filter-row">
-            <div className="col-md-2 form-group">
-              <label htmlFor="" className="form-label">
-                Market
-              </label>
-              <MultiSelect
-                options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
-                value={marketSelected}
-                onChange={changeMarketSelectHandler}
-                labelledBy="Select Market"
-                valueRenderer={customValueRenderer}
-              />
-            </div>
+            
             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Role
@@ -407,6 +398,18 @@ const EmployeeMaster = () => {
                 value={resourceTypeSelected}
                 onChange={changeResourceTypeSelectHandler}
                 labelledBy="Select Resource Type"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Market
+              </label>
+              <MultiSelect
+                options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
+                value={marketSelected}
+                onChange={changeMarketSelectHandler}
+                labelledBy="Select Market"
                 valueRenderer={customValueRenderer}
               />
             </div>
@@ -692,10 +695,11 @@ const ModalDialog = () => {
           dispatch(employeeActions.changeToggle());
           resetFormFields();
           closeModal();
-        } else console.log(dataResponse[0].errorMessage);
-      } else console.log("Bad response");
+          toast.success("Resource Added Successfully")
+        } else toast.error(dataResponse[0].errorMessage);
+      } else toast.error("Some Error occured.");
     } catch {
-      console.log("Error occured while uploading data");
+      toast.error("Some Error occured.");
     }
   };
 
