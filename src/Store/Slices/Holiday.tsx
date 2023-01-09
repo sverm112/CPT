@@ -4,6 +4,7 @@ const initialState = {
   market: [],
   location :[],
   subLocation :[],
+  status:[],
   
   data: [],
   currentPage: "1",
@@ -25,7 +26,9 @@ const holidaySlice = createSlice({
     changeSubLocation(state, action) {
       state.subLocation = action.payload;
     },
-   
+    changeStatus(state, action) {
+      state.status = action.payload;
+    },
     changeData(state, action) {
       state.data = action.payload;
     },
