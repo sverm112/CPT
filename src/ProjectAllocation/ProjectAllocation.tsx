@@ -12,13 +12,13 @@ import { projectActions } from "../Store/Slices/Project";
 import { marketActions } from "../Store/Slices/Market";
 
 const columns = [
-  {
-    name: "Allocation Id",
-    selector: (row: { pkProjectAllocationID: any }) => row.pkProjectAllocationID,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
+  // {
+  //   name: "Allocation Id",
+  //   selector: (row: { pkProjectAllocationID: any }) => row.pkProjectAllocationID,
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
   {
     name: "Resource",
     selector: (row: { resourceName: any }) => row.resourceName,
@@ -62,20 +62,6 @@ const columns = [
   //   filterable: true,
   // },
   {
-    name: "PTO Days",
-    selector: (row: { pTODays: any }) => row.pTODays,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Resource Type1",
-    selector: (row: { resourceType1: any }) => row.resourceType1,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
     name: "Location",
     selector: (row: { location: any }) => row.location,
     sortable: true,
@@ -89,6 +75,22 @@ const columns = [
     reorder: true,
     filterable: true,
   },
+  
+  {
+    name: "Project",
+    selector: (row: { projectName: any }) => row.projectName,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Resource Type1",
+    selector: (row: { resourceType1: any }) => row.resourceType1,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  
   {
     name: "Project Market",
     selector: (row: { projectMarket: any }) => row.projectMarket,
@@ -110,14 +112,14 @@ const columns = [
     reorder: true,
     filterable: true,
   },
+  
   {
-    name: "Project",
-    selector: (row: { projectName: any }) => row.projectName,
+    name: "PTO Days",
+    selector: (row: { pTODays: any }) => row.pTODays,
     sortable: true,
     reorder: true,
     filterable: true,
   },
-
   {
     name: "Allocation(Hours)",
     selector: (row: { allocationHours: any }) => row.allocationHours,
@@ -374,18 +376,7 @@ const ProjectAllocation = () => {
           </div>
         </div>
         <div className="row filter-row">
-          <div className="col-md-2 form-group">
-            <label htmlFor="" className="form-label">
-              Resource Market
-            </label>
-            <MultiSelect
-              options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
-              value={resourceMarketSelected}
-              onChange={changeResourceMarketSelectHandler}
-              labelledBy="Select Resource Market"
-              valueRenderer={customValueRenderer}
-            />
-          </div>
+          
           <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Resource Type
@@ -408,6 +399,30 @@ const ProjectAllocation = () => {
               value={roleSelected}
               onChange={changeRoleSelectHandler}
               labelledBy="Select Role"
+              valueRenderer={customValueRenderer}
+            />
+          </div>
+          <div className=" col-md-2 form-group">
+            <label htmlFor="locationDropdown" className="form-label">
+              Location
+            </label>
+            <div className="dropdown">
+              <select className="form-control" value={locationSelected} onChange={changeLocationSelectHandler} id="locationDropdown">
+                <option value="0">Select</option>
+                <option value="US">US</option>
+                <option value="India">India</option>
+              </select>
+            </div>
+          </div>
+          <div className="col-md-2 form-group">
+            <label htmlFor="" className="form-label">
+              Resource Market
+            </label>
+            <MultiSelect
+              options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
+              value={resourceMarketSelected}
+              onChange={changeResourceMarketSelectHandler}
+              labelledBy="Select Resource Market"
               valueRenderer={customValueRenderer}
             />
           </div>
@@ -436,18 +451,7 @@ const ProjectAllocation = () => {
               valueRenderer={customValueRenderer}
             />
           </div>
-          <div className=" col-md-2 form-group">
-            <label htmlFor="locationDropdown" className="form-label">
-              Location
-            </label>
-            <div className="dropdown">
-              <select className="form-control" value={locationSelected} onChange={changeLocationSelectHandler} id="locationDropdown">
-                <option value="0">Select</option>
-                <option value="US">US</option>
-                <option value="India">India</option>
-              </select>
-            </div>
-          </div>
+          
         </div>
 
         <Table columns={columns} data={filteredProjectAllocations} />

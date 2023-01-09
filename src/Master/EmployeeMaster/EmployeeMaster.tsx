@@ -14,13 +14,13 @@ import { read, utils, writeFile } from "xlsx";
 import { marketActions } from "../../Store/Slices/Market";
 
 const columns = [
-  {
-    name: "Employee Id",
-    selector: (row: { resourceId: any }) => row.resourceId,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
+  // {
+  //   name: "Employee Id",
+  //   selector: (row: { resourceId: any }) => row.resourceId,
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
   {
     name: "Resource",
     selector: (row: { resourceName: any }) => row.resourceName,

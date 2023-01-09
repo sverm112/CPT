@@ -11,13 +11,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { projectActions } from "../../Store/Slices/Project";
 import { marketActions } from "../../Store/Slices/Market";
 const columns = [
-  {
-    name: "Project Id",
-    selector: (row: { projectId: any }) => row.projectId,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
+  // {
+  //   name: "Project Id",
+  //   selector: (row: { projectId: any }) => row.projectId,
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
   {
     name: "Project Code",
     selector: (row: { projectCode: any }) => row.projectCode,
@@ -102,6 +102,7 @@ const ProjectInfo = () => {
   const projects = useSelector((store: any) => store.Project.data);
   const marketList=useSelector((state: any) => state.Market.data);
   const toggle = useSelector((store: any) => store.Project.toggle);
+  const projectModelSelected= useSelector((store: any) => store.Project.projectModel);
   const marketSelected = useSelector((store: any) => store.Project.market);
   const expenseTypeSelected = useSelector((store: any) => store.Project.expenseType);
   const statusSelected = useSelector((store: any) => store.Project.status);
@@ -130,6 +131,7 @@ const ProjectInfo = () => {
   const filteredProjects=projects.filter(
     (project : any)=>{
 
+      const projectModelOptions=projectModelSelected.map((projectModel: any) => projectModelOptions.value)
       const marketOptions=marketSelected.map((market: any)=>market.value);
       const expenseTypeOptions=expenseTypeSelected.map((expenseType: any)=>expenseType.value);
       const statusOptions=statusSelected.map((status: any)=>status.value);
@@ -141,7 +143,11 @@ const ProjectInfo = () => {
           {
             
             if((!statusSelected.length)|| (statusSelected.length>0 && statusOptions.includes(project.isActive) ))
-            return true;
+            {
+              if((!projectModelSelected.length)|| (projectModelSelected.length>0 && projectModelOptions.includes(project.projectModel) ))
+              return true;
+            }
+            
           }
         
       }
@@ -154,7 +160,7 @@ const ProjectInfo = () => {
       <div className="col-md-12 bg-mainclass">
         <div>
           <div className="row Page-Heading">
-            <h1 className="Heading-Cls">Project Info</h1>
+            <h1 className="Heading-Cls">Project Details</h1>
             <p>
               <span className="Heading-P-Cls">Master</span>
               <span>Project Info</span>
@@ -173,6 +179,18 @@ const ProjectInfo = () => {
             </div>
           </div>
           <div className="row filter-row">
+          <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Project Model
+              </label>
+              <MultiSelect
+                options={expenseTypes}
+                value={projectModelSelected}
+                onChange={(event: any) => dispatch(projectActions.changeProjectModel(event))}
+                labelledBy="Select Expense Type"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Market

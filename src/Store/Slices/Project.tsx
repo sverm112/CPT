@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  projectModel : [],
   market: [],
   expenseType: [],
   status: [],
@@ -14,6 +15,9 @@ const projectSlice = createSlice({
   name: "project",
   initialState: initialState,
   reducers: {
+    changeProjectModel(state, action) {
+      state.projectModel = action.payload;
+    },
     changeMarket(state, action) {
       state.market = action.payload;
     },
