@@ -13,14 +13,14 @@ import { marketActions } from "../../Store/Slices/Market";
 
 //Data Table
 const columns = [
-  {
-    name: "Id",
-    selector: (row: { pkHolidayID: any }) => row.pkHolidayID,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
+  // {
+  //   name: "Id",
+  //   selector: (row: { pkHolidayID: any }) => row.pkHolidayID,
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
+   {
     name: "Occasion",
     selector: (row: { occasionName: any }) => row.occasionName,
     sortable: true,
@@ -35,19 +35,20 @@ const columns = [
     filterable: true,
   },
   {
-    name: "Sub Location",
-    selector: (row: { subLocationName: any }) => row.subLocationName,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
     name: "Location",
     selector: (row: { locationName: any }) => row.locationName,
     sortable: true,
     reorder: true,
     filterable: true,
   },
+  {
+    name: "Sub Location",
+    selector: (row: { subLocationName: any }) => row.subLocationName,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  
   {
     name: "Market",
     selector: (row: { marketName: any }) => row.marketName,
@@ -332,8 +333,8 @@ const HolidayMaster = () => {
                 labelledBy="Select Market"
                 valueRenderer={customValueRenderer}
               />
-            </div>
-            {/* <div className=" col-md-2 form-group">
+             </div>
+             {/*<div className=" col-md-2 form-group">
               <label htmlFor="countrydropdown" className="form-label">
                 Location
               </label>
@@ -344,8 +345,8 @@ const HolidayMaster = () => {
                   <option value="2">India</option>
                 </select>
               </div>
-            </div>
-            <div className=" col-md-2 form-group">
+            </div> */}
+            {/*<div className=" col-md-2 form-group">
               <label htmlFor="locationdropdown" className="form-label">
                 Year
               </label>
@@ -365,7 +366,7 @@ const HolidayMaster = () => {
                   <option value="12">2012</option>
                   <option value="13">2011</option>
                   <option value="14">2010</option>
-                  {/* <option value="15">2009</option>
+                   <option value="15">2009</option>
                   <option value="16">2008</option>
                   <option value="17">2007</option>
                   <option value="18">2006</option>
@@ -569,7 +570,7 @@ const ModalDialog = () => {
               </div>
               <div className="col-md-6 form-group" id="isOffShore">
                 <label className="form-label" htmlFor="holidaySubLocation">
-                  Sub-Location
+                  Sub Location
                 </label>
                 <div className="dropdown">
                   <select

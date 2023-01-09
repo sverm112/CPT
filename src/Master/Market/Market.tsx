@@ -10,14 +10,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 
 const columns = [
-  {
-    name: "Market Id",
-    selector: (row: { pkMarketID: any }) => row.pkMarketID,
+  // {
+  //   name: "Market Id",
+  //   selector: (row: { pkMarketID: any }) => row.pkMarketID,
     
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
   {
     name: "Market Name",
     selector: (row: { marketName: any }) => row.marketName,
@@ -77,7 +77,8 @@ const Market = () => {
   const getMarketDetails = async () => {
     try{
       const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
-    const dataGet = await response.json();
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
     dispatch(marketActions.changeData(dataGet));
     }
     catch{
@@ -93,7 +94,7 @@ const Market = () => {
       <div className="col-md-12 bg-mainclass">
         <div>
           <div className="row Page-Heading">
-            <h1 className="Heading-Cls">Market</h1>
+            <h1 className="Heading-Cls">Market Details</h1>
             <p>
               <span className="Heading-P-Cls">Master</span>
               <span>Market</span>
