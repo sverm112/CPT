@@ -59,7 +59,7 @@ const columns = [
   },
   {
     name: "Status",
-    selector: (row: { isActive: any }) => row.isActive == "1" ? "Active" : "InActive",
+    selector: (row: { isActive: any }) => row.isActive ,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -227,11 +227,17 @@ const HolidayMaster = () => {
     { label: "Hyderabad", value: "Hyderabad" , location:"India" },
     { label: "Karnataka", value: "Karnataka" , location:"India" },
   ];
+
+  const statusOptions = [
+    { label: "Active", value: "Active" },
+    { label: "Inactive", value: "Inactive" },
+  ];
   const dispatch = useDispatch();
   // const countrySelected= useSelector((store: any) => store.Holiday.location);
   const marketSelected= useSelector((store: any) => store.Holiday.market);
   const locationSelected= useSelector((store: any) => store.Holiday.location);
   const subLocationSelected= useSelector((store: any) => store.Holiday.subLocation);
+  const statusSelected = useSelector((store: any) => store.Holiday.status);
   // const year= useSelector((store: any) => store.Holiday.year);
   const holidays = useSelector((store: any) => store.Holiday.data);
   const toggle = useSelector((store: any) => store.Holiday.toggle);
@@ -254,9 +260,9 @@ const HolidayMaster = () => {
   
   const getHolidayDetails = async () => {
     const response = await fetch("https://localhost:44314/api/v1/HolidaysList/GetAllHolidaysLists");
-    const data = await response.json();
-    console.log(data);
-    dispatch(holidayActions.changeData(data));
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
+    dispatch(holidayActions.changeData(dataGet));
   };
   
 
@@ -297,11 +303,13 @@ const HolidayMaster = () => {
     const marketOptions=marketSelected.map((market: any)=>market.value);
     const locationOptions=locationSelected.map((location: any)=>location.value)
     const subLocationOptions=subLocationSelected.map((subLocation:any)=>subLocation.value)
+    const statusOptions=statusSelected.map((status: any)=>status.value);
     if((!marketSelected.length) ||(marketSelected.length>0 && marketOptions.includes(holiday.marketName)==true))
     {
       if((!locationSelected.length) ||(locationSelected.length>0 && locationOptions.includes(holiday.locationName)==true))
         if((!subLocationSelected.length) ||(subLocationSelected.length>0 && subLocationOptions.includes(holiday.subLocationName)==true))
-      return true;
+        if((!statusSelected.length)|| (statusSelected.length>0 && statusOptions.includes(holiday.isActive) ))
+          return true;
     }
     return false;
   })
@@ -367,6 +375,18 @@ const HolidayMaster = () => {
                 valueRenderer={customValueRenderer}
               />
              </div>
+             <div className=" col-md-2 form-group">
+              <label htmlFor="activeDropdown" className="form-label">
+                Status
+              </label>
+              <MultiSelect
+                options={statusOptions}
+                value={statusSelected}
+                onChange={(event: any) => dispatch(holidayActions.changeStatus(event))}
+                labelledBy="Select Status"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
              
              {/*<div className=" col-md-2 form-group">
               <label htmlFor="countrydropdown" className="form-label">

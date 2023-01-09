@@ -68,8 +68,8 @@ const SideBar = () => {
                                             </div>
                                             <Collapsible trigger="Master Entry">
                                                 <ul className="Collapsible-ul">
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.EMPLOYEEMASTER) }} >Employee Details</a></li>
                                                     <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.MARKET) }}>Market Details</a></li>
+                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.EMPLOYEEMASTER) }} >Employee Details</a></li>
                                                     <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.PROJECTINFO) }}>Project Details</a></li>
                                                     <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.HOLIDAYMASTER) }}>Holiday Details</a></li>
                                                 </ul>
