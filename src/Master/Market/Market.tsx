@@ -8,6 +8,7 @@ import Table from "../../DataTable/DataTable";
 import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
+import { toast } from "react-toastify";
 
 const columns = [
   // {
@@ -173,10 +174,11 @@ const ModalDialog = () => {
           dispatch(marketActions.changeToggle());
           resetFormFields();
           closeModal();
-        } else console.log(dataResponse[0].errorMessage);
-      } else console.log("Bad response");
+          toast.success("Market Added Successfully")
+        } else toast.error(dataResponse[0].errorMessage);
+      } else toast.error("Some Error occured.");
     } catch {
-      console.log("Error occured while uploading data");
+      toast.error("Some Error occured.");
     }
   };
 

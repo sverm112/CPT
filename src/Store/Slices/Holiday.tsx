@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   market: [],
-  location: "2",
-  year: "0",
+  location :[],
+  subLocation :[],
   
   data: [],
   currentPage: "1",
@@ -22,8 +22,8 @@ const holidaySlice = createSlice({
     changeLocation(state, action) {
       state.location = action.payload;
     },
-    changeYear(state, action) {
-      state.year = action.payload;
+    changeSubLocation(state, action) {
+      state.subLocation = action.payload;
     },
    
     changeData(state, action) {
