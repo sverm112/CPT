@@ -44,8 +44,22 @@ const columns = [
     filterable: true,
   },
   {
+    name: "Manager",
+    selector: (row: { manager: any }) => row.manager,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
     name: "Resource Type",
     selector: (row: { resourceType: any }) => row.resourceType,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Market",
+    selector: (row: { resourceMarket: any }) => row.resourceMarket,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -64,20 +78,7 @@ const columns = [
     reorder: true,
     filterable: true,
   },
-  {
-    name: "Market",
-    selector: (row: { resourceMarket: any }) => row.resourceMarket,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Manager",
-    selector: (row: { manager: any }) => row.manager,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
+  
   {
     name: "Status",
     selector: (row: { isActive: any }) => row.isActive,
@@ -753,7 +754,6 @@ const ModalDialog = () => {
                   onChange={(event) => setEmployeeName(event.target.value)}
                 />
               </div>
-
               <div className="col-md-6 form-group ">
                 <label className="form-label">Role</label>
                 <div className="dropdown">
@@ -774,7 +774,16 @@ const ModalDialog = () => {
                   </select>
                 </div>
               </div>
-
+              <div className="col-md-6 form-group">
+                <label className="form-label">Email Address</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="employeeEmailAddress"
+                  value={employeeEmailAddress}
+                  onChange={(event) => setEmployeeEmailAddress(event.target.value)}
+                />
+              </div>
               <div className="col-md-6 form-group">
                 <label className="form-label">Manager</label>
                 <input
@@ -785,7 +794,6 @@ const ModalDialog = () => {
                   onChange={(event) => setManager(event.target.value)}
                 />
               </div>
-
               <div className="col-md-6 form-group">
                 <label className="form-label">Resource Type</label>
                 <div className="dropdown">
@@ -802,7 +810,20 @@ const ModalDialog = () => {
                   </select>
                 </div>
               </div>
-
+              <div className="col-md-6 form-group">
+                <label className="form-label">Market</label>
+                <div className="dropdown">
+                  <select
+                    id="market"
+                    className="form-control"
+                    value={market}
+                    onChange={(event) => setMarket(event.target.value)}
+                  >
+                    <option value="0">Select</option>
+                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
+                  </select>
+                </div>
+              </div>
               <div className="col-md-6 form-group">
                 <label className="form-label">Location</label>
                 <div className="dropdown">
@@ -833,31 +854,7 @@ const ModalDialog = () => {
                   </select>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
-                <label className="form-label">Market</label>
-                <div className="dropdown">
-                  <select
-                    id="market"
-                    className="form-control"
-                    value={market}
-                    onChange={(event) => setMarket(event.target.value)}
-                  >
-                    <option value="0">Select</option>
-                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              <div className="col-md-6 form-group">
-                <label className="form-label">Email Address</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="employeeEmailAddress"
-                  value={employeeEmailAddress}
-                  onChange={(event) => setEmployeeEmailAddress(event.target.value)}
-                />
-              </div>
+              
             </div>
             <div className="row">
               <div className="col-md-12">
