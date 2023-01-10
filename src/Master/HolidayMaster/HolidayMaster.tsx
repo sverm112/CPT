@@ -36,6 +36,13 @@ const columns = [
     filterable: true,
   },
   {
+    name: "Market",
+    selector: (row: { marketName: any }) => row.marketName,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
     name: "Location",
     selector: (row: { locationName: any }) => row.locationName,
     sortable: true,
@@ -45,14 +52,6 @@ const columns = [
   {
     name: "Sub Location",
     selector: (row: { subLocationName: any }) => row.subLocationName,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  
-  {
-    name: "Market",
-    selector: (row: { marketName: any }) => row.marketName,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -339,7 +338,19 @@ const HolidayMaster = () => {
             </div>
           </div>
           <div className="row filter-row">
-          <div className="col-md-2 form-group">
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Market
+              </label>
+              <MultiSelect
+                options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
+                value={marketSelected}
+                onChange={changeMarketSelectHandler}
+                labelledBy="Select Market"
+                valueRenderer={customValueRenderer}
+              />
+             </div>
+             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Location
               </label>
@@ -360,18 +371,6 @@ const HolidayMaster = () => {
                 value={subLocationSelected}
                 onChange={changeSubLocationSelectHandler}
                 labelledBy="Select Sub Location"
-                valueRenderer={customValueRenderer}
-              />
-             </div>
-            <div className="col-md-2 form-group">
-              <label htmlFor="" className="form-label">
-                Market
-              </label>
-              <MultiSelect
-                options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
-                value={marketSelected}
-                onChange={changeMarketSelectHandler}
-                labelledBy="Select Market"
                 valueRenderer={customValueRenderer}
               />
              </div>
@@ -607,6 +606,36 @@ const ModalDialog = () => {
                 />
               </div>
               <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="holidaydate" style={{ zIndex: "9" }}>
+                  Holiday Date
+                </label>
+                <DatePicker
+                  className="form-control"
+                  onChange={setDate}
+                  value={date}
+                  format="dd/MM/yyyy"
+                  dayPlaceholder="dd"
+                  monthPlaceholder="mm"
+                  yearPlaceholder="yyyy"
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="holidayMarket">
+                  Market
+                </label>
+                <div className="dropdown">
+                  <select
+                    className="form-control"
+                    id="holidayMarket"
+                    value={market}
+                    onChange={(event: any) => setMarket(event.target.value)}
+                  >
+                    <option value="0">Select</option>
+                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="holidayCountry">
                   Location
                 </label>
@@ -638,36 +667,6 @@ const ModalDialog = () => {
                     {options}
                   </select>
                 </div>
-              </div>
-              <div className="col-md-6 form-group">
-                <label className="form-label" htmlFor="holidayMarket">
-                  Market
-                </label>
-                <div className="dropdown">
-                  <select
-                    className="form-control"
-                    id="holidayMarket"
-                    value={market}
-                    onChange={(event: any) => setMarket(event.target.value)}
-                  >
-                    <option value="0">Select</option>
-                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
-                  </select>
-                </div>
-              </div>
-              <div className="col-md-6 form-group">
-                <label className="form-label" htmlFor="holidaydate" style={{ zIndex: "9" }}>
-                  Date
-                </label>
-                <DatePicker
-                  className="form-control"
-                  onChange={setDate}
-                  value={date}
-                  format="dd/MM/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
-                />
               </div>
             </div>
             <div className="row">
