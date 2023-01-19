@@ -35,7 +35,7 @@ const SideBar = () => {
                 <div style={{ color: "#fff", whiteSpace: "nowrap" }}>Capacity Planning Tool</div>
                 <div>
                     <div className="dropdowns" style={{ float: "right" }}>
-                        <button className="dropbtns">
+                        <button className="dropbtns" >
                             <span style={{ padding: "10px 10px 10px 10px", lineHeight: "40px" }}>Test User</span>
                             <div className="header_img" style={{ float: "right" }}>
                                 <img src={nouserimage} alt="" />

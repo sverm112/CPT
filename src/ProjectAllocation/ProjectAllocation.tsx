@@ -689,7 +689,7 @@ const ModalDialog = () => {
       >
         <i className="las la-plus"></i> Allocate New Project
       </Button>
-      <Modal show={isShow} id="project_allocation_modal">
+      <Modal show={isShow} id="project_allocation_modal" onHide={closeModal}>
         <Modal.Header closeButton onClick={closeModal}>
           <Modal.Title>
             <h6>Allocate New Project</h6>

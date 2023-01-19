@@ -221,10 +221,10 @@ const HolidayMaster = () => {
   const USSubLocations = [{ label: "Washington", value: "Washington" }];
   const subLocations = [
     { label: "Washington", value: "Washington" ,location:"US"},
-    { label: "Haryana", value: "Haryana" ,location:"India"},
-    { label: "Uttar Pradesh", value: "Uttar Pradesh" ,location:"India"},
+    { label: "Gurgaon", value: "Gurgaon" ,location:"India"},
+    { label: "Noida", value: "Noida" ,location:"India"},
     { label: "Hyderabad", value: "Hyderabad" , location:"India" },
-    { label: "Karnataka", value: "Karnataka" , location:"India" },
+    { label: "Bangalore", value: "Bangalore" , location:"India" },
   ];
 
   const statusOptions = [
@@ -468,10 +468,10 @@ const ModalDialog = () => {
   const [countrySelected, setCountrySelected] = React.useState("");
 
   const USSubLocations = ["Washington"];
-  const IndiaSubLocations = ["Haryana", "Uttar Pradesh", "Hyderabad", "Karnataka"];
+  const IndiaSubLocations = ["Gurgaon", "Noida", "Hyderabad", "Bangalore"];
 
   const USOptions=[<option value="5">Washington</option>]
-  const IndiaOptions =[<option value="6">Haryana</option>,<option value="3">Uttar Pradesh</option>,<option value="4">Hyderabad</option>,<option value="8">Karnataka</option>]
+  const IndiaOptions =[<option value="6">Gurgaon</option>,<option value="3">Noida</option>,<option value="4">Hyderabad</option>,<option value="8">Bangalore</option>]
   let values = null;
   let options = null;
 
@@ -548,7 +548,7 @@ const ModalDialog = () => {
       >
         <i className="las la-plus"></i> Add Holiday
       </Button>
-      <Modal show={isShow}>
+      <Modal show={isShow} onHide={closeModal}>
         <Modal.Header closeButton onClick={closeModal}>
           <Modal.Title>
             <h6>Add New Holiday</h6>

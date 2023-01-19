@@ -194,7 +194,7 @@ const ModalDialog = () => {
       >
         <i className="las la-plus"></i> Add Market
       </Button>
-      <Modal show={isShow}>
+      <Modal show={isShow} onHide={closeModal}>
         <Modal.Header closeButton onClick={closeModal}>
           <Modal.Title>
             <h6>Add New Market</h6>
