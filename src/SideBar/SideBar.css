@@ -235,7 +235,7 @@ a {
     background-color: #f1f1f1;
 }
 
-.dropdowns:hover .dropdowns-content {
+#box:checked + label + .dropdowns-content {
     display: block;
 }
 

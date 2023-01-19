@@ -35,12 +35,20 @@ const SideBar = () => {
                 <div style={{ color: "#fff", whiteSpace: "nowrap" }}>Capacity Planning Tool</div>
                 <div>
                     <div className="dropdowns" style={{ float: "right" }}>
-                        <button className="dropbtns" >
-                            <span style={{ padding: "10px 10px 10px 10px", lineHeight: "40px" }}>Test User</span>
-                            <div className="header_img" style={{ float: "right" }}>
-                                <img src={nouserimage} alt="" />
+                    <div className="dropdowns" style={{ float: "right" }}>
+                        <input type="checkbox" id="box" style={{display:"none"}}/>
+                        <label htmlFor ="box" style={{marginBottom: "0px"}}>
+                            <div className="dropbtns">
+                                <span style={{ padding: "10px 10px 10px 10px", lineHeight: "40px" }}>Test User</span>
+                                <div className="header_img" style={{ float: "right" }}>
+                                    <img src={nouserimage} alt="" />
+                                </div>
                             </div>
-                        </button>
+                        </label>
+                        <div className="dropdowns-content">
+                            <a className="logoutbtn" href="" onClick={() => { navigate(APP_ROUTES.LOGINPAGE) }}>Logout</a>
+                        </div>
+                    </div>
                         <div className="dropdowns-content">
                             <a className="logoutbtn" href="" onClick={() => { navigate(APP_ROUTES.LOGINPAGE) }}>Logout</a>
                         </div>
