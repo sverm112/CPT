@@ -86,7 +86,7 @@ const columns = [
   },
   {
     name: "Resource Type1",
-    selector: (row: { resourceType1: any }) => row.resourceType1,
+    selector: (row: { resourceType1: any }) => row.resourceType1=="0" ? "" : row.resourceType1,
     sortable: true,
     reorder: true,
     filterable: true,
