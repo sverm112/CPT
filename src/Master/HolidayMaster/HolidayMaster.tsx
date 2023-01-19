@@ -258,7 +258,7 @@ const HolidayMaster = () => {
   
   
   const getHolidayDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/HolidaysList/GetAllHolidaysLists");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/GetAllHolidaysLists");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
     dispatch(holidayActions.changeData(dataGet));
@@ -266,7 +266,7 @@ const HolidayMaster = () => {
   
 
   // const getHolidayDetailsIndia = async () => {
-  //   const response = await fetch("https://localhost:44314/api/holiday/India");
+  //   const response = await fetch("http://10.147.172.18:9190/api/holiday/India");
   //   const data = await response.json();
   //   console.log(data);
   //   dispatch(holidayActions.changeDataIndia(data));
@@ -289,7 +289,7 @@ const HolidayMaster = () => {
   //}
   const marketList=useSelector((state: any) => state.Market.data);
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     const dataGet = await response.json();
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
@@ -475,10 +475,13 @@ const ModalDialog = () => {
   let values = null;
   let options = null;
 
-  if (location == "1" || location == "0") {
+  if (location == "1") {
     options = USOptions;
   } else if (location == "2") {
     options = IndiaOptions;
+  }
+  else if (location == "0") {
+    options = [];
   }
   
   // if (values) {
@@ -502,7 +505,7 @@ const ModalDialog = () => {
       createdBy : "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/HolidaysList/PostHoliday", {
+      const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/PostHoliday", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -527,7 +530,7 @@ const ModalDialog = () => {
   };
   const marketList=useSelector((state: any) => state.Market.data);
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     const dataGet = await response.json();
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));

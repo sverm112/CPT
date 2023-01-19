@@ -217,7 +217,7 @@ const EmployeeMaster = () => {
 
   const getEmployeeDetails = async () => {
     try {
-      const response = await fetch("https://localhost:44314/api/v1/Resources/GetAllResources");
+      const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
       let dataGet = await response.json();
       dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
       dispatch(employeeActions.changeData(dataGet));
@@ -230,7 +230,7 @@ const EmployeeMaster = () => {
   }, [toggle]);
 
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     const dataGet = await response.json();
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
@@ -277,7 +277,7 @@ const EmployeeMaster = () => {
       }));
       payload = payload.map((row: any) => ({ ...row, createdBy: "Admin" }));
       try {
-        const response = await fetch("https://localhost:44314/api/v1/Resources/BulkUploadResources", {
+        const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/BulkUploadResources", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -680,7 +680,7 @@ const ModalDialog = () => {
       createdBy: "Admin",
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/Resources/PostResources", {
+      const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/PostResources", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -705,7 +705,7 @@ const ModalDialog = () => {
   };
 
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     const dataGet = await response.json();
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));

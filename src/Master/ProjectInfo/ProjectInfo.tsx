@@ -63,7 +63,7 @@ const columns = [
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate.slice(0, 10),
+    selector: (row: { createdDate: any }) => row.createdDate,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -117,9 +117,9 @@ const ProjectInfo = () => {
   const statusSelected = useSelector((store: any) => store.Project.status);
 
   const getProjectDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Projects/GetAllProjects");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Projects/GetAllProjects");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,projectMarket : row.marketName,projectId : row.pkProjectID, isActive : row.isActive==1 ? "Active" : "Inactive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row,projectMarket : row.marketName,projectId : row.pkProjectID,createdDate : row.createdDate.slice(0, 10), isActive : row.isActive==1 ? "Active" : "Inactive" }));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -127,7 +127,7 @@ const ProjectInfo = () => {
   }, [toggle]);
 
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     const dataGet = await response.json();
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
@@ -281,7 +281,7 @@ function ModalDialog() {
       createdBy: "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/Projects/PostProjects", {
+      const response = await fetch("http://10.147.172.18:9190/api/v1/Projects/PostProjects", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -307,7 +307,7 @@ function ModalDialog() {
     
 
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     const data = await response.json();
     console.log(data);
     dispatch(marketActions.changeData(data));

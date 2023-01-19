@@ -86,7 +86,7 @@ const columns = [
   },
   {
     name: "Resource Type1",
-    selector: (row: { resourceType1: any }) => row.resourceType1,
+    selector: (row: { resourceType1: any }) => row.resourceType1 == "0" ? "" : row.resourceType1,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -113,7 +113,20 @@ const columns = [
     reorder: true,
     filterable: true,
   },
-  
+  {
+    name: "Start Date",
+    selector: (row: { startDate: any }) => row.startDate.slice(0, 10),
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "End Date",
+    selector: (row: { enddDate: any }) => row.enddDate.slice(0, 10),
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
   {
     name: "PTO Days",
     selector: (row: { pTODays: any }) => row.pTODays,
@@ -309,7 +322,7 @@ const ProjectAllocation = () => {
   };
 
   const getProjectAllocationDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/ProjectAllocations/GetAllProjectAllocations ");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/ProjectAllocations/GetAllProjectAllocations ");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket : row.marketName,isActive : row.isActive=="1" ? "Active" : "Inactive"}));
     
@@ -320,7 +333,7 @@ const ProjectAllocation = () => {
   }, [toggle]);
 
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     const dataGet = await response.json();
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
@@ -556,7 +569,7 @@ const ModalDialog = () => {
   const resourcesList = useSelector((store: any) => store.Employee.data);
   const projectsList=useSelector((store:any)=>store.Project.data);
   const getEmployeeDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Resources/GetAllResources");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
     dispatch(employeeActions.changeData(dataGet));
@@ -565,7 +578,7 @@ const ModalDialog = () => {
     getEmployeeDetails();
   }, []);
   const getProjectDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Projects/GetAllProjects");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Projects/GetAllProjects");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row,projectMarket : row.marketName,projectId : row.pkProjectID, isActive : row.isActive==1 ? "Active" : "Inactive" }));
     dispatch(projectActions.changeData(dataGet));
@@ -639,7 +652,7 @@ const ModalDialog = () => {
     createdBy : "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/ProjectAllocations/PostProjectAllocations", {
+      const response = await fetch("http://10.147.172.18:9190/api/v1/ProjectAllocations/PostProjectAllocations", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

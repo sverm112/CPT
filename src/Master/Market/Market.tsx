@@ -77,7 +77,7 @@ const Market = () => {
 
   const getMarketDetails = async () => {
     try{
-      const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+      const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
     dispatch(marketActions.changeData(dataGet));
@@ -158,7 +158,7 @@ const ModalDialog = () => {
       createdBy : "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/Markets/PostMarket", {
+      const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/PostMarket", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

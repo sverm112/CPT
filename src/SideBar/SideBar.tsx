@@ -3,7 +3,7 @@ import nouserimage from "../asset/images/noimage-User.jpg";
 import "./SideBar.css";
 import "../style.css";
 import Collapsible from 'react-collapsible';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "../constants";
 import "./SideBarJs";
 
@@ -68,10 +68,10 @@ const SideBar = () => {
                                             </div>
                                             <Collapsible trigger="Master Entry">
                                                 <ul className="Collapsible-ul">
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.MARKET) }}>Market Details</a></li>
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.EMPLOYEEMASTER) }} >Employee Details</a></li>
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.PROJECTINFO) }}>Project Details</a></li>
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.HOLIDAYMASTER) }}>Holiday Details</a></li>
+                                                    <li className="Collapsible-li"><Link to="/Master/MarketDetails" onClick={() => { navigate(APP_ROUTES.MARKET) }}>Market Details </Link> </li>
+                                                    <li className="Collapsible-li"><Link to="/Master/EmployeeDetails" onClick={() => { navigate(APP_ROUTES.EMPLOYEEMASTER) }} >Employee Details</Link></li>
+                                                    <li className="Collapsible-li"><Link to="/Master/ProjectDetails" onClick={() => { navigate(APP_ROUTES.PROJECTINFO) }}>Project Details</Link></li>
+                                                    <li className="Collapsible-li"><Link to="/Master/HolidayDetails" onClick={() => { navigate(APP_ROUTES.HOLIDAYMASTER) }}>Holiday Details</Link></li>
                                                 </ul>
                                             </Collapsible>
                                         </div>
