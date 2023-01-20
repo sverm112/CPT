@@ -94,11 +94,10 @@ const SideBar = () => {
                                             </div>
                                             <Collapsible trigger="Report">
                                                 <ul className="Collapsible-ul">
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.ALLOCATIONHOURSRPOT) }}>ByAllocationHours</a></li>
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.ABVAILABILITYRPOT) }}>ByAvailability</a></li>
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.EXPENSERPOT) }}>ByExpense</a></li>
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.MARKETRPOT) }}>ByMarket</a></li>
-                                                    <li className="Collapsible-li"><a href="" onClick={() => { navigate(APP_ROUTES.PROJECTRPOT) }}>ByProject</a></li>
+                                                    <li className="Collapsible-li"><Link to="/Report/AllocationMarketReport" onClick={() => { navigate(APP_ROUTES.ALLOCATIONMARKETRPOT) }}>Allocation By Market </Link></li>
+                                                    <li className="Collapsible-li"><Link to="/Report/AllocationResourceReport" onClick={() => { navigate(APP_ROUTES.ALLOCATIONRESOURCERPOT) }}>Allocation By Resource</Link></li>
+                                                    <li className="Collapsible-li"><Link to="/Report/AllocationProjectReport" onClick={() => { navigate(APP_ROUTES.ALLOCATIONPROJECTRPOT) }}>Allocation By Project</Link></li>
+                                                    <li className="Collapsible-li"><Link to="/Report/HolidayListReport" onClick={() => { navigate(APP_ROUTES.HOLIDAYLISTRPOT) }}>Holiday List</Link></li>
                                                 </ul>
                                             </Collapsible>
                                         </div>
