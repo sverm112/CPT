@@ -1,11 +1,10 @@
 export const LOGINPAGE = "/";
 // export const MAINPAGE = "/Dashboard";
 export const ABOUTUS = "/AboutUs";
-export const ABVAILABILITYRPOT = "/Report/AvailabilityReport";
-export const ALLOCATIONHOURSRPOT = "/Report/AllocationHoursReport";
-export const EXPENSERPOT = "/Report/ExpenseReport";
-export const PROJECTRPOT = "/Report/ProjectReport";
-export const MARKETRPOT = "/Report/MarketReport";
+export const ALLOCATIONRESOURCERPOT = "/Report/AllocationResourceReport";
+export const HOLIDAYLISTRPOT = "/Report/HolidayListReport";
+export const ALLOCATIONPROJECTRPOT = "/Report/AllocationProjectReport";
+export const ALLOCATIONMARKETRPOT = "/Report/AllocationMarketReport";
 export const HOLIDAYMASTER = "/Master/HolidayDetails";
 export const EMPLOYEEMASTER = "/Master/EmployeeDetails";
 export const PROJECTINFO = "/Master/ProjectDetails";
