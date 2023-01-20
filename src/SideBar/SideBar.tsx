@@ -92,8 +92,9 @@ const SideBar = () => {
                             </a>
                             <a className="nav_link" id="ReportsList">
                                 <span className="nav_name">
+                                    
                                     <div className="row">
-                                        <div className="col-md-2">
+                                        <div className="col-md-2" id="reports">
                                             <i className="las la-file-alt" aria-hidden="true"></i>
                                         </div>
                                         <div className="col-md-10 sidebardrpdwn" onClick={() => setIsReportActive(!isReportActive)}>
