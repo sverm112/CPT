@@ -2,7 +2,7 @@
 
 :root {
     --header-height: 3rem;
-    --nav-width: 68px;
+    --nav-width: 64px;
     --first-color-light: #AFA5D9;
     --white-color: #F7F6FB;
     --body-font: 'Nunito', sans-serif;
@@ -32,6 +32,7 @@ a {
 
 .Collapsible-li:hover {
     color: #0078d7 !important;
+    border-top: 1px solid #0078d7 !important;
     background-color: #fff !important;
     background-size: 220px 35px;
     background-repeat: no-repeat;
@@ -126,7 +127,7 @@ a {
 .nav_link {
     position: relative;
     color: var(--first-color-light);
-    margin-bottom: 10px;
+    margin-bottom: 7px;
     transition: .3s
 }
 
@@ -256,9 +257,21 @@ a {
 }
 
 li.Collapsible-li a {
-    padding: 8px 15px 8px 35px;
+    padding: 8px 15px 8px 40px;
     margin-left: -40px;
     color: #fff !important;
+}
+
+li.Collapsible-li > a {
+    font-size: 14px;
+}
+
+.Collapsible__trigger {
+    font-size: 14px;
+}
+
+span.nav_name {
+    font-size: 14px;
 }
 
 li.Collapsible-li:hover a {
