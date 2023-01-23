@@ -41,6 +41,12 @@ const holidaySlice = createSlice({
     changeToggle(state) {
       state.toggle = !state.toggle;
     },
+    clearFilters(state){
+      state.market=[];
+      state.location=[];
+      state.subLocation=[];
+      state.status=[];
+    }
     
   },
 });

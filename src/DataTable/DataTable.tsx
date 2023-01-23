@@ -42,6 +42,7 @@ const Table = (props: any) => {
       customStyles={customStyles}
       striped={true}
       persistTableHead={true}
+      onRowDoubleClicked={props.onRowDoubleClicked}
     />
   );
 };

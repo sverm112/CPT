@@ -39,6 +39,12 @@ const projectSlice = createSlice({
     changeToggle(state) {
       state.toggle = !state.toggle;
     },
+    clearFilters(state){
+      state.market=[];
+      state.projectModel=[];
+      state.expenseType=[];
+      state.status=[];
+    }
   },
 });
 

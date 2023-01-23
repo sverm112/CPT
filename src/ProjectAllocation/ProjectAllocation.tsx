@@ -1,5 +1,5 @@
 import SideBar from "../SideBar/SideBar";
-import { Modal, Button, Card } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import Table from "../DataTable/DataTable";
 import { MultiSelect } from "react-multi-select-component";
@@ -11,15 +11,9 @@ import { employeeActions } from "../Store/Slices/Employee";
 import { projectActions } from "../Store/Slices/Project";
 import { marketActions } from "../Store/Slices/Market";
 import { toast } from "react-toastify";
+import { filterActions } from "../Store/Slices/Filters";
 
 const columns = [
-  // {
-  //   name: "Allocation Id",
-  //   selector: (row: { pkProjectAllocationID: any }) => row.pkProjectAllocationID,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
   {
     name: "Resource",
     selector: (row: { resourceName: any }) => row.resourceName,
@@ -48,20 +42,6 @@ const columns = [
     reorder: true,
     filterable: true,
   },
-  // {
-  //   name: "Year",
-  //   selector: (row: { year: any }) => row.year,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
-  // {
-  //   name: "Month",
-  //   selector: (row: { month: any }) => row.month,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
   {
     name: "Location",
     selector: (row: { location: any }) => row.location,
@@ -164,81 +144,7 @@ const columns = [
   },
 ];
 
-const data = [
-  {
-    id: 1,
-    resource: "Bibek Khatiwada",
-    resourceType: "GTM",
-    role: "Developer",
-    supervisor: "Vipul Suri",
-    year: "2020",
-    month: "NOV",
-    ptoDays: "1",
-    resourceType1: "Developer",
-    location: "US",
-    resourceMarket: "CA",
-    projectMarket: "CA",
-    ppsid: "*A123",
-    capex: "CAPEX",
-    projects: "Region Provider Portal",
 
-    allocationHours: "17.6",
-  },
-  {
-    id: 2,
-    resource: "Ajay Singh",
-    resourceType: "OGS",
-    role: "Developer",
-    supervisor: "Ashish Khare",
-    year: "2020",
-    month: "APR",
-    ptoDays: "0",
-    resourceType1: "Developer",
-    location: "India",
-    resourceMarket: "CA",
-    projectMarket: "CA",
-    ppsid: "A2220",
-    capex: "CAPEX",
-    projects: "CA – Claims Quality Management – Phase 3",
-    allocationHours: "36",
-  },
-  {
-    id: 3,
-    resource: "Mohan Ganesh,D",
-    resourceType: "OGS",
-    role: "Technical Analyst",
-    supervisor: "Ashish Khare",
-    year: "2020",
-    month: "FEB",
-    ptoDays: "0",
-    resourceType1: "Technical Analyst",
-    location: "India",
-    resourceMarket: "CA",
-    projectMarket: "NA",
-    ppsid: "E0689",
-    capex: "OPEX",
-    projects: "Data Fabric RFP",
-    allocationHours: "16",
-  },
-  {
-    id: 4,
-    resource: "Sivaruban Vinesparamoorthy",
-    resourceType: "FTE",
-    role: "QA",
-    supervisor: "Vipul Suri",
-    year: "2020",
-    month: "MAY",
-    ptoDays: "2",
-    resourceType1: "QA",
-    location: "India",
-    resourceMarket: "NA",
-    projectMarket: "NA",
-    ppsid: "A2329",
-    capex: "CAPEX",
-    projects: "IWS",
-    allocationHours: "100",
-  },
-];
 
 const customValueRenderer = (selected: any, _options: any) => {
   if (selected.length == "0") return "Select";
@@ -246,48 +152,15 @@ const customValueRenderer = (selected: any, _options: any) => {
 };
 
 const ProjectAllocation = () => {
-  const resourceMarkets = [
-    { label: "AppleCare", value: "AppleCare" },
-    { label: "Beaver", value: "Beaver" },
-    { label: "CA", value: "CA" },
-    { label: "HCP", value: "HCP" },
-    { label: "Monarch", value: "Monarch" },
-    { label: "NAMM", value: "NAMM" },
-  ];
-
-  const resourceTypes = [
-    { label: "OGS", value: "OGS" },
-    { label: "GTM", value: "GTM" },
-    { label: "FTE", value: "FTE" },
-  ];
-
-  const roles = [
-    { label: "Developer", value: "Developer" },
-    { label: "Dev Manager", value: "Dev Manager" },
-    { label: "QA", value: "QA" },
-    { label: "QA Manager", value: "QA Manager" },
-    { label: "Sr. Developer", value: "Sr. Developer" },
-    { label: "Sr. QA", value: "Sr. QA" },
-    { label: "Technical Lead", value: "Technical Lead" },
- 
-  ];
-
-  const projectMarkets = [
-    { label: "AppleCare", value: "AppleCare" },
-    { label: "Beaver", value: "Beaver" },
-    { label: "CA", value: "CA" },
-    { label: "HCP", value: "HCP" },
-    { label: "Monarch", value: "Monarch" },
-    { label: "NAMM", value: "NAMM" },
-  ];
-
   const expenseTypes = [
     { label: "CAPEX", value: "CAPEX" },
     { label: "OPEX", value: "OPEX" },
   ];
-
   const dispatch = useDispatch();
   const marketList=useSelector((state: any) => state.Market.data);
+  const locations=useSelector((state: any) => state.Filters.locations);
+  const roles=useSelector((state: any) => state.Filters.roles);
+  const resourceTypes=useSelector((state: any) => state.Filters.resourceTypes);
   const toggle = useSelector((store: any) => store.ProjectAllocation.toggle);
   const projectAllocations = useSelector((store: any) => store.ProjectAllocation.data);
   const resourceMarketSelected= useSelector((store: any) => store.ProjectAllocation.resourceMarket)
@@ -396,7 +269,7 @@ const ProjectAllocation = () => {
               Resource Type
             </label>
             <MultiSelect
-              options={resourceTypes}
+              options={resourceTypes.map((resourceType:any)=>({label:resourceType, value:resourceType}))}
               value={resourceTypeSelected}
               onChange={changeResourceTypeSelectHandler}
               labelledBy="Select Resource Type"
@@ -409,7 +282,7 @@ const ProjectAllocation = () => {
               Role
             </label>
             <MultiSelect
-              options={roles}
+              options={roles.map((role:any)=>({label : role, value:role}))}
               value={roleSelected}
               onChange={changeRoleSelectHandler}
               labelledBy="Select Role"
@@ -423,8 +296,7 @@ const ProjectAllocation = () => {
             <div className="dropdown">
               <select className="form-control" value={locationSelected} onChange={changeLocationSelectHandler} id="locationDropdown">
                 <option value="0">Select</option>
-                <option value="US">US</option>
-                <option value="India">India</option>
+                {locations.map((location:any)=>(<option key={location.locationId} value={location.locationName}>{location.locationName}</option>))}
               </select>
             </div>
           </div>
@@ -465,11 +337,13 @@ const ProjectAllocation = () => {
               valueRenderer={customValueRenderer}
             />
           </div>
-          
+          <div className="col-md-2" style={{marginTop:"24px"}}>
+              <button type="button" className="btn btn-primary" onClick={()=>dispatch(projectAllocationActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            </div>
         </div>
 
         <Table columns={columns} data={filteredProjectAllocations} />
-        {/* <Table columns={columns} data={data} /> */}
+        
 
       </div>
     </div>
@@ -491,91 +365,31 @@ const ModalDialog = () => {
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
   const [projectId, setProjectId] = useState("0");
-
-  // const resourceDetails = [
-  //   {
-  //     resource: "",
-  //     resourceType: "",
-  //     role: "",
-  //     supervisor: "",
-  //   },
-  //   {
-  //     resource: "Brahamananda Kanaparthi",
-  //     resourceType: "GTM",
-  //     role: "Developer",
-  //     supervisor: "Vipul Suri",
-  //   },
-  //   {
-  //     resource: "Kiran Singh",
-  //     resourceType: "OGS",
-  //     role: "Developer",
-  //     supervisor: "Ashish Khare",
-  //   },
-  //   {
-  //     resource: " Pravishtha Jain",
-  //     resourceType: "OGS",
-  //     role: "QA",
-  //     supervisor: "Ashish Khare",
-  //   },
-  //   {
-  //     resource: "Shriyans Sharma",
-  //     resourceType: "OGS",
-  //     role: "QA",
-  //     supervisor: "Ashish Khare",
-  //   },
-  // ];
-  const projectDetails = [
-    {
-      project: "",
-      projectMarket: "",
-      PPSID: "",
-      CAPEX: "",
-    },
-    {
-      project: "LHCP CA Region - Windows Server 2008/2008R2 Upgrade",
-      location: "India",
-      resourceMarket: "HCP",
-      projectMarket: "FL",
-      PPSID: "*A122",
-      CAPEX: "CAPEX",
-    },
-    {
-      project: "NAMM Thycotic Privilege Access Management (PAM)",
-      location: "India",
-      resourceMarket: "Beaver",
-      projectMarket: "NA",
-      PPSID: "A2293",
-      CAPEX: "OPEX",
-    },
-    {
-      project: "Regional CIRC Implementation",
-      location: "India",
-      resourceMarket: "AppleCare",
-      projectMarket: "NA",
-      PPSID: "A2220",
-      CAPEX: "CAPEX",
-    },
-    {
-      project: "SMS Manager",
-      location: "US",
-      resourceMarket: "NAMM",
-      projectMarket: "CA",
-      PPSID: "A226",
-      CAPEX: "CAPEX",
-    },
-  ];
   let allocationHours = Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
   const dispatch = useDispatch();
   const resourcesList = useSelector((store: any) => store.Employee.data);
   const projectsList=useSelector((store:any)=>store.Project.data);
+  const roles=useSelector((state: any) => state.Filters.roles);
   const getEmployeeDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
     dispatch(employeeActions.changeData(dataGet));
   };
+  const getLocationDetails= async () =>{
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Location/GetAllLocations");
+    const dataGet = await response.json();
+    dispatch(filterActions.changeLocations(dataGet));
+  }
+  const getSubLocationDetails= async () =>{
+    const response = await fetch("http://10.147.172.18:9190/api/v1/SubLocation/GetAllSubLocations");
+    const dataGet = await response.json();
+    dispatch(filterActions.changeSubLocations(dataGet));
+  }
   useEffect(() => {
     getEmployeeDetails();
+    getLocationDetails();
+    getSubLocationDetails();
   }, []);
   const getProjectDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Projects/GetAllProjects");
@@ -594,10 +408,6 @@ const ModalDialog = () => {
     setResourceId(event.target.value);
   };
   const setProjectDetails = (event: any) => {
-    // console.log(selectedProjectDetails);
-
-    // selectedProjectDetails = projectDetails[event.target.value];
-    // console.log(selectedProjectDetails);
     setProjectId(event.target.value);
   };
 
@@ -786,13 +596,7 @@ const ModalDialog = () => {
                     onChange={(event) => setResourceType1(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    <option value="Developer">Developer</option>
-                    <option value="Dev Manager">Dev Manager</option>
-                    <option value="QA">QA</option>
-                    <option value="QA Manager">QA Manager</option>
-                    <option value="Sr. Developer">Sr. Developer</option>
-                    <option value="Sr. QA">Sr. QA</option>
-                    <option value="Technical Lead">Technical Lead</option>
+                    {roles.map((role:any)=>(<option key={role} value={role}>{role}</option>))}
                   </select>
                 </div>
               </div>
