@@ -38,6 +38,12 @@ const employeeSlice = createSlice({
     changeToggle(state) {
       state.toggle = !state.toggle;
     },
+    clearFilters(state){
+      state.market=[];
+      state.role=[];
+      state.resourceType=[];
+      state.status=[];
+    }
   },
 });
 

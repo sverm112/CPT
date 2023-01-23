@@ -1,27 +1,16 @@
 import SideBar from "../../SideBar/SideBar";
 import { Modal, Button } from "react-bootstrap";
-import DataTable from "react-data-table-component";
-import DatePicker from "react-date-picker";
-import { useState, FC, useEffect } from "react";
-import React from "react";
+import { useState, useEffect } from "react";
 import Table from "../../DataTable/DataTable";
 import { MultiSelect } from "react-multi-select-component";
 import { useSelector, useDispatch } from "react-redux";
 import { employeeActions } from "../../Store/Slices/Employee";
-import * as FileSaver from "file-saver";
-//import XLSX from 'sheetjs-style';
 import { read, utils, writeFile } from "xlsx";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
+import { filterActions } from "../../Store/Slices/Filters";
 
 const columns = [
-  // {
-  //   name: "Employee Id",
-  //   selector: (row: { resourceId: any }) => row.resourceId,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
   {
     name: "Resource",
     selector: (row: { resourceName: any }) => row.resourceName,
@@ -78,7 +67,6 @@ const columns = [
     reorder: true,
     filterable: true,
   },
-  
   {
     name: "Status",
     selector: (row: { isActive: any }) => row.isActive,
@@ -102,62 +90,6 @@ const columns = [
   },
 ];
 
-let resources = [];
-// let data = [
-//   {
-//     employeeId: 10049,
-//     resource: "Bibek Khatiwada",
-//     role: " Developer",
-//     emailAddress: "",
-//     resourceType: "GTM",
-//     location: "US",
-//     subLocation: "",
-//     resourceMarket: "CA",
-//     manager: "Vipul Suri",
-//     active: "Yes",
-//     createdBy: "Admin",
-//   },
-//   {
-//     employeeId: 10020,
-//     resource: "Mohan Ganesh,D",
-//     role: "Technical Analyst",
-//     emailAddress: "",
-//     resourceType: "OGS",
-//     location: "India",
-//     subLocation: "",
-//     resourceMarket: "CA",
-//     manager: "Ashish Khare",
-//     active: "Yes",
-//     createdBy: "Admin",
-//   },
-
-//   {
-//     employeeId: 10047,
-//     resource: " Singh, Ajay",
-//     role: " Developer",
-//     emailAddress: "",
-//     resourceType: "OGS",
-//     location: "India",
-//     subLocation: "",
-//     resourceMarket: "CA",
-//     manager: "Ashish Khare",
-//     active: "Yes",
-//     createdBy: "Admin",
-//   },
-//   {
-//     employeeId: 10036,
-//     resource: "Sivaruban Vinesparamoorthy",
-//     role: "QA",
-//     emailAddress: "",
-//     resourceType: "FTE",
-//     location: "US",
-//     subLocation: "",
-//     resourceMarket: "CA",
-//     manager: "Vipul Suri",
-//     active: "Yes",
-//     createdBy: "Admin",
-//   },
-// ];
 
 const customValueRenderer = (selected: any, _options: any) => {
   if (selected.length == "0") return "Select";
@@ -167,32 +99,9 @@ const customValueRenderer = (selected: any, _options: any) => {
 
 const EmployeeMaster = () => {
   const dispatch = useDispatch();
-  const markets = [
-    { label: "AppleCare", value: "AppleCare" },
-    { label: "Beaver", value: "Beaver" },
-    { label: "CA", value: "CA" },
-    { label: "HCP", value: "HCP" },
-    { label: "Monarch", value: "Monarch" },
-    { label: "NAMM", value: "NAMM" },
-  ];
-  const roles = [
-    { label: "Developer", value: "Developer" },
-    { label: "Dev Manager", value: "Dev Manager" },
-    { label: "QA", value: "QA" },
-    { label: "QA Manager", value: "QA Manager" },
-    { label: "Sr. Developer", value: "Sr. Developer" },
-    { label: "Sr. QA", value: "Sr. QA" },
-    { label: "Technical Lead", value: "Technical Lead" },
-  ];
-  const resourceTypes = [
-    { label: "OGS", value: "OGS" },
-    { label: "GTM", value: "GTM" },
-    { label: "FTE", value: "FTE" },
-  ];
-  const status = [
-    { label: "Active", value: "Active" },
-    { label: "Inactive", value: "Inactive" },
-  ];
+  const roles=useSelector((state: any) => state.Filters.roles);
+  const resourceTypes=useSelector((state: any) => state.Filters.resourceTypes);
+  const status=useSelector((state: any) => state.Filters.status);
   const toggle = useSelector((state: any) => state.Employee.toggle);
   const resources = useSelector((state: any) => state.Employee.data);
   const marketList=useSelector((state: any) => state.Market.data);
@@ -200,7 +109,16 @@ const EmployeeMaster = () => {
   const roleSelected = useSelector((state: any) => state.Employee.role);
   const resourceTypeSelected = useSelector((state: any) => state.Employee.resourceType);
   const statusSelected = useSelector((state: any) => state.Employee.status);
-
+  const [showModal,setShowModal]=useState(false);
+  const [action,setAction]=useState("Add");
+  const [updateResourceDetails,setUpdateResourceDetails]=useState({});
+  const openModal=()=>{
+    setShowModal(true);
+  }
+  const closeModal=()=>{
+    setShowModal(false);
+    setAction("Add");
+  }
   const changeMarketSelectHandler = (event: any) => {
     dispatch(employeeActions.changeMarket(event));
   };
@@ -232,11 +150,22 @@ const EmployeeMaster = () => {
   const getMarketDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     const dataGet = await response.json();
-    console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
   };
+  const getLocationDetails= async () =>{
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Location/GetAllLocations");
+    const dataGet = await response.json();
+    dispatch(filterActions.changeLocations(dataGet));
+  }
+  const getSubLocationDetails= async () =>{
+    const response = await fetch("http://10.147.172.18:9190/api/v1/SubLocation/GetAllSubLocations");
+    const dataGet = await response.json();
+    dispatch(filterActions.changeSubLocations(dataGet));
+  }
   useEffect(() => {
     getMarketDetails();
+    getLocationDetails();
+    getSubLocationDetails();
   }, []);
 
   const resourceColumns = [
@@ -246,13 +175,6 @@ const EmployeeMaster = () => {
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
 
-    // const wb= XLSX.utils.book_new();
-    // const ws=XLSX.utils.json_to_sheet([]);
-    // XLSX.utils.sheet_add_aoa(ws,resourceColumns);
-    //const wb={Sheets :{'ResourceTemplate':ws},SheetNames:['ResourceTemplate']};
-    // const excelBuffer=XLSX.write(wb,{bookType:'xlsx',type:'array'});
-    // const data=new Blob([excelBuffer],{type:fileType});
-    // FileSaver.saveAs(data,"Resources"+fileExtension)
 
     const wb = utils.book_new();
     const ws = utils.json_to_sheet([]);
@@ -262,7 +184,6 @@ const EmployeeMaster = () => {
   };
 
   const [path, setPath] = useState("");
-  const [uploadedResourcesData, setUploadedResourcesData] = useState([]);
   const sendBulkResourcesData = async (payload: any) => {
     if (payload.length) {
       payload = payload.map((row: any) => ({
@@ -310,7 +231,6 @@ const EmployeeMaster = () => {
         if (sheets.length) {
           const rows: any = utils.sheet_to_json(wb.Sheets[sheets[0]]);
           sendBulkResourcesData(rows);
-          //setUploadedResourcesData(rows);
           setPath("");
         }
       };
@@ -326,8 +246,6 @@ const EmployeeMaster = () => {
       const resourceTypeOptions=resourceTypeSelected.map((resourceType: any)=>resourceType.value);
       const roleOptions=roleSelected.map((role: any)=>role.value);
       const statusOptions=statusSelected.map((status: any)=>status.value);
-      //const resourceRow=JSON.stringify(resource);
-      console.log(statusOptions);
       if((!marketSelected.length) ||(marketSelected.length>0 && marketOptions.includes(resource.resourceMarket)==true))
       {
         
@@ -345,7 +263,15 @@ const EmployeeMaster = () => {
       return false;
     }
   );
-
+ const handleRowDoubleClicked=(row: any)=>{
+  console.log(row);
+  setShowModal(true);
+  setAction("Update");
+  let data={...row,isActive:row.isActive=="Active" ? "1" : "2"}
+  console.log(data);
+  setUpdateResourceDetails(data);
+ }
+ 
   return (
     <div>
       <SideBar></SideBar>
@@ -373,7 +299,8 @@ const EmployeeMaster = () => {
                 onChange={handleUploadResourceFile}
               />
 
-              <ModalDialog />
+              {action=="Add" &&<ModalDialog  showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action=="Update" &&<RecordModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
             </div>
           </div>
           <div className="row filter-row">
@@ -383,7 +310,7 @@ const EmployeeMaster = () => {
                 Role
               </label>
               <MultiSelect
-                options={roles}
+                options={roles.map((role:any)=>({label:role,value:role}))}
                 value={roleSelected}
                 onChange={changeRoleSelectHandler}
                 labelledBy="Select Role"
@@ -395,7 +322,7 @@ const EmployeeMaster = () => {
                 Resource Type
               </label>
               <MultiSelect
-                options={resourceTypes}
+                options={resourceTypes.map((resourceType:any)=>({label : resourceType,value:resourceType}))}
                 value={resourceTypeSelected}
                 onChange={changeResourceTypeSelectHandler}
                 labelledBy="Select Resource Type"
@@ -419,236 +346,35 @@ const EmployeeMaster = () => {
                 Status
               </label>
               <MultiSelect
-                options={status}
+                options={status.map((status:any)=>({label:status,value:status}))}
                 value={statusSelected}
                 onChange={changeStatusSelectHandler}
                 labelledBy="Select Status"
                 valueRenderer={customValueRenderer}
               />
             </div>
+            <div className="col-md-2" style={{marginTop:"24px"}}>
+              <button type="button" className="btn btn-primary" onClick={()=>dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            </div>
           </div>
 
-          <Table columns={columns} data={filteredResources} />
+          <Table columns={columns} data={filteredResources} onRowDoubleClicked={handleRowDoubleClicked}/>
         </div>
       </div>
     </div>
   );
 };
 
-// function ModalDialog() {
-//   const [isShow, invokeModal] = useState(false);
-//   const initModal = () => {
-//     return invokeModal(!false);
-//   };
 
-//   function closeModal() {
-//     return invokeModal(false);
-//   }
 
-//   return (
-//     <>
-//       <Button
-//         className="btn btn-primary"
-//         style={{ float: "right", marginTop: "-68px" }}
-//         variant="primary"
-//         onClick={initModal}
-//       >
-//         <i className="las la-plus"></i> Add Employee
-//       </Button>
-//       <Modal show={isShow}>
-//         <Modal.Header closeButton onClick={closeModal}>
-//           <Modal.Title>
-//             <h6>Add New Employee</h6>
-//           </Modal.Title>
-//         </Modal.Header>
-//         <Modal.Body>
-//           {/*
-//                     <form className="form-capsule">
-//                         <div className="row">
-//                             <div className="col-md-6 form-group">
-//                                 <label className="form-label" htmlFor="employeeId">Employee Id</label>
-//                                 <i className="fa fa-id-card"></i>
-//                                 <input type="text" className="form-control" id="employeeId" placeholder="10001" />
-//                             </div>
-//                             <div className="col-md-6 form-group">
-//                                 <label className="form-label" htmlFor="resource">Resource</label>
-//                                 <i className="fa fa-user"></i>
-//                                 <input type="text" className="form-control" id="resource"/>
-//                             </div>
-//                             <div className="col-md-6 form-group">
-//                                 <label className="form-label" htmlFor="employeeRole">Role</label>
-//                                 <select className="form-control" id="employeeRole">
-//                                     <option value="0">Select</option>
-//                                     <option value="1">Developer</option>
-//                                     <option value="2">QA</option>
-//                                     <option value="3">Technical Analyst</option>
-//                                 </select>
-//                             </div>
-//                             <div className="col-md-6 form-group">
-//                                 <label className="form-label" htmlFor="employeeEmailAddress">Email Address</label>
-//                                 <i className="fa fa-envelope"></i>
-//                                 <input type="text" className="form-control" id="employeeEmailAddress"/>
-//                             </div>
-
-//                             <div className="col-md-6 form-group">
-//                                 <label className="form-label" htmlFor="resourceType">Type</label>
-//                                 <i className="fa fa-sitemap"></i>
-//                                 <select className="form-control" id="resourceType">
-//                                     <option value="0">Select</option>
-//                                     <option value="1">OGS</option>
-//                                     <option value="2">GTM</option>
-//                                     <option value="3">FTE</option>
-//                                 </select>
-//                             </div>
-
-//                             <div className="col-md-6 form-group">
-//                                 <label className="form-label" htmlFor="location">Location</label>
-//                                 <i className="fa fa-map-marker"></i>
-//                                 <select className="form-control" id="location">
-//                                     <option value="0">Select</option>
-//                                     <option value="1">On Shore</option>
-//                                     <option value="2">Off Shore</option>
-//                                 </select>
-//                             </div>
-
-//                             <div className="col-md-6 form-group">
-//                                 <label className="form-label" htmlFor="subLocation">Sub Location</label>
-//                                 <i className="fa fa-map-marker"></i>
-//                                 <input type="text" className="form-control" id="subLocation"/>
-//                             </div>
-//                             <div className="col-md-6 form-group">
-//                                 <label className="form-label" htmlFor="market">Market</label>
-//                                 <select className="form-control" id="market">
-//                                     <option value="0">Select</option>
-//                                     <option value="1">CA</option>
-//                                 </select>
-//                             </div>
-//                             <div className="col-md-6 form-group">
-//                                 <label className="form-label" htmlFor="manager">Manager</label>
-//                                 <i className="fa fa-user"></i>
-//                                 <input type="text" className="form-control" id="manager"/>
-//                             </div>
-//                         </div>
-//                         <div className="row">
-//                             <div className="col-md-12">
-//                                 <button type="submit" className="btn btn-primary" style={{ float: "right" }} >Submit</button>
-//                             </div>
-//                         </div>
-//                     </form>
-//                     */}
-
-//           <form>
-//             <div className="row">
-//               <div className="col-md-6 form-group">
-//                 <label className="form-label">Employee Id</label>
-//                 <input type="text" className="form-control" id="employeeId" />
-//               </div>
-//               <div className="col-md-6 form-group">
-//                 <label className="form-label">Resource</label>
-//                 <input type="text" className="form-control" id="resource" />
-//               </div>
-
-//               <div className="col-md-6 form-group ">
-//                 <label className="form-label">Role</label>
-//                 <div className="dropdown">
-//                   <select id="employeeRole" className="form-control">
-//                     <option value="0">Select</option>
-//                     <option value="1">Developer</option>
-//                     <option value="2">QA</option>
-//                     <option value="3">Technical Analyst</option>
-//                   </select>
-//                 </div>
-//               </div>
-
-//               <div className="col-md-6 form-group">
-//                 <label className="form-label">Manager</label>
-//                 <input type="text" className="form-control" id="manager" />
-//               </div>
-
-//               <div className="col-md-6 form-group">
-//                 <label className="form-label">Resource Type</label>
-//                 <div className="dropdown">
-//                   <select id="resourceType" className="form-control">
-//                     <option value="0">Select</option>
-//                     <option value="1">OGS</option>
-//                     <option value="2">GTM</option>
-//                     <option value="3">FTE</option>
-//                   </select>
-//                 </div>
-//               </div>
-
-//               <div className="col-md-6 form-group">
-//                 <label className="form-label">Location</label>
-//                 <div className="dropdown">
-//                   <select id="location" className="form-control">
-//                     <option value="0">Select</option>
-//                     <option value="1">US</option>
-//                     <option value="2">India</option>
-//                   </select>
-//                 </div>
-//               </div>
-
-//               <div className="col-md-6 form-group ">
-//                 <label className="form-label">Sub Location</label>
-//                 <input type="text" className="form-control" id="subLocation" />
-//               </div>
-//               <div className="col-md-6 form-group">
-//                 <label className="form-label">Market</label>
-//                 <div className="dropdown">
-//                   <select id="market" className="form-control">
-//                     <option value="0">Select</option>
-//                     <option value="1">AppleCare</option>
-//                     <option value="2">Beaver</option>
-//                     <option value="3">CA</option>
-//                     <option value="4">HCP</option>
-//                     <option value="5">Monarch</option>
-//                     <option value="6">NAMM</option>
-//                   </select>
-//                 </div>
-//               </div>
-
-//               <div className="col-md-6 form-group">
-//                 <label className="form-label">Email Address</label>
-//                 <input type="text" className="form-control" id="employeeEmailAddress" />
-//               </div>
-//             </div>
-//             <div className="row">
-//               <div className="col-md-12">
-//                 <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-//                   Submit
-//                 </button>
-//               </div>
-//             </div>
-//           </form>
-//         </Modal.Body>
-//         {/* <Modal.Footer>
-//                     <Button variant="danger" onClick={closeModal}>
-//                         Close
-//                     </Button>
-//                 </Modal.Footer> */}
-//       </Modal>
-//     </>
-//   );
-// }
-
-const ModalDialog = () => {
-  const [isShow, invokeModal] = useState(false);
-  const initModal = () => {
-    return invokeModal(!false);
-  };
-
-  function closeModal() {
-    return invokeModal(false);
-  }
-  const USSubLocations = ["Washington"];
-  const IndiaSubLocations = ["Gurgaon", "Noida", "Hyderabad", "Bangalore"];
-  let values = null;
-  let options = null;
-
-  
+const ModalDialog = (props : any) => {
   const dispatch = useDispatch();
+  const roles=useSelector((state: any) => state.Filters.roles);
+  const resourceTypes=useSelector((state: any) => state.Filters.resourceTypes);
   const marketList=useSelector((state: any) => state.Market.data);
-  const [employeeId, setEmployeeId] = useState("");
+  const locations=useSelector((state: any) => state.Filters.locations);
+  const subLocations=useSelector((state: any) => state.Filters.subLocations);
+ 
   const [employeeName, setEmployeeName] = useState("");
   const [role, setRole] = useState("0");
   const [manager, setManager] = useState("");
@@ -657,15 +383,6 @@ const ModalDialog = () => {
   const [subLocation, setSubLocation] = useState("0");
   const [market, setMarket] = useState("0");
   const [employeeEmailAddress, setEmployeeEmailAddress] = useState("");
-  if (location == "US" ) {
-    values = USSubLocations;
-  } else if (location == "India") {
-    values = IndiaSubLocations;
-  }
-
-  if (values) {
-    options = values.map((el) => <option key={el}>{el}</option>);
-  }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
     let payload = {
@@ -695,7 +412,7 @@ const ModalDialog = () => {
 
           dispatch(employeeActions.changeToggle());
           resetFormFields();
-          closeModal();
+          props.closeModal();
           toast.success("Resource Added Successfully")
         } else toast.error(dataResponse[0].errorMessage);
       } else toast.error("Some Error occured.");
@@ -704,15 +421,7 @@ const ModalDialog = () => {
     }
   };
 
-  const getMarketDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
-    const dataGet = await response.json();
-    console.log(dataGet);
-    dispatch(marketActions.changeData(dataGet));
-  };
-  useEffect(() => {
-    getMarketDetails();
-  }, []);
+  
 
   const resetFormFields = () => {
     setEmployeeName("");
@@ -731,12 +440,12 @@ const ModalDialog = () => {
         className="btn btn-primary"
         style={{ float: "right", marginTop: "-68px" }}
         variant="primary"
-        onClick={initModal}
+        onClick={props.openModal}
       >
         <i className="las la-plus"></i> Add Employee
       </Button>
-      <Modal show={isShow} onHide={closeModal}>
-        <Modal.Header closeButton onClick={closeModal}>
+      <Modal show={props.showModal} onHide={props.closeModal}>
+        <Modal.Header closeButton onClick={props.closeModal}>
           <Modal.Title>
             <h6>Add New Employee</h6>
           </Modal.Title>
@@ -764,13 +473,7 @@ const ModalDialog = () => {
                     onChange={(event) => setRole(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    <option value="Developer">Developer</option>
-                    <option value="Dev Manager">Dev Manager</option>
-                    <option value="QA">QA</option>
-                    <option value="QA Manager">QA Manager</option>
-                    <option value="Sr. Developer">Sr. Developer</option>
-                    <option value="Sr. QA">Sr. QA</option>
-                    <option value="Technical Lead">Technical Lead</option>
+                    {roles.map((role:any)=>(<option key={role} value={role}>{role}</option>))}
                   </select>
                 </div>
               </div>
@@ -804,9 +507,7 @@ const ModalDialog = () => {
                     onChange={(event) => setResourceType(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    <option value="OGS">OGS</option>
-                    <option value="GTM">GTM</option>
-                    <option value="FTE">FTE</option>
+                    {resourceTypes.map((resourceType:any)=>(<option key={resourceType} value={resourceType}>{resourceType}</option>))}
                   </select>
                 </div>
               </div>
@@ -834,8 +535,7 @@ const ModalDialog = () => {
                     onChange={(event) => setLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    <option value="US">US</option>
-                    <option value="India">India</option>
+                    {locations.map((location:any)=>(<option key={location.locationId} value={location.locationName}> {location.locationName}</option>))}
                   </select>
                 </div>
               </div>
@@ -850,7 +550,7 @@ const ModalDialog = () => {
                     onChange={(event: any) => setSubLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
-                     {options} 
+                    {location=="0" ? []: (subLocations.filter((subLocation:any)=>location==subLocation.locationName).map((subLocation:any)=>(<option key={subLocation.subLocationId} value={subLocation.subLocationName}>{subLocation.subLocationName}</option>)))}
                   </select>
                 </div>
               </div>
@@ -869,5 +569,227 @@ const ModalDialog = () => {
     </>
   );
 };
+
+const onSave=(props: any)=>{
+  console.log(props);
+}
+
+const RecordModal=(props:any) =>{
+  const dispatch = useDispatch();
+  const locations=useSelector((state: any) => state.Filters.locations);
+  const subLocations=useSelector((state: any) => state.Filters.subLocations);
+  const roles=useSelector((state: any) => state.Filters.roles);
+  const resourceTypes=useSelector((state: any) => state.Filters.resourceTypes);
+  const marketList=useSelector((state: any) => state.Market.data);
+  const [formValues, setFormValues] = useState(props.initialValues || {location : "0"});
+  let location=formValues.location;
+  
+
+  const handleSave = async (event : any) => {
+    event.preventDefault();
+    let payload = {
+      resourceId : formValues.resourceId,
+      resourceName: formValues.resourceName,
+      role: formValues.role,
+      manager: formValues.manager,
+      resourceType: formValues.resourceType,
+      location: formValues.location,
+      subLocation: formValues.subLocation,
+      resourceMarket: formValues.resourceMarket,
+      emailAddress: formValues.emailAddress,
+      isActive : formValues.isActive=="2" ? "0" : "1",
+      updatedBy: "Admin",
+    };
+    try {
+      const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/UpdateResources", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const dataResponse = await response.json();
+      if (dataResponse.length) {
+        if (dataResponse[0].statusCode == "201") {
+          console.log(dataResponse[0].statusReason);
+          console.log(dataResponse[0].recordsCreated);
+          dispatch(employeeActions.changeToggle());
+          props.closeModal();
+          toast.success("Resource Updated Successfully")
+        } else toast.error(dataResponse[0].errorMessage);
+      } else toast.error("Some Error occured.");
+    } catch {
+      toast.error("Some Error occured.");
+    }
+  };
+    
+
+  const handleChange = (e :any) => {
+    console.log("Update")
+    setFormValues({
+      ...formValues,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  return (
+    <>
+       <Button
+        className="btn btn-primary"
+        style={{ float: "right", marginTop: "-68px" }}
+        variant="primary"
+        onClick={props.openModal}
+      >
+        <i className="las la-plus"></i> Add Employee
+      </Button>
+      <Modal show={props.showModal} onHide={props.closeModal}>
+        <Modal.Header closeButton onClick={props.closeModal}>
+          <Modal.Title>
+            <h6>Update Employee</h6>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={handleSave}>
+            <div className="row">
+              <div className="col-md-6 form-group">
+                <label className="form-label">Resource</label>
+                <input
+                  type="text"
+                  name="resourceName"
+                  className="form-control"
+                  id="resource"
+                  value={formValues.resourceName}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-md-6 form-group ">
+                <label className="form-label">Role</label>
+                <div className="dropdown">
+                  <select
+                    id="employeeRole"
+                    name="role"
+                    className="form-control"
+                    value={formValues.role}
+                  onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    {roles.map((role:any)=>(<option key={role} value={role}>{role}</option>))}
+                     </select>
+                </div>
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label">Email Address</label>
+                <input
+                  type="text"
+                  name="emailAddress"
+                  className="form-control"
+                  id="employeeEmailAddress"
+                  value={formValues.emailAddress}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label">Manager</label>
+                <input
+                  type="text"
+                  name="manager"
+                  className="form-control"
+                  id="manager"
+                  value={formValues.manager}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label">Resource Type</label>
+                <div className="dropdown">
+                  <select
+                    id="resourceType"
+                    name="resourceType"
+                    className="form-control"
+                    value={formValues.resourceType}
+                  onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    {resourceTypes.map((resourceType:any)=>(<option key={resourceType} value={resourceType}>{resourceType}</option>))}
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label">Market</label>
+                <div className="dropdown">
+                  <select
+                    id="market"
+                    name="resourceMarket"
+                    className="form-control"
+                    value={formValues.resourceMarket}
+                    onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label">Location</label>
+                <div className="dropdown">
+                  <select
+                    id="location"
+                    name="location"
+                    className="form-control"
+                    value={formValues.location}
+                  onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    {locations.map((location:any)=>(<option key={location.locationId} value={location.locationName}> {location.locationName}</option>))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="col-md-6 form-group ">
+                <label className="form-label">Sub Location</label>
+                <div className="dropdown">
+                  <select
+                   name="subLocation"
+                    className="form-control"
+                    id="holidaySubLocation"
+                    value={formValues.subLocation}
+                  onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    {location=="0" ? []: (subLocations.filter((subLocation:any)=>location==subLocation.locationName).map((subLocation:any)=>(<option key={subLocation.subLocationId} value={subLocation.subLocationName}>{subLocation.subLocationName}</option>)))}
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6 form-group ">
+                <label className="form-label">Status</label>
+                <div className="dropdown">
+                  <select
+                   name="isActive"
+                    className="form-control"
+                    id="statusDropdown"
+                    value={formValues.isActive}
+                  onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    <option value="1">Active</option>
+                    <option value="2">InActive</option>
+                  </select>
+                </div>
+              </div>
+              
+            </div>
+            <div className="row">
+              <div className="col-md-12">
+                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
+    </>
+  );
+}
 
 export default EmployeeMaster;

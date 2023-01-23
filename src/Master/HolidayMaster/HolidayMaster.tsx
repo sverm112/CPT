@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
 import SideBar from "../../SideBar/SideBar";
 // import ModalDialog from '../../modal/modal';
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
@@ -11,6 +10,7 @@ import { holidayActions } from "../../Store/Slices/Holiday";
 import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
+import { filterActions } from "../../Store/Slices/Filters";
 
 //Data Table
 const columns = [
@@ -79,173 +79,25 @@ const columns = [
   },
 ];
 
-// const dataIndia = [
-//   {
-//     id: 1,
-//     title: "Republic Day",
-//     date: "26/01/2022",
-//     market: "CA",
-//     LocationHR: "✔",
-//     LocationUP: "✔",
-//     LocationTLGN: "✔",
-//     LocationKRN: "✔",
-//   },
-//   {
-//     id: 2,
-//     title: "May Day",
-//     date: "01/05/2022",
-//     market: "CA",
-//     LocationHR: "✖",
-//     LocationUP: "✖",
-//     LocationTLGN: "✔",
-//     LocationKRN: "✔",
-//   },
-//   {
-//     id: 3,
-//     title: "Independence Day",
-//     date: "15/08/2022",
-//     market: "CA",
-//     LocationHR: "✔",
-//     LocationUP: "✔",
-//     LocationTLGN: "✔",
-//     LocationKRN: "✔",
-//   },
-//   {
-//     id: 4,
-//     title: "Gandhi Jayanti",
-//     date: "02/10/2022",
-//     market: "CA",
-//     LocationHR: "✔",
-//     LocationUP: "✔",
-//     LocationTLGN: "✔",
-//     LocationKRN: "✔",
-//   },
-//   {
-//     id: 5,
-//     title: "Guru Nanak Jayanti",
-//     date: "08/11/2022",
-//     market: "CA",
-//     LocationHR: "✔",
-//     LocationUP: "✔",
-//     LocationTLGN: "✖",
-//     LocationKRN: "✖",
-//   },
-// ];
-
-// const columnsUS = [
-//   {
-//     name: "Occasion",
-//     selector: (row: { title: any }) => row.title,
-//     sortable: true,
-//     reorder: true,
-//     filterable: true,
-//   },
-//   {
-//     name: "Date",
-//     selector: (row: { date: any }) => row.date,
-//     sortable: true,
-//     reorder: true,
-//     filterable: true,
-//   },
-//   {
-//     name: "Market",
-//     selector: (row: { market: any }) => row.market,
-//     sortable: true,
-//     reorder: true,
-//     filterable: true,
-//   },
-//   {
-//     name: "Washington",
-//     selector: (row: { LocationWashington: any }) => row.LocationWashington,
-//     sortable: true,
-//     reorder: true,
-//     filterable: true,
-//   },
-// ];
-
-// const dataUS = [
-//   {
-//     id: 1,
-//     title: "New Yera's Day",
-//     date: "01/01/2022",
-//     market: "CA",
-//     LocationWashington: "✖",
-//   },
-//   {
-//     id: 2,
-//     title: "Independence Day",
-//     date: "04/07/2022",
-//     market: "CA",
-//     LocationWashington: "✔",
-//   },
-//   {
-//     id: 3,
-//     title: "Veterans Day",
-//     date: "11/11/2022",
-//     market: "CA",
-//     LocationWashington: "✔",
-//   },
-//   {
-//     id: 4,
-//     title: "Human Rights Day",
-//     date: "10/12/2022",
-//     market: "CA",
-//     LocationWashington: "✖",
-//   },
-//   {
-//     id: 5,
-//     title: "Christmas Day",
-//     date: "25/12/2022",
-//     market: "CA",
-//     LocationWashington: "✔",
-//   },
-// ];
 const customValueRenderer = (selected: any, _options: any) => {
   if (selected.length == "0") return "Select";
   else return selected.map((market: any) => market.label).join(", ");
 };
 
 const HolidayMaster = () => {
-  const markets = [
-    { label: "AppleCare", value: "AppleCare" },
-    { label: "Beaver", value: "Beaver" },
-    { label: "CA", value: "CA" },
-    { label: "HCP", value: "HCP" },
-    { label: "Monarch", value: "Monarch" },
-    { label: "NAMM", value: "NAMM" },
-  ];
-  const locations = [
-    { label: "US", value: "US" },
-    { label: "India", value: "India" },
-  ];
-  const USSubLocations = [{ label: "Washington", value: "Washington" }];
-  const subLocations = [
-    { label: "Washington", value: "Washington" ,location:"US"},
-    { label: "Gurgaon", value: "Gurgaon" ,location:"India"},
-    { label: "Noida", value: "Noida" ,location:"India"},
-    { label: "Hyderabad", value: "Hyderabad" , location:"India" },
-    { label: "Bangalore", value: "Bangalore" , location:"India" },
-  ];
-
-  const statusOptions = [
-    { label: "Active", value: "Active" },
-    { label: "Inactive", value: "Inactive" },
-  ];
+  
+ 
+  const locations=useSelector((state: any) => state.Filters.locations);
+  const subLocations=useSelector((state: any) => state.Filters.subLocations);
+  const status=useSelector((state: any) => state.Filters.status);
   const dispatch = useDispatch();
-  // const countrySelected= useSelector((store: any) => store.Holiday.location);
   const marketSelected= useSelector((store: any) => store.Holiday.market);
   const locationSelected= useSelector((store: any) => store.Holiday.location);
   const subLocationSelected= useSelector((store: any) => store.Holiday.subLocation);
   const statusSelected = useSelector((store: any) => store.Holiday.status);
-  // const year= useSelector((store: any) => store.Holiday.year);
   const holidays = useSelector((store: any) => store.Holiday.data);
   const toggle = useSelector((store: any) => store.Holiday.toggle);
-  // const dataIndia = useSelector((store: any) => store.Holiday.dataIndia);
-  // const toggleIndia = useSelector((store: any) => store.Holiday.toggleIndia);
-
-
-
-  const changeLocationSelectHandler = (event: any) => {
+ const changeLocationSelectHandler = (event: any) => {
     dispatch(holidayActions.changeLocation(event));
   };
   const changeSubLocationSelectHandler = (event: any) => {
@@ -254,39 +106,17 @@ const HolidayMaster = () => {
   const changeMarketSelectHandler = (event: any) => {
     dispatch(holidayActions.changeMarket(event));
   };
-
-  
-  
   const getHolidayDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/GetAllHolidaysLists");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
     dispatch(holidayActions.changeData(dataGet));
   };
-  
-
-  // const getHolidayDetailsIndia = async () => {
-  //   const response = await fetch("http://10.147.172.18:9190/api/holiday/India");
-  //   const data = await response.json();
-  //   console.log(data);
-  //   dispatch(holidayActions.changeDataIndia(data));
-  // };
-  // useEffect(() => {
-  //   getHolidayDetailsIndia();
-  // }, [toggleIndia]);
   useEffect(() => {
     getHolidayDetails();
   }, [toggle]);
 
-  // let holidays = null;
-  // let columns = null;
-  // if (countrySelected == "2" || countrySelected == "0") {
-  //   holidays = dataIndia;
-  //   columns = columnsIndia;
-  // } else if (countrySelected == "1") {
-  //   holidays = dataUS;
-  //   columns = columnsUS;
-  //}
+  
   const marketList=useSelector((state: any) => state.Market.data);
   const getMarketDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
@@ -294,8 +124,20 @@ const HolidayMaster = () => {
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
   };
+  const getLocationDetails= async () =>{
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Location/GetAllLocations");
+    const dataGet = await response.json();
+    dispatch(filterActions.changeLocations(dataGet));
+  }
+  const getSubLocationDetails= async () =>{
+    const response = await fetch("http://10.147.172.18:9190/api/v1/SubLocation/GetAllSubLocations");
+    const dataGet = await response.json();
+    dispatch(filterActions.changeSubLocations(dataGet));
+  }
   useEffect(() => {
     getMarketDetails();
+    getLocationDetails();
+    getSubLocationDetails();
   }, []);
 
   const filteredHolidays = holidays.filter((holiday: any)=>{
@@ -355,7 +197,7 @@ const HolidayMaster = () => {
                 Location
               </label>
               <MultiSelect
-                options={locations}
+                options={locations.map((location:any)=>({label: location.locationName,value:location.locationName}))}
                 value={locationSelected}
                 onChange={changeLocationSelectHandler}
                 labelledBy="Select Location"
@@ -367,7 +209,7 @@ const HolidayMaster = () => {
                 Sub Location
               </label>
               <MultiSelect
-                options={locationSelected.length==0 ? subLocations : (subLocations.filter((subLocation:any)=> locationSelected.map((location:any)=> location.value).includes(subLocation.location)))}
+                options={locationSelected.length==0 ? (subLocations.map((subLocation:any)=>({label:subLocation.subLocationName,value:subLocation.subLocationName,locationName:subLocation.locationName}))) : ((subLocations.map((subLocation:any)=>({label:subLocation.subLocationName,value:subLocation.subLocationName,locationName:subLocation.locationName}))).filter((subLocation:any)=> locationSelected.map((location:any)=> location.value).includes(subLocation.locationName)))}
                 value={subLocationSelected}
                 onChange={changeSubLocationSelectHandler}
                 labelledBy="Select Sub Location"
@@ -379,68 +221,19 @@ const HolidayMaster = () => {
                 Status
               </label>
               <MultiSelect
-                options={statusOptions}
+                 options={status.map((status:any)=>({label:status,value:status}))}
                 value={statusSelected}
                 onChange={(event: any) => dispatch(holidayActions.changeStatus(event))}
                 labelledBy="Select Status"
                 valueRenderer={customValueRenderer}
               />
             </div>
+            <div className="col-md-2" style={{marginTop:"24px"}}>
+              <button type="button" className="btn btn-primary" onClick={()=>dispatch(holidayActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            </div>
              
-             {/*<div className=" col-md-2 form-group">
-              <label htmlFor="countrydropdown" className="form-label">
-                Location
-              </label>
-              <div className="dropdown">
-                <select className="form-control " id="countrydropdown" value={countrySelected}onChange={changeCountrySelectHandler}>
-                  <option value="0">Select</option>
-                  <option value="1">US</option>
-                  <option value="2">India</option>
-                </select>
-              </div>
-            </div> */}
-            {/*<div className=" col-md-2 form-group">
-              <label htmlFor="locationdropdown" className="form-label">
-                Year
-              </label>
-              <div className="dropdown">
-                <select className="form-control " id="yeardropdown" value={year}onChange={changeYearSelectHandler}>
-                  <option value="0">Select</option>
-                  <option value="1">2022</option>
-                  <option value="3">2021</option>
-                  <option value="4">2020</option>
-                  <option value="5">2019</option>
-                  <option value="6">2018</option>
-                  <option value="7">2017</option>
-                  <option value="8">2016</option>
-                  <option value="9">2015</option>
-                  <option value="10">2014</option>
-                  <option value="11">2013</option>
-                  <option value="12">2012</option>
-                  <option value="13">2011</option>
-                  <option value="14">2010</option>
-                   <option value="15">2009</option>
-                  <option value="16">2008</option>
-                  <option value="17">2007</option>
-                  <option value="18">2006</option>
-                  <option value="19">2005</option>
-                  <option value="19">2004</option>
-                  <option value="20">2003</option>
-                  <option value="21">2002</option>
-                  <option value="22">2001</option>
-                  <option value="23">2000</option> 
-                </select>
-              </div>
-            </div> */}
           </div>
-          {/*commented for now
-                    <MultiSelect
-                        options={countries}
-                        value={countrySelected}
-                        onChange={setCountrySelected}
-                        labelledBy="Select"
-                    />
-                    */}
+          
           <Table columns={columns} data={filteredHolidays} />
         </div>
       </div>
@@ -455,8 +248,6 @@ const ModalDialog = () => {
   const initModal = () => {
     return invokeModal(!false);
   };
-  const [modalIsOpen, setIsOpen] = React.useState(false);
-
   function closeModal() {
     return invokeModal(false);
   }
@@ -465,28 +256,9 @@ const ModalDialog = () => {
   const [subLocation, setSubLocation] = useState("0");
   const [market, setMarket] = useState("0");
   const [date, setDate] = useState(new Date());
-  const [countrySelected, setCountrySelected] = React.useState("");
-
-  const USSubLocations = ["Washington"];
-  const IndiaSubLocations = ["Gurgaon", "Noida", "Hyderabad", "Bangalore"];
-
-  const USOptions=[<option value="5">Washington</option>]
-  const IndiaOptions =[<option value="6">Gurgaon</option>,<option value="3">Noida</option>,<option value="4">Hyderabad</option>,<option value="8">Bangalore</option>]
-  let values = null;
-  let options = null;
-
-  if (location == "1") {
-    options = USOptions;
-  } else if (location == "2") {
-    options = IndiaOptions;
-  }
-  else if (location == "0") {
-    options = [];
-  }
-  
-  // if (values) {
-  //   options = values.map((el) => <option key={el}>{el}</option>);
-  // }
+  const locations=useSelector((state: any) => state.Filters.locations);
+  const subLocations=useSelector((state: any) => state.Filters.subLocations);
+ 
   const resetFormFields=()=>{
     setOccasion("");
     setLocation("0");
@@ -498,7 +270,7 @@ const ModalDialog = () => {
     event.preventDefault();
     let payload = {
       occasionName: occasion,
-     fkLocationID: location,
+      fkLocationID: location,
       fkSubLocationID: subLocation,
       fkMarketID : market,
       HolidayDate: date,
@@ -555,45 +327,6 @@ const ModalDialog = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* <form className="form-capsule">
-                        <div className="row">
-                            <div className="col-md-6 form-group">
-                                <label className="form-label" htmlFor="holidayOccasion">Occasion</label>
-                                <i className="las la-calendar-plus"></i>
-                                <input type="text" className="form-control" id="holidayOccasion" placeholder="Occasion" />
-                            </div>
-                            <div className="col-md-6 form-group">
-                                <label className="form-label" htmlFor="holidayCategory">Category</label>
-                                <i className="lar la-calendar"></i>
-                                <select className="form-control" id="holidayCategory">
-                                    <option value="0">Select</option>
-                                    <option value="1">On Shore</option>
-                                    <option value="2">Off Shore</option>
-                                </select>
-                            </div>
-                            <div className="col-md-6 form-group showoffshore" id="isOffShore">
-                                <label className="form-label" htmlFor="holidayState">Location</label>
-                                <i className="lar la-calendar"></i>
-                                <select className="form-control" id="holidayState">
-                                    <option value="0">Select</option>
-                                    <option value="1">Haryana</option>
-                                    <option value="2">Karnataka</option>
-                                    <option value="3">Telangana</option>
-                                    <option value="4">Uttar Pradesh</option>
-                                </select>
-                            </div>
-                            <div className="col-md-6 form-group">
-                                <label className="form-label" htmlFor="holidaydate" style={{zIndex:"9"}}>Date</label>
-                                <i className="lar la-calendar" style={{zIndex:"9"}}></i>
-                                <DatePicker className="form-control" onChange={onChange} value={value} format="dd/MM/yyyy" dayPlaceholder="dd" monthPlaceholder="mm" yearPlaceholder="yyyy" />
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-md-12">
-                                <button type="submit" className="btn btn-primary" style={{ float: "right" }} >Submit</button>
-                            </div>
-                        </div>
-                    </form> */}
           <form onSubmit={formSubmitHandler}>
             <div className="row">
               <div className="col-md-6 form-group">
@@ -650,8 +383,7 @@ const ModalDialog = () => {
                     onChange={(event: any) => setLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    <option value="1">US</option>
-                    <option value="2">India</option>
+                    {locations.map((location:any)=>(<option key={location.locationId} value={location.locationId.toString()}> {location.locationName}</option>))}
                   </select>
                 </div>
               </div>
@@ -667,7 +399,7 @@ const ModalDialog = () => {
                     onChange={(event: any) => setSubLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {options}
+                    {location=="0" ? []: (subLocations.filter((subLocation:any)=>Number(location)==subLocation.locationId).map((subLocation:any)=>(<option key={subLocation.subLocationId} value={subLocation.subLocationId.toString()}>{subLocation.subLocationName}</option>)))}
                   </select>
                 </div>
               </div>
@@ -681,11 +413,6 @@ const ModalDialog = () => {
             </div>
           </form>
         </Modal.Body>
-        {/* <Modal.Footer>
-                    <Button variant="danger" onClick={closeModal}>
-                        Close
-                    </Button>
-                </Modal.Footer> */}
       </Modal>
     </>
   );

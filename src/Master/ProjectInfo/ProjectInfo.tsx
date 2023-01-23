@@ -1,24 +1,15 @@
-import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
+import { useState, useEffect } from "react";
 import SideBar from "../../SideBar/SideBar";
-// import ModalDialog from '../../modal/modal';
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { Modal, Button } from "react-bootstrap";
 import Table from "../../DataTable/DataTable";
 import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
-
 import { projectActions } from "../../Store/Slices/Project";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
+import { employeeActions } from "../../Store/Slices/Employee";
 const columns = [
-  // {
-  //   name: "Project Id",
-  //   selector: (row: { projectId: any }) => row.projectId,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
   {
     name: "Project Code",
     selector: (row: { projectCode: any }) => row.projectCode,
@@ -43,6 +34,13 @@ const columns = [
   {
     name: "Market",
     selector: (row: { projectMarket: any }) => row.projectMarket=="0" ? "" : row.projectMarket,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Program Manager",
+    selector: (row: { programManager: any }) => row.programManager =="0" ? "" : row.programManager,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -83,26 +81,12 @@ const customValueRenderer = (selected: any, _options: any) => {
 };
 const ProjectInfo = () => {
   const dispatch = useDispatch();
-  const markets = [
-    { label: "AppleCare", value: "AppleCare" },
-    { label: "Beaver", value: "Beaver" },
-    { label: "CA", value: "CA" },
-    { label: "HCP", value: "HCP" },
-    { label: "Monarch", value: "Monarch" },
-    { label: "NAMM", value: "NAMM" },
-  ];
   const expenseTypes = [
     { label: "CAPEX", value: "CAPEX" },
     { label: "OPEX", value: "OPEX" },
   ];
-
-  const statusOptions = [
-    { label: "Active", value: "Active" },
-    { label: "Inactive", value: "Inactive" },
-  ];
-
+  const status=useSelector((state: any) => state.Filters.status);
   const projectModels=[
-    
     {label :"Waterfall",value:"Waterfall"},
     {label :"Kanban",value:"Kanban"},
     {label :"Scrum",value:"Scrum"},
@@ -139,12 +123,10 @@ const ProjectInfo = () => {
 
   const filteredProjects=projects.filter(
     (project : any)=>{
-
       const projectModelOptions=projectModelSelected.map((projectModel: any) => projectModel.value)
       const marketOptions=marketSelected.map((market: any)=>market.value);
       const expenseTypeOptions=expenseTypeSelected.map((expenseType: any)=>expenseType.value);
       const statusOptions=statusSelected.map((status: any)=>status.value);
-      //const resourceRow=JSON.stringify(resource);
       console.log(statusOptions);
       if((!marketSelected.length) ||(marketSelected.length>0 && marketOptions.includes(project.projectMarket)==true))
       { 
@@ -156,9 +138,7 @@ const ProjectInfo = () => {
               if((!projectModelSelected.length)|| (projectModelSelected.length>0 && projectModelOptions.includes(project.projectModel) ))
               return true;
             }
-            
-          }
-        
+          } 
       }
       return false;
     }
@@ -230,12 +210,15 @@ const ProjectInfo = () => {
                 Status
               </label>
               <MultiSelect
-                options={statusOptions}
+                options={status.map((status:any)=>({label:status,value:status}))}
                 value={statusSelected}
                 onChange={(event: any) => dispatch(projectActions.changeStatus(event))}
                 labelledBy="Select Status"
                 valueRenderer={customValueRenderer}
               />
+            </div>
+            <div className="col-md-2" style={{marginTop:"24px"}}>
+              <button type="button" className="btn btn-primary" onClick={()=>dispatch(projectActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
           <Table columns={columns} data={filteredProjects} />
@@ -257,11 +240,13 @@ function ModalDialog() {
   }
 
   const marketList=useSelector((state: any) => state.Market.data);
+  const resourceList=useSelector((state:any)=>state.Employee.data);
   const [projectCode, setProjectCode] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectModel, setProjectModel] = useState("0");
   const [projectMarket, setProjectMarket] = useState("0");
   const [expenseType, setExpenseType] = useState("0");
+  const [programManager,setProgramManager]=useState("0");
 
   const resetFormFields =()=>{
     setProjectCode("");
@@ -269,6 +254,7 @@ function ModalDialog() {
     setProjectModel("0");
     setProjectMarket("0");
     setExpenseType("0");
+    setProgramManager("0");
   }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
@@ -278,6 +264,7 @@ function ModalDialog() {
       projectModel: projectModel,
       expenseType: expenseType,
       fkMarketID: projectMarket=="0" ? 0 :Number(projectMarket),
+      programManager: programManager,
       createdBy: "Admin"
     };
     try {
@@ -314,6 +301,15 @@ function ModalDialog() {
   };
   useEffect(() => {
     getMarketDetails();
+  }, []);
+  const getEmployeeDetails = async () => {
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
+    dispatch(employeeActions.changeData(dataGet));
+  };
+  useEffect(() => {
+    getEmployeeDetails();
   }, []);
 
   return (
@@ -411,6 +407,22 @@ function ModalDialog() {
                   </select>
                 </div>
               </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="programManager">
+                  Program Manager
+                </label>
+                <div className="dropdown">
+                  <select
+                    className="form-control"
+                    id="programManager"
+                    value={programManager}
+                    onChange={(event: any) => setProgramManager(event.target.value)}
+                  >
+                    <option value="0">Select</option>
+                    {resourceList.map((resource:any)=>(<option key={resource.resourceId} value={resource.resourceName}>{resource.resourceName}</option>))}
+                  </select>
+                </div>
+              </div>
             </div>
             <div className="row">
               <div className="col-md-12">
@@ -421,11 +433,6 @@ function ModalDialog() {
             </div>
           </form>
         </Modal.Body>
-        {/* <Modal.Footer>
-                    <Button variant="danger" onClick={closeModal}>
-                        Close
-                    </Button>
-                </Modal.Footer> */}
       </Modal>
     </>
   );

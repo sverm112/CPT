@@ -47,6 +47,14 @@ const projectAllocationSlice = createSlice({
     changeToggle(state) {
       state.toggle = !state.toggle;
     },
+    clearFilters(state){
+      state.resourceMarket=[];
+      state.role=[];
+      state.resourceType=[];
+      state.projectMarket=[];
+      state.expenseType=[];
+      state.location="0";
+    }
   },
 });
 
