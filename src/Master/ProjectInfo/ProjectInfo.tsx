@@ -113,7 +113,7 @@ const ProjectInfo = () => {
   const getProjectDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Projects/GetAllProjects");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,projectMarket : row.marketName,projectId : row.pkProjectID,createdDate : row.createdDate.slice(0, 10), isActive : row.isActive==1 ? "Active" : "Inactive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row,projectMarket : row.marketName,projectId : row.pkProjectID,createdDate : row.createdDate.slice(0, 10), isActive : row.isActive==1 ? "Active" : "InActive" }));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -122,7 +122,8 @@ const ProjectInfo = () => {
 
   const getMarketDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
-    const dataGet = await response.json();
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
   };
@@ -310,7 +311,7 @@ const ModalDialog=(props:any)=> {
         className="btn btn-primary"
         style={{ float: "right", marginTop: "-68px" }}
         variant="primary"
-        onClick={props.Modal}
+        onClick={props.openModal}
       >
         <i className="las la-plus"></i> Add Project
       </Button>
@@ -378,7 +379,7 @@ const ModalDialog=(props:any)=> {
                     onChange={(event: any) => {console.log(projectMarket);setProjectMarket(event.target.value)}}
                   >
                     <option value="0">Select</option>
-                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                    {marketList.filter((market:any)=>market.isActive=="Active").map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>
@@ -411,6 +412,7 @@ const ModalDialog=(props:any)=> {
                   onChange={(event: any) => setProgramManager(event.target.value)}
                 />
               </div>
+              
             </div>
             <div className="row">
               <div className="col-md-12">
@@ -433,12 +435,12 @@ const UpdateModal=(props:any) =>{
   const formSubmitHandler = async (event : any) => {
     event.preventDefault();
     let payload = {
-      projectId : formValues.projectId,
+      pkProjectID : formValues.pkProjectID,
       projectCode:  formValues.projectCode,
       projectName: formValues.projectName,
       projectModel: formValues.projectModel,
       expenseType: formValues.expenseType,
-      fkMarketID: formValues.projectMarket=="0" ? 0 :Number(formValues.projectMarket),
+      fkMarketID: formValues.fkMarketID=="0" ? 0 :Number(formValues.fkMarketID),
       programManager: formValues.programManager,
       isActive : formValues.isActive=="2" ? "0" : "1",
       updatedBy: "Admin",
@@ -503,7 +505,7 @@ const UpdateModal=(props:any) =>{
                   name="projectCode"
                   className="form-control"
                   id="projectCode"
-                  value={props.projectCode}
+                  value={formValues.projectCode}
                   onChange={handleChange}
                 />
               </div>
@@ -516,7 +518,7 @@ const UpdateModal=(props:any) =>{
                   name="projectName"
                   className="form-control"
                   id="projectName"
-                  value={props.projectName}
+                  value={formValues.projectName}
                   onChange={handleChange}
                 />
               </div>
@@ -529,7 +531,7 @@ const UpdateModal=(props:any) =>{
                     name="projectModel"
                     className="form-control"
                     id="projectModel"
-                    value={props.projectModel}
+                    value={formValues.projectModel}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
@@ -549,11 +551,11 @@ const UpdateModal=(props:any) =>{
                     name="fkMarketID"
                     className="form-control"
                     id="projectMarket"
-                    value={props.fkMarketID}
+                    value={formValues.fkMarketID}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                    {marketList.filter((market:any)=>market.isActive=="Active").map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>
@@ -566,7 +568,7 @@ const UpdateModal=(props:any) =>{
                   name="expenseType"
                     className="form-control"
                     id="expenseType"
-                    value={props.expenseType}
+                    value={formValues.expenseType}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
@@ -584,9 +586,25 @@ const UpdateModal=(props:any) =>{
                   type="text"
                   className="form-control"
                   id="programManager"
-                  value={props.programManager}
+                  value={formValues.programManager}
                   onChange={handleChange}
                 />
+              </div>
+              <div className="col-md-6 form-group ">
+                <label className="form-label">Status</label>
+                <div className="dropdown">
+                  <select
+                   name="isActive"
+                    className="form-control"
+                    id="statusDropdown"
+                    value={formValues.isActive}
+                  onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    <option value="1">Active</option>
+                    <option value="2">InActive</option>
+                  </select>
+                </div>
               </div>
             </div>
             <div className="row">

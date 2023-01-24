@@ -14,7 +14,7 @@ const LoginPage = () => {
 
     const onLoginButtonSubmitHandler=(event : any)=>{
         event.preventDefault();
-        if(username.toLocaleLowerCase()=="tuser" && password.toLocaleLowerCase()=="testuser@123")
+        if(username=="tuser" && password=="TestUser@123")
         navigate(APP_ROUTES.DASHBOARD)
         else
         toast.info("Invalid Username or Password");

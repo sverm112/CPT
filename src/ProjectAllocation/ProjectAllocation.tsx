@@ -383,7 +383,8 @@ const ModalDialog = () => {
   }
   const getSubLocationDetails= async () =>{
     const response = await fetch("http://10.147.172.18:9190/api/v1/SubLocation/GetAllSubLocations");
-    const dataGet = await response.json();
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
     dispatch(filterActions.changeSubLocations(dataGet));
   }
   useEffect(() => {
@@ -394,7 +395,7 @@ const ModalDialog = () => {
   const getProjectDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Projects/GetAllProjects");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,projectMarket : row.marketName,projectId : row.pkProjectID, isActive : row.isActive==1 ? "Active" : "Inactive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row,projectMarket : row.marketName,projectId : row.pkProjectID, isActive : row.isActive==1 ? "Active" : "InActive" }));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -457,7 +458,7 @@ const ModalDialog = () => {
     startDate : allocationStartDate, 
     enddDate : allocationEndDate, 
     pTODays : ptoDays=="" ? 0 : Number(ptoDays),
-    allocationHours : allocationHours, //=="" ? 0 : Number(allocationHours),
+    allocationHours : allocationHours, 
     isActive : 1,
     createdBy : "Admin"
     };
@@ -515,7 +516,7 @@ const ModalDialog = () => {
                 <div className="dropdown">
                   <select className="form-control" id="resource" value={resourceId} onChange={setResourceDetails}>
                     <option value="0">Select</option>
-                    {resourcesList.map((resource: any)=><option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
+                    {resourcesList.filter((resource:any)=>resource.isActive=="Active").map((resource: any)=><option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   </select>
                 </div>
               </div>
@@ -580,7 +581,7 @@ const ModalDialog = () => {
                 <div className="dropdown">
                   <select className="form-control" id="project" value={projectId} onChange={setProjectDetails}>
                     <option value="0">Select</option>
-                    {projectsList.map((project:any)=><option key={project.pkProjectID} value={project.pkProjectID.toString()}>{project.projectName}</option>)}
+                    {projectsList.filter((project:any)=>project.isActive=="Active").map((project:any)=><option key={project.pkProjectID} value={project.pkProjectID.toString()}>{project.projectName}</option>)}
                   </select>
                 </div>
               </div>
