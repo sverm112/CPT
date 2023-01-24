@@ -26,7 +26,7 @@ const App = () => {
         <div>
             <ToastContainer/>
             <Navbar></Navbar>
-            <HashRouter>
+            <BrowserRouter>
                 <Routes>
                     <Route path={APP_ROUTES.LOGINPAGE} element={<LoginPage />} />
                     {/* <Route path={APP_ROUTES.MAINPAGE} element={<MainPage />} /> */}
@@ -43,7 +43,7 @@ const App = () => {
                     <Route path={APP_ROUTES.HELP} element={<Help />} />
                     <Route path={APP_ROUTES.PROJECTALLOCATION} element={<ProjectAllocation />} />
                 </Routes>
-            </HashRouter>
+            </BrowserRouter>
 
         </div>
     );
