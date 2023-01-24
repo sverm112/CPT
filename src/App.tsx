@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
 import LoginPage from "./LoginPage/LoginPage";
 import MainPage from "./MainPage/MainPage";
 import AboutUs from "./AboutUs/AboutUs";
@@ -26,7 +26,7 @@ const App = () => {
         <div>
             <ToastContainer/>
             <Navbar></Navbar>
-            <BrowserRouter>
+            <HashRouter>
                 <Routes>
                     <Route path={APP_ROUTES.LOGINPAGE} element={<LoginPage />} />
                     {/* <Route path={APP_ROUTES.MAINPAGE} element={<MainPage />} /> */}
@@ -43,7 +43,7 @@ const App = () => {
                     <Route path={APP_ROUTES.HELP} element={<Help />} />
                     <Route path={APP_ROUTES.PROJECTALLOCATION} element={<ProjectAllocation />} />
                 </Routes>
-            </BrowserRouter>
+            </HashRouter>
 
         </div>
     );
