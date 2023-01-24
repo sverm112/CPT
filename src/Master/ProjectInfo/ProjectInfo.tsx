@@ -40,7 +40,7 @@ const columns = [
   },
   {
     name: "Program Manager",
-    selector: (row: { programManager: any }) => row.programManager =="0" ? "" : row.programManager,
+    selector: (row: { programManager: any }) =>  row.programManager,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -99,6 +99,16 @@ const ProjectInfo = () => {
   const marketSelected = useSelector((store: any) => store.Project.market);
   const expenseTypeSelected = useSelector((store: any) => store.Project.expenseType);
   const statusSelected = useSelector((store: any) => store.Project.status);
+  const [showModal,setShowModal]=useState(false);
+  const [action,setAction]=useState("Add");
+  const [updateProjectDetails,setUpdateProjectDetails]=useState({});
+  const openModal=()=>{
+    setShowModal(true);
+  }
+  const closeModal=()=>{
+    setShowModal(false);
+    setAction("Add");
+  }
 
   const getProjectDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Projects/GetAllProjects");
@@ -143,6 +153,14 @@ const ProjectInfo = () => {
       return false;
     }
   );
+  const handleRowDoubleClicked=(row: any)=>{
+    console.log(row);
+    setShowModal(true);
+    setAction("Update");
+    let data={...row,isActive:row.isActive=="Active" ? "1" : "2"}
+    console.log(data);
+    setUpdateProjectDetails(data);
+   }
   return (
     <div>
       <SideBar></SideBar>
@@ -164,7 +182,9 @@ const ProjectInfo = () => {
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 style={{ marginRight: "150px" }}
               /> */}
-              <ModalDialog />
+              {action=="Add" &&<ModalDialog  showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action=="Update" &&<UpdateModal initialValues={updateProjectDetails}  showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+            
             </div>
           </div>
           <div className="row filter-row">
@@ -221,32 +241,24 @@ const ProjectInfo = () => {
               <button type="button" className="btn btn-primary" onClick={()=>dispatch(projectActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
-          <Table columns={columns} data={filteredProjects} />
+          <Table columns={columns} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} />
         </div>
       </div>
     </div>
   );
 };
 
-function ModalDialog() {
+const ModalDialog=(props:any)=> {
   const dispatch = useDispatch();
-  const [isShow, invokeModal] = useState(false);
-  const initModal = () => {
-    return invokeModal(!false);
-  };
-
-  function closeModal() {
-    return invokeModal(false);
-  }
+  
 
   const marketList=useSelector((state: any) => state.Market.data);
-  const resourceList=useSelector((state:any)=>state.Employee.data);
   const [projectCode, setProjectCode] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectModel, setProjectModel] = useState("0");
   const [projectMarket, setProjectMarket] = useState("0");
   const [expenseType, setExpenseType] = useState("0");
-  const [programManager,setProgramManager]=useState("0");
+  const [programManager,setProgramManager]=useState("");
 
   const resetFormFields =()=>{
     setProjectCode("");
@@ -254,7 +266,7 @@ function ModalDialog() {
     setProjectModel("0");
     setProjectMarket("0");
     setExpenseType("0");
-    setProgramManager("0");
+    setProgramManager("");
   }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
@@ -283,7 +295,7 @@ function ModalDialog() {
 
           dispatch(projectActions.changeToggle());
           resetFormFields();
-          closeModal();
+          props.closeModal();
           toast.success("Project Added Successfully")
         } else toast.error(dataResponse[0].errorMessage);
       } else toast.error("Some Error occured.");
@@ -291,26 +303,6 @@ function ModalDialog() {
       toast.error("Some Error occured.");
     }
   };
-    
-
-  const getMarketDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
-    const data = await response.json();
-    console.log(data);
-    dispatch(marketActions.changeData(data));
-  };
-  useEffect(() => {
-    getMarketDetails();
-  }, []);
-  const getEmployeeDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
-    let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
-    dispatch(employeeActions.changeData(dataGet));
-  };
-  useEffect(() => {
-    getEmployeeDetails();
-  }, []);
 
   return (
     <>
@@ -318,12 +310,12 @@ function ModalDialog() {
         className="btn btn-primary"
         style={{ float: "right", marginTop: "-68px" }}
         variant="primary"
-        onClick={initModal}
+        onClick={props.Modal}
       >
         <i className="las la-plus"></i> Add Project
       </Button>
-      <Modal show={isShow} onHide={closeModal}>
-        <Modal.Header closeButton onClick={closeModal}>
+      <Modal show={props.showModal} onHide={props.closeModal}>
+        <Modal.Header closeButton onClick={props.closeModal}>
           <Modal.Title>
             <h6>Add New Project</h6>
           </Modal.Title>
@@ -411,17 +403,190 @@ function ModalDialog() {
                 <label className="form-label" htmlFor="programManager">
                   Program Manager
                 </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="programManager"
+                  value={programManager}
+                  onChange={(event: any) => setProgramManager(event.target.value)}
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-12">
+                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
+    </>
+  );
+}
+
+const UpdateModal=(props:any) =>{
+  const dispatch = useDispatch();
+  const marketList=useSelector((state: any) => state.Market.data);
+  const [formValues, setFormValues] = useState(props.initialValues || {});
+  const formSubmitHandler = async (event : any) => {
+    event.preventDefault();
+    let payload = {
+      projectId : formValues.projectId,
+      projectCode:  formValues.projectCode,
+      projectName: formValues.projectName,
+      projectModel: formValues.projectModel,
+      expenseType: formValues.expenseType,
+      fkMarketID: formValues.projectMarket=="0" ? 0 :Number(formValues.projectMarket),
+      programManager: formValues.programManager,
+      isActive : formValues.isActive=="2" ? "0" : "1",
+      updatedBy: "Admin",
+    };
+    try {
+      const response = await fetch("http://10.147.172.18:9190/api/v1/Projects/UpdateProjects", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const dataResponse = await response.json();
+      if (dataResponse.length) {
+        if (dataResponse[0].statusCode == "201") {
+          console.log(dataResponse[0].statusReason);
+          console.log(dataResponse[0].recordsCreated);
+          dispatch(employeeActions.changeToggle());
+          props.closeModal();
+          toast.success("Resource Updated Successfully")
+        } else toast.error(dataResponse[0].errorMessage);
+      } else toast.error("Some Error occured.");
+    } catch {
+      toast.error("Some Error occured.");
+    }
+  };
+    
+
+  const handleChange = (e :any) => {
+    console.log("Update")
+    setFormValues({
+      ...formValues,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  return (
+    <>
+      <Button
+        className="btn btn-primary"
+        style={{ float: "right", marginTop: "-68px" }}
+        variant="primary"
+        onClick={props.openModal}
+      >
+        <i className="las la-plus"></i> Update Project
+      </Button>
+      <Modal show={props.showModal} onHide={props.closeModal}>
+        <Modal.Header closeButton onClick={props.closeModal}>
+          <Modal.Title>
+            <h6>Update Project</h6>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={formSubmitHandler}>
+            <div className="row">
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="projectCode">
+                  Project Code
+                </label>
+                <input
+                  type="text"
+                  name="projectCode"
+                  className="form-control"
+                  id="projectCode"
+                  value={props.projectCode}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="projectName">
+                  Project Name
+                </label>
+                <input
+                  type="text"
+                  name="projectName"
+                  className="form-control"
+                  id="projectName"
+                  value={props.projectName}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="projectModel">
+                  Project Model
+                </label>
                 <div className="dropdown">
                   <select
+                    name="projectModel"
                     className="form-control"
-                    id="programManager"
-                    value={programManager}
-                    onChange={(event: any) => setProgramManager(event.target.value)}
+                    id="projectModel"
+                    value={props.projectModel}
+                    onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    {resourceList.map((resource:any)=>(<option key={resource.resourceId} value={resource.resourceName}>{resource.resourceName}</option>))}
+                    <option value="Waterfall">Waterfall</option>
+                    <option value="Kanban">Kanban</option>
+                    <option value="Scrum">Scrum</option>
+                    <option value="Agile">Agile</option>
                   </select>
                 </div>
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="projectMarket">
+                  Market
+                </label>
+                <div className="dropdown">
+                  <select
+                    name="fkMarketID"
+                    className="form-control"
+                    id="projectMarket"
+                    value={props.fkMarketID}
+                    onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="expenseType">
+                  Expense Type
+                </label>
+                <div className="dropdown">
+                  <select
+                  name="expenseType"
+                    className="form-control"
+                    id="expenseType"
+                    value={props.expenseType}
+                    onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    <option value="CAPEX">CAPEX</option>
+                    <option value="OPEX">OPEX</option>
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="programManager">
+                  Program Manager
+                </label>
+                <input
+                name="programManager"
+                  type="text"
+                  className="form-control"
+                  id="programManager"
+                  value={props.programManager}
+                  onChange={handleChange}
+                />
               </div>
             </div>
             <div className="row">

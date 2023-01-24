@@ -300,7 +300,7 @@ const EmployeeMaster = () => {
               />
 
               {action=="Add" &&<ModalDialog  showModal={showModal} openModal={openModal} closeModal={closeModal} />}
-              {action=="Update" &&<RecordModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action=="Update" &&<UpdateModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
             </div>
           </div>
           <div className="row filter-row">
@@ -574,7 +574,7 @@ const onSave=(props: any)=>{
   console.log(props);
 }
 
-const RecordModal=(props:any) =>{
+const UpdateModal=(props:any) =>{
   const dispatch = useDispatch();
   const locations=useSelector((state: any) => state.Filters.locations);
   const subLocations=useSelector((state: any) => state.Filters.subLocations);
