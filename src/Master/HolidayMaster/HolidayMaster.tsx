@@ -109,7 +109,7 @@ const HolidayMaster = () => {
   const getHolidayDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/GetAllHolidaysLists");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
     dispatch(holidayActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -120,7 +120,8 @@ const HolidayMaster = () => {
   const marketList=useSelector((state: any) => state.Market.data);
   const getMarketDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
-    const dataGet = await response.json();
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
   };
@@ -367,7 +368,7 @@ const ModalDialog = () => {
                     onChange={(event: any) => setMarket(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                    {marketList.filter((market:any)=>market.isActive=="Active").map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>

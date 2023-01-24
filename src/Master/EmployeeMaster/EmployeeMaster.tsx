@@ -137,7 +137,7 @@ const EmployeeMaster = () => {
     try {
       const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
       dispatch(employeeActions.changeData(dataGet));
     } catch {
       console.log("Error occured");
@@ -149,7 +149,8 @@ const EmployeeMaster = () => {
 
   const getMarketDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
-    const dataGet = await response.json();
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
     dispatch(marketActions.changeData(dataGet));
   };
   const getLocationDetails= async () =>{
@@ -521,7 +522,7 @@ const ModalDialog = (props : any) => {
                     onChange={(event) => setMarket(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
+                    {marketList.filter((market:any)=>market.isActive=="Active").map((market:any)=><option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>
@@ -725,7 +726,7 @@ const UpdateModal=(props:any) =>{
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    {marketList.map((market:any)=><option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
+                    {marketList.filter((market:any)=>market.isActive=="Active").map((market:any)=><option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>
