@@ -458,9 +458,9 @@ const UpdateModal=(props:any) =>{
         if (dataResponse[0].statusCode == "201") {
           console.log(dataResponse[0].statusReason);
           console.log(dataResponse[0].recordsCreated);
-          dispatch(employeeActions.changeToggle());
+          dispatch(projectActions.changeToggle());
           props.closeModal();
-          toast.success("Resource Updated Successfully")
+          toast.success("Project Updated Successfully")
         } else toast.error(dataResponse[0].errorMessage);
       } else toast.error("Some Error occured.");
     } catch {
