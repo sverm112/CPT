@@ -365,7 +365,9 @@ const ModalDialog = () => {
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
   const [projectId, setProjectId] = useState("0");
-  let allocationHours = Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
+  let allocationHours=0;
+  if(allocationEndDate!=null && allocationStartDate!=null)
+  allocationHours= Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
   const dispatch = useDispatch();
   const resourcesList = useSelector((store: any) => store.Employee.data);
   const projectsList=useSelector((store:any)=>store.Project.data);
@@ -488,7 +490,7 @@ const ModalDialog = () => {
     
   };
 
-  console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
+  //console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
   
   return (
     <>
