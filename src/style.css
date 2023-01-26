@@ -419,3 +419,8 @@ label.form-label {
 .Toastify__toast-container--top-right{
   top : 2.5em !important;
 }
+
+.user-manual{
+  margin-top:10px;
+  margin-left:10px
+}
