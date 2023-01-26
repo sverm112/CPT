@@ -358,8 +358,8 @@ const ModalDialog = () => {
   function closeModal() {
     return invokeModal(false);
   }
-  const [allocationStartDate, setAllocationStartDate] = useState(new Date());
-  const [allocationEndDate, setAllocationEndDate] = useState(new Date(new Date().setFullYear(new Date().getFullYear() + 1)));
+  const [allocationStartDate, setAllocationStartDate] = useState<Date|null>(null);
+  const [allocationEndDate, setAllocationEndDate] = useState<Date|null>(null);
   const [ptoDays, setPTODays] = useState("");
   const [allocationPercentage, setAllocationPercentage] = useState("");
   const [resourceType1, setResourceType1] = useState("0");
@@ -442,8 +442,8 @@ const ModalDialog = () => {
     }
 
   const resetFormFields=()=>{
-    setAllocationStartDate(new Date());
-    setAllocationEndDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1)));
+    setAllocationStartDate(null);
+    setAllocationEndDate(null);
     setPTODays("");
     setAllocationPercentage("");
     setResourceType1("0");
