@@ -60,10 +60,10 @@ const SideBar = () => {
                 <nav className="nav">
                     <div>
                         <div className="nav_list">
-                            <a className="nav_link" href="#" id="Home"  onClick={() => { navigate(APP_ROUTES.DASHBOARD) }}>
+                            <Link  to="/Dashboard"  className="nav_link" id="Home" onClick={() => { navigate(APP_ROUTES.DASHBOARD) }}>
                                 <i className="fa fa-home" aria-hidden="true"></i>
                                 <span className="nav_name">Home</span>
-                            </a>
+                            </Link>
                             <a className="nav_link" id="MasterEntry" onClick={() => func2("MasterEntry")}>
                                 <span className="nav_name">
                                     <div className="row">
@@ -86,10 +86,10 @@ const SideBar = () => {
                                     </div>
                                 </span>
                             </a>
-                            <a href="#" className="nav_link" id="ProjectAllocation" onClick={() => { navigate(APP_ROUTES.PROJECTALLOCATION) }}>
+                            <Link to="/ProjectAllocation" className="nav_link" id="ProjectAllocation" onClick={() => { navigate(APP_ROUTES.PROJECTALLOCATION) }}>
                                 <i className="las la-user-circle" aria-hidden="true"></i>
                                 <span className="nav_name">Project Allocation</span>
-                            </a>
+                            </Link>
                             <a className="nav_link" id="ReportsList">
                                 <span className="nav_name">
                                     
@@ -117,10 +117,10 @@ const SideBar = () => {
                                 <i className="las la-info-circle" aria-hidden="true"></i>
                                 <span className="nav_name">About Us</span>
                             </a> */}
-                            <a href="#" className="nav_link" onClick={() => { navigate(APP_ROUTES.HELP) }}>
+                            <Link  to="/Help" className="nav_link" onClick={() => { navigate(APP_ROUTES.HELP) }}>
                                 <i className="las la-question-circle" aria-hidden="true"></i>
                                 <span className="nav_name">Help</span>
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </nav>
