@@ -24,7 +24,7 @@ import HolidayListReport from "./Reports/HolidayListReport/HolidayListReport";
 const App = () => {
     return (
         <div>
-            <ToastContainer autoClose={2000}/>
+            <ToastContainer autoClose={1000}/>
             <Navbar></Navbar>
             <HashRouter>
                 <Routes>

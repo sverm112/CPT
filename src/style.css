@@ -424,3 +424,7 @@ label.form-label {
   margin-top:10px;
   margin-left:10px
 }
+
+div.col-md-12 > button.btn-primary {
+  margin-top: 10px;
+}
