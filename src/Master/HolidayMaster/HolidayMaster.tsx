@@ -256,7 +256,7 @@ const ModalDialog = () => {
   const [location, setLocation] = useState("0");
   const [subLocation, setSubLocation] = useState("0");
   const [market, setMarket] = useState("0");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState<Date|null>(null);
   const locations=useSelector((state: any) => state.Filters.locations);
   const subLocations=useSelector((state: any) => state.Filters.subLocations);
  
@@ -265,7 +265,7 @@ const ModalDialog = () => {
     setLocation("0");
     setSubLocation("0");
     setMarket("0");
-    setDate(new Date());
+    setDate(null);
   }
   const convertUTCDateToLocalDate=(date : Date)=> {
     var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
