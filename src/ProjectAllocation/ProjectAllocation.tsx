@@ -475,6 +475,7 @@ const ModalDialog = () => {
     enddDate : allocationEndDate, 
     pTODays : ptoDays=="" ? 0 : Number(ptoDays),
     allocationHours : allocationHours, 
+    allocationPercentage : allocationPercentage,
     isActive : 1,
     createdBy : "Admin"
     };
