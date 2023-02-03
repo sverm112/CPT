@@ -365,7 +365,8 @@ const ModalDialog = () => {
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
   const [projectId, setProjectId] = useState("0");
-  let allocationHours=0;
+  const [allocatedPercentage,setAllocatedPercentage]=useState(0);
+  let allocationHours=0,allocationHoursPerDay=0;
   const calculateAllocationHours=(startDate : Date,endDate : Date)=>{
     let count = 0;
     const curDate = new Date(startDate.getTime());
@@ -454,6 +455,11 @@ const ModalDialog = () => {
       selectedProjectDetails.expenseType=filteredProject[0].expenseType
       selectedProjectDetails.PPSID=filteredProject[0].projectCode
     }
+  
+  if(selectedResourceDetails.resourceType=="OGS")
+    allocationHoursPerDay=8.5;
+  else if(selectedResourceDetails.resourceType=="FTE" || selectedResourceDetails.resourceType=="GTM")
+    allocationHoursPerDay=8;
 
   const resetFormFields=()=>{
     setAllocationStartDate(null);
@@ -464,6 +470,30 @@ const ModalDialog = () => {
     setResourceId("0");
     setProjectId("0");
   }
+  const getAllocationPercentage= async ()=>{
+    let payload = {
+       fkResourceID : Number(resourceId),
+       startDate : allocationStartDate,
+       endDate : allocationEndDate
+      };
+      try {
+        const response = await fetch(`http://10.147.172.18:9190/api/v1/ProjectAllocations/GetTotalAlocPerForResourceIds?fkResourceID=${resourceId}&startDate=${allocationStartDate?.toISOString().slice(0,10)}&endDate=${allocationEndDate?.toISOString().slice(0,10)}`,{
+          method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        });
+        const dataResponse = await response.json();
+        setAllocatedPercentage(Number(dataResponse)); 
+      }
+      catch{
+        console.log("Some Error Occured")
+;      }
+  }
+  useEffect(() => {
+    if(resourceId!="0" && allocationStartDate!=null && allocationEndDate!=null)
+    getAllocationPercentage();
+  }, [resourceId,allocationStartDate,allocationEndDate]);
 
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
@@ -685,9 +715,11 @@ const ModalDialog = () => {
                   onChange={(event) => setPTODays(event.target.value)}
                 />
               </div>
+              
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="allocationHours">
                   Allocation(Percentage)
+                  { allocatedPercentage!=0 &&<span style={{color : "red"}}> Allocated : {allocatedPercentage}</span>}
                 </label>
                 <input
                   type="text"
@@ -696,6 +728,18 @@ const ModalDialog = () => {
                   value={allocationPercentage}
                 
                   onChange={(event) => setAllocationPercentage(event.target.value)}
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="allocationHoursPerDay">
+                  Allocation Hours Per Day
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="allocationHoursPerDay"
+                  value={allocationHoursPerDay}
+                  disabled
                 />
               </div>
               <div className="col-md-6 form-group">
