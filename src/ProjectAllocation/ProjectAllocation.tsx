@@ -491,6 +491,7 @@ const ModalDialog = () => {
 ;      }
   }
   useEffect(() => {
+    setAllocatedPercentage(0);
     if(resourceId!="0" && allocationStartDate!=null && allocationEndDate!=null)
     getAllocationPercentage();
   }, [resourceId,allocationStartDate,allocationEndDate]);
