@@ -756,8 +756,6 @@ const ModalDialog = () => {
                   // onChange={(event) => setAllocationHours(event.target.value)}
                 />
               </div>
-              
-              
             </div>
             <div className="row">
               <div className="col-md-12">
