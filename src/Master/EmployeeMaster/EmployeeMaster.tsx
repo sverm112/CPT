@@ -109,6 +109,7 @@ const EmployeeMaster = () => {
   const roleSelected = useSelector((state: any) => state.Employee.role);
   const resourceTypeSelected = useSelector((state: any) => state.Employee.resourceType);
   const statusSelected = useSelector((state: any) => state.Employee.status);
+  const managerSelected=useSelector((state: any) => state.Employee.manager);
   const [showModal,setShowModal]=useState(false);
   const [action,setAction]=useState("Add");
   const [updateResourceDetails,setUpdateResourceDetails]=useState({});
@@ -131,6 +132,9 @@ const EmployeeMaster = () => {
 
   const changeStatusSelectHandler = (event: any) => {
     dispatch(employeeActions.changeStatus(event));
+  };
+  const changeManagerSelectHandler = (event: any) => {
+    dispatch(employeeActions.changeManager(event));
   };
 
   const getEmployeeDetails = async () => {
@@ -247,6 +251,7 @@ const EmployeeMaster = () => {
       const resourceTypeOptions=resourceTypeSelected.map((resourceType: any)=>resourceType.value);
       const roleOptions=roleSelected.map((role: any)=>role.value);
       const statusOptions=statusSelected.map((status: any)=>status.value);
+      const managerOptions=managerSelected.map((manager: any)=>manager.value);
       if((!marketSelected.length) ||(marketSelected.length>0 && marketOptions.includes(resource.resourceMarket)==true))
       {
         
@@ -257,13 +262,23 @@ const EmployeeMaster = () => {
           {
             
             if((!statusSelected.length)|| (statusSelected.length>0 && statusOptions.includes(resource.isActive) ))
-            return true;
+            {
+              if((!managerSelected.length)|| (managerSelected.length>0 && managerOptions.includes(resource.manager) ))
+              return true;
+            }
+            
           }
         } 
       }
       return false;
     }
   );
+  const managers :any =[];
+  resources.map((resource:any)=>{
+      if(managers.indexOf(resource.manager)===-1){
+          managers.push(resource.manager);
+      }
+  })
  const handleRowDoubleClicked=(row: any)=>{
   console.log(row);
   setShowModal(true);
@@ -315,6 +330,19 @@ const EmployeeMaster = () => {
                 value={roleSelected}
                 onChange={changeRoleSelectHandler}
                 labelledBy="Select Role"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Manager
+              </label>
+              <MultiSelect
+                options={managers.map((manager:any)=>({label : manager,value:manager}))}
+                value={managerSelected}
+                onChange={changeManagerSelectHandler}
+                labelledBy="Select Manager"
                 valueRenderer={customValueRenderer}
               />
             </div>

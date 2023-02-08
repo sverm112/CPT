@@ -12,6 +12,7 @@ import { projectActions } from "../Store/Slices/Project";
 import { marketActions } from "../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { filterActions } from "../Store/Slices/Filters";
+import { holidayActions } from "../Store/Slices/Holiday";
 
 const columns = [
   {
@@ -211,8 +212,15 @@ const ProjectAllocation = () => {
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
   };
+  const getHolidayDetails = async () => {
+    const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/GetAllHolidaysLists");
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
+    dispatch(holidayActions.changeData(dataGet));
+  };
   useEffect(() => {
     getMarketDetails();
+    getHolidayDetails();
   }, []);
 
 
@@ -366,8 +374,9 @@ const ModalDialog = () => {
   const [resourceId, setResourceId] = useState("0");
   const [projectId, setProjectId] = useState("0");
   const [allocatedPercentage,setAllocatedPercentage]=useState(0);
+  const holidayDetails=useSelector((state:any)=>state.Holiday.data);
   let allocationHours=0,allocationHoursPerDay=0;
-  const calculateAllocationHours=(startDate : Date,endDate : Date)=>{
+  const calculateAllocationDays=(startDate : Date,endDate : Date)=>{
     let count = 0;
     const curDate = new Date(startDate.getTime());
     while (curDate <= endDate) {
@@ -375,12 +384,21 @@ const ModalDialog = () => {
         if(dayOfWeek !== 0 && dayOfWeek !== 6) count++;
         curDate.setDate(curDate.getDate() + 1);
     }
+    console.log("AllocationDays Count "+count);
     return count;
   }
-  if(allocationEndDate!=null && allocationStartDate!=null)
-  {
-  allocationHours=calculateAllocationHours(allocationStartDate,allocationEndDate);
-  allocationHours=Math.ceil((allocationHours-Number(ptoDays))*8.5*Number(allocationPercentage)/100);
+  const calculateHolidays=(location : any,subLocation:any,startDate : Date,endDate : Date)=>{
+    let count=0;
+    let filteredHolidays=holidayDetails.filter((holiday:any)=>holiday.locationName==location && holiday.subLocationName==subLocation && holiday.isActive=="Active");
+    console.log("filtered holidays ,"+filteredHolidays.length)
+    for(let i=0;i<filteredHolidays.length;i++){
+      let holidayDate=new Date(filteredHolidays[i].holidayDate)
+      let dayOfWeek=holidayDate.getDay();
+      if(dayOfWeek !== 0 && dayOfWeek !== 6 && startDate<=holidayDate && endDate>=holidayDate ) 
+      count++;
+    }
+    console.log("Holiday Count " + count);
+    return count;
   }
   //allocationHours= Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
   const dispatch = useDispatch();
@@ -418,7 +436,7 @@ const ModalDialog = () => {
   useEffect(() => {
     getProjectDetails();
   }, []);
-  let selectedResourceDetails ={resourceId :0, resourceType:"",role : "",supervisor :"",location:"",resourceMarket:""};
+  let selectedResourceDetails ={resourceId :0, resourceType:"",role : "",supervisor :"",location:"",resourceMarket:"",subLocation:""};
   let selectedProjectDetails = {projectId:0,projectMarket:"",expenseType:"",PPSID : ""}
  
   const setResourceDetails = (event: any) => {
@@ -432,7 +450,7 @@ const ModalDialog = () => {
   
 
   if(resourceId=="0"){
-    selectedResourceDetails ={resourceId :0, resourceType:"",role : "",supervisor :"",location:"",resourceMarket:""};
+    selectedResourceDetails ={resourceId :0, resourceType:"",role : "",supervisor :"",location:"",resourceMarket:"",subLocation:""};
   }
   else{
       const filteredResource=resourcesList.filter((resource: any)=> resource.resourceId==Number(resourceId));
@@ -441,6 +459,7 @@ const ModalDialog = () => {
       selectedResourceDetails.role=filteredResource[0].role
       selectedResourceDetails.supervisor=filteredResource[0].manager  
       selectedResourceDetails.location=filteredResource[0].location
+      selectedResourceDetails.subLocation=filteredResource[0].subLocation
       selectedResourceDetails.resourceMarket=filteredResource[0].resourceMarket
     }
     
@@ -460,6 +479,14 @@ const ModalDialog = () => {
     allocationHoursPerDay=8.5;
   else if(selectedResourceDetails.resourceType=="FTE" || selectedResourceDetails.resourceType=="GTM")
     allocationHoursPerDay=8;
+  else 
+    allocationHoursPerDay=0;
+
+    if(resourceId!="0" && allocationEndDate!=null && allocationStartDate!=null)
+    {
+    let allocationDays=calculateAllocationDays(allocationStartDate,allocationEndDate)-calculateHolidays(selectedResourceDetails.location,selectedResourceDetails.subLocation,allocationStartDate,allocationEndDate);
+    allocationHours=Math.ceil((allocationDays-Number(ptoDays))*allocationHoursPerDay*Number(allocationPercentage)/100);
+    }
 
   const resetFormFields=()=>{
     setAllocationStartDate(null);

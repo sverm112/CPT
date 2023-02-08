@@ -5,6 +5,7 @@ const initialState = {
   role: [],
   resourceType: [],
   status: [],
+  manager:[],
   data: [],
   currentPage: "1",
   pageSize: "10",
@@ -29,6 +30,9 @@ const employeeSlice = createSlice({
     changeStatus(state, action) {
       state.status = action.payload;
     },
+    changeManager(state, action) {
+      state.manager = action.payload;
+    },
     changeCurrentPage(state, action) {
       state.currentPage = action.payload;
     },
@@ -43,6 +47,7 @@ const employeeSlice = createSlice({
       state.role=[];
       state.resourceType=[];
       state.status=[];
+      state.manager=[];
     }
   },
 });
