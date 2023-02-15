@@ -13,6 +13,8 @@ import { marketActions } from "../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { filterActions } from "../Store/Slices/Filters";
 import { holidayActions } from "../Store/Slices/Holiday";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable"
 
 const columns = [
   {
@@ -249,6 +251,47 @@ const ProjectAllocation = () => {
     }
     return false;
   });
+
+  //export pdf
+  const downloadData=()=>{
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+    const marginLeft = 15;
+    const pdf = new jsPDF(orientation, unit, size);
+
+    pdf.setFontSize(13);
+    const title = "Project Allocation Details";
+    const headers=[['Resource', 'Resource Type', 'Location',  
+    'Project', 'Project Market', 'Start Date', 'End Date', 'PTO Days', 'Allocation(Hours)']];
+    const selectors=['resourceName','resourceType',
+    'location','projectName','projectMarket',
+    'startDate','enddDate','pTODays','allocationHours']
+    //const headers=[columns.map((column:any)=>column["name"])]
+    // const selectors=['resourceName','resourceType','role',
+    // 'manager', 'location','resourceMarket','projectName','resourceType1','projectMarket',
+    // 'projectCode','expenseType','startDate','enddDate','pTODays','allocationHours',
+    // 'isActive','createdDate','createdBy']
+    const tablebody=filteredProjectAllocations.map((body:any)=>{
+      let row=[];
+      for(let i=0;i<selectors.length;i++)
+      row.push(body[selectors[i]]);
+      return row;
+    });
+    let content = {
+      startY: 50,
+      tableWidth:575,
+      margin: 10,
+      styles:{
+        fontSize:6,
+      },
+      head: headers,
+      body : tablebody,
+    };
+    pdf.text(title, marginLeft, 40);
+    autoTable(pdf, content);
+    pdf.save('ProjectAllocationDetails.pdf')
+  }
   return (
     <div>
       <SideBar></SideBar>
@@ -349,7 +392,13 @@ const ProjectAllocation = () => {
               <button type="button" className="btn btn-primary" onClick={()=>dispatch(projectAllocationActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
         </div>
-
+        <div className="row export-pdf-row">
+            <div className="col-md-12">
+              <button className="btn btn-primary btn-md" id="export-pdf-btn" onClick={downloadData}>
+                  Export <i className="fa fa-download" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
         <Table columns={columns} data={filteredProjectAllocations} />
         
 
@@ -562,7 +611,6 @@ const ModalDialog = () => {
     }
     
   };
-
   //console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
   
   return (

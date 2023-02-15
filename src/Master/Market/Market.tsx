@@ -9,6 +9,8 @@ import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable"
 
 const columns = [
   // {
@@ -89,6 +91,42 @@ const Market = () => {
   useEffect(() => {
     getMarketDetails();
   }, [toggle]);
+ 
+  //export pdf
+  const downloadData=()=>{
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+    const marginLeft = 15;
+    const pdf = new jsPDF(orientation, unit, size);
+
+    pdf.setFontSize(13);
+    const title = "Market Details";
+    const headers=[columns.map((column:any)=>column["name"])]
+    const selectors=['marketName','marketDomain',
+    'isActive','createdDate','createdBy']
+    const tablebody=markets.map((body:any)=>{
+      let row=[];
+      for(let i=0;i<selectors.length;i++)
+      row.push(body[selectors[i]]);
+      console.log(row);
+      return row;
+    });
+    let content = {
+      startY: 50,
+      tableWidth:575,
+      margin: 10,
+      styles:{
+        fontSize:6,
+      },
+      head: headers,
+      body : tablebody,
+    };
+    pdf.text(title, marginLeft, 40);
+    autoTable(pdf, content);
+    pdf.save('MarketDetails.pdf')
+  }
+ 
   return (
     <div>
       <SideBar></SideBar>
@@ -126,6 +164,13 @@ const Market = () => {
                 valueRenderer={customValueRenderer}
               />
             </div> */}
+          </div>
+          <div className="row export-pdf-row">
+            <div className="col-md-12">
+              <button className="btn btn-primary btn-md" id="export-pdf-btn" onClick={downloadData}>
+                  Export <i className="fa fa-download" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
           <Table columns={columns} data={markets} />
         </div>

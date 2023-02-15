@@ -428,3 +428,20 @@ label.form-label {
 div.col-md-12 > button.btn-primary {
   margin-top: 10px;
 }
+
+button#export-pdf-btn {
+  padding: 2px 5px 2px 5px;
+  /* position: absolute; */
+  float: right;
+  width: auto;
+  z-index: 1;
+  margin-left: 8px;
+  margin-top: 8px;
+}
+.export-pdf-row{
+  position: absolute;
+  z-index: 1;
+}
+.dropdown-container >.dropdown-content {
+  z-index: 999 !important;
+}

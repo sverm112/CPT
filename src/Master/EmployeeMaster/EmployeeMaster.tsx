@@ -9,6 +9,8 @@ import { read, utils, writeFile } from "xlsx";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { filterActions } from "../../Store/Slices/Filters";
+import jsPDF from "jspdf";
+import autoTable, { FontStyle } from "jspdf-autotable"
 
 const columns = [
   {
@@ -89,7 +91,6 @@ const columns = [
     filterable: true,
   },
 ];
-
 
 const customValueRenderer = (selected: any, _options: any) => {
   if (selected.length == "0") return "Select";
@@ -286,7 +287,45 @@ const EmployeeMaster = () => {
   let data={...row,isActive:row.isActive=="Active" ? "1" : "2"}
   console.log(data);
   setUpdateResourceDetails(data);
- }
+ };
+ 
+  //export pdf
+  const downloadData=()=>{
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+    const marginLeft = 15;
+    const pdf = new jsPDF(orientation, unit, size);
+
+    pdf.setFontSize(13);
+    pdf.setLineWidth(2);
+    const title = "Employee Details";
+    const headers=[columns.map((column:any)=>column["name"])]
+    const selectors=['resourceName','role','emailAddress','manager',
+    'resourceType','resourceMarket','location','subLocation',
+    'isActive','createdDate','createdBy']
+    const tablebody=filteredResources.map((body:any)=>{
+      let row=[];
+      for(let i=0;i<selectors.length;i++)
+      row.push(body[selectors[i]]);
+      return row;
+    });
+    let content = {
+      startY: 50,
+      tableWidth:575,
+      margin: 10,
+      styles:{
+        fontSize:6,
+      },
+      head: headers,
+      body : tablebody,
+    };
+    
+    pdf.text(title, marginLeft, 40);
+    autoTable(pdf, content);
+      
+    pdf.save('EmployeeDetails.pdf')
+  }
  
   return (
     <div>
@@ -386,15 +425,19 @@ const EmployeeMaster = () => {
               <button type="button" className="btn btn-primary" onClick={()=>dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
-
+          <div className="row export-pdf-row">
+            <div className="col-md-12">
+              <button className="btn btn-primary btn-md" id="export-pdf-btn" onClick={downloadData}>
+                  Export <i className="fa fa-download" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
           <Table columns={columns} data={filteredResources} onRowDoubleClicked={handleRowDoubleClicked}/>
         </div>
       </div>
     </div>
   );
 };
-
-
 
 const ModalDialog = (props : any) => {
   const dispatch = useDispatch();

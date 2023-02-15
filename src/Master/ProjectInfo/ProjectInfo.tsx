@@ -9,6 +9,9 @@ import { projectActions } from "../../Store/Slices/Project";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { employeeActions } from "../../Store/Slices/Employee";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable"
+
 const columns = [
   {
     name: "Project Code",
@@ -161,7 +164,42 @@ const ProjectInfo = () => {
     let data={...row,isActive:row.isActive=="Active" ? "1" : "2"}
     console.log(data);
     setUpdateProjectDetails(data);
+   };
+ 
+   //export pdf
+   const downloadData=()=>{
+     const unit = "pt";
+     const size = "A4"; // Use A1, A2, A3 or A4
+     const orientation = "portrait"; // portrait or landscape
+     const marginLeft = 15;
+     const pdf = new jsPDF(orientation, unit, size);
+     pdf.setFontSize(13);
+     const title = "Project Details";
+     const headers=[columns.map((column:any)=>column["name"])]
+     const selectors=['projectCode','projectName','projectModel',
+     'projectMarket', 'programManager','expenseType',
+     'isActive','createdDate','createdBy']
+     const tablebody=filteredProjects.map((body:any)=>{
+       let row=[];
+       for(let i=0;i<selectors.length;i++)
+       row.push(body[selectors[i]]);
+       return row;
+     });
+     let content = {
+       startY: 50,
+       tableWidth:575,
+        margin: 10,
+        styles:{
+          fontSize:6,
+        },
+       head: headers,
+       body : tablebody,
+     };
+     pdf.text(title, marginLeft, 40);
+     autoTable(pdf, content);
+     pdf.save('ProjectDetails.pdf')
    }
+  
   return (
     <div>
       <SideBar></SideBar>
@@ -240,6 +278,13 @@ const ProjectInfo = () => {
             </div>
             <div className="col-md-2" style={{marginTop:"24px"}}>
               <button type="button" className="btn btn-primary" onClick={()=>dispatch(projectActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            </div>
+          </div>
+          <div className="row export-pdf-row">
+            <div className="col-md-12">
+              <button className="btn btn-primary btn-md" id="export-pdf-btn" onClick={downloadData}>
+                  Export <i className="fa fa-download" aria-hidden="true"></i>
+              </button>
             </div>
           </div>
           <Table columns={columns} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} />
