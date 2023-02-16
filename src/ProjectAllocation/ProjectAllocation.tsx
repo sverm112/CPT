@@ -13,8 +13,7 @@ import { marketActions } from "../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { filterActions } from "../Store/Slices/Filters";
 import { holidayActions } from "../Store/Slices/Holiday";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable"
+import DownloadBtn from "../Export/DownloadBtn";
 
 const columns = [
   {
@@ -59,7 +58,7 @@ const columns = [
     reorder: true,
     filterable: true,
   },
-  
+
   {
     name: "Project",
     selector: (row: { projectName: any }) => row.projectName,
@@ -74,7 +73,7 @@ const columns = [
     reorder: true,
     filterable: true,
   },
-  
+
   {
     name: "Project Market",
     selector: (row: { projectMarket: any }) => row.projectMarket,
@@ -160,33 +159,33 @@ const ProjectAllocation = () => {
     { label: "OPEX", value: "OPEX" },
   ];
   const dispatch = useDispatch();
-  const marketList=useSelector((state: any) => state.Market.data);
-  const locations=useSelector((state: any) => state.Filters.locations);
-  const roles=useSelector((state: any) => state.Filters.roles);
-  const resourceTypes=useSelector((state: any) => state.Filters.resourceTypes);
+  const marketList = useSelector((state: any) => state.Market.data);
+  const locations = useSelector((state: any) => state.Filters.locations);
+  const roles = useSelector((state: any) => state.Filters.roles);
+  const resourceTypes = useSelector((state: any) => state.Filters.resourceTypes);
   const toggle = useSelector((store: any) => store.ProjectAllocation.toggle);
   const projectAllocations = useSelector((store: any) => store.ProjectAllocation.data);
-  const resourceMarketSelected= useSelector((store: any) => store.ProjectAllocation.resourceMarket)
-  const resourceTypeSelected= useSelector((store: any) => store.ProjectAllocation.resourceType)
-  const roleSelected= useSelector((store: any) => store.ProjectAllocation.role)
-  const projectMarketSelected= useSelector((store: any) => store.ProjectAllocation.projectMarket)
-  const expenseTypeSelected= useSelector((store: any) => store.ProjectAllocation.expenseType)
-  const locationSelected=useSelector((store: any) => store.ProjectAllocation.location)
+  const resourceMarketSelected = useSelector((store: any) => store.ProjectAllocation.resourceMarket)
+  const resourceTypeSelected = useSelector((store: any) => store.ProjectAllocation.resourceType)
+  const roleSelected = useSelector((store: any) => store.ProjectAllocation.role)
+  const projectMarketSelected = useSelector((store: any) => store.ProjectAllocation.projectMarket)
+  const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
+  const locationSelected = useSelector((store: any) => store.ProjectAllocation.location)
   const changeResourceMarketSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeResourceMarket(event));
   };
   const changeResourceTypeSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeResourceType(event));
-   
+
   };
   const changeRoleSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeRole(event));
-   
+
   };
 
   const changeProjectMarketSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeProjectMarket(event));
-   
+
   };
   const changeExpenseTypeSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeExpenseType(event));
@@ -200,8 +199,8 @@ const ProjectAllocation = () => {
   const getProjectAllocationDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/ProjectAllocations/GetAllProjectAllocations ");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket : row.marketName,isActive : row.isActive=="1" ? "Active" : "Inactive"}));
-    
+    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, isActive: row.isActive == "1" ? "Active" : "Inactive" }));
+
     dispatch(projectAllocationActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -217,7 +216,7 @@ const ProjectAllocation = () => {
   const getHolidayDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/GetAllHolidaysLists");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(holidayActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -226,24 +225,19 @@ const ProjectAllocation = () => {
   }, []);
 
 
-  const filteredProjectAllocations=projectAllocations.filter((projectAllocation : any)=>{
-    const resourceMarketOptions=resourceMarketSelected.map((resourceMarket: any)=> resourceMarket.value);
-    const resourceTypeOptions=resourceTypeSelected.map((resourceType: any)=> resourceType.value);
-    const roleOptions=roleSelected.map((role: any)=> role.value);
-    const expenseTypeOptions=expenseTypeSelected.map((expenseType: any)=> expenseType.value);
-    const projectMarketOptions=projectMarketSelected.map((projectMarket: any)=> projectMarket.value);
-    if((!resourceMarketSelected.length) ||(resourceMarketSelected.length>0 && resourceMarketOptions.includes(projectAllocation.resourceMarket)==true))
-    {
-      if((!resourceTypeSelected.length) ||(resourceTypeSelected.length>0 && resourceTypeOptions.includes(projectAllocation.resourceType)==true))
-      {
-        if((!roleSelected.length) ||(roleSelected.length>0 && roleOptions.includes(projectAllocation.role)==true))
-        {
-          if((!expenseTypeSelected.length) ||(expenseTypeSelected.length>0 && expenseTypeOptions.includes(projectAllocation.expenseType)==true))
-          {
-            if((!projectMarketSelected.length) ||(projectMarketSelected.length>0 && projectMarketOptions.includes(projectAllocation.projectMarket)==true))
-            {
-                if(locationSelected=="0" || locationSelected==projectAllocation.location)
-                return true;  
+  const filteredProjectAllocations = projectAllocations.filter((projectAllocation: any) => {
+    const resourceMarketOptions = resourceMarketSelected.map((resourceMarket: any) => resourceMarket.value);
+    const resourceTypeOptions = resourceTypeSelected.map((resourceType: any) => resourceType.value);
+    const roleOptions = roleSelected.map((role: any) => role.value);
+    const expenseTypeOptions = expenseTypeSelected.map((expenseType: any) => expenseType.value);
+    const projectMarketOptions = projectMarketSelected.map((projectMarket: any) => projectMarket.value);
+    if ((!resourceMarketSelected.length) || (resourceMarketSelected.length > 0 && resourceMarketOptions.includes(projectAllocation.resourceMarket) == true)) {
+      if ((!resourceTypeSelected.length) || (resourceTypeSelected.length > 0 && resourceTypeOptions.includes(projectAllocation.resourceType) == true)) {
+        if ((!roleSelected.length) || (roleSelected.length > 0 && roleOptions.includes(projectAllocation.role) == true)) {
+          if ((!expenseTypeSelected.length) || (expenseTypeSelected.length > 0 && expenseTypeOptions.includes(projectAllocation.expenseType) == true)) {
+            if ((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket) == true)) {
+              if (locationSelected == "0" || locationSelected == projectAllocation.location)
+                return true;
             }
           }
         }
@@ -252,46 +246,15 @@ const ProjectAllocation = () => {
     return false;
   });
 
-  //export pdf
-  const downloadData=()=>{
-    const unit = "pt";
-    const size = "A4"; // Use A1, A2, A3 or A4
-    const orientation = "portrait"; // portrait or landscape
-    const marginLeft = 15;
-    const pdf = new jsPDF(orientation, unit, size);
-
-    pdf.setFontSize(13);
-    const title = "Project Allocation Details";
-    const headers=[['Resource', 'Resource Type', 'Location',  
+  //start constants for export
+  const title = "Project Allocation Details";
+  const headers = [['Resource', 'Resource Type', 'Location',
     'Project', 'Project Market', 'Start Date', 'End Date', 'PTO Days', 'Allocation(Hours)']];
-    const selectors=['resourceName','resourceType',
-    'location','projectName','projectMarket',
-    'startDate','enddDate','pTODays','allocationHours']
-    //const headers=[columns.map((column:any)=>column["name"])]
-    // const selectors=['resourceName','resourceType','role',
-    // 'manager', 'location','resourceMarket','projectName','resourceType1','projectMarket',
-    // 'projectCode','expenseType','startDate','enddDate','pTODays','allocationHours',
-    // 'isActive','createdDate','createdBy']
-    const tablebody=filteredProjectAllocations.map((body:any)=>{
-      let row=[];
-      for(let i=0;i<selectors.length;i++)
-      row.push(body[selectors[i]]);
-      return row;
-    });
-    let content = {
-      startY: 50,
-      tableWidth:575,
-      margin: 10,
-      styles:{
-        fontSize:6,
-      },
-      head: headers,
-      body : tablebody,
-    };
-    pdf.text(title, marginLeft, 40);
-    autoTable(pdf, content);
-    pdf.save('ProjectAllocationDetails.pdf')
-  }
+  const selectors = ['resourceName', 'resourceType',
+    'location', 'projectName', 'projectMarket',
+    'startDate', 'enddDate', 'pTODays', 'allocationHours']
+  //end constants for export
+
   return (
     <div>
       <SideBar></SideBar>
@@ -314,13 +277,13 @@ const ProjectAllocation = () => {
           </div>
         </div>
         <div className="row filter-row">
-          
+
           <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Resource Type
             </label>
             <MultiSelect
-              options={resourceTypes.map((resourceType:any)=>({label:resourceType, value:resourceType}))}
+              options={resourceTypes.map((resourceType: any) => ({ label: resourceType, value: resourceType }))}
               value={resourceTypeSelected}
               onChange={changeResourceTypeSelectHandler}
               labelledBy="Select Resource Type"
@@ -333,7 +296,7 @@ const ProjectAllocation = () => {
               Role
             </label>
             <MultiSelect
-              options={roles.map((role:any)=>({label : role, value:role}))}
+              options={roles.map((role: any) => ({ label: role, value: role }))}
               value={roleSelected}
               onChange={changeRoleSelectHandler}
               labelledBy="Select Role"
@@ -347,7 +310,7 @@ const ProjectAllocation = () => {
             <div className="dropdown">
               <select className="form-control" value={locationSelected} onChange={changeLocationSelectHandler} id="locationDropdown">
                 <option value="0">Select</option>
-                {locations.map((location:any)=>(<option key={location.locationId} value={location.locationName}>{location.locationName}</option>))}
+                {locations.map((location: any) => (<option key={location.locationId} value={location.locationName}>{location.locationName}</option>))}
               </select>
             </div>
           </div>
@@ -356,7 +319,7 @@ const ProjectAllocation = () => {
               Resource Market
             </label>
             <MultiSelect
-              options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
+              options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
               value={resourceMarketSelected}
               onChange={changeResourceMarketSelectHandler}
               labelledBy="Select Resource Market"
@@ -368,7 +331,7 @@ const ProjectAllocation = () => {
               Project Market
             </label>
             <MultiSelect
-              options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
+              options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
               value={projectMarketSelected}
               onChange={changeProjectMarketSelectHandler}
               labelledBy="Select Project Market"
@@ -388,20 +351,17 @@ const ProjectAllocation = () => {
               valueRenderer={customValueRenderer}
             />
           </div>
-          <div className="col-md-2" style={{marginTop:"24px"}}>
-              <button type="button" className="btn btn-primary" onClick={()=>dispatch(projectAllocationActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
-            </div>
-        </div>
-        <div className="row export-pdf-row">
-            <div className="col-md-12">
-              <button className="btn btn-primary btn-md" id="export-pdf-btn" onClick={downloadData}>
-                  Export <i className="fa fa-download" aria-hidden="true"></i>
-              </button>
-            </div>
+          <div className="col-md-2" style={{ marginTop: "24px" }}>
+            <button type="button" className="btn btn-primary" onClick={() => dispatch(projectAllocationActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
           </div>
+        </div>
+        <DownloadBtn 
+            columns={columns}
+            filteredRecords={filteredProjectAllocations}
+            selectors={selectors}
+            title={title}>
+          </DownloadBtn>
         <Table columns={columns} data={filteredProjectAllocations} />
-        
-
       </div>
     </div>
   );
@@ -415,36 +375,36 @@ const ModalDialog = () => {
   function closeModal() {
     return invokeModal(false);
   }
-  const [allocationStartDate, setAllocationStartDate] = useState<Date|null>(null);
-  const [allocationEndDate, setAllocationEndDate] = useState<Date|null>(null);
+  const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(null);
+  const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(null);
   const [ptoDays, setPTODays] = useState("");
   const [allocationPercentage, setAllocationPercentage] = useState("");
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
   const [projectId, setProjectId] = useState("0");
-  const [allocatedPercentage,setAllocatedPercentage]=useState(0);
-  const holidayDetails=useSelector((state:any)=>state.Holiday.data);
-  let allocationHours=0,allocationHoursPerDay=0;
-  const calculateAllocationDays=(startDate : Date,endDate : Date)=>{
+  const [allocatedPercentage, setAllocatedPercentage] = useState(0);
+  const holidayDetails = useSelector((state: any) => state.Holiday.data);
+  let allocationHours = 0, allocationHoursPerDay = 0;
+  const calculateAllocationDays = (startDate: Date, endDate: Date) => {
     let count = 0;
     const curDate = new Date(startDate.getTime());
     while (curDate <= endDate) {
-        const dayOfWeek = curDate.getDay();
-        if(dayOfWeek !== 0 && dayOfWeek !== 6) count++;
-        curDate.setDate(curDate.getDate() + 1);
+      const dayOfWeek = curDate.getDay();
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
+      curDate.setDate(curDate.getDate() + 1);
     }
-    console.log("AllocationDays Count "+count);
+    console.log("AllocationDays Count " + count);
     return count;
   }
-  const calculateHolidays=(location : any,subLocation:any,startDate : Date,endDate : Date)=>{
-    let count=0;
-    let filteredHolidays=holidayDetails.filter((holiday:any)=>holiday.locationName==location && holiday.subLocationName==subLocation && holiday.isActive=="Active");
-    console.log("filtered holidays ,"+filteredHolidays.length)
-    for(let i=0;i<filteredHolidays.length;i++){
-      let holidayDate=new Date(filteredHolidays[i].holidayDate)
-      let dayOfWeek=holidayDate.getDay();
-      if(dayOfWeek !== 0 && dayOfWeek !== 6 && startDate<=holidayDate && endDate>=holidayDate ) 
-      count++;
+  const calculateHolidays = (location: any, subLocation: any, startDate: Date, endDate: Date) => {
+    let count = 0;
+    let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.isActive == "Active");
+    console.log("filtered holidays ," + filteredHolidays.length)
+    for (let i = 0; i < filteredHolidays.length; i++) {
+      let holidayDate = new Date(filteredHolidays[i].holidayDate)
+      let dayOfWeek = holidayDate.getDay();
+      if (dayOfWeek !== 0 && dayOfWeek !== 6 && startDate <= holidayDate && endDate >= holidayDate)
+        count++;
     }
     console.log("Holiday Count " + count);
     return count;
@@ -452,23 +412,23 @@ const ModalDialog = () => {
   //allocationHours= Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
   const dispatch = useDispatch();
   const resourcesList = useSelector((store: any) => store.Employee.data);
-  const projectsList=useSelector((store:any)=>store.Project.data);
-  const roles=useSelector((state: any) => state.Filters.roles);
+  const projectsList = useSelector((store: any) => store.Project.data);
+  const roles = useSelector((state: any) => state.Filters.roles);
   const getEmployeeDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "Inactive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "Inactive" }));
     dispatch(employeeActions.changeData(dataGet));
   };
-  const getLocationDetails= async () =>{
+  const getLocationDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Location/GetAllLocations");
     const dataGet = await response.json();
     dispatch(filterActions.changeLocations(dataGet));
   }
-  const getSubLocationDetails= async () =>{
+  const getSubLocationDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/SubLocation/GetAllSubLocations");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(filterActions.changeSubLocations(dataGet));
   }
   useEffect(() => {
@@ -479,65 +439,63 @@ const ModalDialog = () => {
   const getProjectDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Projects/GetAllProjects");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,projectMarket : row.marketName,projectId : row.pkProjectID, isActive : row.isActive==1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
     getProjectDetails();
   }, []);
-  let selectedResourceDetails ={resourceId :0, resourceType:"",role : "",supervisor :"",location:"",resourceMarket:"",subLocation:""};
-  let selectedProjectDetails = {projectId:0,projectMarket:"",expenseType:"",PPSID : ""}
- 
+  let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
+  let selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
+
   const setResourceDetails = (event: any) => {
-    console.log(selectedResourceDetails,event.target.value)
+    console.log(selectedResourceDetails, event.target.value)
     setResourceId(event.target.value);
   };
   const setProjectDetails = (event: any) => {
     setProjectId(event.target.value);
   };
 
-  
 
-  if(resourceId=="0"){
-    selectedResourceDetails ={resourceId :0, resourceType:"",role : "",supervisor :"",location:"",resourceMarket:"",subLocation:""};
+
+  if (resourceId == "0") {
+    selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
   }
-  else{
-      const filteredResource=resourcesList.filter((resource: any)=> resource.resourceId==Number(resourceId));
-      selectedResourceDetails.resourceId=filteredResource[0].resourceId
-      selectedResourceDetails.resourceType=filteredResource[0].resourceType
-      selectedResourceDetails.role=filteredResource[0].role
-      selectedResourceDetails.supervisor=filteredResource[0].manager  
-      selectedResourceDetails.location=filteredResource[0].location
-      selectedResourceDetails.subLocation=filteredResource[0].subLocation
-      selectedResourceDetails.resourceMarket=filteredResource[0].resourceMarket
-    }
-    
-    if(projectId=="0")
-    {
-      selectedProjectDetails = {projectId:0,projectMarket:"",expenseType:"",PPSID : ""}
-    }
-    else{
-      let filteredProject=projectsList.filter((project : any)=>project.pkProjectID==Number(projectId))
-      selectedProjectDetails.projectId=filteredProject[0].pkProjectID
-      selectedProjectDetails.projectMarket=filteredProject[0].projectMarket
-      selectedProjectDetails.expenseType=filteredProject[0].expenseType
-      selectedProjectDetails.PPSID=filteredProject[0].projectCode
-    }
-  
-  if(selectedResourceDetails.resourceType=="OGS")
-    allocationHoursPerDay=8.5;
-  else if(selectedResourceDetails.resourceType=="FTE" || selectedResourceDetails.resourceType=="GTM")
-    allocationHoursPerDay=8;
-  else 
-    allocationHoursPerDay=0;
+  else {
+    const filteredResource = resourcesList.filter((resource: any) => resource.resourceId == Number(resourceId));
+    selectedResourceDetails.resourceId = filteredResource[0].resourceId
+    selectedResourceDetails.resourceType = filteredResource[0].resourceType
+    selectedResourceDetails.role = filteredResource[0].role
+    selectedResourceDetails.supervisor = filteredResource[0].manager
+    selectedResourceDetails.location = filteredResource[0].location
+    selectedResourceDetails.subLocation = filteredResource[0].subLocation
+    selectedResourceDetails.resourceMarket = filteredResource[0].resourceMarket
+  }
 
-    if(resourceId!="0" && allocationEndDate!=null && allocationStartDate!=null)
-    {
-    let allocationDays=calculateAllocationDays(allocationStartDate,allocationEndDate)-calculateHolidays(selectedResourceDetails.location,selectedResourceDetails.subLocation,allocationStartDate,allocationEndDate);
-    allocationHours=Math.ceil((allocationDays-Number(ptoDays))*allocationHoursPerDay*Number(allocationPercentage)/100);
-    }
+  if (projectId == "0") {
+    selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
+  }
+  else {
+    let filteredProject = projectsList.filter((project: any) => project.pkProjectID == Number(projectId))
+    selectedProjectDetails.projectId = filteredProject[0].pkProjectID
+    selectedProjectDetails.projectMarket = filteredProject[0].projectMarket
+    selectedProjectDetails.expenseType = filteredProject[0].expenseType
+    selectedProjectDetails.PPSID = filteredProject[0].projectCode
+  }
 
-  const resetFormFields=()=>{
+  if (selectedResourceDetails.resourceType == "OGS")
+    allocationHoursPerDay = 8.5;
+  else if (selectedResourceDetails.resourceType == "FTE" || selectedResourceDetails.resourceType == "GTM")
+    allocationHoursPerDay = 8;
+  else
+    allocationHoursPerDay = 0;
+
+  if (resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
+    let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
+    allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
+  }
+
+  const resetFormFields = () => {
     setAllocationStartDate(null);
     setAllocationEndDate(null);
     setPTODays("");
@@ -546,45 +504,46 @@ const ModalDialog = () => {
     setResourceId("0");
     setProjectId("0");
   }
-  const getAllocationPercentage= async ()=>{
+  const getAllocationPercentage = async () => {
     let payload = {
-       fkResourceID : Number(resourceId),
-       startDate : allocationStartDate,
-       endDate : allocationEndDate
-      };
-      try {
-        const response = await fetch(`http://10.147.172.18:9190/api/v1/ProjectAllocations/GetTotalAlocPerForResourceIds?fkResourceID=${resourceId}&startDate=${allocationStartDate?.toISOString().slice(0,10)}&endDate=${allocationEndDate?.toISOString().slice(0,10)}`,{
-          method: "GET",
+      fkResourceID: Number(resourceId),
+      startDate: allocationStartDate,
+      endDate: allocationEndDate
+    };
+    try {
+      const response = await fetch(`http://10.147.172.18:9190/api/v1/ProjectAllocations/GetTotalAlocPerForResourceIds?fkResourceID=${resourceId}&startDate=${allocationStartDate?.toISOString().slice(0, 10)}&endDate=${allocationEndDate?.toISOString().slice(0, 10)}`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        });
-        const dataResponse = await response.json();
-        setAllocatedPercentage(Number(dataResponse)); 
-      }
-      catch{
-        console.log("Some Error Occured")
-;      }
+      });
+      const dataResponse = await response.json();
+      setAllocatedPercentage(Number(dataResponse));
+    }
+    catch {
+      console.log("Some Error Occured")
+        ;
+    }
   }
   useEffect(() => {
     setAllocatedPercentage(0);
-    if(resourceId!="0" && allocationStartDate!=null && allocationEndDate!=null)
-    getAllocationPercentage();
-  }, [resourceId,allocationStartDate,allocationEndDate]);
+    if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
+      getAllocationPercentage();
+  }, [resourceId, allocationStartDate, allocationEndDate]);
 
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
     let payload = {
-    fkResourceID : resourceId=="0" ? 0 : Number(resourceId), 
-    fkProjectID : projectId=="0" ? 0 : Number(projectId), 
-    resourceType1 : resourceType1,
-    startDate : allocationStartDate, 
-    enddDate : allocationEndDate, 
-    pTODays : ptoDays=="" ? 0 : Number(ptoDays),
-    allocationHours : allocationHours, 
-    allocationPercentage : Number(allocationPercentage),
-    isActive : 1,
-    createdBy : "Admin"
+      fkResourceID: resourceId == "0" ? 0 : Number(resourceId),
+      fkProjectID: projectId == "0" ? 0 : Number(projectId),
+      resourceType1: resourceType1,
+      startDate: allocationStartDate,
+      enddDate: allocationEndDate,
+      pTODays: ptoDays == "" ? 0 : Number(ptoDays),
+      allocationHours: allocationHours,
+      allocationPercentage: Number(allocationPercentage),
+      isActive: 1,
+      createdBy: "Admin"
     };
     try {
       const response = await fetch("http://10.147.172.18:9190/api/v1/ProjectAllocations/PostProjectAllocations", {
@@ -609,10 +568,10 @@ const ModalDialog = () => {
     } catch {
       toast.error("Some Error occured.");
     }
-    
+
   };
   //console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
-  
+
   return (
     <>
       <Button
@@ -639,7 +598,7 @@ const ModalDialog = () => {
                 <div className="dropdown">
                   <select className="form-control" id="resource" value={resourceId} onChange={setResourceDetails}>
                     <option value="0">Select</option>
-                    {resourcesList.filter((resource:any)=>resource.isActive=="Active").map((resource: any)=><option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
+                    {resourcesList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   </select>
                 </div>
               </div>
@@ -704,7 +663,7 @@ const ModalDialog = () => {
                 <div className="dropdown">
                   <select className="form-control" id="project" value={projectId} onChange={setProjectDetails}>
                     <option value="0">Select</option>
-                    {projectsList.filter((project:any)=>project.isActive=="Active").map((project:any)=><option key={project.pkProjectID} value={project.pkProjectID.toString()}>{project.projectName}</option>)}
+                    {projectsList.filter((project: any) => project.isActive == "Active").map((project: any) => <option key={project.pkProjectID} value={project.pkProjectID.toString()}>{project.projectName}</option>)}
                   </select>
                 </div>
               </div>
@@ -720,11 +679,11 @@ const ModalDialog = () => {
                     onChange={(event) => setResourceType1(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {roles.map((role:any)=>(<option key={role} value={role}>{role}</option>))}
+                    {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
                   </select>
                 </div>
               </div>
-              
+
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="project Market">
                   Project Market
@@ -743,14 +702,14 @@ const ModalDialog = () => {
                 </label>
                 <input type="text" className="form-control" id="ppsid" value={selectedProjectDetails.PPSID} disabled />
               </div>
-              
+
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="capex">
                   Expense Type
                 </label>
                 <input type="text" className="form-control" id="capex" value={selectedProjectDetails.expenseType} disabled />
               </div>
-              
+
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="allocationStartDate" style={{ zIndex: "9" }}>
                   Allocation Start Date
@@ -791,18 +750,18 @@ const ModalDialog = () => {
                   onChange={(event) => setPTODays(event.target.value)}
                 />
               </div>
-              
+
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="allocationHours">
                   Allocation(Percentage)
-                  { allocatedPercentage!=0 &&<span style={{color : "red"}}> Allocated : {allocatedPercentage}</span>}
+                  {allocatedPercentage != 0 && <span style={{ color: "red" }}> Allocated : {allocatedPercentage}</span>}
                 </label>
                 <input
                   type="text"
                   className="form-control"
                   id="allocationPercentage"
                   value={allocationPercentage}
-                
+
                   onChange={(event) => setAllocationPercentage(event.target.value)}
                 />
               </div>
@@ -828,7 +787,7 @@ const ModalDialog = () => {
                   id="allocationHours"
                   value={allocationHours}
                   disabled
-                  // onChange={(event) => setAllocationHours(event.target.value)}
+                // onChange={(event) => setAllocationHours(event.target.value)}
                 />
               </div>
             </div>

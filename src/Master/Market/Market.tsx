@@ -9,14 +9,13 @@ import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable"
+import DownloadBtn from "../../Export/DownloadBtn";
 
 const columns = [
   // {
   //   name: "Market Id",
   //   selector: (row: { pkMarketID: any }) => row.pkMarketID,
-    
+
   //   sortable: true,
   //   reorder: true,
   //   filterable: true,
@@ -78,55 +77,25 @@ const Market = () => {
   const toggle = useSelector((store: any) => store.Market.toggle);
 
   const getMarketDetails = async () => {
-    try{
+    try {
       const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
-    let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
-    dispatch(marketActions.changeData(dataGet));
+      let dataGet = await response.json();
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+      dispatch(marketActions.changeData(dataGet));
     }
-    catch{
+    catch {
       console.log("Error occured");
     }
   };
   useEffect(() => {
     getMarketDetails();
   }, [toggle]);
- 
-  //export pdf
-  const downloadData=()=>{
-    const unit = "pt";
-    const size = "A4"; // Use A1, A2, A3 or A4
-    const orientation = "portrait"; // portrait or landscape
-    const marginLeft = 15;
-    const pdf = new jsPDF(orientation, unit, size);
 
-    pdf.setFontSize(13);
-    const title = "Market Details";
-    const headers=[columns.map((column:any)=>column["name"])]
-    const selectors=['marketName','marketDomain',
-    'isActive','createdDate','createdBy']
-    const tablebody=markets.map((body:any)=>{
-      let row=[];
-      for(let i=0;i<selectors.length;i++)
-      row.push(body[selectors[i]]);
-      console.log(row);
-      return row;
-    });
-    let content = {
-      startY: 50,
-      tableWidth:575,
-      margin: 10,
-      styles:{
-        fontSize:6,
-      },
-      head: headers,
-      body : tablebody,
-    };
-    pdf.text(title, marginLeft, 40);
-    autoTable(pdf, content);
-    pdf.save('MarketDetails.pdf')
-  }
- 
+  //start constants for export
+  const selectors = ['marketName', 'marketDomain', 'isActive', 'createdDate', 'createdBy']
+  const title = "Market Details";
+  //end constants for export
+
   return (
     <div>
       <SideBar></SideBar>
@@ -165,13 +134,12 @@ const Market = () => {
               />
             </div> */}
           </div>
-          <div className="row export-pdf-row">
-            <div className="col-md-12">
-              <button className="btn btn-primary btn-md" id="export-pdf-btn" onClick={downloadData}>
-                  Export <i className="fa fa-download" aria-hidden="true"></i>
-              </button>
-            </div>
-          </div>
+          <DownloadBtn 
+            columns={columns}
+            filteredRecords={markets}
+            selectors={selectors}
+            title={title}>
+          </DownloadBtn>
           <Table columns={columns} data={markets} />
         </div>
       </div>
@@ -191,7 +159,7 @@ const ModalDialog = () => {
   }
   const [marketName, setMarketName] = useState("");
   const [marketDomain, setMarketDomain] = useState("");
-  const resetFormFields=()=>{
+  const resetFormFields = () => {
     setMarketName("");
     setMarketDomain("");
   }
@@ -200,7 +168,7 @@ const ModalDialog = () => {
     let payload = {
       marketName: marketName,
       marketDomain: marketDomain,
-      createdBy : "Admin"
+      createdBy: "Admin"
     };
     try {
       const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/PostMarket", {
@@ -227,7 +195,7 @@ const ModalDialog = () => {
     }
   };
 
-  
+
 
   return (
     <>

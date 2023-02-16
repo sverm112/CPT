@@ -27,6 +27,7 @@
     "react-data-table-component-extensions": "^1.6.0",
     "react-date-picker": "^9.0.0",
     "react-dom": "^18.2.0",
+    "react-export-table-to-excel": "^1.0.6",
     "react-icons": "^4.4.0",
     "react-loader-spinner": "^5.3.4",
     "react-modal": "^3.15.1",

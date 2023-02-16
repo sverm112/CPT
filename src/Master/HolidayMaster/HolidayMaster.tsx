@@ -11,8 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { filterActions } from "../../Store/Slices/Filters";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable"
+import DownloadBtn from "../../Export/DownloadBtn"; 
 
 //Data Table
 const columns = [
@@ -23,7 +22,7 @@ const columns = [
   //   reorder: true,
   //   filterable: true,
   // },
-   {
+  {
     name: "Occasion",
     selector: (row: { occasionName: any }) => row.occasionName,
     sortable: true,
@@ -32,35 +31,35 @@ const columns = [
   },
   {
     name: "Holiday Date",
-    selector: (row: { holidayDate: any }) => row.holidayDate.slice(0,10),
+    selector: (row: { holidayDate: any }) => row.holidayDate.slice(0, 10),
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Market",
-    selector: (row: { marketName: any }) => row.marketName =="0" ? "" : row.marketName,
+    selector: (row: { marketName: any }) => row.marketName == "0" ? "" : row.marketName,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Location",
-    selector: (row: { locationName: any }) => row.locationName =="0" ? "" : row.locationName,
+    selector: (row: { locationName: any }) => row.locationName == "0" ? "" : row.locationName,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Sub Location",
-    selector: (row: { subLocationName: any }) => row.subLocationName =="0" ? "" : row.subLocationName,
+    selector: (row: { subLocationName: any }) => row.subLocationName == "0" ? "" : row.subLocationName,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Status",
-    selector: (row: { isActive: any }) => row.isActive ,
+    selector: (row: { isActive: any }) => row.isActive,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -87,19 +86,19 @@ const customValueRenderer = (selected: any, _options: any) => {
 };
 
 const HolidayMaster = () => {
-  
- 
-  const locations=useSelector((state: any) => state.Filters.locations);
-  const subLocations=useSelector((state: any) => state.Filters.subLocations);
-  const status=useSelector((state: any) => state.Filters.status);
+
+
+  const locations = useSelector((state: any) => state.Filters.locations);
+  const subLocations = useSelector((state: any) => state.Filters.subLocations);
+  const status = useSelector((state: any) => state.Filters.status);
   const dispatch = useDispatch();
-  const marketSelected= useSelector((store: any) => store.Holiday.market);
-  const locationSelected= useSelector((store: any) => store.Holiday.location);
-  const subLocationSelected= useSelector((store: any) => store.Holiday.subLocation);
+  const marketSelected = useSelector((store: any) => store.Holiday.market);
+  const locationSelected = useSelector((store: any) => store.Holiday.location);
+  const subLocationSelected = useSelector((store: any) => store.Holiday.subLocation);
   const statusSelected = useSelector((store: any) => store.Holiday.status);
   const holidays = useSelector((store: any) => store.Holiday.data);
   const toggle = useSelector((store: any) => store.Holiday.toggle);
- const changeLocationSelectHandler = (event: any) => {
+  const changeLocationSelectHandler = (event: any) => {
     dispatch(holidayActions.changeLocation(event));
   };
   const changeSubLocationSelectHandler = (event: any) => {
@@ -111,28 +110,28 @@ const HolidayMaster = () => {
   const getHolidayDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/GetAllHolidaysLists");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(holidayActions.changeData(dataGet));
   };
   useEffect(() => {
     getHolidayDetails();
   }, [toggle]);
 
-  
-  const marketList=useSelector((state: any) => state.Market.data);
+
+  const marketList = useSelector((state: any) => state.Market.data);
   const getMarketDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
   };
-  const getLocationDetails= async () =>{
+  const getLocationDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Location/GetAllLocations");
     const dataGet = await response.json();
     dispatch(filterActions.changeLocations(dataGet));
   }
-  const getSubLocationDetails= async () =>{
+  const getSubLocationDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/SubLocation/GetAllSubLocations");
     const dataGet = await response.json();
     dispatch(filterActions.changeSubLocations(dataGet));
@@ -143,53 +142,24 @@ const HolidayMaster = () => {
     getSubLocationDetails();
   }, []);
 
-  const filteredHolidays = holidays.filter((holiday: any)=>{
-    const marketOptions=marketSelected.map((market: any)=>market.value);
-    const locationOptions=locationSelected.map((location: any)=>location.value)
-    const subLocationOptions=subLocationSelected.map((subLocation:any)=>subLocation.value)
-    const statusOptions=statusSelected.map((status: any)=>status.value);
-    if((!marketSelected.length) ||(marketSelected.length>0 && marketOptions.includes(holiday.marketName)==true))
-    {
-      if((!locationSelected.length) ||(locationSelected.length>0 && locationOptions.includes(holiday.locationName)==true))
-        if((!subLocationSelected.length) ||(subLocationSelected.length>0 && subLocationOptions.includes(holiday.subLocationName)==true))
-        if((!statusSelected.length)|| (statusSelected.length>0 && statusOptions.includes(holiday.isActive) ))
-          return true;
+  const filteredHolidays = holidays.filter((holiday: any) => {
+    const marketOptions = marketSelected.map((market: any) => market.value);
+    const locationOptions = locationSelected.map((location: any) => location.value)
+    const subLocationOptions = subLocationSelected.map((subLocation: any) => subLocation.value)
+    const statusOptions = statusSelected.map((status: any) => status.value);
+    if ((!marketSelected.length) || (marketSelected.length > 0 && marketOptions.includes(holiday.marketName) == true)) {
+      if ((!locationSelected.length) || (locationSelected.length > 0 && locationOptions.includes(holiday.locationName) == true))
+        if ((!subLocationSelected.length) || (subLocationSelected.length > 0 && subLocationOptions.includes(holiday.subLocationName) == true))
+          if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(holiday.isActive)))
+            return true;
     }
     return false;
   });
-  
-  //export pdf
-  const downloadData=()=>{
-    const unit = "pt";
-    const size = "A4"; // Use A1, A2, A3 or A4
-    const orientation = "portrait"; // portrait or landscape
-    const marginLeft = 15;
-    const pdf = new jsPDF(orientation, unit, size);
 
-    pdf.setFontSize(13);
-    const title = "Holiday Details";
-    const headers=[columns.map((column:any)=>column["name"])]
-    const selectors=['occasionName','holidayDate','marketName','locationName','subLocationName','isActive','createdDate','createdBy']
-    const tablebody=filteredHolidays.map((body:any)=>{
-      let row=[];
-      for(let i=0;i<selectors.length;i++)
-      row.push(body[selectors[i]]);
-      return row;
-    });
-    let content = {
-      startY: 50,
-      tableWidth:575,
-      margin: 10,
-      styles:{
-        fontSize:6,
-      },
-      head: headers,
-      body : tablebody,
-    };
-    pdf.text(title, marginLeft, 40);
-    autoTable(pdf, content);
-    pdf.save('HolidayDetails.pdf')
-  }
+  //start constants for export
+  const selectors = ['occasionName', 'holidayDate', 'marketName', 'locationName', 'subLocationName', 'isActive', 'createdDate', 'createdBy']
+  const title = "Holiday Details";
+  //end constants for export
 
   return (
     <div>
@@ -221,62 +191,61 @@ const HolidayMaster = () => {
                 Market
               </label>
               <MultiSelect
-                options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
+                options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
                 value={marketSelected}
                 onChange={changeMarketSelectHandler}
                 labelledBy="Select Market"
                 valueRenderer={customValueRenderer}
               />
-             </div>
-             <div className="col-md-2 form-group">
+            </div>
+            <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Location
               </label>
               <MultiSelect
-                options={locations.map((location:any)=>({label: location.locationName,value:location.locationName}))}
+                options={locations.map((location: any) => ({ label: location.locationName, value: location.locationName }))}
                 value={locationSelected}
                 onChange={changeLocationSelectHandler}
                 labelledBy="Select Location"
                 valueRenderer={customValueRenderer}
               />
-             </div>
-             <div className="col-md-2 form-group">
+            </div>
+            <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Sub Location
               </label>
               <MultiSelect
-                options={locationSelected.length==0 ? (subLocations.map((subLocation:any)=>({label:subLocation.subLocationName,value:subLocation.subLocationName,locationName:subLocation.locationName}))) : ((subLocations.map((subLocation:any)=>({label:subLocation.subLocationName,value:subLocation.subLocationName,locationName:subLocation.locationName}))).filter((subLocation:any)=> locationSelected.map((location:any)=> location.value).includes(subLocation.locationName)))}
+                options={locationSelected.length == 0 ? (subLocations.map((subLocation: any) => ({ label: subLocation.subLocationName, value: subLocation.subLocationName, locationName: subLocation.locationName }))) : ((subLocations.map((subLocation: any) => ({ label: subLocation.subLocationName, value: subLocation.subLocationName, locationName: subLocation.locationName }))).filter((subLocation: any) => locationSelected.map((location: any) => location.value).includes(subLocation.locationName)))}
                 value={subLocationSelected}
                 onChange={changeSubLocationSelectHandler}
                 labelledBy="Select Sub Location"
                 valueRenderer={customValueRenderer}
               />
-             </div>
-             <div className=" col-md-2 form-group">
+            </div>
+            <div className=" col-md-2 form-group">
               <label htmlFor="activeDropdown" className="form-label">
                 Status
               </label>
               <MultiSelect
-                 options={status.map((status:any)=>({label:status,value:status}))}
+                options={status.map((status: any) => ({ label: status, value: status }))}
                 value={statusSelected}
                 onChange={(event: any) => dispatch(holidayActions.changeStatus(event))}
                 labelledBy="Select Status"
                 valueRenderer={customValueRenderer}
               />
             </div>
-            <div className="col-md-2" style={{marginTop:"24px"}}>
-              <button type="button" className="btn btn-primary" onClick={()=>dispatch(holidayActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            <div className="col-md-2" style={{ marginTop: "24px" }}>
+              <button type="button" className="btn btn-primary" onClick={() => dispatch(holidayActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
-             
+
           </div>
-          <div className="row export-pdf-row">
-            <div className="col-md-12">
-              <button className="btn btn-primary btn-md" id="export-pdf-btn" onClick={downloadData}>
-                  Export <i className="fa fa-download" aria-hidden="true"></i>
-              </button>
-            </div>
-          </div>
-          <Table columns={columns} data={filteredHolidays} id="data-table"/>
+          <DownloadBtn 
+            columns={columns}
+            filteredRecords={filteredHolidays}
+            selectors={selectors}
+            title={title}>
+          </DownloadBtn>
+          <Table columns={columns} data={filteredHolidays} id="data-table" />
         </div>
       </div>
     </div>
@@ -297,33 +266,33 @@ const ModalDialog = () => {
   const [location, setLocation] = useState("0");
   const [subLocation, setSubLocation] = useState("0");
   const [market, setMarket] = useState("0");
-  const [date, setDate] = useState<Date|null>(null);
-  const locations=useSelector((state: any) => state.Filters.locations);
-  const subLocations=useSelector((state: any) => state.Filters.subLocations);
- 
-  const resetFormFields=()=>{
+  const [date, setDate] = useState<Date | null>(null);
+  const locations = useSelector((state: any) => state.Filters.locations);
+  const subLocations = useSelector((state: any) => state.Filters.subLocations);
+
+  const resetFormFields = () => {
     setOccasion("");
     setLocation("0");
     setSubLocation("0");
     setMarket("0");
     setDate(null);
   }
-  const convertUTCDateToLocalDate=(date : Date)=> {
-    var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+  const convertUTCDateToLocalDate = (date: Date) => {
+    var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
     var offset = date.getTimezoneOffset() / 60;
     var hours = date.getHours();
     newDate.setHours(hours - offset);
-    return newDate;   
-}
+    return newDate;
+  }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
     let payload = {
       occasionName: occasion,
       fkLocationID: location,
       fkSubLocationID: subLocation,
-      fkMarketID : market,
+      fkMarketID: market,
       HolidayDate: date,
-      createdBy : "Admin"
+      createdBy: "Admin"
     };
     try {
       const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/PostHoliday", {
@@ -349,7 +318,7 @@ const ModalDialog = () => {
       toast.error("Some Error occured.");
     }
   };
-  const marketList=useSelector((state: any) => state.Market.data);
+  const marketList = useSelector((state: any) => state.Market.data);
   const getMarketDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     const dataGet = await response.json();
@@ -416,7 +385,7 @@ const ModalDialog = () => {
                     onChange={(event: any) => setMarket(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {marketList.filter((market:any)=>market.isActive=="Active").map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                    {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>
@@ -432,7 +401,7 @@ const ModalDialog = () => {
                     onChange={(event: any) => setLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {locations.map((location:any)=>(<option key={location.locationId} value={location.locationId.toString()}> {location.locationName}</option>))}
+                    {locations.map((location: any) => (<option key={location.locationId} value={location.locationId.toString()}> {location.locationName}</option>))}
                   </select>
                 </div>
               </div>
@@ -448,7 +417,7 @@ const ModalDialog = () => {
                     onChange={(event: any) => setSubLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {location=="0" ? []: (subLocations.filter((subLocation:any)=>Number(location)==subLocation.locationId).map((subLocation:any)=>(<option key={subLocation.subLocationId} value={subLocation.subLocationId.toString()}>{subLocation.subLocationName}</option>)))}
+                    {location == "0" ? [] : (subLocations.filter((subLocation: any) => Number(location) == subLocation.locationId).map((subLocation: any) => (<option key={subLocation.subLocationId} value={subLocation.subLocationId.toString()}>{subLocation.subLocationName}</option>)))}
                   </select>
                 </div>
               </div>
