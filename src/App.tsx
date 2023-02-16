@@ -20,8 +20,10 @@ import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import ResourceReport from "./Reports/ResourceReport/ResourceReport";
 import HolidayListReport from "./Reports/HolidayListReport/HolidayListReport";
+import { useSelector } from "react-redux";
 
 const App = () => {
+    const userType=useSelector((state:any)=>state.User.userType);
     return (
         <div>
             <ToastContainer autoClose={1000}/>
@@ -35,13 +37,13 @@ const App = () => {
                     <Route path={APP_ROUTES.ALLOCATIONRESOURCERPOT} element={<ResourceReport />} />
                     <Route path={APP_ROUTES.ALLOCATIONPROJECTRPOT} element={<ProjectReport />} />
                     <Route path={APP_ROUTES.HOLIDAYLISTRPOT} element={<HolidayListReport />} />
-                    <Route path={APP_ROUTES.HOLIDAYMASTER} element={<HolidayMaster />} />
-                    <Route path={APP_ROUTES.EMPLOYEEMASTER} element={<EmployeeMaster />} />
-                    <Route path={APP_ROUTES.PROJECTINFO} element={<ProjectInfo />} />
-                    <Route path={APP_ROUTES.MARKET} element={<Market/>} />
+                    {userType=="Admin" && <Route path={APP_ROUTES.HOLIDAYMASTER} element={<HolidayMaster />} />}
+                    {userType=="Admin" &&<Route path={APP_ROUTES.EMPLOYEEMASTER} element={<EmployeeMaster />} />}
+                    {userType=="Admin" &&<Route path={APP_ROUTES.PROJECTINFO} element={<ProjectInfo />} />}
+                    {userType=="Admin" &&<Route path={APP_ROUTES.MARKET} element={<Market/>} />}
                     <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
                     <Route path={APP_ROUTES.HELP} element={<Help />} />
-                    <Route path={APP_ROUTES.PROJECTALLOCATION} element={<ProjectAllocation />} />
+                    {userType=="Admin" &&<Route path={APP_ROUTES.PROJECTALLOCATION} element={<ProjectAllocation />} />}
                 </Routes>
             </HashRouter>
 

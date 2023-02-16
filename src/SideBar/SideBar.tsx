@@ -6,6 +6,7 @@ import Collapsible from 'react-collapsible';
 import { Link, useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "../constants";
 import "./SideBarJs";
+import { useSelector } from 'react-redux';
 
 const func2 = (element: string) => {
     // var elementcls = document.getElementsByClassName("nav-link");
@@ -25,6 +26,8 @@ const SideBar = () => {
         setIsActive(current => !current);
     };
     const [show, setShow] = useState(false);
+    const username= useSelector((state:any)=>state.User.username);
+    const userType= useSelector((state:any)=>state.User.userType);
 
     return (
         <div id="body-pd">
@@ -39,7 +42,7 @@ const SideBar = () => {
                         <input type="checkbox" id="box" style={{display:"none"}}/>
                         <label htmlFor ="box" style={{marginBottom: "0px"}}>
                             <div className="dropbtns">
-                                <span style={{ padding: "10px 10px 10px 10px", lineHeight: "40px" }}>Test User</span>
+                                <span style={{ padding: "10px 10px 10px 10px", lineHeight: "40px" }}>{username}</span>
                                 <div className="header_img" style={{ float: "right" }}>
                                     <img src={nouserimage} alt="" />
                                 </div>
@@ -64,7 +67,7 @@ const SideBar = () => {
                                 <i className="fa fa-home" aria-hidden="true"></i>
                                 <span className="nav_name">Home</span>
                             </Link>
-                            <a className="nav_link" id="MasterEntry" onClick={() => func2("MasterEntry")}>
+                           {userType=="Admin" &&  <a className="nav_link" id="MasterEntry" onClick={() => func2("MasterEntry")}>
                                 <span className="nav_name">
                                     <div className="row">
                                         <div className="col-md-2">
@@ -85,11 +88,11 @@ const SideBar = () => {
                                         </div>
                                     </div>
                                 </span>
-                            </a>
-                            <Link to="/ProjectAllocation" className="nav_link" id="ProjectAllocation" onClick={() => { navigate(APP_ROUTES.PROJECTALLOCATION) }}>
+                            </a>}
+                            {userType=="Admin" && <Link to="/ProjectAllocation" className="nav_link" id="ProjectAllocation" onClick={() => { navigate(APP_ROUTES.PROJECTALLOCATION) }}>
                                 <i className="las la-user-circle" aria-hidden="true"></i>
                                 <span className="nav_name">Project Allocation</span>
-                            </Link>
+                            </Link>}
                             <a className="nav_link" id="ReportsList">
                                 <span className="nav_name">
                                     

@@ -6,16 +6,28 @@ import { useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "../constants";
 import ToastNotification from "../Toasts/Toast";
 import { toast, ToastContainer } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { userActions } from "../Store/Slices/User";
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    const dispatch=useDispatch();
     const [username,setUsername]=useState("");
     const [password,setPassword]=useState("");
+    
 
     const onLoginButtonSubmitHandler=(event : any)=>{
         event.preventDefault();
         if(username=="tuser" && password=="TestUser@123")
+        {
+        dispatch(userActions.setUser({username:"Test User",userType:"User"}))
         navigate(APP_ROUTES.DASHBOARD)
+        }
+        else if(username=="tadmin" && password=="TestAdmin@123")
+        {
+            dispatch(userActions.setUser({username:"Test Admin",userType:"Admin"}))
+            navigate(APP_ROUTES.DASHBOARD)
+        }
         else
         toast.info("Invalid Username or Password");
 
