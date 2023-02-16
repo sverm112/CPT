@@ -9,6 +9,8 @@ import { projectActions } from "../../Store/Slices/Project";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { employeeActions } from "../../Store/Slices/Employee";
+import DownloadBtn from "../../Export/DownloadBtn";
+
 const columns = [
   {
     name: "Project Code",
@@ -26,28 +28,28 @@ const columns = [
   },
   {
     name: "Project Model",
-    selector: (row: { projectModel: any }) => row.projectModel =="0" ? "" : row.projectModel,
+    selector: (row: { projectModel: any }) => row.projectModel == "0" ? "" : row.projectModel,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Market",
-    selector: (row: { projectMarket: any }) => row.projectMarket=="0" ? "" : row.projectMarket,
+    selector: (row: { projectMarket: any }) => row.projectMarket == "0" ? "" : row.projectMarket,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Program Manager",
-    selector: (row: { programManager: any }) =>  row.programManager,
+    selector: (row: { programManager: any }) => row.programManager,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Expense Type",
-    selector: (row: { expenseType: any }) => row.expenseType =="0" ? "" : row.expenseType,
+    selector: (row: { expenseType: any }) => row.expenseType == "0" ? "" : row.expenseType,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -85,27 +87,27 @@ const ProjectInfo = () => {
     { label: "CAPEX", value: "CAPEX" },
     { label: "OPEX", value: "OPEX" },
   ];
-  const status=useSelector((state: any) => state.Filters.status);
-  const projectModels=[
-    {label :"Waterfall",value:"Waterfall"},
-    {label :"Kanban",value:"Kanban"},
-    {label :"Scrum",value:"Scrum"},
-    {label :"Agile",value:"Agile"},
+  const status = useSelector((state: any) => state.Filters.status);
+  const projectModels = [
+    { label: "Waterfall", value: "Waterfall" },
+    { label: "Kanban", value: "Kanban" },
+    { label: "Scrum", value: "Scrum" },
+    { label: "Agile", value: "Agile" },
   ]
   const projects = useSelector((store: any) => store.Project.data);
-  const marketList=useSelector((state: any) => state.Market.data);
+  const marketList = useSelector((state: any) => state.Market.data);
   const toggle = useSelector((store: any) => store.Project.toggle);
-  const projectModelSelected= useSelector((store: any) => store.Project.projectModel);
+  const projectModelSelected = useSelector((store: any) => store.Project.projectModel);
   const marketSelected = useSelector((store: any) => store.Project.market);
   const expenseTypeSelected = useSelector((store: any) => store.Project.expenseType);
   const statusSelected = useSelector((store: any) => store.Project.status);
-  const [showModal,setShowModal]=useState(false);
-  const [action,setAction]=useState("Add");
-  const [updateProjectDetails,setUpdateProjectDetails]=useState({});
-  const openModal=()=>{
+  const [showModal, setShowModal] = useState(false);
+  const [action, setAction] = useState("Add");
+  const [updateProjectDetails, setUpdateProjectDetails] = useState({});
+  const openModal = () => {
     setShowModal(true);
   }
-  const closeModal=()=>{
+  const closeModal = () => {
     setShowModal(false);
     setAction("Add");
   }
@@ -113,7 +115,7 @@ const ProjectInfo = () => {
   const getProjectDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Projects/GetAllProjects");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,projectMarket : row.marketName,projectId : row.pkProjectID,createdDate : row.createdDate.slice(0, 10), isActive : row.isActive==1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, createdDate: row.createdDate.slice(0, 10), isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -123,7 +125,7 @@ const ProjectInfo = () => {
   const getMarketDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
   };
@@ -132,36 +134,41 @@ const ProjectInfo = () => {
   }, []);
 
 
-  const filteredProjects=projects.filter(
-    (project : any)=>{
-      const projectModelOptions=projectModelSelected.map((projectModel: any) => projectModel.value)
-      const marketOptions=marketSelected.map((market: any)=>market.value);
-      const expenseTypeOptions=expenseTypeSelected.map((expenseType: any)=>expenseType.value);
-      const statusOptions=statusSelected.map((status: any)=>status.value);
+  const filteredProjects = projects.filter(
+    (project: any) => {
+      const projectModelOptions = projectModelSelected.map((projectModel: any) => projectModel.value)
+      const marketOptions = marketSelected.map((market: any) => market.value);
+      const expenseTypeOptions = expenseTypeSelected.map((expenseType: any) => expenseType.value);
+      const statusOptions = statusSelected.map((status: any) => status.value);
       console.log(statusOptions);
-      if((!marketSelected.length) ||(marketSelected.length>0 && marketOptions.includes(project.projectMarket)==true))
-      { 
-          if( (!expenseTypeSelected.length) || (expenseTypeSelected.length>0 && expenseTypeOptions.includes(project.expenseType)==true))
-          {
-            
-            if((!statusSelected.length)|| (statusSelected.length>0 && statusOptions.includes(project.isActive) ))
-            {
-              if((!projectModelSelected.length)|| (projectModelSelected.length>0 && projectModelOptions.includes(project.projectModel) ))
+      if ((!marketSelected.length) || (marketSelected.length > 0 && marketOptions.includes(project.projectMarket) == true)) {
+        if ((!expenseTypeSelected.length) || (expenseTypeSelected.length > 0 && expenseTypeOptions.includes(project.expenseType) == true)) {
+
+          if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(project.isActive))) {
+            if ((!projectModelSelected.length) || (projectModelSelected.length > 0 && projectModelOptions.includes(project.projectModel)))
               return true;
-            }
-          } 
+          }
+        }
       }
       return false;
     }
   );
-  const handleRowDoubleClicked=(row: any)=>{
+  const handleRowDoubleClicked = (row: any) => {
     console.log(row);
     setShowModal(true);
     setAction("Update");
-    let data={...row,isActive:row.isActive=="Active" ? "1" : "2"}
+    let data = { ...row, isActive: row.isActive == "Active" ? "1" : "2" }
     console.log(data);
     setUpdateProjectDetails(data);
-   }
+  };
+
+  //start constants for export
+  const title = "Project Details";
+  const selectors = ['projectCode', 'projectName', 'projectModel',
+    'projectMarket', 'programManager', 'expenseType',
+    'isActive', 'createdDate', 'createdBy'];
+  //end constants for export
+
   return (
     <div>
       <SideBar></SideBar>
@@ -183,13 +190,13 @@ const ProjectInfo = () => {
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 style={{ marginRight: "150px" }}
               /> */}
-              {action=="Add" &&<ModalDialog  showModal={showModal} openModal={openModal} closeModal={closeModal} />}
-              {action=="Update" &&<UpdateModal initialValues={updateProjectDetails}  showModal={showModal} openModal={openModal} closeModal={closeModal} />}
-            
+              {action == "Add" && <ModalDialog showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action == "Update" && <UpdateModal initialValues={updateProjectDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+
             </div>
           </div>
           <div className="row filter-row">
-          <div className="col-md-2 form-group">
+            <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Project Model
               </label>
@@ -206,7 +213,7 @@ const ProjectInfo = () => {
                 Market
               </label>
               <MultiSelect
-                options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
+                options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
                 value={marketSelected}
                 onChange={(event: any) => dispatch(projectActions.changeMarket(event))}
                 labelledBy="Select Market"
@@ -231,17 +238,23 @@ const ProjectInfo = () => {
                 Status
               </label>
               <MultiSelect
-                options={status.map((status:any)=>({label:status,value:status}))}
+                options={status.map((status: any) => ({ label: status, value: status }))}
                 value={statusSelected}
                 onChange={(event: any) => dispatch(projectActions.changeStatus(event))}
                 labelledBy="Select Status"
                 valueRenderer={customValueRenderer}
               />
             </div>
-            <div className="col-md-2" style={{marginTop:"24px"}}>
-              <button type="button" className="btn btn-primary" onClick={()=>dispatch(projectActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            <div className="col-md-2" style={{ marginTop: "24px" }}>
+              <button type="button" className="btn btn-primary" onClick={() => dispatch(projectActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
+          <DownloadBtn
+            columns={columns}
+            filteredRecords={filteredProjects}
+            selectors={selectors}
+            title={title}>
+          </DownloadBtn>
           <Table columns={columns} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} />
         </div>
       </div>
@@ -249,19 +262,19 @@ const ProjectInfo = () => {
   );
 };
 
-const ModalDialog=(props:any)=> {
+const ModalDialog = (props: any) => {
   const dispatch = useDispatch();
-  
 
-  const marketList=useSelector((state: any) => state.Market.data);
+
+  const marketList = useSelector((state: any) => state.Market.data);
   const [projectCode, setProjectCode] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectModel, setProjectModel] = useState("0");
   const [projectMarket, setProjectMarket] = useState("0");
   const [expenseType, setExpenseType] = useState("0");
-  const [programManager,setProgramManager]=useState("");
+  const [programManager, setProgramManager] = useState("");
 
-  const resetFormFields =()=>{
+  const resetFormFields = () => {
     setProjectCode("");
     setProjectName("");
     setProjectModel("0");
@@ -276,7 +289,7 @@ const ModalDialog=(props:any)=> {
       projectName: projectName,
       projectModel: projectModel,
       expenseType: expenseType,
-      fkMarketID: projectMarket=="0" ? 0 :Number(projectMarket),
+      fkMarketID: projectMarket == "0" ? 0 : Number(projectMarket),
       programManager: programManager,
       createdBy: "Admin"
     };
@@ -376,10 +389,10 @@ const ModalDialog=(props:any)=> {
                     className="form-control"
                     id="projectMarket"
                     value={projectMarket}
-                    onChange={(event: any) => {console.log(projectMarket);setProjectMarket(event.target.value)}}
+                    onChange={(event: any) => { console.log(projectMarket); setProjectMarket(event.target.value) }}
                   >
                     <option value="0">Select</option>
-                    {marketList.filter((market:any)=>market.isActive=="Active").map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                    {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>
@@ -412,7 +425,7 @@ const ModalDialog=(props:any)=> {
                   onChange={(event: any) => setProgramManager(event.target.value)}
                 />
               </div>
-              
+
             </div>
             <div className="row">
               <div className="col-md-12">
@@ -428,21 +441,21 @@ const ModalDialog=(props:any)=> {
   );
 }
 
-const UpdateModal=(props:any) =>{
+const UpdateModal = (props: any) => {
   const dispatch = useDispatch();
-  const marketList=useSelector((state: any) => state.Market.data);
+  const marketList = useSelector((state: any) => state.Market.data);
   const [formValues, setFormValues] = useState(props.initialValues || {});
-  const formSubmitHandler = async (event : any) => {
+  const formSubmitHandler = async (event: any) => {
     event.preventDefault();
     let payload = {
-      pkProjectID : formValues.pkProjectID,
-      projectCode:  formValues.projectCode,
+      pkProjectID: formValues.pkProjectID,
+      projectCode: formValues.projectCode,
       projectName: formValues.projectName,
       projectModel: formValues.projectModel,
       expenseType: formValues.expenseType,
-      fkMarketID: formValues.fkMarketID=="0" ? 0 :Number(formValues.fkMarketID),
+      fkMarketID: formValues.fkMarketID == "0" ? 0 : Number(formValues.fkMarketID),
       programManager: formValues.programManager,
-      isActive : formValues.isActive=="2" ? "0" : "1",
+      isActive: formValues.isActive == "2" ? "0" : "1",
       updatedBy: "Admin",
     };
     try {
@@ -467,9 +480,9 @@ const UpdateModal=(props:any) =>{
       toast.error("Some Error occured.");
     }
   };
-    
 
-  const handleChange = (e :any) => {
+
+  const handleChange = (e: any) => {
     console.log("Update")
     setFormValues({
       ...formValues,
@@ -555,7 +568,7 @@ const UpdateModal=(props:any) =>{
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    {marketList.filter((market:any)=>market.isActive=="Active").map((market:any)=><option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                    {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>
@@ -565,7 +578,7 @@ const UpdateModal=(props:any) =>{
                 </label>
                 <div className="dropdown">
                   <select
-                  name="expenseType"
+                    name="expenseType"
                     className="form-control"
                     id="expenseType"
                     value={formValues.expenseType}
@@ -582,7 +595,7 @@ const UpdateModal=(props:any) =>{
                   Program Manager
                 </label>
                 <input
-                name="programManager"
+                  name="programManager"
                   type="text"
                   className="form-control"
                   id="programManager"
@@ -594,11 +607,11 @@ const UpdateModal=(props:any) =>{
                 <label className="form-label">Status</label>
                 <div className="dropdown">
                   <select
-                   name="isActive"
+                    name="isActive"
                     className="form-control"
                     id="statusDropdown"
                     value={formValues.isActive}
-                  onChange={handleChange}
+                    onChange={handleChange}
                   >
                     <option value="0">Select</option>
                     <option value="1">Active</option>

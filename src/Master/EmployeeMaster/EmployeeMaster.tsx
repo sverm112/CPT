@@ -1,6 +1,6 @@
 import SideBar from "../../SideBar/SideBar";
 import { Modal, Button } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Table from "../../DataTable/DataTable";
 import { MultiSelect } from "react-multi-select-component";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,6 +9,8 @@ import { read, utils, writeFile } from "xlsx";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { filterActions } from "../../Store/Slices/Filters";
+import DownloadBtn from "../../Export/DownloadBtn";
+
 
 const columns = [
   {
@@ -20,14 +22,14 @@ const columns = [
   },
   {
     name: "Role",
-    selector: (row: { role: any }) => row.role =="0" ? "" : row.role,
+    selector: (row: { role: any }) => row.role == "0" ? "" : row.role,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Email Address",
-    selector: (row: { emailAddress: any }) => row.emailAddress ,
+    selector: (row: { emailAddress: any }) => row.emailAddress,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -41,28 +43,28 @@ const columns = [
   },
   {
     name: "Resource Type",
-    selector: (row: { resourceType: any }) => row.resourceType =="0" ? "" : row.resourceType,
+    selector: (row: { resourceType: any }) => row.resourceType == "0" ? "" : row.resourceType,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Market",
-    selector: (row: { resourceMarket: any }) => row.resourceMarket =="0" ? "" : row.resourceMarket,
+    selector: (row: { resourceMarket: any }) => row.resourceMarket == "0" ? "" : row.resourceMarket,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Location",
-    selector: (row: { location: any }) => row.location =="0" ? "" : row.location,
+    selector: (row: { location: any }) => row.location == "0" ? "" : row.location,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Sub Location",
-    selector: (row: { subLocation: any }) => row.subLocation =="0" ? "" : row.subLocation,
+    selector: (row: { subLocation: any }) => row.subLocation == "0" ? "" : row.subLocation,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -90,7 +92,6 @@ const columns = [
   },
 ];
 
-
 const customValueRenderer = (selected: any, _options: any) => {
   if (selected.length == "0") return "Select";
   else if (selected.length == "1") return selected[0].label;
@@ -99,24 +100,24 @@ const customValueRenderer = (selected: any, _options: any) => {
 
 const EmployeeMaster = () => {
   const dispatch = useDispatch();
-  const roles=useSelector((state: any) => state.Filters.roles);
-  const resourceTypes=useSelector((state: any) => state.Filters.resourceTypes);
-  const status=useSelector((state: any) => state.Filters.status);
+  const roles = useSelector((state: any) => state.Filters.roles);
+  const resourceTypes = useSelector((state: any) => state.Filters.resourceTypes);
+  const status = useSelector((state: any) => state.Filters.status);
   const toggle = useSelector((state: any) => state.Employee.toggle);
   const resources = useSelector((state: any) => state.Employee.data);
-  const marketList=useSelector((state: any) => state.Market.data);
+  const marketList = useSelector((state: any) => state.Market.data);
   const marketSelected = useSelector((state: any) => state.Employee.market);
   const roleSelected = useSelector((state: any) => state.Employee.role);
   const resourceTypeSelected = useSelector((state: any) => state.Employee.resourceType);
   const statusSelected = useSelector((state: any) => state.Employee.status);
-  const managerSelected=useSelector((state: any) => state.Employee.manager);
-  const [showModal,setShowModal]=useState(false);
-  const [action,setAction]=useState("Add");
-  const [updateResourceDetails,setUpdateResourceDetails]=useState({});
-  const openModal=()=>{
+  const managerSelected = useSelector((state: any) => state.Employee.manager);
+  const [showModal, setShowModal] = useState(false);
+  const [action, setAction] = useState("Add");
+  const [updateResourceDetails, setUpdateResourceDetails] = useState({});
+  const openModal = () => {
     setShowModal(true);
   }
-  const closeModal=()=>{
+  const closeModal = () => {
     setShowModal(false);
     setAction("Add");
   }
@@ -141,7 +142,7 @@ const EmployeeMaster = () => {
     try {
       const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
       dispatch(employeeActions.changeData(dataGet));
     } catch {
       console.log("Error occured");
@@ -154,15 +155,15 @@ const EmployeeMaster = () => {
   const getMarketDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(marketActions.changeData(dataGet));
   };
-  const getLocationDetails= async () =>{
+  const getLocationDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Location/GetAllLocations");
     const dataGet = await response.json();
     dispatch(filterActions.changeLocations(dataGet));
   }
-  const getSubLocationDetails= async () =>{
+  const getSubLocationDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/SubLocation/GetAllSubLocations");
     const dataGet = await response.json();
     dispatch(filterActions.changeSubLocations(dataGet));
@@ -179,8 +180,6 @@ const EmployeeMaster = () => {
   const handleDownloadTemplate = async () => {
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
-
-
     const wb = utils.book_new();
     const ws = utils.json_to_sheet([]);
     utils.sheet_add_aoa(ws, resourceColumns);
@@ -216,7 +215,7 @@ const EmployeeMaster = () => {
             console.log(dataResponse[0].statusReason);
             console.log(dataResponse[0].recordsCreated);
             dispatch(employeeActions.changeToggle());
-            toast.success(dataResponse[0].recordsCreated+" Resources Added Successfully")
+            toast.success(dataResponse[0].recordsCreated + " Resources Added Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
       } catch {
@@ -244,50 +243,51 @@ const EmployeeMaster = () => {
   };
 
 
-  const filteredResources=resources.filter(
-    (resource : any)=>{
+  const filteredResources = resources.filter(
+    (resource: any) => {
 
-      const marketOptions=marketSelected.map((market: any)=>market.value);
-      const resourceTypeOptions=resourceTypeSelected.map((resourceType: any)=>resourceType.value);
-      const roleOptions=roleSelected.map((role: any)=>role.value);
-      const statusOptions=statusSelected.map((status: any)=>status.value);
-      const managerOptions=managerSelected.map((manager: any)=>manager.value);
-      if((!marketSelected.length) ||(marketSelected.length>0 && marketOptions.includes(resource.resourceMarket)==true))
-      {
-        
-        if(  (!resourceTypeSelected.length) || (resourceTypeSelected.length>0 && resourceTypeOptions.includes(resource.resourceType)==true))
-        {
-          
-          if( (!roleSelected.length) || (roleSelected.length>0 && roleOptions.includes(resource.role)==true))
-          {
-            
-            if((!statusSelected.length)|| (statusSelected.length>0 && statusOptions.includes(resource.isActive) ))
-            {
-              if((!managerSelected.length)|| (managerSelected.length>0 && managerOptions.includes(resource.manager) ))
-              return true;
+      const marketOptions = marketSelected.map((market: any) => market.value);
+      const resourceTypeOptions = resourceTypeSelected.map((resourceType: any) => resourceType.value);
+      const roleOptions = roleSelected.map((role: any) => role.value);
+      const statusOptions = statusSelected.map((status: any) => status.value);
+      const managerOptions = managerSelected.map((manager: any) => manager.value);
+      if ((!marketSelected.length) || (marketSelected.length > 0 && marketOptions.includes(resource.resourceMarket) == true)) {
+
+        if ((!resourceTypeSelected.length) || (resourceTypeSelected.length > 0 && resourceTypeOptions.includes(resource.resourceType) == true)) {
+
+          if ((!roleSelected.length) || (roleSelected.length > 0 && roleOptions.includes(resource.role) == true)) {
+
+            if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(resource.isActive))) {
+              if ((!managerSelected.length) || (managerSelected.length > 0 && managerOptions.includes(resource.manager)))
+                return true;
             }
-            
+
           }
-        } 
+        }
       }
       return false;
     }
   );
-  const managers :any =[];
-  resources.map((resource:any)=>{
-      if(managers.indexOf(resource.manager)===-1){
-          managers.push(resource.manager);
-      }
+  const managers: any = [];
+  resources.map((resource: any) => {
+    if (managers.indexOf(resource.manager) === -1) {
+      managers.push(resource.manager);
+    }
   })
- const handleRowDoubleClicked=(row: any)=>{
-  console.log(row);
-  setShowModal(true);
-  setAction("Update");
-  let data={...row,isActive:row.isActive=="Active" ? "1" : "2"}
-  console.log(data);
-  setUpdateResourceDetails(data);
- }
- 
+  const handleRowDoubleClicked = (row: any) => {
+    setShowModal(true);
+    setAction("Update");
+    let data = { ...row, isActive: row.isActive == "Active" ? "1" : "2" }
+    setUpdateResourceDetails(data);
+  };
+
+  //start constants for export
+  const selectors = ['resourceName', 'role', 'emailAddress', 'manager',
+    'resourceType', 'resourceMarket', 'location', 'subLocation',
+    'isActive', 'createdDate', 'createdBy'];
+  const title = "Employee Details";
+  //end constants for export
+
   return (
     <div>
       <SideBar></SideBar>
@@ -315,18 +315,18 @@ const EmployeeMaster = () => {
                 onChange={handleUploadResourceFile}
               />
 
-              {action=="Add" &&<ModalDialog  showModal={showModal} openModal={openModal} closeModal={closeModal} />}
-              {action=="Update" &&<UpdateModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action == "Add" && <ModalDialog showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action == "Update" && <UpdateModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
             </div>
           </div>
           <div className="row filter-row">
-            
+
             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Role
               </label>
               <MultiSelect
-                options={roles.map((role:any)=>({label:role,value:role}))}
+                options={roles.map((role: any) => ({ label: role, value: role }))}
                 value={roleSelected}
                 onChange={changeRoleSelectHandler}
                 labelledBy="Select Role"
@@ -339,7 +339,7 @@ const EmployeeMaster = () => {
                 Manager
               </label>
               <MultiSelect
-                options={managers.map((manager:any)=>({label : manager,value:manager}))}
+                options={managers.map((manager: any) => ({ label: manager, value: manager }))}
                 value={managerSelected}
                 onChange={changeManagerSelectHandler}
                 labelledBy="Select Manager"
@@ -351,7 +351,7 @@ const EmployeeMaster = () => {
                 Resource Type
               </label>
               <MultiSelect
-                options={resourceTypes.map((resourceType:any)=>({label : resourceType,value:resourceType}))}
+                options={resourceTypes.map((resourceType: any) => ({ label: resourceType, value: resourceType }))}
                 value={resourceTypeSelected}
                 onChange={changeResourceTypeSelectHandler}
                 labelledBy="Select Resource Type"
@@ -363,7 +363,7 @@ const EmployeeMaster = () => {
                 Market
               </label>
               <MultiSelect
-                options={(marketList.map((market:any)=>({label : market.marketName, value : market.marketName})))}
+                options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
                 value={marketSelected}
                 onChange={changeMarketSelectHandler}
                 labelledBy="Select Market"
@@ -375,35 +375,38 @@ const EmployeeMaster = () => {
                 Status
               </label>
               <MultiSelect
-                options={status.map((status:any)=>({label:status,value:status}))}
+                options={status.map((status: any) => ({ label: status, value: status }))}
                 value={statusSelected}
                 onChange={changeStatusSelectHandler}
                 labelledBy="Select Status"
                 valueRenderer={customValueRenderer}
               />
             </div>
-            <div className="col-md-2" style={{marginTop:"24px"}}>
-              <button type="button" className="btn btn-primary" onClick={()=>dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            <div className="col-md-2" style={{ marginTop: "24px" }}>
+              <button type="button" className="btn btn-primary" onClick={() => dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
-
-          <Table columns={columns} data={filteredResources} onRowDoubleClicked={handleRowDoubleClicked}/>
+          <DownloadBtn 
+            columns={columns}
+            filteredRecords={filteredResources}
+            selectors={selectors}
+            title={title}>
+          </DownloadBtn>
+          <Table columns={columns} data={filteredResources} onRowDoubleClicked={handleRowDoubleClicked} />
         </div>
       </div>
     </div>
   );
 };
 
-
-
-const ModalDialog = (props : any) => {
+const ModalDialog = (props: any) => {
   const dispatch = useDispatch();
-  const roles=useSelector((state: any) => state.Filters.roles);
-  const resourceTypes=useSelector((state: any) => state.Filters.resourceTypes);
-  const marketList=useSelector((state: any) => state.Market.data);
-  const locations=useSelector((state: any) => state.Filters.locations);
-  const subLocations=useSelector((state: any) => state.Filters.subLocations);
- 
+  const roles = useSelector((state: any) => state.Filters.roles);
+  const resourceTypes = useSelector((state: any) => state.Filters.resourceTypes);
+  const marketList = useSelector((state: any) => state.Market.data);
+  const locations = useSelector((state: any) => state.Filters.locations);
+  const subLocations = useSelector((state: any) => state.Filters.subLocations);
+
   const [employeeName, setEmployeeName] = useState("");
   const [role, setRole] = useState("0");
   const [manager, setManager] = useState("");
@@ -449,8 +452,6 @@ const ModalDialog = (props : any) => {
       toast.error("Some Error occured.");
     }
   };
-
-  
 
   const resetFormFields = () => {
     setEmployeeName("");
@@ -502,7 +503,7 @@ const ModalDialog = (props : any) => {
                     onChange={(event) => setRole(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {roles.map((role:any)=>(<option key={role} value={role}>{role}</option>))}
+                    {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
                   </select>
                 </div>
               </div>
@@ -536,7 +537,7 @@ const ModalDialog = (props : any) => {
                     onChange={(event) => setResourceType(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {resourceTypes.map((resourceType:any)=>(<option key={resourceType} value={resourceType}>{resourceType}</option>))}
+                    {resourceTypes.map((resourceType: any) => (<option key={resourceType} value={resourceType}>{resourceType}</option>))}
                   </select>
                 </div>
               </div>
@@ -550,7 +551,7 @@ const ModalDialog = (props : any) => {
                     onChange={(event) => setMarket(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {marketList.filter((market:any)=>market.isActive=="Active").map((market:any)=><option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
+                    {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>
@@ -564,7 +565,7 @@ const ModalDialog = (props : any) => {
                     onChange={(event) => setLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {locations.map((location:any)=>(<option key={location.locationId} value={location.locationName}> {location.locationName}</option>))}
+                    {locations.map((location: any) => (<option key={location.locationId} value={location.locationName}> {location.locationName}</option>))}
                   </select>
                 </div>
               </div>
@@ -579,11 +580,11 @@ const ModalDialog = (props : any) => {
                     onChange={(event: any) => setSubLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {location=="0" ? []: (subLocations.filter((subLocation:any)=>location==subLocation.locationName).map((subLocation:any)=>(<option key={subLocation.subLocationId} value={subLocation.subLocationName}>{subLocation.subLocationName}</option>)))}
+                    {location == "0" ? [] : (subLocations.filter((subLocation: any) => location == subLocation.locationName).map((subLocation: any) => (<option key={subLocation.subLocationId} value={subLocation.subLocationName}>{subLocation.subLocationName}</option>)))}
                   </select>
                 </div>
               </div>
-              
+
             </div>
             <div className="row">
               <div className="col-md-12">
@@ -599,25 +600,25 @@ const ModalDialog = (props : any) => {
   );
 };
 
-const onSave=(props: any)=>{
+const onSave = (props: any) => {
   console.log(props);
 }
 
-const UpdateModal=(props:any) =>{
+const UpdateModal = (props: any) => {
   const dispatch = useDispatch();
-  const locations=useSelector((state: any) => state.Filters.locations);
-  const subLocations=useSelector((state: any) => state.Filters.subLocations);
-  const roles=useSelector((state: any) => state.Filters.roles);
-  const resourceTypes=useSelector((state: any) => state.Filters.resourceTypes);
-  const marketList=useSelector((state: any) => state.Market.data);
-  const [formValues, setFormValues] = useState(props.initialValues || {location : "0"});
-  let location=formValues.location;
-  
+  const locations = useSelector((state: any) => state.Filters.locations);
+  const subLocations = useSelector((state: any) => state.Filters.subLocations);
+  const roles = useSelector((state: any) => state.Filters.roles);
+  const resourceTypes = useSelector((state: any) => state.Filters.resourceTypes);
+  const marketList = useSelector((state: any) => state.Market.data);
+  const [formValues, setFormValues] = useState(props.initialValues || { location: "0" });
+  let location = formValues.location;
 
-  const handleSave = async (event : any) => {
+
+  const handleSave = async (event: any) => {
     event.preventDefault();
     let payload = {
-      resourceId : formValues.resourceId,
+      resourceId: formValues.resourceId,
       resourceName: formValues.resourceName,
       role: formValues.role,
       manager: formValues.manager,
@@ -626,7 +627,7 @@ const UpdateModal=(props:any) =>{
       subLocation: formValues.subLocation,
       resourceMarket: formValues.resourceMarket,
       emailAddress: formValues.emailAddress,
-      isActive : formValues.isActive=="2" ? "0" : "1",
+      isActive: formValues.isActive == "2" ? "0" : "1",
       updatedBy: "Admin",
     };
     try {
@@ -651,9 +652,9 @@ const UpdateModal=(props:any) =>{
       toast.error("Some Error occured.");
     }
   };
-    
 
-  const handleChange = (e :any) => {
+
+  const handleChange = (e: any) => {
     console.log("Update")
     setFormValues({
       ...formValues,
@@ -663,7 +664,7 @@ const UpdateModal=(props:any) =>{
 
   return (
     <>
-       <Button
+      <Button
         className="btn btn-primary"
         style={{ float: "right", marginTop: "-68px" }}
         variant="primary"
@@ -699,11 +700,11 @@ const UpdateModal=(props:any) =>{
                     name="role"
                     className="form-control"
                     value={formValues.role}
-                  onChange={handleChange}
+                    onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    {roles.map((role:any)=>(<option key={role} value={role}>{role}</option>))}
-                     </select>
+                    {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
+                  </select>
                 </div>
               </div>
               <div className="col-md-6 form-group">
@@ -736,10 +737,10 @@ const UpdateModal=(props:any) =>{
                     name="resourceType"
                     className="form-control"
                     value={formValues.resourceType}
-                  onChange={handleChange}
+                    onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    {resourceTypes.map((resourceType:any)=>(<option key={resourceType} value={resourceType}>{resourceType}</option>))}
+                    {resourceTypes.map((resourceType: any) => (<option key={resourceType} value={resourceType}>{resourceType}</option>))}
                   </select>
                 </div>
               </div>
@@ -754,7 +755,7 @@ const UpdateModal=(props:any) =>{
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    {marketList.filter((market:any)=>market.isActive=="Active").map((market:any)=><option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
+                    {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>
@@ -766,10 +767,10 @@ const UpdateModal=(props:any) =>{
                     name="location"
                     className="form-control"
                     value={formValues.location}
-                  onChange={handleChange}
+                    onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    {locations.map((location:any)=>(<option key={location.locationId} value={location.locationName}> {location.locationName}</option>))}
+                    {locations.map((location: any) => (<option key={location.locationId} value={location.locationName}> {location.locationName}</option>))}
                   </select>
                 </div>
               </div>
@@ -778,14 +779,14 @@ const UpdateModal=(props:any) =>{
                 <label className="form-label">Sub Location</label>
                 <div className="dropdown">
                   <select
-                   name="subLocation"
+                    name="subLocation"
                     className="form-control"
                     id="holidaySubLocation"
                     value={formValues.subLocation}
-                  onChange={handleChange}
+                    onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    {location=="0" ? []: (subLocations.filter((subLocation:any)=>location==subLocation.locationName).map((subLocation:any)=>(<option key={subLocation.subLocationId} value={subLocation.subLocationName}>{subLocation.subLocationName}</option>)))}
+                    {location == "0" ? [] : (subLocations.filter((subLocation: any) => location == subLocation.locationName).map((subLocation: any) => (<option key={subLocation.subLocationId} value={subLocation.subLocationName}>{subLocation.subLocationName}</option>)))}
                   </select>
                 </div>
               </div>
@@ -793,11 +794,11 @@ const UpdateModal=(props:any) =>{
                 <label className="form-label">Status</label>
                 <div className="dropdown">
                   <select
-                   name="isActive"
+                    name="isActive"
                     className="form-control"
                     id="statusDropdown"
                     value={formValues.isActive}
-                  onChange={handleChange}
+                    onChange={handleChange}
                   >
                     <option value="0">Select</option>
                     <option value="1">Active</option>
@@ -805,7 +806,7 @@ const UpdateModal=(props:any) =>{
                   </select>
                 </div>
               </div>
-              
+
             </div>
             <div className="row">
               <div className="col-md-12">

@@ -9,12 +9,13 @@ import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
+import DownloadBtn from "../../Export/DownloadBtn";
 
 const columns = [
   // {
   //   name: "Market Id",
   //   selector: (row: { pkMarketID: any }) => row.pkMarketID,
-    
+
   //   sortable: true,
   //   reorder: true,
   //   filterable: true,
@@ -76,19 +77,25 @@ const Market = () => {
   const toggle = useSelector((store: any) => store.Market.toggle);
 
   const getMarketDetails = async () => {
-    try{
+    try {
       const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
-    let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive : row.isActive==1 ? "Active" : "InActive" }));
-    dispatch(marketActions.changeData(dataGet));
+      let dataGet = await response.json();
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+      dispatch(marketActions.changeData(dataGet));
     }
-    catch{
+    catch {
       console.log("Error occured");
     }
   };
   useEffect(() => {
     getMarketDetails();
   }, [toggle]);
+
+  //start constants for export
+  const selectors = ['marketName', 'marketDomain', 'isActive', 'createdDate', 'createdBy']
+  const title = "Market Details";
+  //end constants for export
+
   return (
     <div>
       <SideBar></SideBar>
@@ -127,6 +134,12 @@ const Market = () => {
               />
             </div> */}
           </div>
+          <DownloadBtn 
+            columns={columns}
+            filteredRecords={markets}
+            selectors={selectors}
+            title={title}>
+          </DownloadBtn>
           <Table columns={columns} data={markets} />
         </div>
       </div>
@@ -146,7 +159,7 @@ const ModalDialog = () => {
   }
   const [marketName, setMarketName] = useState("");
   const [marketDomain, setMarketDomain] = useState("");
-  const resetFormFields=()=>{
+  const resetFormFields = () => {
     setMarketName("");
     setMarketDomain("");
   }
@@ -155,7 +168,7 @@ const ModalDialog = () => {
     let payload = {
       marketName: marketName,
       marketDomain: marketDomain,
-      createdBy : "Admin"
+      createdBy: "Admin"
     };
     try {
       const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/PostMarket", {
@@ -182,7 +195,7 @@ const ModalDialog = () => {
     }
   };
 
-  
+
 
   return (
     <>
