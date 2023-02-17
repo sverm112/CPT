@@ -73,6 +73,7 @@ const Market = () => {
   ];
   const dispatch = useDispatch();
   const markets = useSelector((store: any) => store.Market.data);
+  const columnsSelected = useSelector((store: any) => store.Market.columns);
   //const marketNameSelected = useSelector((store: any) => store.Market.marketName);
   const toggle = useSelector((store: any) => store.Market.toggle);
 
@@ -95,6 +96,13 @@ const Market = () => {
   const selectors = ['marketName', 'marketDomain', 'isActive', 'createdDate', 'createdBy']
   const title = "Market Details";
   //end constants for export
+ let filteredColumns=columns;
+  if(columnsSelected.length)
+ {
+  const columnsSelectedList=columnsSelected.map((column:any)=>column.label);
+   filteredColumns=columns.filter((column:any)=> columnsSelectedList.includes(column['name'])==true)
+   console.log(columnsSelectedList,filteredColumns);
+ }
 
   return (
     <div>
@@ -121,18 +129,18 @@ const Market = () => {
             </div>
           </div>
           <div className="row filter-row">
-            {/* <div className="col-md-2 form-group">
+            <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
-                Market Name
+                Columns
               </label>
               <MultiSelect
-                options={marketNames}
-                value={marketNameSelected}
-                onChange={(event: any) => dispatch(marketActions.changeMarketName(event))}
+                options={columns.map((column:any)=>({label : column['name'],value:column['name']}))}
+                value={columnsSelected}
+                onChange={(event: any) => dispatch(marketActions.changeColumns(event))}
                 labelledBy="Select Market Code"
                 valueRenderer={customValueRenderer}
               />
-            </div> */}
+            </div>
           </div>
           <DownloadBtn 
             columns={columns}
@@ -140,7 +148,7 @@ const Market = () => {
             selectors={selectors}
             title={title}>
           </DownloadBtn>
-          <Table columns={columns} data={markets} />
+          <Table columns={filteredColumns} data={markets} />
         </div>
       </div>
     </div>
