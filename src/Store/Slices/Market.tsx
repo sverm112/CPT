@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  marketName: [],
+  columns: [],
   data: [],
   currentPage: "1",
   pageSize: "10",
@@ -13,8 +13,8 @@ const marketSlice = createSlice({
   name: "Market",
   initialState: initialState,
   reducers: {
-    changeMarketName(state, action) {
-      state.marketName = action.payload;
+    changeColumns(state, action) {
+      state.columns = action.payload;
     },
     changeData(state, action) {
       state.data = action.payload;
