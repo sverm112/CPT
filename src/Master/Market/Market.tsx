@@ -95,6 +95,13 @@ const Market = () => {
   //start constants for export
   const selectors = ['marketName', 'marketDomain', 'isActive', 'createdDate', 'createdBy']
   const title = "Market Details";
+
+  const columnsAndSelectors=[
+    {'name' :'Market Name','selector':'marketName'},
+  {'name' :'Market Domain','selector':'marketDomain'},
+  {'name' :'Status','selector':'isActive'},
+  {'name' :'Created Date','selector':'createdDate'},
+  {'name' :'Created By','selector':'createdBy'}];
   //end constants for export
  let filteredColumns=columns;
   if(columnsSelected.length)
@@ -142,13 +149,13 @@ const Market = () => {
               />
             </div>
           </div>
-          <DownloadBtn 
+          {/* <DownloadBtn 
             columns={columns}
             filteredRecords={markets}
             selectors={selectors}
             title={title}>
-          </DownloadBtn>
-          <Table columns={filteredColumns} data={markets} />
+          </DownloadBtn> */}
+          <Table  columnsAndSelectors={columnsAndSelectors}columns={filteredColumns} data={markets} customValueRenderer={customValueRenderer} title={title}/>
         </div>
       </div>
     </div>

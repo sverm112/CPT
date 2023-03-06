@@ -2,7 +2,7 @@ import jsPDF from "jspdf";
 import autoTable, { FontStyle } from "jspdf-autotable";
 import { title } from "process";
 
-const ExportPdf = (attributes: any, headers:any) => {
+const ExportPdf = (attributes: any) => {
     
     const downloadData = () => {
         const unit = "pt";
@@ -12,18 +12,18 @@ const ExportPdf = (attributes: any, headers:any) => {
         const pdf = new jsPDF(orientation, unit, size);
         pdf.setFontSize(13);
         pdf.setLineWidth(2);
-        if (attributes.title == "Project Allocation Details"){
-            headers = [['Resource', 'Resource Type', 'Location',
-            'Project', 'Project Market', 'Start Date', 'End Date', 'PTO Days', 'Allocation(Hours)']];
-        }
-        else{
-            headers = [attributes.columns.map((column: any) => column["name"])];
-        }
-        //const headers = [attributes.columns.map((column: any) => column["name"])]
+        // if (attributes.title == "Project Allocation Details"){
+        //     headers = [['Resource', 'Resource Type', 'Location',
+        //     'Project', 'Project Market', 'Start Date', 'End Date', 'PTO Days', 'Allocation(Hours)']];
+        // }
+        // else{
+        //     headers = [attributes.columns.map((column: any) => column["name"])];
+        // }
+        const headers = [attributes.selectedColumnsAndSelectors.map((column: any) => column["label"])]
         const tablebody = attributes.filteredRecords.map((body: any) => {
             let row = [];
-            for (let i = 0; i < attributes.selectors.length; i++)
-                row.push(body[attributes.selectors[i]]);
+            for (let i = 0; i < attributes.selectedColumnsAndSelectors.length; i++)
+                row.push(body[attributes.selectedColumnsAndSelectors[i]['value']]);
             return row;
         });
         let content = {

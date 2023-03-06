@@ -441,7 +441,7 @@ div.col-md-12>button.btn-primary {
   margin-top: 10px;
 }
 
-button#export-pdf-btn,
+ button#export-pdf-btn,
 button#export-excel-btn {
   display: block;
   width: 100%;
@@ -501,4 +501,4 @@ div#export-dropdowns-content:before {
 }
 .export-doc-row > .col-md-12:hover div#export-dropdowns-content {
     display: block;
-}
+} 

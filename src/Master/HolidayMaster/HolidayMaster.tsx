@@ -79,7 +79,16 @@ const columns = [
     filterable: true,
   },
 ];
-
+const columnsAndSelectors=[
+  {'name':'Occasion','selector':'occasionName'},
+  {'name':'Holiday Date','selector':'holidayDate'},
+  {'name':'Market','selector':'marketName'},
+  {'name':'Location','selector':'locationName'},
+  {'name':'Sub Location','selector':'subLocationName'},
+  {'name':'Status','selector':'isActive'},
+  {'name':'Created Date','selector':'createdDate'},
+  {'name':'Created By','selector':'createdBy'},
+]
 const customValueRenderer = (selected: any, _options: any) => {
   if (selected.length == "0") return "Select";
   else return selected.map((market: any) => market.label).join(", ");
@@ -239,13 +248,13 @@ const HolidayMaster = () => {
             </div>
 
           </div>
-          <DownloadBtn 
+          {/* <DownloadBtn 
             columns={columns}
             filteredRecords={filteredHolidays}
             selectors={selectors}
             title={title}>
-          </DownloadBtn>
-          <Table columns={columns} data={filteredHolidays} id="data-table" />
+          </DownloadBtn> */}
+          <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredHolidays} id="data-table" title={title}/>
         </div>
       </div>
     </div>

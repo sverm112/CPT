@@ -146,6 +146,29 @@ const columns = [
   },
 ];
 
+const columnsAndSelectors=[
+  {'name':'Resource','selector':'resourceName'},
+  {'name':'Resource Type','selector':'resourceType'},
+  {'name':'Role','selector':'role'},
+  {'name':'Supervisor','selector':'manager'},
+  {'name':'Location','selector':'location'},
+  {'name':'Resource Market','selector':'resourceMarket'},
+  {'name':'Project','selector':'projectName'},
+  {'name':'Resource Type1','selector':'resourceType1'},
+  {'name':'Project Market','selector':'projectMarket'},
+  {'name':'Project Code','selector':'projectCode'},
+  {'name':'Expense Type','selector':'expenseType'},
+  {'name':'Start Date','selector':'startDate'},
+  {'name':'End Date','selector':'enddDate'},
+  {'name':'PTO Days','selector':'pTODays'},
+  {'name':'Allocation(Hours)','selector':'allocationHours'},
+  {'name':'Status','selector':'isActive'},
+  {'name':'Created Date','selector':'createdDate'},
+  {'name':'Created By','selector':'createdBy'},
+
+  
+
+]
 
 
 const customValueRenderer = (selected: any, _options: any) => {
@@ -355,13 +378,13 @@ const ProjectAllocation = () => {
             <button type="button" className="btn btn-primary" onClick={() => dispatch(projectAllocationActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
           </div>
         </div>
-        <DownloadBtn 
+        {/* <DownloadBtn 
             columns={columns}
             filteredRecords={filteredProjectAllocations}
             selectors={selectors}
             title={title}>
-          </DownloadBtn>
-        <Table columns={columns} data={filteredProjectAllocations} />
+          </DownloadBtn> */}
+        <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredProjectAllocations} title={title}/>
       </div>
     </div>
   );

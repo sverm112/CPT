@@ -2,26 +2,27 @@ import * as FileSaver from "file-saver";
 import XLSX from "sheetjs-style";
 import { read, utils, writeFile } from "xlsx";
 
-const ExportExcel = (attributes: any, headers:any) => {
+const ExportExcel = (attributes: any) => {
     console.log(attributes);
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8';
     const fileExtension = '.xlsx';
     const title = attributes.title;
-    if (attributes.title == "Project Allocation Details"){
-        headers = [['Resource', 'Resource Type', 'Location',
-        'Project', 'Project Market', 'Start Date', 'End Date', 'PTO Days', 'Allocation(Hours)']];
-    }
-    else{
-        headers = [attributes.columns.map((column: any) => column["name"])];
-    }
-    //const headers = [attributes.columns.map((column: any) => column["name"])];
+    // if (attributes.title == "Project Allocation Details"){
+    //     headers = [['Resource', 'Resource Type', 'Location',
+    //     'Project', 'Project Market', 'Start Date', 'End Date', 'PTO Days', 'Allocation(Hours)']];
+    // }
+    // else{
+    //     headers = [attributes.columns.map((column: any) => column["name"])];
+    // }
+    const headers = [attributes.selectedColumnsAndSelectors.map((column: any) => column["label"])];
     console.log(headers);
     const tablebody = attributes.filteredRecords.map((body: any) => {
         let row = [];
-        for (let i = 0; i < attributes.selectors.length; i++)
-            row.push(body[attributes.selectors[i]]);
-        return row;
+        for (let i = 0; i < attributes.selectedColumnsAndSelectors.length; i++)
+                row.push(body[attributes.selectedColumnsAndSelectors[i]['value']]);
+            return row;
     });
+    console.log(headers,tablebody);
     const exportToExcel = async () => {
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet(tablebody);
