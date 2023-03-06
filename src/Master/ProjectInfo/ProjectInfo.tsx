@@ -77,6 +77,18 @@ const columns = [
   },
 ];
 
+const columnsAndSelectors=[
+  {'name':'Project Code"','selector':'projectCode'},
+  {'name':'Project Name','selector':'projectName'},
+  {'name':'Project Model','selector':'projectModel'},
+  {'name':'Market','selector':'projectMarket'},
+  {'name':'Program Manager','selector':'programManager'},
+  {'name':'Status','selector':'isActive'},
+  {'name':'Created Date','selector':'createdDate'},
+  {'name':'Created By','selector':'createdBy'},
+  
+  
+]
 const customValueRenderer = (selected: any, _options: any) => {
   if (selected.length == "0") return "Select";
   else return selected.map((market: any) => market.label).join(", ");
@@ -249,13 +261,13 @@ const ProjectInfo = () => {
               <button type="button" className="btn btn-primary" onClick={() => dispatch(projectActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
-          <DownloadBtn
+          {/* <DownloadBtn
             columns={columns}
             filteredRecords={filteredProjects}
             selectors={selectors}
             title={title}>
-          </DownloadBtn>
-          <Table columns={columns} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} />
+          </DownloadBtn> */}
+          <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
         </div>
       </div>
     </div>

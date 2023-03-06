@@ -1,7 +1,7 @@
 import ExportPdf from "./ExportPdf";
 import ExportExcel from "./ExportExcel";
 
-const DownloadBtn = (attributes:any) => {
+const DownloadBtn = (props:any) => {
 
     return (
         <>
@@ -11,8 +11,8 @@ const DownloadBtn = (attributes:any) => {
                         Download <i className="fa fa-download" aria-hidden="true"></i>
                     </button>
                     <div className="export-dropdowns-content" id="export-dropdowns-content" >
-                        <ExportPdf columns={attributes.columns} filteredRecords={attributes.filteredRecords} selectors={attributes.selectors} title={attributes.title}></ExportPdf>
-                        <ExportExcel columns={attributes.columns} filteredRecords={attributes.filteredRecords} selectors={attributes.selectors} title={attributes.title}></ExportExcel>
+                        <ExportPdf  filteredRecords={props.filteredRecords} selectedColumnsAndSelectors={props.selectedColumnsAndSelectors} title={props.title}></ExportPdf>
+                        <ExportExcel  filteredRecords={props.filteredRecords} selectedColumnsAndSelectors={props.selectedColumnsAndSelectors} title={props.title}></ExportExcel>
                     </div>
                 </div>
             </div>

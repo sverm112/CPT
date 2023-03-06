@@ -92,6 +92,19 @@ const columns = [
   },
 ];
 
+const columnsAndSelectors=[
+  {'name': 'Resource' , 'selector': 'resourceName' },
+  {'name': 'Role' , 'selector': 'role'},
+  {'name': 'Email Address', 'selector': 'emailAddress' },
+  {'name': 'Manager', 'selector': 'manager'},
+  {'name': 'Resource Type', 'selector': 'resourceType'},
+  {'name': 'Market', 'selector': 'resourceMarket'},
+  {'name': 'Location', 'selector': 'location'},
+  {'name': 'Sub Location', 'selector':'subLocation' },
+  {'name': 'Status', 'selector' : 'isActive'},
+  {'name': 'Created Date', 'selector' : 'createdDate'},
+  {'name': 'Created By', 'selector' : 'createdBy'},
+]
 const customValueRenderer = (selected: any, _options: any) => {
   if (selected.length == "0") return "Select";
   else if (selected.length == "1") return selected[0].label;
@@ -386,13 +399,13 @@ const EmployeeMaster = () => {
               <button type="button" className="btn btn-primary" onClick={() => dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
-          <DownloadBtn 
+          {/* <DownloadBtn 
             columns={columns}
             filteredRecords={filteredResources}
             selectors={selectors}
             title={title}>
-          </DownloadBtn>
-          <Table columns={columns} data={filteredResources} onRowDoubleClicked={handleRowDoubleClicked} />
+          </DownloadBtn> */}
+          <Table columnsAndSelectors={columnsAndSelectors}columns={columns} data={filteredResources} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
         </div>
       </div>
     </div>
