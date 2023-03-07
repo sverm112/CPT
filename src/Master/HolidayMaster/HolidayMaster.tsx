@@ -78,16 +78,32 @@ const columns = [
     reorder: true,
     filterable: true,
   },
+  {
+    name: "Updated Date",
+    selector: (row: { updatedDate: any }) => row.updatedDate,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Updated By",
+    selector: (row: { updatedBy: any }) => row.updatedBy,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
 ];
 const columnsAndSelectors=[
-  {'name':'Occasion','selector':'occasionName'},
-  {'name':'Holiday Date','selector':'holidayDate'},
-  {'name':'Market','selector':'marketName'},
-  {'name':'Location','selector':'locationName'},
-  {'name':'Sub Location','selector':'subLocationName'},
-  {'name':'Status','selector':'isActive'},
-  {'name':'Created Date','selector':'createdDate'},
-  {'name':'Created By','selector':'createdBy'},
+  {'name':'Occasion','selector':'occasionName','default':'true'},
+  {'name':'Holiday Date','selector':'holidayDate','default':'true'},
+  {'name':'Market','selector':'marketName','default':'true'},
+  {'name':'Location','selector':'locationName','default':'true'},
+  {'name':'Sub Location','selector':'subLocationName','default':'true'},
+  {'name':'Status','selector':'isActive','default':'true'},
+  {'name':'Created Date','selector':'createdDate','default':'true'},
+  {'name':'Created By','selector':'createdBy','default':'true'},
+  {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
+  {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
 ]
 const customValueRenderer = (selected: any, _options: any) => {
   if (selected.length == "0") return "Select";

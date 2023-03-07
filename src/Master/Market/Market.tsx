@@ -55,6 +55,20 @@ const columns = [
     reorder: true,
     filterable: true,
   },
+  {
+    name: "Updated Date",
+    selector: (row: { updatedDate: any }) => row.updatedDate,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Updated By",
+    selector: (row: { updatedBy: any }) => row.updatedBy,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
 ];
 
 const customValueRenderer = (selected: any, _options: any) => {
@@ -73,7 +87,7 @@ const Market = () => {
   ];
   const dispatch = useDispatch();
   const markets = useSelector((store: any) => store.Market.data);
-  const columnsSelected = useSelector((store: any) => store.Market.columns);
+  
   //const marketNameSelected = useSelector((store: any) => store.Market.marketName);
   const toggle = useSelector((store: any) => store.Market.toggle);
 
@@ -97,19 +111,16 @@ const Market = () => {
   const title = "Market Details";
 
   const columnsAndSelectors=[
-    {'name' :'Market Name','selector':'marketName'},
-  {'name' :'Market Domain','selector':'marketDomain'},
-  {'name' :'Status','selector':'isActive'},
-  {'name' :'Created Date','selector':'createdDate'},
-  {'name' :'Created By','selector':'createdBy'}];
+    {'name' :'Market Name','selector':'marketName','default':'true'},
+  {'name' :'Market Domain','selector':'marketDomain','default':'true'},
+  {'name' :'Status','selector':'isActive','default':'true'},
+  {'name' :'Created Date','selector':'createdDate','default':'true'},
+  {'name' :'Created By','selector':'createdBy','default':'true'},
+  {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
+  {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},];
   //end constants for export
  let filteredColumns=columns;
-  if(columnsSelected.length)
- {
-  const columnsSelectedList=columnsSelected.map((column:any)=>column.label);
-   filteredColumns=columns.filter((column:any)=> columnsSelectedList.includes(column['name'])==true)
-   console.log(columnsSelectedList,filteredColumns);
- }
+  
 
   return (
     <div>
@@ -135,7 +146,7 @@ const Market = () => {
               <ModalDialog />
             </div>
           </div>
-          <div className="row filter-row">
+          {/* <div className="row filter-row">
             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Columns
@@ -148,7 +159,7 @@ const Market = () => {
                 valueRenderer={customValueRenderer}
               />
             </div>
-          </div>
+          </div> */}
           {/* <DownloadBtn 
             columns={columns}
             filteredRecords={markets}
