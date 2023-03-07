@@ -10,7 +10,7 @@ const Table = (props: any) => {
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
   const options=props.columnsAndSelectors.map((item:any)=>({label : item.name, value:item.selector}));
-  const [columnsSelected,setColumnsSelected]=useState([]);
+  const [columnsSelected,setColumnsSelected]=useState(props.columnsAndSelectors.filter((columnAndSelector:any)=>columnAndSelector.default=="true").map((columnAndSelector:any)=>({label : columnAndSelector.name, value:columnAndSelector.selector})));
 
   const onColumnsChange=(event:any)=>{
     console.log(event);

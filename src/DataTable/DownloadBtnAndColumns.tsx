@@ -1,7 +1,6 @@
 import { MultiSelect } from "react-multi-select-component";
 const customValueRenderer = (selected: any, _options: any) => {
-  if (selected.length == "0") return "Columns";
-  else return selected.map((market: any) => market.label).join(", ");
+  return "Columns";
 };
 const Columns=(props:any)=>{
     

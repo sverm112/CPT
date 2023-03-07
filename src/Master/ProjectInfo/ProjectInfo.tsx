@@ -75,17 +75,33 @@ const columns = [
     reorder: true,
     filterable: true,
   },
+  {
+    name: "Updated Date",
+    selector: (row: { updatedDate: any }) => row.updatedDate,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Updated By",
+    selector: (row: { updatedBy: any }) => row.updatedBy,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
 ];
 
 const columnsAndSelectors=[
-  {'name':'Project Code"','selector':'projectCode'},
-  {'name':'Project Name','selector':'projectName'},
-  {'name':'Project Model','selector':'projectModel'},
-  {'name':'Market','selector':'projectMarket'},
-  {'name':'Program Manager','selector':'programManager'},
-  {'name':'Status','selector':'isActive'},
-  {'name':'Created Date','selector':'createdDate'},
-  {'name':'Created By','selector':'createdBy'},
+  {'name':'Project Code"','selector':'projectCode','default':'true'},
+  {'name':'Project Name','selector':'projectName','default':'true'},
+  {'name':'Project Model','selector':'projectModel','default':'true'},
+  {'name':'Market','selector':'projectMarket','default':'true'},
+  {'name':'Program Manager','selector':'programManager','default':'true'},
+  {'name':'Status','selector':'isActive','default':'true'},
+  {'name':'Created Date','selector':'createdDate','default':'true'},
+  {'name':'Created By','selector':'createdBy','default':'true'},
+  {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
+  {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
   
   
 ]
