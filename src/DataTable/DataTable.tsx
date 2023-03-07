@@ -42,27 +42,33 @@ const Table = (props: any) => {
 
     return (
       <>
-      <Columns
-      options={options}
-      columnsSelected={columnsSelected}
-      onColumnsChange={onColumnsChange}
-      ></Columns>
-      <DownloadBtn 
-            filteredRecords={filteredItems}
-            selectedColumnsAndSelectors={selectedColumnsAndSelectors}
-            title={props.title}>
+      <div style={{width:'100%', float:"left", display:'flex'}}>
+        {/* <div style={{display:'flex'}}> */}
+        <Columns
+          options={options}
+          columnsSelected={columnsSelected}
+          onColumnsChange={onColumnsChange}
+          ></Columns>
+          <DownloadBtn 
+                filteredRecords={filteredItems}
+                selectedColumnsAndSelectors={selectedColumnsAndSelectors}
+                title={props.title}>
           </DownloadBtn>
-      <FilterComponent
+        {/* </div> */}
+      </div>
+          <FilterComponent
         onFilter={(e: any) => setFilterText(e.target.value)}
         onClear={handleClear}
         filterText={filterText}/>
+      
         </>
         
     );
   }, [filterText, resetPaginationToggle,options,columnsSelected,onColumnsChange]);
 
   return (
-    <DataTable
+    // <div style={{paddingBottom:'200px'}}>
+      <DataTable
       className="table-striped"
       columns={filteredColumns}
       data={filteredItems}
@@ -74,6 +80,7 @@ const Table = (props: any) => {
       persistTableHead={true}
       onRowDoubleClicked={props.onRowDoubleClicked}
     />
+    // </div>
   );
 };
 

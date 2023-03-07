@@ -5,9 +5,8 @@ const DownloadBtn = (props:any) => {
 
     return (
         <>
-            <div className="row export-doc-row">
-                <div className="col-md-12">
-                    <button className="btn btn-primary btn-md" id="ExportBox" style={{ marginBottom: "0px" }}>
+            <div className="col-md-2 ">
+                    <button className="btn btn-primary btn-md" id="ExportBox">
                         Download <i className="fa fa-download" aria-hidden="true"></i>
                     </button>
                     <div className="export-dropdowns-content" id="export-dropdowns-content" >
@@ -15,7 +14,6 @@ const DownloadBtn = (props:any) => {
                         <ExportExcel  filteredRecords={props.filteredRecords} selectedColumnsAndSelectors={props.selectedColumnsAndSelectors} title={props.title}></ExportExcel>
                     </div>
                 </div>
-            </div>
         </>
     )
 }
