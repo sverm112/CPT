@@ -5,6 +5,7 @@ import FilterComponent from "./FilterComponent";
 //import FilterComponent from "./FilterComponent";
 import customStyles from "./customStyles";
 import { Columns } from "./DownloadBtnAndColumns";
+import {HoverMultiSelect} from './HoverMultiSelect';
 import DownloadBtn from "../Export/DownloadBtn";
 const Table = (props: any) => {
   const [filterText, setFilterText] = React.useState("");
@@ -49,6 +50,11 @@ const Table = (props: any) => {
           columnsSelected={columnsSelected}
           onColumnsChange={onColumnsChange}
           ></Columns>
+          <HoverMultiSelect
+          options={options}
+          columnsSelected={columnsSelected}
+          onColumnsChange={onColumnsChange}
+          ></HoverMultiSelect>
           <DownloadBtn 
                 filteredRecords={filteredItems}
                 selectedColumnsAndSelectors={selectedColumnsAndSelectors}

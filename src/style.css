@@ -508,3 +508,10 @@ button#export-excel-btn:hover {
 .table-striped{
   margin-top: 10px;
 }
+
+.HoverMultiSelect{
+  width: 170px;
+}
+.ClickMultiSelect{
+  width: 200px !important;
+}
