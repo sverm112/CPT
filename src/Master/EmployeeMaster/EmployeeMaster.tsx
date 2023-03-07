@@ -90,20 +90,36 @@ const columns = [
     reorder: true,
     filterable: true,
   },
+  {
+    name: "Updated Date",
+    selector: (row: { updatedDate: any }) => row.updatedDate,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Updated By",
+    selector: (row: { updatedBy: any }) => row.updatedBy,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
 ];
 
 const columnsAndSelectors=[
-  {'name': 'Resource' , 'selector': 'resourceName' },
-  {'name': 'Role' , 'selector': 'role'},
-  {'name': 'Email Address', 'selector': 'emailAddress' },
-  {'name': 'Manager', 'selector': 'manager'},
-  {'name': 'Resource Type', 'selector': 'resourceType'},
-  {'name': 'Market', 'selector': 'resourceMarket'},
-  {'name': 'Location', 'selector': 'location'},
-  {'name': 'Sub Location', 'selector':'subLocation' },
-  {'name': 'Status', 'selector' : 'isActive'},
-  {'name': 'Created Date', 'selector' : 'createdDate'},
-  {'name': 'Created By', 'selector' : 'createdBy'},
+  {'name': 'Resource' , 'selector': 'resourceName','default':'true'},
+  {'name': 'Role' , 'selector': 'role','default':'true'},
+  {'name': 'Email Address', 'selector': 'emailAddress','default':'true' },
+  {'name': 'Manager', 'selector': 'manager','default':'true'},
+  {'name': 'Resource Type', 'selector': 'resourceType','default':'true'},
+  {'name': 'Market', 'selector': 'resourceMarket','default':'true'},
+  {'name': 'Location', 'selector': 'location','default':'true'},
+  {'name': 'Sub Location', 'selector':'subLocation','default':'true' },
+  {'name': 'Status', 'selector' : 'isActive','default':'true'},
+  {'name': 'Created Date', 'selector' : 'createdDate','default':'true'},
+  {'name': 'Created By', 'selector' : 'createdBy','default':'true'},
+  {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
+  {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
 ]
 const customValueRenderer = (selected: any, _options: any) => {
   if (selected.length == "0") return "Select";
