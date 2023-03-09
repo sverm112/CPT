@@ -532,3 +532,12 @@ button#export-excel-btn:hover {
 .HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading > .dropdown-heading-dropdown-arrow{
   display: none;
 }
+
+.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading{
+  background-color: #0078d7;
+  color: #fff;
+  border-radius: 5px;
+  /* padding: 2px; */
+  height: 29.5px;
+  margin-top: 5px;
+}
