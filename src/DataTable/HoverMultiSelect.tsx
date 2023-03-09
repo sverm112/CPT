@@ -6,7 +6,7 @@ const HoverMultiSelect =(props:any)=>{
     
     return(
         <>
-            <div className="HoverMultiSelect form-group" style={{marginLeft:'10px'}}>
+            <div className="HoverMultiSelect " style={{marginLeft:'10px'}}>
               {/* <label htmlFor="" className="form-label">
                 Columns
               </label> */}
@@ -17,7 +17,6 @@ const HoverMultiSelect =(props:any)=>{
                 labelledBy="Select Columns to filter"
                 valueRenderer={customValueRenderer}
                 shouldToggleOnHover={true}
-            
               />
             </div>
         </>

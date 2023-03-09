@@ -515,3 +515,20 @@ button#export-excel-btn:hover {
 .ClickMultiSelect{
   width: 200px !important;
 }
+
+.HoverMultiSelect > .rmsc > .dropdown-container{
+  /* background-color: #0d6efd;
+  color: #fff; */
+  outline: 0;
+  border: 0px;
+  text-align: center;
+}
+
+.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading > .clear-selected-button{
+  display: none;
+}
+
+
+.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading > .dropdown-heading-dropdown-arrow{
+  display: none;
+}
