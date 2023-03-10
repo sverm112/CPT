@@ -5,6 +5,7 @@ import FilterComponent from "./FilterComponent";
 //import FilterComponent from "./FilterComponent";
 import customStyles from "./customStyles";
 import { Columns } from "./DownloadBtnAndColumns";
+import {HoverMultiSelect} from './HoverMultiSelect';
 import DownloadBtn from "../Export/DownloadBtn";
 const Table = (props: any) => {
   const [filterText, setFilterText] = React.useState("");
@@ -42,27 +43,38 @@ const Table = (props: any) => {
 
     return (
       <>
-      <Columns
-      options={options}
-      columnsSelected={columnsSelected}
-      onColumnsChange={onColumnsChange}
-      ></Columns>
-      <DownloadBtn 
-            filteredRecords={filteredItems}
-            selectedColumnsAndSelectors={selectedColumnsAndSelectors}
-            title={props.title}>
+      <div style={{width:'100%', float:"left", display:'flex'}}>
+        {/* <div style={{display:'flex'}}> */}
+        <Columns
+          options={options}
+          columnsSelected={columnsSelected}
+          onColumnsChange={onColumnsChange}
+          ></Columns>
+          <HoverMultiSelect
+          options={options}
+          columnsSelected={columnsSelected}
+          onColumnsChange={onColumnsChange}
+          ></HoverMultiSelect>
+          <DownloadBtn 
+                filteredRecords={filteredItems}
+                selectedColumnsAndSelectors={selectedColumnsAndSelectors}
+                title={props.title}>
           </DownloadBtn>
-      <FilterComponent
+        {/* </div> */}
+      </div>
+          <FilterComponent
         onFilter={(e: any) => setFilterText(e.target.value)}
         onClear={handleClear}
         filterText={filterText}/>
+      
         </>
         
     );
   }, [filterText, resetPaginationToggle,options,columnsSelected,onColumnsChange]);
 
   return (
-    <DataTable
+    // <div style={{paddingBottom:'200px'}}>
+      <DataTable
       className="table-striped"
       columns={filteredColumns}
       data={filteredItems}
@@ -74,6 +86,7 @@ const Table = (props: any) => {
       persistTableHead={true}
       onRowDoubleClicked={props.onRowDoubleClicked}
     />
+    // </div>
   );
 };
 

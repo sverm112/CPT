@@ -2,11 +2,11 @@ import { MultiSelect } from "react-multi-select-component";
 const customValueRenderer = (selected: any, _options: any) => {
   return "Columns";
 };
-const Columns=(props:any)=>{
+const HoverMultiSelect =(props:any)=>{
     
     return(
         <>
-            <div className="ClickMultiSelect col-md-2 form-group" style={{marginLeft:'-40px'}}>
+            <div className="HoverMultiSelect " style={{marginLeft:'10px'}}>
               {/* <label htmlFor="" className="form-label">
                 Columns
               </label> */}
@@ -16,6 +16,7 @@ const Columns=(props:any)=>{
                 onChange={props.onColumnsChange}
                 labelledBy="Select Columns to filter"
                 valueRenderer={customValueRenderer}
+                shouldToggleOnHover={true}
               />
             </div>
         </>
@@ -23,4 +24,4 @@ const Columns=(props:any)=>{
 }
 
 
-export {Columns};
+export {HoverMultiSelect};

@@ -474,7 +474,7 @@ button#export-excel-btn:hover {
   padding: 4px 6px 4px 6px;
 }
 
-div#export-dropdowns-content {
+#export-dropdowns-content {
   display: none;
   width: auto;
   position: absolute;
@@ -488,7 +488,7 @@ div#export-dropdowns-content {
   transition-delay: 1s;
 }
 
-div#export-dropdowns-content:before {
+#export-dropdowns-content:before {
   content: ' ';
   transform: rotate(131deg);
   position: absolute;
@@ -499,6 +499,45 @@ div#export-dropdowns-content:before {
   background: #FFF;
   z-index: 110;
 }
-.export-doc-row > .col-md-12:hover div#export-dropdowns-content {
+ .col-md-2:hover div#export-dropdowns-content {
     display: block;
+    z-index: 1;
 } 
+
+/* sc-dmctIk WQNxq  */
+.table-striped{
+  margin-top: 10px;
+}
+
+.HoverMultiSelect{
+  width: 170px;
+}
+.ClickMultiSelect{
+  width: 200px !important;
+}
+
+.HoverMultiSelect > .rmsc > .dropdown-container{
+  /* background-color: #0d6efd;
+  color: #fff; */
+  outline: 0;
+  border: 0px;
+  text-align: center;
+}
+
+.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading > .clear-selected-button{
+  display: none;
+}
+
+
+.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading > .dropdown-heading-dropdown-arrow{
+  display: none;
+}
+
+.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading{
+  background-color: #0078d7;
+  color: #fff;
+  border-radius: 5px;
+  /* padding: 2px; */
+  height: 29.5px;
+  margin-top: 5px;
+}
