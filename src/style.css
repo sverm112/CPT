@@ -510,7 +510,7 @@ button#export-excel-btn:hover {
 }
 
 .HoverMultiSelect{
-  width: 170px;
+  width: 100px;
 }
 .ClickMultiSelect{
   width: 200px !important;
@@ -538,6 +538,10 @@ button#export-excel-btn:hover {
   color: #fff;
   border-radius: 5px;
   /* padding: 2px; */
-  height: 29.5px;
-  margin-top: 5px;
+  height: 28px;
+  margin-top: 6px;
+}
+
+.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-content{
+  width: 170px;
 }
