@@ -511,6 +511,7 @@ button#export-excel-btn:hover {
 
 .HoverMultiSelect{
   width: 100px;
+  /* margin-top: 10px; */
 }
 .ClickMultiSelect{
   width: 200px !important;
