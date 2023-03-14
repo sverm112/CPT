@@ -387,6 +387,13 @@ svg.dropdown-heading-dropdown-arrow.gray {
   font-size: 13px;
 }
 
+.SearchFilter{
+  width: 20%;
+  float: right !important;
+  justify-content: flex-end;
+  margin-top: 5px;
+}
+
 label.form-label {
   font-size: 15px;
 }
@@ -511,7 +518,7 @@ button#export-excel-btn:hover {
 
 .HoverMultiSelect{
   width: 100px;
-  /* margin-top: 10px; */
+  margin-left: -20px;
 }
 .ClickMultiSelect{
   width: 200px !important;

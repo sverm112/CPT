@@ -48,29 +48,37 @@ const Table = (props: any) => {
 
     return (
       <>
-      <div style={{width:'100%', float:"left", display:'flex'}}>
+      <div style={{width:'100%', float:"left", justifyContent:'space-between'}}>
         {/* <div style={{display:'flex'}}> */}
         
-          {hoverableDropdown ?           <HoverMultiSelect
-          options={options}
-          columnsSelected={columnsSelected}
-          onColumnsChange={onColumnsChange}
-          ></HoverMultiSelect> : <Columns
-          options={options}
-          columnsSelected={columnsSelected}
-          onColumnsChange={onColumnsChange}
-          ></Columns>}
-          <DownloadBtn 
-                filteredRecords={filteredItems}
-                selectedColumnsAndSelectors={selectedColumnsAndSelectors}
-                title={props.title}>
-          </DownloadBtn>
+          <div className="DownloadAndDropdown" style={{width:'75%', float:"left", display:'flex'}}>
+            {hoverableDropdown ?           
+            <HoverMultiSelect
+            options={options}
+            columnsSelected={columnsSelected}
+            onColumnsChange={onColumnsChange}
+            ></HoverMultiSelect> 
+            : 
+            <Columns
+            options={options}
+            columnsSelected={columnsSelected}
+            onColumnsChange={onColumnsChange}
+            ></Columns>}
+            <DownloadBtn 
+                  filteredRecords={filteredItems}
+                  selectedColumnsAndSelectors={selectedColumnsAndSelectors}
+                  title={props.title}>
+            </DownloadBtn>
+          </div>
+          <div className="SearchFilter">
+            <FilterComponent
+              onFilter={(e: any) => setFilterText(e.target.value)}
+              onClear={handleClear}
+              filterText={filterText}/>
+          </div>
         {/* </div> */}
       </div>
-          <FilterComponent
-        onFilter={(e: any) => setFilterText(e.target.value)}
-        onClear={handleClear}
-        filterText={filterText}/>
+
       
         </>
         
