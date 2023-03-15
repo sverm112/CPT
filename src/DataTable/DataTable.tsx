@@ -49,9 +49,7 @@ const Table = (props: any) => {
     return (
       <>
       <div style={{width:'100%', float:"left", justifyContent:'space-between'}}>
-        {/* <div style={{display:'flex'}}> */}
-        
-          <div className="DownloadAndDropdown" style={{width:'75%', float:"left", display:'flex'}}>
+          <div className="DownloadAndDropdown" style={{width:'82%', float:"left", display:'flex'}}>
             {hoverableDropdown ?           
             <HoverMultiSelect
             options={options}
@@ -76,12 +74,8 @@ const Table = (props: any) => {
               onClear={handleClear}
               filterText={filterText}/>
           </div>
-        {/* </div> */}
       </div>
-
-      
         </>
-        
     );
   }, [filterText, resetPaginationToggle,options,columnsSelected,onColumnsChange]);
 
