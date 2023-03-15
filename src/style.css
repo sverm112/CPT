@@ -387,6 +387,15 @@ svg.dropdown-heading-dropdown-arrow.gray {
   font-size: 13px;
 }
 
+.SearchFilter{
+  width: 17%;
+  float: right !important;
+  justify-content: flex-end;
+  margin-top: 5px;
+}
+
+
+
 label.form-label {
   font-size: 15px;
 }
@@ -510,7 +519,8 @@ button#export-excel-btn:hover {
 }
 
 .HoverMultiSelect{
-  width: 170px;
+  width: 100px;
+  margin-left: -20px;
 }
 .ClickMultiSelect{
   width: 200px !important;
@@ -538,6 +548,10 @@ button#export-excel-btn:hover {
   color: #fff;
   border-radius: 5px;
   /* padding: 2px; */
-  height: 29.5px;
-  margin-top: 5px;
+  height: 28px;
+  margin-top: 6px;
+}
+
+.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-content{
+  width: 170px;
 }

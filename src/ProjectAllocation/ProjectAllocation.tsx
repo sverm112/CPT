@@ -400,7 +400,7 @@ const ProjectAllocation = () => {
             selectors={selectors}
             title={title}>
           </DownloadBtn> */}
-        <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredProjectAllocations} title={title}/>
+        <Table columnsAndSelectors={columnsAndSelectors} hoverableDropdown={true} columns={columns} data={filteredProjectAllocations} title={title}/>
       </div>
     </div>
   );
