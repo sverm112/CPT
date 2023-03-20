@@ -5,7 +5,7 @@ const DownloadBtn = (props:any) => {
 
     return (
         <>
-            <div className="col-md-2 ">
+            <div className="col-md-2 " style={{paddingLeft:'20px'}}>
                     <button className="btn btn-primary btn-md" id="ExportBox">
                         Download <i className="fa fa-download" aria-hidden="true"></i>
                     </button>
