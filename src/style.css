@@ -479,7 +479,7 @@ button#export-excel-btn:hover {
 
 #ExportBox {
   margin-top: 6px;
-  margin-left: 6px;
+  /* margin-left: 6px; */
   padding: 4px 6px 4px 6px;
 }
 
@@ -520,13 +520,14 @@ button#export-excel-btn:hover {
 
 .HoverMultiSelect{
   width: 70px;
-  margin-left: -20px;
+  /* margin-left: -20px; */
 }
-.ClickMultiSelect{
-  width: 140px !important;
-}
+/* .ClickMultiSelect{
+  width: 70px !important;
+} */
 
-.HoverMultiSelect > .rmsc > .dropdown-container{
+/* .HoverMultiSelect > */
+ .DownloadAndDropdown > * >.rmsc > .dropdown-container{
   /* background-color: #0d6efd;
   color: #fff; */
   outline: 0;
@@ -534,18 +535,31 @@ button#export-excel-btn:hover {
   text-align: center;
 }
 
-.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading > .clear-selected-button{
+/* .HoverMultiSelect >  */
+.DownloadAndDropdown > * > .rmsc > .dropdown-container > .dropdown-heading > .clear-selected-button{
   display: none;
 }
 
+.ClickMultiSelect > .rmsc > .dropdown-container {
+  margin-left: 5px;
+  width: 70px;
+}
 
-.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading > .dropdown-heading-dropdown-arrow{
+#root > div > div:nth-child(3) > div.col-md-12.bg-mainclass > div > header > div > div.DownloadAndDropdown > div.ClickMultiSelect.col-md-2.form-group{
+  width: 70px;
+  margin-right: 6px;
+}
+
+
+.DownloadAndDropdown > * > .rmsc > .dropdown-container > .dropdown-heading > .dropdown-heading-dropdown-arrow{
   display: none;
 }
 
-.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading{
+/* .HoverMultiSelect > */
+.DownloadAndDropdown > * > .rmsc > .dropdown-container > .dropdown-heading{
   background-color: #0078d7;
   color: #fff;
+  width: 70px;
   border-radius: 5px;
   padding: 4px 6px 4px 6px;
   height: 28px;
@@ -555,3 +569,4 @@ button#export-excel-btn:hover {
 .rmsc > .dropdown-container > .dropdown-content{
   width: 170px;
 }
+
