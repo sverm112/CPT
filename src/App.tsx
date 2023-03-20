@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
 import LoginPage from "./LoginPage/LoginPage";
 import MainPage from "./MainPage/MainPage";
@@ -20,10 +20,23 @@ import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import ResourceReport from "./Reports/ResourceReport/ResourceReport";
 import HolidayListReport from "./Reports/HolidayListReport/HolidayListReport";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "./Store/Slices/User";
 
 const App = () => {
+    const dispatch=useDispatch();
     const userType=useSelector((state:any)=>state.User.userType);
+    useEffect(()=>{
+        let username=sessionStorage.getItem("username");
+        let userType=sessionStorage.getItem("userType");
+        if(username!=null && userType!=null)
+        {
+            if(username=="Test User")
+             dispatch(userActions.setUser({username:"Test User",userType:"User"}))
+            else if(username=="Test Admin")
+            dispatch(userActions.setUser({username:"Test Admin",userType:"Admin"}))
+        }
+    },[]);
     return (
         <div>
             <ToastContainer autoClose={1000}/>

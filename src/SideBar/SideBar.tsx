@@ -6,7 +6,8 @@ import Collapsible from 'react-collapsible';
 import { Link, useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "../constants";
 import "./SideBarJs";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { userActions } from '../Store/Slices/User';
 
 const func2 = (element: string) => {
     // var elementcls = document.getElementsByClassName("nav-link");
@@ -18,6 +19,7 @@ const func2 = (element: string) => {
 }
 
 const SideBar = () => {
+    const dispatch=useDispatch();
     const [isMasterActive, setIsMasterActive] = useState(false);
     const [isReportActive, setIsReportActive] = useState(false);
     const navigate = useNavigate();
@@ -28,7 +30,12 @@ const SideBar = () => {
     const [show, setShow] = useState(false);
     const username= useSelector((state:any)=>state.User.username);
     const userType= useSelector((state:any)=>state.User.userType);
-
+    const handleLogout =()=>{
+        sessionStorage.removeItem("username");
+        sessionStorage.removeItem("userType");
+        dispatch(userActions.setUser({username:"",userType:""}))
+        navigate(APP_ROUTES.LOGINPAGE)
+    }
     return (
         <div id="body-pd">
             <header className="header" id="header" style={{ position: "fixed", top: "40px", height: "50px" }}>
@@ -48,7 +55,7 @@ const SideBar = () => {
                             </div>
                         </label>
                         <div className="dropdowns-content">
-                            <a className="logoutbtn" href="" onClick={() => { navigate(APP_ROUTES.LOGINPAGE) }}>Logout</a>
+                            <a className="logoutbtn" href="" onClick={handleLogout}>Logout</a>
                         </div>
                     </div>
                 </div>
