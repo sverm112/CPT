@@ -526,8 +526,7 @@ button#export-excel-btn:hover {
   width: 200px !important;
 }
 
-/* .HoverMultiSelect >  */
-#X > .rmsc > .dropdown-container{
+.HoverMultiSelect > .rmsc > .dropdown-container{
   /* background-color: #0d6efd;
   color: #fff; */
   outline: 0;
@@ -535,19 +534,16 @@ button#export-excel-btn:hover {
   text-align: center;
 }
 
-/* .HoverMultiSelect > */
- #X > .rmsc > .dropdown-container > .dropdown-heading > .clear-selected-button{
+.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading > .clear-selected-button{
   display: none;
 }
 
 
-/* .HoverMultiSelect >  */
-#X > .rmsc > .dropdown-container > .dropdown-heading > .dropdown-heading-dropdown-arrow{
+.HoverMultiSelect >  .rmsc > .dropdown-container > .dropdown-heading > .dropdown-heading-dropdown-arrow{
   display: none;
 }
 
-/* .HoverMultiSelect >  */
-#X > .rmsc > .dropdown-container > .dropdown-heading{
+.HoverMultiSelect >  .rmsc > .dropdown-container > .dropdown-heading{
   background-color: #0078d7;
   color: #fff;
   border-radius: 5px;
