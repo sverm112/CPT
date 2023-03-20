@@ -539,11 +539,11 @@ button#export-excel-btn:hover {
 }
 
 
-.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading > .dropdown-heading-dropdown-arrow{
+.HoverMultiSelect >  .rmsc > .dropdown-container > .dropdown-heading > .dropdown-heading-dropdown-arrow{
   display: none;
 }
 
-.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-heading{
+.HoverMultiSelect >  .rmsc > .dropdown-container > .dropdown-heading{
   background-color: #0078d7;
   color: #fff;
   border-radius: 5px;
@@ -552,6 +552,6 @@ button#export-excel-btn:hover {
   margin-top: 6px;
 }
 
-.HoverMultiSelect > .rmsc > .dropdown-container > .dropdown-content{
+.rmsc > .dropdown-container > .dropdown-content{
   width: 170px;
 }

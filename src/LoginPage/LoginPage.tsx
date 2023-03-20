@@ -20,12 +20,16 @@ const LoginPage = () => {
         event.preventDefault();
         if(username=="tuser" && password=="TestUser@123")
         {
-        dispatch(userActions.setUser({username:"Test User",userType:"User"}))
+        dispatch(userActions.setUser({username:"Test User",userType:"User"}));
+        sessionStorage.setItem("username","Test User");
+        sessionStorage.setItem("userType","User")
         navigate(APP_ROUTES.DASHBOARD)
         }
         else if(username=="tadmin" && password=="TestAdmin@123")
         {
             dispatch(userActions.setUser({username:"Test Admin",userType:"Admin"}))
+            sessionStorage.setItem("username","Test Admin");
+            sessionStorage.setItem("userType","Admin")
             navigate(APP_ROUTES.DASHBOARD)
         }
         else
