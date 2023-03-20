@@ -6,7 +6,7 @@ const HoverMultiSelect =(props:any)=>{
     
     return(
         <>
-            <div className="HoverMultiSelect " style={{marginLeft:'-20px'}}>
+            <div className="HoverMultiSelect " style={{marginLeft:'-20px', marginRight:'-15px'}}>
               {/* <label htmlFor="" className="form-label">
                 Columns
               </label> */}
