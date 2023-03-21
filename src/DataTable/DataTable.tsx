@@ -12,16 +12,12 @@ const Table = (props: any) => {
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
   const options=props.columnsAndSelectors.map((item:any)=>({label : item.name, value:item.selector}));
   const [columnsSelected,setColumnsSelected]=useState(props.columnsAndSelectors.filter((columnAndSelector:any)=>columnAndSelector.default=="true").map((columnAndSelector:any)=>({label : columnAndSelector.name, value:columnAndSelector.selector})));
-  const [hoverableDropdown, sethoverableDropdown] = useState(false);
-
+  
   const onColumnsChange=(event:any)=>{
     console.log(event);
     setColumnsSelected(event);
   }
 
-  useEffect(()=>{
-    sethoverableDropdown(props.hoverableDropdown);
-  });
   // const filteredItems = data.filter(
   //   item => item.name && item.name.includes(filterText)
   // );
@@ -49,19 +45,12 @@ const Table = (props: any) => {
     return (
       <>
       <div style={{width:'100%', float:"left", justifyContent:'space-between'}}>
-          <div className="DownloadAndDropdown" style={{width:'82%', float:"left", display:'flex'}}>
-            {hoverableDropdown ?           
+          <div className="DownloadAndDropdown" style={{width:'82%', float:"left", display:'flex'}}>/          
             <HoverMultiSelect
             options={options}
             columnsSelected={columnsSelected}
             onColumnsChange={onColumnsChange}
             ></HoverMultiSelect> 
-            : 
-            <Columns
-            options={options}
-            columnsSelected={columnsSelected}
-            onColumnsChange={onColumnsChange}
-            ></Columns>}
             <DownloadBtn 
                   filteredRecords={filteredItems}
                   selectedColumnsAndSelectors={selectedColumnsAndSelectors}

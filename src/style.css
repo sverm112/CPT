@@ -479,8 +479,9 @@ button#export-excel-btn:hover {
 
 #ExportBox {
   margin-top: 6px;
-  /* margin-left: 6px; */
-  padding: 4px 6px 4px 6px;
+  width: 90px;
+  padding: 3px 6px 4px 6px;
+  border-radius: 4px;
 }
 
 #export-dropdowns-content {
@@ -519,7 +520,8 @@ button#export-excel-btn:hover {
 }
 
 .HoverMultiSelect{
-  width: 70px;
+  width: 90px;
+  border-radius: 5px;
   /* margin-left: -20px; */
 }
 /* .ClickMultiSelect{
@@ -542,11 +544,11 @@ button#export-excel-btn:hover {
 
 .ClickMultiSelect > .rmsc > .dropdown-container {
   margin-left: 5px;
-  width: 70px;
+  width: 90px;
 }
 
 #root > div > div:nth-child(3) > div.col-md-12.bg-mainclass > div > header > div > div.DownloadAndDropdown > div.ClickMultiSelect.col-md-2.form-group{
-  width: 70px;
+  width: 90px;
   margin-right: 6px;
 }
 
@@ -559,7 +561,7 @@ button#export-excel-btn:hover {
 .DownloadAndDropdown > * > .rmsc > .dropdown-container > .dropdown-heading{
   background-color: #0078d7;
   color: #fff;
-  width: 70px;
+  width: 90px;
   border-radius: 5px;
   padding: 4px 6px 4px 6px;
   height: 28px;
