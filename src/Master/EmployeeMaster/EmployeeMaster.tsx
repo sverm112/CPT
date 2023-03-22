@@ -329,23 +329,42 @@ const EmployeeMaster = () => {
               <span>Employee Details</span>
             </p>
             <div className="btns employee">
-              <button title="Download Template" type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
-                <i className="las la-file-download"></i>
-              </button>
-              <button title="Upload File" type="button" className="btn btn-primary upload-button-btn">
-                <i className="las la-file-upload"></i>
-              </button>
-              <input
-                type="file"
-                value=""
-                id="input-resources-file"
-                className="btn btn-primary custom-file-input upload-input-btn"
-                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
-                onChange={handleUploadResourceFile}
-              />
+              <div style={{display:'flex', width:'25%',float:'right', justifyContent:'space-between'}}>
+              <div className="DownloadEmployeeTemplate" style={{width:'15%',marginRight:'-200px', marginLeft:'80%'}}>
+                <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
+                  <i className="las la-file-download"></i>
+                </button>
+                <div className="DownloadEmployeeTemplateTooltip">
+                  <p>
+                    Download Template
+                  </p>
+                </div>
+              </div>
+              <div className="UploadBulkEmployeeDetails" style={{width:'15%',marginLeft:'7%'}}>
+                <button  type="button" className="btn btn-primary upload-button-btn">
+                  <i className="las la-file-upload"></i>
+                </button>
+                <input
+                  type="file"
+                  value=""
+                  id="input-resources-file"
+                  className="btn btn-primary custom-file-input upload-input-btn"
+                  accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                  onChange={handleUploadResourceFile}
+                />
+                <div className="UploadBulkEmployeeDetailsTooltip">
+                {/* <p>
+                   Select a File
+                  </p> */}
+                </div>
+              </div>
+              <div className="AddEmployeeButton" style={{float:'right', width:'45%'}}>
+                {action == "Add" && <ModalDialog showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+                {action == "Update" && <UpdateModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              </div>
+              </div>
 
-              {action == "Add" && <ModalDialog showModal={showModal} openModal={openModal} closeModal={closeModal} />}
-              {action == "Update" && <UpdateModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+
             </div>
           </div>
           <div className="row filter-row">

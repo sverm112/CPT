@@ -509,10 +509,79 @@ button#export-excel-btn:hover {
   background: #FFF;
   z-index: 110;
 }
- .col-md-2:hover div#export-dropdowns-content {
-    display: block;
-    z-index: 1;
+.col-md-2:hover div#export-dropdowns-content {
+  display: block;
+  z-index: 1;
 } 
+.DownloadEmployeeTemplate {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+.DownloadEmployeeTemplate .DownloadEmployeeTemplateTooltip{
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 150%;
+  left: -100%;
+  margin-left: -160px;
+}
+
+.DownloadEmployeeTemplate .DownloadEmployeeTemplateTooltip::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+ .DownloadEmployeeTemplate:hover div.DownloadEmployeeTemplateTooltip {
+  visibility: visible;
+} 
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 150%;
+  left: 150%;
+  margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 150%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
 
 /* sc-dmctIk WQNxq  */
 .table-striped{
