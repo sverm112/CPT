@@ -440,7 +440,9 @@ const EmployeeMaster = () => {
             selectors={selectors}
             title={title}>
           </DownloadBtn> */}
-          <Table columnsAndSelectors={columnsAndSelectors}columns={columns} data={filteredResources} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
+        <div className="TableContentBorder" >
+        <Table columnsAndSelectors={columnsAndSelectors}columns={columns} data={filteredResources} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
+        </div>
         </div>
       </div>
     </div>
