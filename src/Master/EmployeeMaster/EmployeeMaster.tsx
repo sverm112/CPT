@@ -329,8 +329,8 @@ const EmployeeMaster = () => {
               <span>Employee Details</span>
             </p>
             <div className="btns employee">
-              <div style={{display:'flex', width:'25%',float:'right', justifyContent:'space-between'}}>
-              <div className="DownloadEmployeeTemplate" style={{width:'15%',marginRight:'-200px', marginLeft:'80%'}}>
+              <div style={{display:'flex', width:'25%',float:'right', justifyContent:'space-between', position:'relative'}}>
+              <div className="DownloadEmployeeTemplate" style={{width:'15%',marginRight:'-205px', marginLeft:'80%'}}>
                 <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
                   <i className="las la-file-download"></i>
                 </button>
@@ -352,10 +352,10 @@ const EmployeeMaster = () => {
                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
                   onChange={handleUploadResourceFile}
                 />
-                <div className="UploadBulkEmployeeDetailsTooltip">
-                {/* <p>
-                   Select a File
-                  </p> */}
+                                <div className="BulkUploadEmployeeTooltip">
+                  <p>
+                    Add Bulk Employees
+                  </p>
                 </div>
               </div>
               <div className="AddEmployeeButton" style={{float:'right', width:'45%'}}>
@@ -363,8 +363,6 @@ const EmployeeMaster = () => {
                 {action == "Update" && <UpdateModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               </div>
               </div>
-
-
             </div>
           </div>
           <div className="row filter-row">

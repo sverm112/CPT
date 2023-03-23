@@ -513,75 +513,76 @@ button#export-excel-btn:hover {
   display: block;
   z-index: 1;
 } 
+.UploadBulkEmployeeDetails{
+  position: relative;
+  display: inline-block;
+}
+
+.UploadBulkEmployeeDetails .BulkUploadEmployeeTooltip{
+  visibility: hidden;
+  width: 120px;
+  /* border: 1px solid black; */
+  color: #000;
+  text-align: center;
+  border-radius: 6px;
+  padding: 2px 0;
+  position: absolute;
+  z-index: 1;
+  top: -32px;
+  /* left: -23px; */
+  margin-left: -70%;
+  box-shadow: 0 0px 10px rgb(0 0 0 / 50%);
+}
+
+.UploadBulkEmployeeDetails .BulkUploadEmployeeTooltip::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 60px;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #fff transparent;
+}
+ .UploadBulkEmployeeDetails:hover div.BulkUploadEmployeeTooltip {
+  visibility: visible;
+} 
+
 .DownloadEmployeeTemplate {
   position: relative;
   display: inline-block;
-  border-bottom: 1px dotted black;
+  /* border-bottom: 1px dotted black; */
 }
 .DownloadEmployeeTemplate .DownloadEmployeeTemplateTooltip{
   visibility: hidden;
   width: 120px;
-  background-color: black;
-  color: #fff;
+  /* border: 1px solid black; */
+  color: #000;
   text-align: center;
   border-radius: 6px;
-  padding: 5px 0;
+  padding: 2px 0;
   position: absolute;
   z-index: 1;
-  top: 150%;
-  left: -100%;
-  margin-left: -160px;
+  top: -32px;
+  left: -23px;
+  margin-left: -185px;
+  box-shadow: 0 0px 10px rgb(0 0 0 / 50%);
 }
 
 .DownloadEmployeeTemplate .DownloadEmployeeTemplateTooltip::after {
   content: "";
   position: absolute;
   bottom: 100%;
-  left: 50%;
+  left: 60px;
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: transparent transparent black transparent;
+  border-color: transparent transparent #fff transparent;
 }
  .DownloadEmployeeTemplate:hover div.DownloadEmployeeTemplateTooltip {
   visibility: visible;
 } 
 
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  top: 150%;
-  left: 150%;
-  margin-left: -60px;
-}
-
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  bottom: 100%;
-  left: 150%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent transparent black transparent;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-}
 
 /* sc-dmctIk WQNxq  */
 .table-striped{
