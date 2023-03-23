@@ -400,7 +400,9 @@ const ProjectAllocation = () => {
             selectors={selectors}
             title={title}>
           </DownloadBtn> */}
-        <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredProjectAllocations} title={title}/>
+          <div className="TableContentBorder">
+            <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredProjectAllocations} title={title}/>
+          </div>
       </div>
     </div>
   );

@@ -405,6 +405,13 @@ label.form-label {
 }
 
 
+.TableContentBorder{
+  border: 1px solid rgba(47,79,79, 0.2);
+  background-color:#fff;
+  border-bottom: none;
+  border-right: none;
+}
+
 .jmSsVz>button.btn.btn-primary {
   position: absolute !important;
   height: 26px !important;
@@ -412,6 +419,7 @@ label.form-label {
   padding: 0px 9px 0px 9px !important;
   border-top-left-radius: 0px !important;
   border-bottom-left-radius: 0px !important;
+  background-color: #0078d7;
 }
 
 .search-btn::-webkit-input-placeholder {
