@@ -90,7 +90,16 @@ const Market = () => {
   
   //const marketNameSelected = useSelector((store: any) => store.Market.marketName);
   const toggle = useSelector((store: any) => store.Market.toggle);
-
+  const [showModal, setShowModal] = useState(false);
+  const [action, setAction] = useState("Add");
+  const [updateMarketDetails, setUpdateMarketDetails] = useState({});
+  const openModal = () => {
+    setShowModal(true);
+  }
+  const closeModal = () => {
+    setShowModal(false);
+    setAction("Add");
+  }
   const getMarketDetails = async () => {
     try {
       const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
@@ -120,7 +129,14 @@ const Market = () => {
   {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},];
   //end constants for export
  let filteredColumns=columns;
-  
+ const handleRowDoubleClicked = (row: any) => {
+    console.log(row);
+    setShowModal(true);
+    setAction("Update");
+    let data = { ...row, isActive: row.isActive == "Active" ? "1" : "2" }
+    console.log(data);
+    setUpdateMarketDetails(data);
+  };
 
   return (
     <div>
@@ -143,7 +159,8 @@ const Market = () => {
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 
               /> */}
-              <ModalDialog />
+              {action == "Add" && <ModalDialog showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action == "Update" && <UpdateModal initialValues={updateMarketDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
             </div>
           </div>
           {/* <div className="row filter-row">
@@ -166,23 +183,15 @@ const Market = () => {
             selectors={selectors}
             title={title}>
           </DownloadBtn> */}
-          <Table  columnsAndSelectors={columnsAndSelectors}columns={filteredColumns} data={markets} customValueRenderer={customValueRenderer} title={title}/>
+          <Table  columnsAndSelectors={columnsAndSelectors}columns={filteredColumns} data={markets} customValueRenderer={customValueRenderer} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
         </div>
       </div>
     </div>
   );
 };
 
-const ModalDialog = () => {
+const ModalDialog = (props : any) => {
   const dispatch = useDispatch();
-  const [isShow, invokeModal] = useState(false);
-  const initModal = () => {
-    return invokeModal(!false);
-  };
-
-  function closeModal() {
-    return invokeModal(false);
-  }
   const [marketName, setMarketName] = useState("");
   const [marketDomain, setMarketDomain] = useState("");
   const resetFormFields = () => {
@@ -212,7 +221,7 @@ const ModalDialog = () => {
 
           dispatch(marketActions.changeToggle());
           resetFormFields();
-          closeModal();
+          props.closeModal();
           toast.success("Market Added Successfully")
         } else toast.error(dataResponse[0].errorMessage);
       } else toast.error("Some Error occured.");
@@ -229,12 +238,12 @@ const ModalDialog = () => {
         className="btn btn-primary"
         style={{ float: "right", marginTop: "-68px" }}
         variant="primary"
-        onClick={initModal}
+        onClick={props.openModal}
       >
         <i className="las la-plus"></i> Add Market
       </Button>
-      <Modal show={isShow} onHide={closeModal}>
-        <Modal.Header closeButton onClick={closeModal}>
+      <Modal show={props.showModal} onHide={props.closeModal}>
+        <Modal.Header closeButton onClick={props.closeModal}>
           <Modal.Title>
             <h6>Add New Market</h6>
           </Modal.Title>
@@ -276,14 +285,130 @@ const ModalDialog = () => {
             </div>
           </form>
         </Modal.Body>
-        {/* <Modal.Footer>
-                    <Button variant="danger" onClick={closeModal}>
-                        Close
-                    </Button>
-                </Modal.Footer> */}
       </Modal>
     </>
   );
 };
+
+const UpdateModal = (props: any) => {
+  const dispatch = useDispatch();
+  const [formValues, setFormValues] = useState(props.initialValues || {});
+  const formSubmitHandler = async (event: any) => {
+    event.preventDefault();
+    let payload = {
+      pkMarketID: formValues.pkMarketID,
+      marketName : formValues.marketName,
+      marketDomain : formValues.marketDomain,
+      status: formValues.status,
+      updatedBy: "Admin",
+    };
+    try {
+      const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/UpdateMarket", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const dataResponse = await response.json();
+      if (dataResponse.length) {
+        if (dataResponse[0].statusCode == "201") {
+          console.log(dataResponse[0].statusReason);
+          console.log(dataResponse[0].recordsCreated);
+          dispatch(marketActions.changeToggle());
+          props.closeModal();
+          toast.success("Market Updated Successfully")
+        } else toast.error(dataResponse[0].errorMessage);
+      } else toast.error("Some Error occured.");
+    } catch {
+      toast.error("Some Error occured.");
+    }
+  };
+
+
+  const handleChange = (e: any) => {
+    console.log("Update")
+    setFormValues({
+      ...formValues,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  return (
+    <>
+      <Button
+        className="btn btn-primary"
+        style={{ float: "right", marginTop: "-68px" }}
+        variant="primary"
+        onClick={props.openModal}
+      >
+        <i className="las la-plus"></i> Update Market
+      </Button>
+      <Modal show={props.showModal} onHide={props.closeModal}>
+        <Modal.Header closeButton onClick={props.closeModal}>
+          <Modal.Title>
+            <h6>Update Market</h6>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={formSubmitHandler}>
+            <div className="row">
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="marketName">
+                  Market Name
+                </label>
+                <input
+                  type="text"
+                  name="marketName"
+                  className="form-control"
+                  id="marketName"
+                  value={formValues.marketName}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="marketDomain">
+                  Market Domain
+                </label>
+                <input
+                  type="text"
+                  name="marketDomain"
+                  className="form-control"
+                  id="marketDomain"
+                  value={formValues.marketDomain}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-md-6 form-group ">
+                <label className="form-label">Status</label>
+                <div className="dropdown">
+                  <select
+                    name="status"
+                    className="form-control"
+                    id="statusDropdown"
+                    value={formValues.status}
+                    onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    <option value="Active">Active</option>
+                    <option value="InActive">InActive</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-12">
+                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
+    </>
+  );
+}
+
 
 export default Market;
