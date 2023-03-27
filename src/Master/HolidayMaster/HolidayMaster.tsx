@@ -270,7 +270,9 @@ const HolidayMaster = () => {
             selectors={selectors}
             title={title}>
           </DownloadBtn> */}
+        <div className="TableContentBorder" >
           <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredHolidays} id="data-table" title={title}/>
+          </div>
         </div>
       </div>
     </div>

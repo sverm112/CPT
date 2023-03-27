@@ -166,7 +166,9 @@ const Market = () => {
             selectors={selectors}
             title={title}>
           </DownloadBtn> */}
-          <Table  columnsAndSelectors={columnsAndSelectors}columns={filteredColumns} data={markets} customValueRenderer={customValueRenderer} title={title}/>
+          <div className="TableContentBorder">
+            <Table  columnsAndSelectors={columnsAndSelectors}columns={filteredColumns} data={markets} customValueRenderer={customValueRenderer} title={title}/>
+          </div>
         </div>
       </div>
     </div>
