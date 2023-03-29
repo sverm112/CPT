@@ -283,7 +283,9 @@ const ProjectInfo = () => {
             selectors={selectors}
             title={title}>
           </DownloadBtn> */}
-          <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
+          <div className="TableContentBorder">
+            <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
+          </div>
         </div>
       </div>
     </div>
