@@ -30,7 +30,6 @@ const validationOptions = [
   ];
 
 export function validateSingleFormGroup(formGroup: any){
-    console.log("Hello Form Group", formGroup);
     const label = formGroup.querySelector('label');
     const input = formGroup.querySelector('input');
     const errorContainer = formGroup.querySelector('.error');
