@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import DownloadBtn from "../../Export/DownloadBtn";
+import { validateSingleFormGroup } from "../../utils/validations";
 
 const columns = [
   // {
@@ -244,29 +245,35 @@ const ModalDialog = () => {
         <Modal.Body>
           <form onSubmit={formSubmitHandler}>
             <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="MarketName">
                 <label className="form-label" htmlFor="marketName">
                   Market Name
                 </label>
                 <input
+                  required
                   type="text"
                   className="form-control"
                   id="marketName"
                   value={marketName}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketName'))}
                   onChange={(event: any) => setMarketName(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="MarketDomain">
                 <label className="form-label" htmlFor="marketDomain">
                   Market Domain
                 </label>
                 <input
+                  required
                   type="text"
                   className="form-control"
                   id="marketDomain"
                   value={marketDomain}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketDomain'))}
                   onChange={(event: any) => setMarketDomain(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
             </div>
             <div className="row">
