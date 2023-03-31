@@ -4,6 +4,7 @@
 // Submission while for individual fields we have to call 
 // validateSingleFormGroup from individual fields onBlur inside input tag
 
+// We have to add an error div as a sibling of the control
 
 // We have to add attributes like PatternsAndMessages, required and others , 
 // we also have to give ids for form-group 
@@ -32,12 +33,30 @@ const validationOptions = [
 export function validateSingleFormGroup(formGroup: any){
     const label = formGroup.querySelector('label');
     const input = formGroup.querySelector('input');
+    const select = formGroup.querySelector('select');
+    const datePicker = formGroup.querySelector('DatePicker');
     const errorContainer = formGroup.querySelector('.error');
-
     errorContainer.textContent='';
+    
     for(const option of validationOptions){
-      if(input.hasAttribute(option.attribute) && !option.isValid(input)){
+      if(input !==null && input.hasAttribute(option.attribute) && !option.isValid(input)){
         errorContainer.textContent = option.errorMessage(input, label);
+      }
+      if(select !==null ){
+        if(select.value==="0"){
+          errorContainer.textContent = option.errorMessage(select, label);
+          formGroup.querySelector('select').setAttribute('style','border-color:red;color:red');
+        }else{
+          formGroup.querySelector('select').setAttribute('style','');
+        }
+      }
+      // console.log(formGroup.querySelector(".react-date-picker"));
+      if(datePicker !==null){
+        if(datePicker.value===null){
+          console.log(formGroup.querySelector(".react-date-picker"));
+          errorContainer.textContent = option.errorMessage(select, label);
+          formGroup.querySelector(".react-date-picker").setAttribute('style','border-color:red;color:red');
+        }
       }
     }
   };

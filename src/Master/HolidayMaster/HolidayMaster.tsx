@@ -12,6 +12,8 @@ import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { filterActions } from "../../Store/Slices/Filters";
 import DownloadBtn from "../../Export/DownloadBtn"; 
+import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
+import { validateSingleFormGroup } from "../../utils/validations";
 
 //Data Table
 const columns = [
@@ -374,24 +376,30 @@ const ModalDialog = () => {
         <Modal.Body>
           <form onSubmit={formSubmitHandler}>
             <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="Occasion">
                 <label className="form-label" htmlFor="holidayOccasion">
                   Occasion
                 </label>
                 <input
+                  required
+                  pattern={PatternsAndMessages.nameLike.pattern}
                   type="text"
                   className="form-control"
                   id="holidayOccasion"
                   value={occasion}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('Occasion'))}
                   onChange={(event: any) => setOccasion(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="HolidayDate">
                 <label className="form-label" htmlFor="holidaydate" style={{ zIndex: "9" }}>
                   Holiday Date
                 </label>
                 <DatePicker
+                  required
                   className="form-control"
+                  onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('HolidayDate'))}
                   onChange={setDate}
                   value={date}
                   format="dd/MM/yyyy"
@@ -399,37 +407,44 @@ const ModalDialog = () => {
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="HolidayMarket">
                 <label className="form-label" htmlFor="holidayMarket">
                   Market
                 </label>
                 <div className="dropdown">
                   <select
+                    required
                     className="form-control"
                     id="holidayMarket"
                     value={market}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayMarket'))}
                     onChange={(event: any) => setMarket(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="HolidayLocation">
                 <label className="form-label" htmlFor="holidayCountry">
                   Location
                 </label>
                 <div className="dropdown">
                   <select
+                    required
                     className="form-control"
                     id="holidayCountry"
                     value={location}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayLocation'))}
                     onChange={(event: any) => setLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {locations.map((location: any) => (<option key={location.locationId} value={location.locationId.toString()}> {location.locationName}</option>))}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
               <div className="col-md-6 form-group" id="isOffShore">
@@ -438,14 +453,17 @@ const ModalDialog = () => {
                 </label>
                 <div className="dropdown">
                   <select
+                    required
                     className="form-control"
                     id="holidaySubLocation"
                     value={subLocation}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('isOffShore'))}
                     onChange={(event: any) => setSubLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {location == "0" ? [] : (subLocations.filter((subLocation: any) => Number(location) == subLocation.locationId).map((subLocation: any) => (<option key={subLocation.subLocationId} value={subLocation.subLocationId.toString()}>{subLocation.subLocationName}</option>)))}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
             </div>
