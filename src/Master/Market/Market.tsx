@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import DownloadBtn from "../../Export/DownloadBtn";
-import { validateSingleFormGroup } from "../../utils/validations";
+import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 
 const columns = [
   // {
@@ -194,6 +194,7 @@ const ModalDialog = () => {
   }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
+    validateForm('#AddMarket');
     let payload = {
       marketName: marketName,
       marketDomain: marketDomain,
@@ -243,7 +244,7 @@ const ModalDialog = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form id="AddMarket" onSubmit={formSubmitHandler}>
             <div className="row">
               <div className="col-md-6 form-group" id="MarketName">
                 <label className="form-label" htmlFor="marketName">
