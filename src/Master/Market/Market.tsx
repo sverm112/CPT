@@ -256,7 +256,7 @@ const ModalDialog = () => {
                   className="form-control"
                   id="marketName"
                   value={marketName}
-                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketName'))}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketName'),'input')}
                   onChange={(event: any) => setMarketName(event.target.value)}
                 />
                 <div className="error"></div>
@@ -271,7 +271,7 @@ const ModalDialog = () => {
                   className="form-control"
                   id="marketDomain"
                   value={marketDomain}
-                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketDomain'))}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketDomain'), 'input')}
                   onChange={(event: any) => setMarketDomain(event.target.value)}
                 />
                 <div className="error"></div>

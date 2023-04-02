@@ -380,6 +380,8 @@ const ModalDialog = () => {
                 <label className="form-label" htmlFor="holidayOccasion">
                   Occasion
                 </label>
+                <span className="requiredField">*</span>
+
                 <input
                   required
                   pattern={PatternsAndMessages.nameLike.pattern}
@@ -387,7 +389,7 @@ const ModalDialog = () => {
                   className="form-control"
                   id="holidayOccasion"
                   value={occasion}
-                  onBlur = {()=>validateSingleFormGroup(document.getElementById('Occasion'))}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('Occasion'), 'input')}
                   onChange={(event: any) => setOccasion(event.target.value)}
                 />
                 <div className="error"></div>
@@ -396,10 +398,11 @@ const ModalDialog = () => {
                 <label className="form-label" htmlFor="holidaydate" style={{ zIndex: "9" }}>
                   Holiday Date
                 </label>
+                <span className="requiredField">*</span>
                 <DatePicker
                   required
                   className="form-control"
-                  onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('HolidayDate'))}
+                  onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('HolidayDate'),'datePicker')}
                   onChange={setDate}
                   value={date}
                   format="dd/MM/yyyy"
@@ -419,7 +422,7 @@ const ModalDialog = () => {
                     className="form-control"
                     id="holidayMarket"
                     value={market}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayMarket'))}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayMarket'),'select')}
                     onChange={(event: any) => setMarket(event.target.value)}
                   >
                     <option value="0">Select</option>
@@ -438,7 +441,7 @@ const ModalDialog = () => {
                     className="form-control"
                     id="holidayCountry"
                     value={location}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayLocation'))}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayLocation'), 'select')}
                     onChange={(event: any) => setLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
@@ -457,7 +460,7 @@ const ModalDialog = () => {
                     className="form-control"
                     id="holidaySubLocation"
                     value={subLocation}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('isOffShore'))}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('isOffShore'), 'select')}
                     onChange={(event: any) => setSubLocation(event.target.value)}
                   >
                     <option value="0">Select</option>

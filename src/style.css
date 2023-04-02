@@ -27,6 +27,9 @@ h1.Heading-Cls {
   border-right: 1px solid #000;
   margin-right: 7px;
 }
+.requiredField{
+  color: red;
+}
 
 .error{
   color: red;
@@ -57,10 +60,10 @@ h1.Heading-Cls {
   visibility: hidden;
 }
 
-input:invalid{
+/* input:invalid{
   color: red;
   border-color: red;
-}
+} */
 
 .custom-file-input::before {
   content: "Select some files";
