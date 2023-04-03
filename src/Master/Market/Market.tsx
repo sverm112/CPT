@@ -194,7 +194,9 @@ const ModalDialog = () => {
   }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
-    validateForm('#AddMarket');
+    // validateForm('#AddMarket');
+    // validateSingleFormGroup(document.getElementById('MarketName'),'input');
+    // validateSingleFormGroup(document.getElementById('MarketDomain'), 'input');
     let payload = {
       marketName: marketName,
       marketDomain: marketDomain,
@@ -250,6 +252,7 @@ const ModalDialog = () => {
                 <label className="form-label" htmlFor="marketName">
                   Market Name
                 </label>
+                <span className="requiredField">*</span>
                 <input
                   required
                   type="text"
@@ -265,6 +268,7 @@ const ModalDialog = () => {
                 <label className="form-label" htmlFor="marketDomain">
                   Market Domain
                 </label>
+                <span className="requiredField">*</span>
                 <input
                   required
                   type="text"
