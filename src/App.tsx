@@ -22,6 +22,7 @@ import ResourceReport from "./Reports/ResourceReport/ResourceReport";
 import HolidayListReport from "./Reports/HolidayListReport/HolidayListReport";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "./Store/Slices/User";
+import PTO from "./Master/PTO/PTODetails";
 
 const App = () => {
     const dispatch=useDispatch();
@@ -50,13 +51,14 @@ const App = () => {
                     <Route path={APP_ROUTES.ALLOCATIONRESOURCERPOT} element={<ResourceReport />} />
                     <Route path={APP_ROUTES.ALLOCATIONPROJECTRPOT} element={<ProjectReport />} />
                     <Route path={APP_ROUTES.HOLIDAYLISTRPOT} element={<HolidayListReport />} />
-             <Route path={APP_ROUTES.HOLIDAYMASTER} element={<HolidayMaster />} />
-            <Route path={APP_ROUTES.EMPLOYEEMASTER} element={<EmployeeMaster />} />
-            <Route path={APP_ROUTES.PROJECTINFO} element={<ProjectInfo />} />
-            <Route path={APP_ROUTES.MARKET} element={<Market/>} />
+                    <Route path={APP_ROUTES.HOLIDAYMASTER} element={<HolidayMaster />} />
+                    <Route path={APP_ROUTES.EMPLOYEEMASTER} element={<EmployeeMaster />} />
+                    <Route path={APP_ROUTES.PROJECTINFO} element={<ProjectInfo />} />
+                    <Route path={APP_ROUTES.MARKET} element={<Market/>} />
+                    <Route path={APP_ROUTES.PAIDTIMEOFF} element={<PTO/>} />
                     <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
                     <Route path={APP_ROUTES.HELP} element={<Help />} />
-            <Route path={APP_ROUTES.PROJECTALLOCATION} element={<ProjectAllocation />} />
+                    <Route path={APP_ROUTES.PROJECTALLOCATION} element={<ProjectAllocation />} />
                 </Routes>
             </HashRouter>
 
