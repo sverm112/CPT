@@ -12,10 +12,11 @@ import { toast } from "react-toastify";
 import DownloadBtn from "../../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { ptoActions } from "../../Store/Slices/Pto";
+import { filterActions } from "../../Store/Slices/Filters";
 
 const columns = [
   {
-    name: "Resource Name",
+    name: "Resource",
     selector: (row: { resourceName: any }) => row.resourceName,
     sortable: true,
     reorder: true,
@@ -113,16 +114,19 @@ const customValueRenderer = (selected: any, _options: any) => {
 };
 
 const PTO = () => {
-  const ptoTypes = [
-    { label: "Privileged", value: "Privileged" },
-    { label: "Casual", value: "Casual" },
-    { label: "Sick", value: "Sick" },
-  ];
   const dispatch = useDispatch();
-  const resources = useSelector((store: any) => store.Pto.data);
-  console.log("Resources: ", resources);
-  //const marketNameSelected = useSelector((store: any) => store.Market.marketName);
+  // const resources = useSelector((state: any) => state.Employee.data);
+  const managers: any = [];
+  const resources = useSelector((state: any) => state.Pto.data);
   const toggle = useSelector((store: any) => store.Pto.toggle);
+  const resourceList = useSelector((state: any) => state.Employee.data);
+  const managerSelected = useSelector((state: any) => state.Employee.manager);
+
+  resources.map((resource: any) => {
+    if (managers.indexOf(resource.manager) === -1) {
+      managers.push(resource.manager);
+    }
+  })
 
   const getPTODetails = async () => {
     try {
@@ -144,7 +148,7 @@ const PTO = () => {
   const title = "PTO Details";
 
   const columnsAndSelectors=[
-  {'name' :'Resource Name','selector':'resourceName','default':'true'},
+  {'name' :'Resource','selector':'resourceName','default':'true'},
   {'name' :'Resource Manager','selector':'resourceManager','default':'true'},
   {'name': 'PTO Type', 'selector': 'ptoType', 'default': 'true' },
   {'name': 'Start Date', 'selector': 'startDate', 'default': 'true'},
@@ -159,8 +163,45 @@ const PTO = () => {
   {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},];
   //end constants for export
  let filteredColumns=columns;
+    //Resource, Resource Manager, PTO Type, Month, Status 
+    const resourceSelected = useSelector((state: any) => state.Pto.resourceName);
+    const ptoTypes = [
+      { label: "Privileged", value: "Privileged" },
+      { label: "Casual", value: "Casual" },
+      { label: "Sick", value: "Sick" },
+    ];
+    const month = [
+      { label: "January", value: "January" },
+      { label: "February", value: "February" },
+      { label: "March", value: "March" },
+      { label: "April", value: "April" },
+      { label: "May", value: "May" },
+      { label: "June", value: "June" },
+      { label: "July", value: "July" },
+      { label: "August", value: "August" },
+      { label: "September", value: "September" },
+      { label: "October", value: "October" },
+      { label: "November", value: "November" },
+      { label: "December", value: "December" },
+    ];
   
+  const status = useSelector((state: any) => state.Filters.status);
 
+  const changeResourceHandler = (event: any) => {
+    dispatch(ptoActions.changeResourceName(event));
+  }
+  const changeManagerSelectedHandler = (event: any) => {
+    dispatch(ptoActions.changerResourceManager(event));
+  }
+  const changePtoTypeHandler = (event: any) => {
+    dispatch(ptoActions.changePtoType(event));
+  }
+  const changeMonthHandler = (event: any) => {
+    dispatch(ptoActions.changeMonth(event));
+  }
+  const changeStatusHandler = (event: any) => {
+    dispatch(ptoActions.changeStatus(event));
+  }
   return (
     <div>
       <SideBar></SideBar>
@@ -174,6 +215,60 @@ const PTO = () => {
             </p>
             <div className="btns market">
               <ModalDialog />
+            </div>
+          </div>
+          <div className="row filter-row">
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Resource
+              </label>
+              <MultiSelect
+                options={resourceList}
+                value={resourceSelected}
+                onChange={(event: any) => dispatch(ptoActions.changeResourceName(event))}
+                labelledBy="Select Resource"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Manager
+              </label>
+              <MultiSelect
+                options={(managers.map((manager: any) => ({ label: manager, value: manager })))}
+                value={managerSelected}
+                onChange={(event: any) => dispatch(ptoActions.changerResourceManager(event))}
+                labelledBy="Select Manager"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+
+            {/* <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Expense Type
+              </label>
+              <MultiSelect
+                options={expenseTypes}
+                value={expenseTypeSelected}
+                onChange={(event: any) => dispatch(projectActions.changeExpenseType(event))}
+                labelledBy="Select Expense Type"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className=" col-md-2 form-group">
+              <label htmlFor="activeDropdown" className="form-label">
+                Status
+              </label>
+              <MultiSelect
+                options={status.map((status: any) => ({ label: status, value: status }))}
+                value={statusSelected}
+                onChange={(event: any) => dispatch(projectActions.changeStatus(event))}
+                labelledBy="Select Status"
+                valueRenderer={customValueRenderer}
+              />
+            </div> */}
+            <div className="col-md-2" style={{ marginTop: "24px" }}>
+              <button type="button" className="btn btn-primary" onClick={() => dispatch(ptoActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
           <div className="TableContentBorder">
