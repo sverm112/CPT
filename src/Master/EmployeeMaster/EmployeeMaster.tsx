@@ -106,21 +106,7 @@ const columns = [
   },
 ];
 
-const columnsAndSelectors=[
-  {'name': 'Resource' , 'selector': 'resourceName','default':'true'},
-  {'name': 'Role' , 'selector': 'role','default':'true'},
-  {'name': 'Email Address', 'selector': 'emailAddress','default':'true' },
-  {'name': 'Manager', 'selector': 'manager','default':'true'},
-  {'name': 'Resource Type', 'selector': 'resourceType','default':'true'},
-  {'name': 'Market', 'selector': 'resourceMarket','default':'true'},
-  {'name': 'Location', 'selector': 'location','default':'true'},
-  {'name': 'Sub Location', 'selector':'subLocation','default':'true' },
-  {'name': 'Status', 'selector' : 'isActive','default':'true'},
-  {'name': 'Created Date', 'selector' : 'createdDate','default':'true'},
-  {'name': 'Created By', 'selector' : 'createdBy','default':'true'},
-  {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
-  {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
-]
+
 const customValueRenderer = (selected: any, _options: any) => {
   if (selected.length == "0") return "Select";
   else if (selected.length == "1") return selected[0].label;
@@ -184,7 +170,6 @@ const EmployeeMaster = () => {
   const getMarketDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(marketActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
@@ -311,9 +296,21 @@ const EmployeeMaster = () => {
   };
 
   //start constants for export
-  const selectors = ['resourceName', 'role', 'emailAddress', 'manager',
-    'resourceType', 'resourceMarket', 'location', 'subLocation',
-    'isActive', 'createdDate', 'createdBy'];
+  const columnsAndSelectors=[
+    {'name': 'Resource' , 'selector': 'resourceName','default':'true'},
+    {'name': 'Role' , 'selector': 'role','default':'true'},
+    {'name': 'Email Address', 'selector': 'emailAddress','default':'true' },
+    {'name': 'Manager', 'selector': 'manager','default':'true'},
+    {'name': 'Resource Type', 'selector': 'resourceType','default':'true'},
+    {'name': 'Market', 'selector': 'resourceMarket','default':'true'},
+    {'name': 'Location', 'selector': 'location','default':'true'},
+    {'name': 'Sub Location', 'selector':'subLocation','default':'true' },
+    {'name': 'Status', 'selector' : 'isActive','default':'true'},
+    {'name': 'Created Date', 'selector' : 'createdDate','default':'true'},
+    {'name': 'Created By', 'selector' : 'createdBy','default':'true'},
+    {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
+    {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
+  ]
   const title = "Employee Details";
   //end constants for export
 
@@ -359,7 +356,7 @@ const EmployeeMaster = () => {
                 </div>
               </div>
               <div className="AddEmployeeButton" style={{float:'right', width:'45%'}}>
-                {action == "Add" && <ModalDialog showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+                {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
                 {action == "Update" && <UpdateModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               </div>
               </div>
@@ -432,12 +429,6 @@ const EmployeeMaster = () => {
               <button type="button" className="btn btn-primary" onClick={() => dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
-          {/* <DownloadBtn 
-            columns={columns}
-            filteredRecords={filteredResources}
-            selectors={selectors}
-            title={title}>
-          </DownloadBtn> */}
         <div className="TableContentBorder" >
         <Table columnsAndSelectors={columnsAndSelectors}columns={columns} data={filteredResources} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
         </div>
@@ -447,7 +438,7 @@ const EmployeeMaster = () => {
   );
 };
 
-const ModalDialog = (props: any) => {
+const AddModal = (props: any) => {
   const dispatch = useDispatch();
   const roles = useSelector((state: any) => state.Filters.roles);
   const resourceTypes = useSelector((state: any) => state.Filters.resourceTypes);
@@ -599,7 +590,7 @@ const ModalDialog = (props: any) => {
                     onChange={(event) => setMarket(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
+                    {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.marketName}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>
@@ -803,7 +794,7 @@ const UpdateModal = (props: any) => {
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.marketName}>{market.marketName}</option>)}
+                    {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.marketName}>{market.marketName}</option>)}
                   </select>
                 </div>
               </div>

@@ -219,7 +219,7 @@ const ProjectInfo = () => {
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 style={{ marginRight: "150px" }}
               /> */}
-              {action == "Add" && <ModalDialog showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               {action == "Update" && <UpdateModal initialValues={updateProjectDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
 
             </div>
@@ -278,12 +278,6 @@ const ProjectInfo = () => {
               <button type="button" className="btn btn-primary" onClick={() => dispatch(projectActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
-          {/* <DownloadBtn
-            columns={columns}
-            filteredRecords={filteredProjects}
-            selectors={selectors}
-            title={title}>
-          </DownloadBtn> */}
           <div className="TableContentBorder">
             <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
           </div>
@@ -293,7 +287,7 @@ const ProjectInfo = () => {
   );
 };
 
-const ModalDialog = (props: any) => {
+const AddModal = (props: any) => {
   const dispatch = useDispatch();
 
 
@@ -437,7 +431,7 @@ const ModalDialog = (props: any) => {
                     onChange={(event: any) => { console.log(projectMarket); setProjectMarket(event.target.value) }}
                   >
                     <option value="0">Select</option>
-                    {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                    {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.id.toString()}>{market.marketName}</option>)}
                   </select>
                 <div className="error"></div>
                 </div>
@@ -632,7 +626,7 @@ const UpdateModal = (props: any) => {
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                    {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.id.toString()}>{market.marketName}</option>)}
                   </select>
                   <div className="error"></div>
                 </div>

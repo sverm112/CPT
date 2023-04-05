@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   roles :[ "Developer","Dev Manager","QA","QA Manager","Sr. Developer","Sr. QA","Technical Lead"],
   resourceTypes : ["OGS","GTM","FTE"],
-  status : ["Active","Inactive"],
+  status : ["Active","InActive"],
   locations: [],
   subLocations: [],
 };
