@@ -1,26 +1,14 @@
-import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
+import { useState, useEffect } from "react";
 import SideBar from "../../SideBar/SideBar";
-// import ModalDialog from '../../modal/modal';
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { Modal, Button } from "react-bootstrap";
 import Table from "../../DataTable/DataTable";
-import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
-import DownloadBtn from "../../Export/DownloadBtn";
-import { validateForm, validateSingleFormGroup } from "../../utils/validations";
+import { validateSingleFormGroup } from "../../utils/validations";
 
 const columns = [
-  // {
-  //   name: "Market Id",
-  //   selector: (row: { pkMarketID: any }) => row.pkMarketID,
-
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
   {
     name: "Market Name",
     selector: (row: { marketName: any }) => row.marketName,
@@ -37,7 +25,7 @@ const columns = [
   },
   {
     name: "Status",
-    selector: (row: { isActive: any }) => row.isActive,
+    selector: (row: { status: any }) => row.status,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -78,18 +66,8 @@ const customValueRenderer = (selected: any, _options: any) => {
 };
 
 const Market = () => {
-  const marketNames = [
-    { label: "AppleCare", value: "AppleCare" },
-    { label: "Beaver", value: "Beaver" },
-    { label: "CA", value: "CA" },
-    { label: "HCP", value: "HCP" },
-    { label: "Monarch", value: "Monarch" },
-    { label: "NAMM", value: "NAMM" },
-  ];
   const dispatch = useDispatch();
   const markets = useSelector((store: any) => store.Market.data);
-  
-  //const marketNameSelected = useSelector((store: any) => store.Market.marketName);
   const toggle = useSelector((store: any) => store.Market.toggle);
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("Add");
@@ -105,7 +83,6 @@ const Market = () => {
     try {
       const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
       dispatch(marketActions.changeData(dataGet));
     }
     catch {
@@ -115,15 +92,12 @@ const Market = () => {
   useEffect(() => {
     getMarketDetails();
   }, [toggle]);
-
   //start constants for export
-  const selectors = ['marketName', 'marketDomain', 'isActive', 'createdDate', 'createdBy']
   const title = "Market Details";
-
   const columnsAndSelectors=[
     {'name' :'Market Name','selector':'marketName','default':'true'},
   {'name' :'Market Domain','selector':'marketDomain','default':'true'},
-  {'name' :'Status','selector':'isActive','default':'true'},
+  {'name' :'Status','selector':'status','default':'true'},
   {'name' :'Created Date','selector':'createdDate','default':'true'},
   {'name' :'Created By','selector':'createdBy','default':'true'},
   {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
@@ -134,7 +108,7 @@ const Market = () => {
     console.log(row);
     setShowModal(true);
     setAction("Update");
-    let data = { ...row, isActive: row.isActive == "Active" ? "1" : "2" }
+    let data = { ...row}
     console.log(data);
     setUpdateMarketDetails(data);
   };
@@ -160,32 +134,12 @@ const Market = () => {
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 
               /> */}
-              {action == "Add" && <ModalDialog showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               {action == "Update" && <UpdateModal initialValues={updateMarketDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
             </div>
           </div>
-          {/* <div className="row filter-row">
-            <div className="col-md-2 form-group">
-              <label htmlFor="" className="form-label">
-                Columns
-              </label>
-              <MultiSelect
-                options={columns.map((column:any)=>({label : column['name'],value:column['name']}))}
-                value={columnsSelected}
-                onChange={(event: any) => dispatch(marketActions.changeColumns(event))}
-                labelledBy="Select Market Code"
-                valueRenderer={customValueRenderer}
-              />
-            </div>
-          </div> */}
-          {/* <DownloadBtn 
-            columns={columns}
-            filteredRecords={markets}
-            selectors={selectors}
-            title={title}>
-          </DownloadBtn> */}
           <div className="TableContentBorder">
-            <Table  columnsAndSelectors={columnsAndSelectors}columns={filteredColumns} data={markets} customValueRenderer={customValueRenderer} title={title}/>
+            <Table  columnsAndSelectors={columnsAndSelectors}columns={columns} data={markets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
           </div>
         </div>
       </div>
@@ -193,7 +147,7 @@ const Market = () => {
   );
 };
 
-const ModalDialog = (props : any) => {
+const AddModal = (props : any) => {
   const dispatch = useDispatch();
   const [marketName, setMarketName] = useState("");
   const [marketDomain, setMarketDomain] = useState("");
@@ -310,7 +264,7 @@ const UpdateModal = (props: any) => {
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
     let payload = {
-      pkMarketID: formValues.pkMarketID,
+      id: formValues.id,
       marketName : formValues.marketName,
       marketDomain : formValues.marketDomain,
       status: formValues.status,

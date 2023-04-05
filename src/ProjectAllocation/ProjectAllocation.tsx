@@ -458,7 +458,7 @@ const ModalDialog = () => {
   const getEmployeeDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "Inactive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(employeeActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
@@ -841,11 +841,6 @@ const ModalDialog = () => {
             </div>
           </form>
         </Modal.Body>
-        {/* <Modal.Footer>
-                      <Button variant="danger" onClick={closeModal}>
-                          Close
-                      </Button>
-                  </Modal.Footer> */}
       </Modal>
     </>
   );

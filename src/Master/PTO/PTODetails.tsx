@@ -45,7 +45,7 @@ const columns = [
   },
   {
     name: "End Date",
-    selector: (row: { endDate: any }) => row.endDate,
+    selector: (row: { enddDate: any }) => row.enddDate,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -73,14 +73,14 @@ const columns = [
   },
   {
     name: "Status",
-    selector: (row: { isActive: any }) => row.isActive,
+    selector: (row: { status: any }) => row.status,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate.slice(0, 10),
+    selector: (row: { createdDate: any }) => row.createdDate,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -132,7 +132,6 @@ const PTO = () => {
     try {
       const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/GetAllPTOs");
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
       dispatch(ptoActions.changeData(dataGet));
     }
     catch {
