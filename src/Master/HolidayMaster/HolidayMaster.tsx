@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SideBar from "../../SideBar/SideBar";
-// import ModalDialog from '../../modal/modal';
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import { Modal, Button, Tab } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 import DatePicker from "react-date-picker";
 import { MultiSelect } from "react-multi-select-component";
 import Table from "../../DataTable/DataTable";
@@ -11,17 +10,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { filterActions } from "../../Store/Slices/Filters";
-import DownloadBtn from "../../Export/DownloadBtn"; 
+import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
+import { validateSingleFormGroup } from "../../utils/validations";
 
 //Data Table
 const columns = [
-  // {
-  //   name: "Id",
-  //   selector: (row: { pkHolidayID: any }) => row.pkHolidayID,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
   {
     name: "Occasion",
     selector: (row: { occasionName: any }) => row.occasionName,
@@ -38,21 +31,21 @@ const columns = [
   },
   {
     name: "Market",
-    selector: (row: { marketName: any }) => row.marketName == "0" ? "" : row.marketName,
+    selector: (row: { marketName: any }) => row.marketName,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Location",
-    selector: (row: { locationName: any }) => row.locationName == "0" ? "" : row.locationName,
+    selector: (row: { locationName: any }) => row.locationName,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Sub Location",
-    selector: (row: { subLocationName: any }) => row.subLocationName == "0" ? "" : row.subLocationName,
+    selector: (row: { subLocationName: any }) => row.subLocationName,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -66,7 +59,7 @@ const columns = [
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate.slice(0, 10),
+    selector: (row: { createdDate: any }) => row.createdDate,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -93,18 +86,7 @@ const columns = [
     filterable: true,
   },
 ];
-const columnsAndSelectors=[
-  {'name':'Occasion','selector':'occasionName','default':'true'},
-  {'name':'Holiday Date','selector':'holidayDate','default':'true'},
-  {'name':'Market','selector':'marketName','default':'true'},
-  {'name':'Location','selector':'locationName','default':'true'},
-  {'name':'Sub Location','selector':'subLocationName','default':'true'},
-  {'name':'Status','selector':'isActive','default':'true'},
-  {'name':'Created Date','selector':'createdDate','default':'true'},
-  {'name':'Created By','selector':'createdBy','default':'true'},
-  {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
-  {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
-]
+
 const customValueRenderer = (selected: any, _options: any) => {
   if (selected.length == "0") return "Select";
   else return selected.map((market: any) => market.label).join(", ");
@@ -112,11 +94,12 @@ const customValueRenderer = (selected: any, _options: any) => {
 
 const HolidayMaster = () => {
 
-
+  const dispatch = useDispatch();
   const locations = useSelector((state: any) => state.Filters.locations);
   const subLocations = useSelector((state: any) => state.Filters.subLocations);
   const status = useSelector((state: any) => state.Filters.status);
-  const dispatch = useDispatch();
+  const marketList = useSelector((state: any) => state.Market.data);
+  
   const marketSelected = useSelector((store: any) => store.Holiday.market);
   const locationSelected = useSelector((store: any) => store.Holiday.location);
   const subLocationSelected = useSelector((store: any) => store.Holiday.subLocation);
@@ -143,11 +126,10 @@ const HolidayMaster = () => {
   }, [toggle]);
 
 
-  const marketList = useSelector((state: any) => state.Market.data);
+  
   const getMarketDetails = async () => {
     const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
   };
@@ -182,7 +164,18 @@ const HolidayMaster = () => {
   });
 
   //start constants for export
-  const selectors = ['occasionName', 'holidayDate', 'marketName', 'locationName', 'subLocationName', 'isActive', 'createdDate', 'createdBy']
+  const columnsAndSelectors=[
+    {'name':'Occasion','selector':'occasionName','default':'true'},
+    {'name':'Holiday Date','selector':'holidayDate','default':'true'},
+    {'name':'Market','selector':'marketName','default':'true'},
+    {'name':'Location','selector':'locationName','default':'true'},
+    {'name':'Sub Location','selector':'subLocationName','default':'true'},
+    {'name':'Status','selector':'isActive','default':'true'},
+    {'name':'Created Date','selector':'createdDate','default':'true'},
+    {'name':'Created By','selector':'createdBy','default':'true'},
+    {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
+    {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
+  ]
   const title = "Holiday Details";
   //end constants for export
 
@@ -198,16 +191,8 @@ const HolidayMaster = () => {
               <span>Holiday Details</span>
             </p>
             <div className="btns holiday">
-              {/* <button type="button" className="btn btn-primary upload-button-btn" style={{ marginRight: "150px" }}>
-                <i className="las la-file-upload"></i>
-              </button> */}
-              {/* <input
-                type="file"
-                className="btn btn-primary custom-file-input upload-input-btn"
-                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                style={{ marginRight: "150px" }}
-              /> */}
-              <ModalDialog />
+             
+              <AddModal />
             </div>
           </div>
           <div className="row filter-row">
@@ -270,7 +255,9 @@ const HolidayMaster = () => {
             selectors={selectors}
             title={title}>
           </DownloadBtn> */}
+        <div className="TableContentBorder" >
           <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredHolidays} id="data-table" title={title}/>
+          </div>
         </div>
       </div>
     </div>
@@ -278,7 +265,7 @@ const HolidayMaster = () => {
 };
 
 //Modal
-const ModalDialog = () => {
+const AddModal = () => {
   const dispatch = useDispatch();
   const [isShow, invokeModal] = useState(false);
   const initModal = () => {
@@ -372,24 +359,33 @@ const ModalDialog = () => {
         <Modal.Body>
           <form onSubmit={formSubmitHandler}>
             <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="Occasion">
                 <label className="form-label" htmlFor="holidayOccasion">
                   Occasion
                 </label>
+                <span className="requiredField">*</span>
+
                 <input
+                  required
+                  pattern={PatternsAndMessages.nameLike.pattern}
                   type="text"
                   className="form-control"
                   id="holidayOccasion"
                   value={occasion}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('Occasion'), 'input')}
                   onChange={(event: any) => setOccasion(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="HolidayDate">
                 <label className="form-label" htmlFor="holidaydate" style={{ zIndex: "9" }}>
                   Holiday Date
                 </label>
+                <span className="requiredField">*</span>
                 <DatePicker
+                  required
                   className="form-control"
+                  onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('HolidayDate'),'datePicker')}
                   onChange={setDate}
                   value={date}
                   format="dd/MM/yyyy"
@@ -397,37 +393,44 @@ const ModalDialog = () => {
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="HolidayMarket">
                 <label className="form-label" htmlFor="holidayMarket">
                   Market
                 </label>
                 <div className="dropdown">
                   <select
+                    required
                     className="form-control"
                     id="holidayMarket"
                     value={market}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayMarket'),'select')}
                     onChange={(event: any) => setMarket(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                    {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.id.toString()}>{market.marketName}</option>)}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="HolidayLocation">
                 <label className="form-label" htmlFor="holidayCountry">
                   Location
                 </label>
                 <div className="dropdown">
                   <select
+                    required
                     className="form-control"
                     id="holidayCountry"
                     value={location}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayLocation'), 'select')}
                     onChange={(event: any) => setLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {locations.map((location: any) => (<option key={location.locationId} value={location.locationId.toString()}> {location.locationName}</option>))}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
               <div className="col-md-6 form-group" id="isOffShore">
@@ -436,14 +439,17 @@ const ModalDialog = () => {
                 </label>
                 <div className="dropdown">
                   <select
+                    required
                     className="form-control"
                     id="holidaySubLocation"
                     value={subLocation}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('isOffShore'), 'select')}
                     onChange={(event: any) => setSubLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {location == "0" ? [] : (subLocations.filter((subLocation: any) => Number(location) == subLocation.locationId).map((subLocation: any) => (<option key={subLocation.subLocationId} value={subLocation.subLocationId.toString()}>{subLocation.subLocationName}</option>)))}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
             </div>

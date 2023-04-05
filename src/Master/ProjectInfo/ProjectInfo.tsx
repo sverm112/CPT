@@ -10,6 +10,7 @@ import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { employeeActions } from "../../Store/Slices/Employee";
 import DownloadBtn from "../../Export/DownloadBtn";
+import { validateSingleFormGroup } from "../../utils/validations";
 
 const columns = [
   {
@@ -218,7 +219,7 @@ const ProjectInfo = () => {
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 style={{ marginRight: "150px" }}
               /> */}
-              {action == "Add" && <ModalDialog showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               {action == "Update" && <UpdateModal initialValues={updateProjectDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
 
             </div>
@@ -277,20 +278,16 @@ const ProjectInfo = () => {
               <button type="button" className="btn btn-primary" onClick={() => dispatch(projectActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
-          {/* <DownloadBtn
-            columns={columns}
-            filteredRecords={filteredProjects}
-            selectors={selectors}
-            title={title}>
-          </DownloadBtn> */}
-          <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
+          <div className="TableContentBorder">
+            <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-const ModalDialog = (props: any) => {
+const AddModal = (props: any) => {
   const dispatch = useDispatch();
 
 
@@ -365,39 +362,49 @@ const ModalDialog = (props: any) => {
         <Modal.Body>
           <form onSubmit={formSubmitHandler}>
             <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="ProjectCodeInput">
                 <label className="form-label" htmlFor="projectCode">
                   Project Code
                 </label>
+                <span className="requiredField">*</span>
                 <input
+                  required
                   type="text"
                   className="form-control"
                   id="projectCode"
                   value={projectCode}
+                  onBlur={()=> validateSingleFormGroup(document.getElementById('ProjectCodeInput'), 'input')}
                   onChange={(event: any) => setProjectCode(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="ProjectNameInput">
                 <label className="form-label" htmlFor="projectName">
                   Project Name
                 </label>
+                <span className="requiredField">*</span>
                 <input
+                  required
                   type="text"
                   className="form-control"
                   id="projectName"
                   value={projectName}
+                  onBlur={()=> validateSingleFormGroup(document.getElementById('ProjectNameInput'), 'input')}
                   onChange={(event: any) => setProjectName(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="ProjectModelDropdown">
                 <label className="form-label" htmlFor="projectModel">
                   Project Model
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     className="form-control"
                     id="projectModel"
                     value={projectModel}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('ProjectModelDropdown'),'select')}
                     onChange={(event: any) => setProjectModel(event.target.value)}
                   >
                     <option value="0">Select</option>
@@ -406,22 +413,27 @@ const ModalDialog = (props: any) => {
                     <option value="Scrum">Scrum</option>
                     <option value="Agile">Agile</option>
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="MarketInput">
                 <label className="form-label" htmlFor="projectMarket">
                   Market
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
+                    required
                     className="form-control"
                     id="projectMarket"
                     value={projectMarket}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketInput'), 'select')}
                     onChange={(event: any) => { console.log(projectMarket); setProjectMarket(event.target.value) }}
                   >
                     <option value="0">Select</option>
-                    {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                    {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.id.toString()}>{market.marketName}</option>)}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
               <div className="col-md-6 form-group">
@@ -441,17 +453,21 @@ const ModalDialog = (props: any) => {
                   </select>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="ProgramManager">
                 <label className="form-label" htmlFor="programManager">
                   Program Manager
                 </label>
+                <span className="requiredField">*</span>
                 <input
+                  required
                   type="text"
                   className="form-control"
                   id="programManager"
                   value={programManager}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('ProgramManager'), 'input')}
                   onChange={(event: any) => setProgramManager(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
 
             </div>
@@ -537,42 +553,52 @@ const UpdateModal = (props: any) => {
         <Modal.Body>
           <form onSubmit={formSubmitHandler}>
             <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="ProjectCodeInput">
                 <label className="form-label" htmlFor="projectCode">
                   Project Code
                 </label>
+                <span className="requiredField">*</span>
                 <input
+                  required
                   type="text"
                   name="projectCode"
                   className="form-control"
                   id="projectCode"
                   value={formValues.projectCode}
+                  onBlur={()=> validateSingleFormGroup(document.getElementById('ProjectCodeInput'), 'input')}
                   onChange={handleChange}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="ProjectNameInput">
                 <label className="form-label" htmlFor="projectName">
                   Project Name
                 </label>
+                <span className="requiredField">*</span>
                 <input
+                  required
                   type="text"
                   name="projectName"
                   className="form-control"
                   id="projectName"
                   value={formValues.projectName}
+                  onBlur={()=> validateSingleFormGroup(document.getElementById('ProjectNameInput'), 'input')}
                   onChange={handleChange}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="ProjectModelDropdown">
                 <label className="form-label" htmlFor="projectModel">
                   Project Model
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     name="projectModel"
                     className="form-control"
                     id="projectModel"
                     value={formValues.projectModel}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('ProjectModelDropdown'),'select')}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
@@ -581,23 +607,28 @@ const UpdateModal = (props: any) => {
                     <option value="Scrum">Scrum</option>
                     <option value="Agile">Agile</option>
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="MarketInput">
                 <label className="form-label" htmlFor="projectMarket">
                   Market
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
+                    required
                     name="fkMarketID"
                     className="form-control"
                     id="projectMarket"
                     value={formValues.fkMarketID}
+                    onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketInput'),'select')}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    {marketList.filter((market: any) => market.isActive == "Active").map((market: any) => <option key={market.pkMarketID} value={market.pkMarketID.toString()}>{market.marketName}</option>)}
+                    {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.id.toString()}>{market.marketName}</option>)}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
               <div className="col-md-6 form-group">
@@ -618,18 +649,22 @@ const UpdateModal = (props: any) => {
                   </select>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="ProgramManager">
                 <label className="form-label" htmlFor="programManager">
                   Program Manager
                 </label>
+                <span className="requiredField">*</span>
                 <input
+                  required
                   name="programManager"
                   type="text"
                   className="form-control"
                   id="programManager"
                   value={formValues.programManager}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('ProgramManager'), 'input')}
                   onChange={handleChange}
                 />
+                <div className="error"></div>
               </div>
               <div className="col-md-6 form-group ">
                 <label className="form-label">Status</label>
