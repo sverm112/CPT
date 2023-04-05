@@ -85,6 +85,7 @@ const SideBar = () => {
                                                     <li className="Collapsible-li"><Link to="/Master/EmployeeDetails" onClick={() => { navigate(APP_ROUTES.EMPLOYEEMASTER) }} >Employee Details</Link></li>
                                                     <li className="Collapsible-li"><Link to="/Master/ProjectDetails" onClick={() => { navigate(APP_ROUTES.PROJECTINFO) }}>Project Details</Link></li>
                                                     <li className="Collapsible-li"><Link to="/Master/HolidayDetails" onClick={() => { navigate(APP_ROUTES.HOLIDAYMASTER) }}>Holiday Details</Link></li>
+                                                    <li className="Collapsible-li"><Link to="/Master/PTO" onClick={() => { navigate(APP_ROUTES.PAIDTIMEOFF) }}>PTO Details</Link></li>
                                                 </ul>
                                             </Collapsible>
                                         </div>

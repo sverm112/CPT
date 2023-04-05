@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import DownloadBtn from "../../Export/DownloadBtn";
+import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 
 const columns = [
   // {
@@ -202,6 +203,9 @@ const ModalDialog = (props : any) => {
   }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
+    // validateForm('#AddMarket');
+    // validateSingleFormGroup(document.getElementById('MarketName'),'input');
+    // validateSingleFormGroup(document.getElementById('MarketDomain'), 'input');
     let payload = {
       marketName: marketName,
       marketDomain: marketDomain,
@@ -251,31 +255,39 @@ const ModalDialog = (props : any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form id="AddMarket" onSubmit={formSubmitHandler}>
             <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="MarketName">
                 <label className="form-label" htmlFor="marketName">
                   Market Name
                 </label>
+                <span className="requiredField">*</span>
                 <input
+                  required
                   type="text"
                   className="form-control"
                   id="marketName"
                   value={marketName}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketName'),'input')}
                   onChange={(event: any) => setMarketName(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="MarketDomain">
                 <label className="form-label" htmlFor="marketDomain">
                   Market Domain
                 </label>
+                <span className="requiredField">*</span>
                 <input
+                  required
                   type="text"
                   className="form-control"
                   id="marketDomain"
                   value={marketDomain}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketDomain'), 'input')}
                   onChange={(event: any) => setMarketDomain(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
             </div>
             <div className="row">
