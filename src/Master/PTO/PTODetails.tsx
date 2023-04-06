@@ -554,6 +554,8 @@ const UpdateModal = (props: any) => {
   const months=useSelector((state:any)=>state.Filters.months);
   const ptoTypes=useSelector((state:any)=>state.Filters.ptoTypes);
   const [formValues, setFormValues] = useState(props.initialValues || {});
+  const [startDate, setStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
+  const [endDate, setEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
   const calculateNumberOfDays = (startDate: Date, endDate: Date) => {
     let count = 0;
@@ -565,8 +567,8 @@ const UpdateModal = (props: any) => {
     }
     return count;
   }
-  if(formValues.startDate!=null && formValues.endDate!=null){
-    numberOfDays=calculateNumberOfDays(formValues.startDate,formValues.endDate);
+  if(startDate!=null && endDate!=null){
+    numberOfDays=calculateNumberOfDays(startDate,endDate);
   }
   if(formValues.resourceId!="0"){
     const filteredResource = resourceList.filter((resource: any) => resource.resourceId == Number(formValues.resourceId));
@@ -580,10 +582,10 @@ const UpdateModal = (props: any) => {
       id : formValues.id,
       resourceId : Number(formValues.resourceId),
       ptoTypeId : Number(formValues.ptoTypeId),
-      startDate : formValues.startDate,
-      enddDate : formValues.enddDate,
+      startDate : startDate,
+      enddDate : endDate,
       month : formValues.month,
-      numberOfDays : formValues.numberOfDays,
+      numberOfDays : numberOfDays,
       remarks : formValues.remarks,
       status: formValues.status,
       updatedBy: "Admin",
@@ -687,8 +689,8 @@ const UpdateModal = (props: any) => {
                 <DatePicker
                   className="form-control"
                   name="startDate"
-                  onChange={handleChange}
-                  value={formValues.startDate}
+                  onChange={setStartDate}
+                  value={startDate}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
@@ -702,8 +704,8 @@ const UpdateModal = (props: any) => {
                 <DatePicker
                   className="form-control"
                   name="endDate"
-                  onChange={handleChange}
-                  value={formValues.enddDate}
+                  onChange={setEndDate}
+                  value={endDate}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
@@ -735,7 +737,7 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="ptoDays"
-                  value={formValues.numberOfDays}
+                  value={numberOfDays}
                   disabled
                 />
               </div>
