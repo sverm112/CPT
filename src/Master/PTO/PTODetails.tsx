@@ -141,7 +141,7 @@ const PTO = () => {
 
   const getPTODetails = async () => {
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/GetAllPTOs");
+      const response = await fetch("https://localhost:44314/api/v1/PTOs/GetAllPTOs");
       let dataGet = await response.json();
       dispatch(ptoActions.changeData(dataGet));
     }
@@ -234,7 +234,7 @@ const PTO = () => {
             </p>
             <div className="btns market">
               {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
-              {/* {action == "Update" && <UpdateModal initialValues={updatePTODetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />} */}
+              {action == "Update" && <UpdateModal initialValues={updatePTODetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
 
             </div>
           </div>
@@ -286,7 +286,7 @@ const AddModal = (props: any) => {
   const months=useSelector((state:any)=>state.Filters.months);
   const ptoTypes=useSelector((state:any)=>state.Filters.ptoTypes);
   const [resourceId, setResourceId] = useState("0");
-  const [ptoType, setPTOType] = useState("0");
+  const [ptoTypeId, setPTOTypeId] = useState("0");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [month, setMonth] = useState("0");
@@ -294,7 +294,7 @@ const AddModal = (props: any) => {
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
   const resetFormFields = () => {
     setResourceId("0");
-    setPTOType("0");
+    setPTOTypeId("0");
     setStartDate(null);
     setEndDate(null);
     setMonth("0");
@@ -329,7 +329,7 @@ const AddModal = (props: any) => {
       resourceId : Number(resourceId),
       resourceName : selectedResourceDetails.resourceName,
       resourceManager : selectedResourceDetails.resourceManager,
-      ptoType : Number(ptoType),
+      ptoTypeId : Number(ptoTypeId),
       startDate : startDate,
       enddDate : endDate,
       month : month,
@@ -338,7 +338,7 @@ const AddModal = (props: any) => {
       createdBy: "Admin"
     };
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/PostPTO", {
+      const response = await fetch("https://localhost:44314/api/v1/PTOs/PostPTO", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -412,11 +412,11 @@ const AddModal = (props: any) => {
                   <select
                     className="form-control "
                     id="ptoTypeDropdown"
-                    value={ptoType}
-                    onChange={(event) => setPTOType(event.target.value)}
+                    value={ptoTypeId}
+                    onChange={(event) => setPTOTypeId(event.target.value)}
                   >
                     <option value="0">Select</option>
-                    {ptoTypes.map((ptoType: any) => (<option key={ptoType} value={ptoType}>{ptoType}</option>))}
+                    {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
                   </select>
                 </div>
               </div>
@@ -503,216 +503,239 @@ const AddModal = (props: any) => {
   );
 }
 
-// const UpdateModal = (props: any) => {
-//   const dispatch = useDispatch();
-//   const marketList = useSelector((state: any) => state.Market.data);
-//   const [formValues, setFormValues] = useState(props.initialValues || {});
-//   const formSubmitHandler = async (event: any) => {
-//     event.preventDefault();
-//     let payload = {
-//       pkProjectID: formValues.pkProjectID,
-//       projectCode: formValues.projectCode,
-//       projectName: formValues.projectName,
-//       projectModel: formValues.projectModel,
-//       expenseType: formValues.expenseType,
-//       fkMarketID: formValues.fkMarketID == "0" ? 0 : Number(formValues.fkMarketID),
-//       programManager: formValues.programManager,
-//       isActive: formValues.isActive == "2" ? "0" : "1",
-//       updatedBy: "Admin",
-//     };
-//     try {
-//       const response = await fetch("http://10.147.172.18:9190/api/v1/Projects/UpdateProjects", {
-//         method: "PUT",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(payload),
-//       });
-//       const dataResponse = await response.json();
-//       if (dataResponse.length) {
-//         if (dataResponse[0].statusCode == "201") {
-//           console.log(dataResponse[0].statusReason);
-//           console.log(dataResponse[0].recordsCreated);
-//           dispatch(projectActions.changeToggle());
-//           props.closeModal();
-//           toast.success("Project Updated Successfully")
-//         } else toast.error(dataResponse[0].errorMessage);
-//       } else toast.error("Some Error occured.");
-//     } catch {
-//       toast.error("Some Error occured.");
-//     }
-//   };
+const UpdateModal = (props: any) => {
+  const dispatch = useDispatch();
+  const resourceList = useSelector((state: any) => state.Employee.data);
+  const months=useSelector((state:any)=>state.Filters.months);
+  const ptoTypes=useSelector((state:any)=>state.Filters.ptoTypes);
+  const [formValues, setFormValues] = useState(props.initialValues || {});
+  let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
+  const calculateNumberOfDays = (startDate: Date, endDate: Date) => {
+    let count = 0;
+    const curDate = new Date(startDate.getTime());
+    while (curDate <= endDate) {
+      const dayOfWeek = curDate.getDay();
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
+      curDate.setDate(curDate.getDate() + 1);
+    }
+    return count;
+  }
+  if(formValues.startDate!=null && formValues.endDate!=null){
+    numberOfDays=calculateNumberOfDays(formValues.startDate,formValues.endDate);
+  }
+  if(formValues.resourceId!="0"){
+    const filteredResource = resourceList.filter((resource: any) => resource.resourceId == Number(formValues.resourceId));
+    selectedResourceDetails.resourceId = filteredResource[0].resourceId
+    selectedResourceDetails.resourceName = filteredResource[0].resourceName
+    selectedResourceDetails.resourceManager = filteredResource[0].manager
+  }
+  const formSubmitHandler = async (event: any) => {
+    event.preventDefault();
+    let payload = {
+      id : formValues.id,
+      resourceId : Number(formValues.resourceId),
+      ptoTypeId : Number(formValues.ptoTypeId),
+      startDate : formValues.startDate,
+      enddDate : formValues.enddDate,
+      month : formValues.month,
+      numberOfDays : formValues.numberOfDays,
+      remarks : formValues.remarks,
+      status: formValues.status,
+      updatedBy: "Admin",
+    };
+    try {
+      const response = await fetch("https://localhost:44314/api/v1/PTOs/UpdatePTO", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const dataResponse = await response.json();
+      if (dataResponse.length) {
+        if (dataResponse[0].statusCode == "201") {
+          console.log(dataResponse[0].statusReason);
+          console.log(dataResponse[0].recordsCreated);
+          dispatch(ptoActions.changeToggle());
+          props.closeModal();
+          toast.success("PTO Updated Successfully")
+        } else toast.error(dataResponse[0].errorMessage);
+      } else toast.error("Some Error occured.");
+    } catch {
+      toast.error("Some Error occured.");
+    }
+  };
 
 
-//   const handleChange = (e: any) => {
-//     console.log("Update")
-//     setFormValues({
-//       ...formValues,
-//       [e.target.name]: e.target.value
-//     });
-//   };
+  const handleChange = (e: any) => {
+    console.log("Update")
+    setFormValues({
+      ...formValues,
+      [e.target.name]: e.target.value
+    });
+  };
 
-//   return (
-//     <>
-//       <Button
-//         className="btn btn-primary"
-//         style={{ float: "right", marginTop: "-68px" }}
-//         variant="primary"
-//         onClick={props.openModal}
-//       >
-//         <i className="las la-plus"></i> Update Project
-//       </Button>
-//       <Modal show={props.showModal} onHide={props.closeModal}>
-//         <Modal.Header closeButton onClick={props.closeModal}>
-//           <Modal.Title>
-//             <h6>Update Project</h6>
-//           </Modal.Title>
-//         </Modal.Header>
-//         <Modal.Body>
-//           <form onSubmit={formSubmitHandler}>
-//             <div className="row">
-//               <div className="col-md-6 form-group" id="ProjectCodeInput">
-//                 <label className="form-label" htmlFor="projectCode">
-//                   Project Code
-//                 </label>
-//                 <span className="requiredField">*</span>
-//                 <input
-//                   required
-//                   type="text"
-//                   name="projectCode"
-//                   className="form-control"
-//                   id="projectCode"
-//                   value={formValues.projectCode}
-//                   onBlur={()=> validateSingleFormGroup(document.getElementById('ProjectCodeInput'), 'input')}
-//                   onChange={handleChange}
-//                 />
-//                 <div className="error"></div>
-//               </div>
-//               <div className="col-md-6 form-group" id="ProjectNameInput">
-//                 <label className="form-label" htmlFor="projectName">
-//                   Project Name
-//                 </label>
-//                 <span className="requiredField">*</span>
-//                 <input
-//                   required
-//                   type="text"
-//                   name="projectName"
-//                   className="form-control"
-//                   id="projectName"
-//                   value={formValues.projectName}
-//                   onBlur={()=> validateSingleFormGroup(document.getElementById('ProjectNameInput'), 'input')}
-//                   onChange={handleChange}
-//                 />
-//                 <div className="error"></div>
-//               </div>
-//               <div className="col-md-6 form-group" id="ProjectModelDropdown">
-//                 <label className="form-label" htmlFor="projectModel">
-//                   Project Model
-//                 </label>
-//                 <span className="requiredField">*</span>
-//                 <div className="dropdown">
-//                   <select
-//                     name="projectModel"
-//                     className="form-control"
-//                     id="projectModel"
-//                     value={formValues.projectModel}
-//                     onBlur = {()=>validateSingleFormGroup(document.getElementById('ProjectModelDropdown'),'select')}
-//                     onChange={handleChange}
-//                   >
-//                     <option value="0">Select</option>
-//                     <option value="Waterfall">Waterfall</option>
-//                     <option value="Kanban">Kanban</option>
-//                     <option value="Scrum">Scrum</option>
-//                     <option value="Agile">Agile</option>
-//                   </select>
-//                   <div className="error"></div>
-//                 </div>
-//               </div>
-//               <div className="col-md-6 form-group" id="MarketInput">
-//                 <label className="form-label" htmlFor="projectMarket">
-//                   Market
-//                 </label>
-//                 <span className="requiredField">*</span>
-//                 <div className="dropdown">
-//                   <select
-//                     required
-//                     name="fkMarketID"
-//                     className="form-control"
-//                     id="projectMarket"
-//                     value={formValues.fkMarketID}
-//                     onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketInput'),'select')}
-//                     onChange={handleChange}
-//                   >
-//                     <option value="0">Select</option>
-//                     {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.id.toString()}>{market.marketName}</option>)}
-//                   </select>
-//                   <div className="error"></div>
-//                 </div>
-//               </div>
-//               <div className="col-md-6 form-group">
-//                 <label className="form-label" htmlFor="expenseType">
-//                   Expense Type
-//                 </label>
-//                 <div className="dropdown">
-//                   <select
-//                     name="expenseType"
-//                     className="form-control"
-//                     id="expenseType"
-//                     value={formValues.expenseType}
-//                     onChange={handleChange}
-//                   >
-//                     <option value="0">Select</option>
-//                     <option value="CAPEX">CAPEX</option>
-//                     <option value="OPEX">OPEX</option>
-//                   </select>
-//                 </div>
-//               </div>
-//               <div className="col-md-6 form-group" id="ProgramManager">
-//                 <label className="form-label" htmlFor="programManager">
-//                   Program Manager
-//                 </label>
-//                 <span className="requiredField">*</span>
-//                 <input
-//                   required
-//                   name="programManager"
-//                   type="text"
-//                   className="form-control"
-//                   id="programManager"
-//                   value={formValues.programManager}
-//                   onBlur = {()=>validateSingleFormGroup(document.getElementById('ProgramManager'), 'input')}
-//                   onChange={handleChange}
-//                 />
-//                 <div className="error"></div>
-//               </div>
-//               <div className="col-md-6 form-group ">
-//                 <label className="form-label">Status</label>
-//                 <div className="dropdown">
-//                   <select
-//                     name="isActive"
-//                     className="form-control"
-//                     id="statusDropdown"
-//                     value={formValues.isActive}
-//                     onChange={handleChange}
-//                   >
-//                     <option value="0">Select</option>
-//                     <option value="1">Active</option>
-//                     <option value="2">InActive</option>
-//                   </select>
-//                 </div>
-//               </div>
-//             </div>
-//             <div className="row">
-//               <div className="col-md-12">
-//                 <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-//                   Submit
-//                 </button>
-//               </div>
-//             </div>
-//           </form>
-//         </Modal.Body>
-//       </Modal>
-//     </>
-//   );
-// }
+  return (
+    <>
+      <Button
+        className="btn btn-primary"
+        style={{ float: "right", marginTop: "-68px" }}
+        variant="primary"
+        onClick={props.openModal}
+      >
+        <i className="las la-plus"></i> Update PTO
+      </Button>
+      <Modal show={props.showModal} onHide={props.closeModal}>
+        <Modal.Header closeButton onClick={props.closeModal}>
+          <Modal.Title>
+            <h6>Update PTO</h6>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={formSubmitHandler}>
+          <div className="row">
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="resource">
+                  Resource
+                </label>
+                <div className="dropdown">
+                  <select className="form-control" name="resourceId" id="resource" value={formValues.resourceId} onChange={handleChange}>
+                    <option value="0">Select</option>
+                    {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="resourceManager">
+                  Manager
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="supervisor"
+                  value={selectedResourceDetails.resourceManager}
+                  disabled
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="ptoType">
+                  PTO Type 
+                </label>
+                <div className="dropdown">
+                  <select
+                    className="form-control"
+                    name="ptoTypeId"
+                    id="ptoTypeDropdown"
+                    value={formValues.ptoTypeId}
+                    onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="ptoStartDate" style={{ zIndex: "9" }}>
+                 PTO Start Date
+                </label>
+                <DatePicker
+                  className="form-control"
+                  name="startDate"
+                  onChange={handleChange}
+                  value={formValues.startDate}
+                  format="dd/MM/yyyy"
+                  dayPlaceholder="dd"
+                  monthPlaceholder="mm"
+                  yearPlaceholder="yyyy"
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="ptoEndDate" style={{ zIndex: "9" }}>
+                  PTO End Date
+                </label>
+                <DatePicker
+                  className="form-control"
+                  name="endDate"
+                  onChange={handleChange}
+                  value={formValues.enddDate}
+                  format="dd/MM/yyyy"
+                  dayPlaceholder="dd"
+                  monthPlaceholder="mm"
+                  yearPlaceholder="yyyy"
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="month">
+                  Month 
+                </label>
+                <div className="dropdown">
+                  <select
+                    className="form-control"
+                    name="month"
+                    id="monthDropdown"
+                    value={formValues.month}
+                    onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    {months.map((month: any) => (<option key={month} value={month}>{month}</option>))}
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="ptoDays">
+                  No. Of Days
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="ptoDays"
+                  value={formValues.numberOfDays}
+                  disabled
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="remarks">
+                  Remarks
+                </label>
+                <textarea
+                  className="form-control"
+                  name="remarks"
+                  id="remarks"
+                  value={formValues.remarks}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-md-6 form-group ">
+                <label className="form-label">Status</label>
+                <div className="dropdown">
+                  <select
+                    name="status"
+                    className="form-control"
+                    id="statusDropdown"
+                    value={formValues.status}
+                    onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    <option value="Active">Active</option>
+                    <option value="InActive">InActive</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-12">
+                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
+    </>
+  );
+}
+
 
 export default PTO;

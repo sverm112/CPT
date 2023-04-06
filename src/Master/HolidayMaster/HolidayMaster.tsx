@@ -116,7 +116,7 @@ const HolidayMaster = () => {
     dispatch(holidayActions.changeMarket(event));
   };
   const getHolidayDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/GetAllHolidaysLists");
+    const response = await fetch("https://localhost:44314/api/v1/HolidaysList/GetAllHolidaysLists");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(holidayActions.changeData(dataGet));
@@ -128,18 +128,18 @@ const HolidayMaster = () => {
 
   
   const getMarketDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
     let dataGet = await response.json();
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/Location/GetAllLocations");
+    const response = await fetch("https://localhost:44314/api/v1/Location/GetAllLocations");
     const dataGet = await response.json();
     dispatch(filterActions.changeLocations(dataGet));
   }
   const getSubLocationDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/SubLocation/GetAllSubLocations");
+    const response = await fetch("https://localhost:44314/api/v1/SubLocation/GetAllSubLocations");
     const dataGet = await response.json();
     dispatch(filterActions.changeSubLocations(dataGet));
   }
@@ -307,7 +307,7 @@ const AddModal = () => {
       createdBy: "Admin"
     };
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/PostHoliday", {
+      const response = await fetch("https://localhost:44314/api/v1/HolidaysList/PostHoliday", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -332,7 +332,7 @@ const AddModal = () => {
   };
   const marketList = useSelector((state: any) => state.Market.data);
   const getMarketDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
     const dataGet = await response.json();
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
