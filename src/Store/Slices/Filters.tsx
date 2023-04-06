@@ -26,6 +26,12 @@ const filterSlice = createSlice({
     changeSubLocations(state, action) {
       state.subLocations = action.payload;
     },
+    changePtoTypes(state, action){
+      state.ptoTypes = action.payload;
+    },
+    changeMonths(state, action){
+      state.months = action.payload;
+    }
   },
 });
 export const filterActions = filterSlice.actions;
