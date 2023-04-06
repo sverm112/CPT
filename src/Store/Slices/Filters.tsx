@@ -6,7 +6,7 @@ const initialState = {
   status : ["Active","InActive"],
   locations: [],
   subLocations: [],
-  ptoTypes :[{id : 16, ptoType : "Privilege"},{id : 18, ptoType : "Casual"},{id : 19, ptoType : "Sick"},{id : 20, ptoType : "Primary Caregiver"},{id : 21, ptoType : "Secondary Caregiver"},],
+  ptoTypes :[],
   months :["January","February","March","April","May","June","July","August","September","October","November","December"]
 };
 
@@ -26,7 +26,7 @@ const filterSlice = createSlice({
     changeSubLocations(state, action) {
       state.subLocations = action.payload;
     },
-    changePtoTypes(state, action){
+    changePTOTypes(state, action){
       state.ptoTypes = action.payload;
     },
     changeMonths(state, action){
