@@ -23,7 +23,7 @@ const ptoSlice = createSlice({
     changeResourceName(state, action) {
       state.resourceName = action.payload;
     },
-    changerResourceManager(state, action) {
+    changeResourceManager(state, action) {
       state.resourceManager = action.payload;
     },
     changePtoType(state, action) {

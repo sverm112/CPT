@@ -119,11 +119,11 @@ const PTO = () => {
   const dispatch = useDispatch();
   // const resources = useSelector((state: any) => state.Employee.data);
   const managers: any = [];
-  const ptos = useSelector((store: any) => store.Pto.data);
+  const ptos = useSelector((state: any) => state.Pto.data);
   const resourcesForPto = useSelector((state: any) => state.Pto.data)
   const resources = useSelector((state: any) => state.Employee.data);
-  const toggle = useSelector((store: any) => store.Pto.toggle);
-  const managerSelected = useSelector((state: any) => state.Employee.manager);
+  const toggle = useSelector((state: any) => state.Pto.toggle);
+  const managerSelected = useSelector((state: any) => state.Pto.resourceManager);
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("Add");
   const [updatePTODetails, setUpdatePTODetails] = useState({});
@@ -192,21 +192,7 @@ const PTO = () => {
   const resourceSelected = useSelector((state: any) => state.Pto.resourceName);
   const status = useSelector((state: any) => state.Filters.status);
 
-  const changeResourceHandler = (event: any) => {
-    dispatch(ptoActions.changeResourceName(event));
-  }
-  const changeManagerSelectedHandler = (event: any) => {
-    dispatch(ptoActions.changerResourceManager(event));
-  }
-  const changePtoTypeHandler = (event: any) => {
-    dispatch(ptoActions.changePtoType(event));
-  }
-  const changeMonthHandler = (event: any) => {
-    dispatch(ptoActions.changeMonth(event));
-  }
-  const changeStatusHandler = (event: any) => {
-    dispatch(ptoActions.changeStatus(event));
-  }
+  
 
   const getEmployeeDetails = async () => {
     try {
@@ -218,9 +204,15 @@ const PTO = () => {
       console.log("Error occured During Employee Fetch");
     }
   };
+  const getPTOTypeDetails = async () => {
+    const response = await fetch("https://localhost:44314/api/v1/PTOType/GetAllPTOTypes");
+    const dataGet = await response.json();
+    dispatch(filterActions.changePTOTypes(dataGet));
+  }
   useEffect(() => {
     getEmployeeDetails();
-  }, [toggle]);
+    getPTOTypeDetails();
+  }, []);
 
   const filteredPtos = ptos.filter(
     (pto: any) => {
@@ -230,8 +222,8 @@ const PTO = () => {
       const monthOptions = monthSelected.map((month: any) => month.value);
       if((!resourceSelected.length) || (resourceSelected.length > 0 && resourceNameOptions.includes(pto.resourceName) == true)){
         if((!managerSelected.length) || (managerSelected.length > 0 && managerNameOptions.includes(pto.resourceManager) == true)){
-          if((!ptoTypeSelected.length) || (ptoTypeSelected.length > 0 && ptoTypeOptions.includes(pto.ptoTypes) == true)){
-            if((!monthSelected.length) || (monthSelected.length > 0 && monthOptions.includes(pto.months) == true)){
+          if((!ptoTypeSelected.length) || (ptoTypeSelected.length > 0 && ptoTypeOptions.includes(pto.ptoType) == true)){
+            if((!monthSelected.length) || (monthSelected.length > 0 && monthOptions.includes(pto.month) == true)){
               return true;
             }
           }
@@ -264,7 +256,7 @@ const PTO = () => {
                 Resource
               </label>
               <MultiSelect
-                options={resourcesForPto.map((resource: any) => ({label: resource, value: resource}))
+                options={resourcesForPto.map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
                 }
                 value={resourceSelected}
                 onChange={(event: any) => dispatch(ptoActions.changeResourceName(event))}
@@ -279,7 +271,7 @@ const PTO = () => {
               <MultiSelect
                 options={(managers.map((manager: any) => ({ label: manager, value: manager })))}
                 value={managerSelected}
-                onChange={(event: any) => dispatch(ptoActions.changerResourceManager(event))}
+                onChange={(event: any) => dispatch(ptoActions.changeResourceManager(event))}
                 labelledBy="Select Manager"
                 valueRenderer={customValueRenderer}
               />
@@ -289,7 +281,7 @@ const PTO = () => {
                 PTO Type
               </label>
               <MultiSelect
-                options={ptoTypes.map((ptoType: any) => ({label:ptoType, value: ptoType }))}
+                options={ptoTypes.map((ptoType: any) => ({label:ptoType.ptoType, value: ptoType.ptoType }))}
                 value={ptoTypeSelected}
                 onChange={(event: any) => dispatch(ptoActions.changePtoType(event))}
                 labelledBy="Select PTO Type"
