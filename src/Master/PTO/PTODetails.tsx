@@ -418,15 +418,17 @@ const AddModal = (props: any) => {
         <Modal.Body>
           <form onSubmit={formSubmitHandler}>
           <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="ResourceAddPto">
                 <label className="form-label" htmlFor="resource">
                   Resource
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
-                  <select className="form-control" id="resource" value={resourceId} onChange={setResourceDetails}>
+                  <select className="form-control" required id="resource" value={resourceId} onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} onChange={setResourceDetails}>
                     <option value="0">Select</option>
                     {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
               <div className="col-md-6 form-group">
@@ -486,20 +488,24 @@ const AddModal = (props: any) => {
                   yearPlaceholder="yyyy"
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="PtoMonth">
                 <label className="form-label" htmlFor="month">
                   Month 
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
+                    required
                     className="form-control "
                     id="monthDropdown"
                     value={month}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('PtoMonth'),'select')}
                     onChange={(event) => setMonth(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {months.map((month: any) => (<option key={month} value={month}>{month}</option>))}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
               <div className="col-md-6 form-group">
@@ -633,15 +639,17 @@ const UpdateModal = (props: any) => {
         <Modal.Body>
           <form onSubmit={formSubmitHandler}>
           <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="ResourceAddPto">
                 <label className="form-label" htmlFor="resource">
                   Resource
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
-                  <select className="form-control" name="resourceId" id="resource" value={formValues.resourceId} onChange={handleChange}>
+                  <select required className="form-control" name="resourceId" id="resource" value={formValues.resourceId} onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} onChange={handleChange}>
                     <option value="0">Select</option>
                     {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
               <div className="col-md-6 form-group">
@@ -656,7 +664,7 @@ const UpdateModal = (props: any) => {
                   disabled
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="PtoType">
                 <label className="form-label" htmlFor="ptoType">
                   PTO Type 
                 </label>
@@ -704,21 +712,25 @@ const UpdateModal = (props: any) => {
                   yearPlaceholder="yyyy"
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="PtoMonth">
                 <label className="form-label" htmlFor="month">
                   Month 
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
+                    required
                     className="form-control"
                     name="month"
                     id="monthDropdown"
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('PtoMonth'),'select')}
                     value={formValues.month}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
                     {months.map((month: any) => (<option key={month} value={month}>{month}</option>))}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
               <div className="col-md-6 form-group">
