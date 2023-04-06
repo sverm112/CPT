@@ -81,7 +81,7 @@ const Market = () => {
   }
   const getMarketDetails = async () => {
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
+      const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
       let dataGet = await response.json();
       dispatch(marketActions.changeData(dataGet));
     }
@@ -166,7 +166,7 @@ const AddModal = (props : any) => {
       createdBy: "Admin"
     };
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/PostMarket", {
+      const response = await fetch("https://localhost:44314/api/v1/Markets/PostMarket", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -271,7 +271,7 @@ const UpdateModal = (props: any) => {
       updatedBy: "Admin",
     };
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/UpdateMarket", {
+      const response = await fetch("https://localhost:44314/api/v1/Markets/UpdateMarket", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

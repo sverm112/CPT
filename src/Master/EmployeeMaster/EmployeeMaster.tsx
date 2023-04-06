@@ -155,7 +155,7 @@ const EmployeeMaster = () => {
 
   const getEmployeeDetails = async () => {
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
+      const response = await fetch("https://localhost:44314/api/v1/Resources/GetAllResources");
       let dataGet = await response.json();
       dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
       dispatch(employeeActions.changeData(dataGet));
@@ -168,17 +168,17 @@ const EmployeeMaster = () => {
   }, [toggle]);
 
   const getMarketDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
     let dataGet = await response.json();
     dispatch(marketActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/Location/GetAllLocations");
+    const response = await fetch("https://localhost:44314/api/v1/Location/GetAllLocations");
     const dataGet = await response.json();
     dispatch(filterActions.changeLocations(dataGet));
   }
   const getSubLocationDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/SubLocation/GetAllSubLocations");
+    const response = await fetch("https://localhost:44314/api/v1/SubLocation/GetAllSubLocations");
     const dataGet = await response.json();
     dispatch(filterActions.changeSubLocations(dataGet));
   }
@@ -216,7 +216,7 @@ const EmployeeMaster = () => {
       }));
       payload = payload.map((row: any) => ({ ...row, createdBy: "Admin" }));
       try {
-        const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/BulkUploadResources", {
+        const response = await fetch("https://localhost:44314/api/v1/Resources/BulkUploadResources", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -468,7 +468,7 @@ const AddModal = (props: any) => {
       createdBy: "Admin",
     };
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/PostResources", {
+      const response = await fetch("https://localhost:44314/api/v1/Resources/PostResources", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -670,7 +670,7 @@ const UpdateModal = (props: any) => {
       updatedBy: "Admin",
     };
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/UpdateResources", {
+      const response = await fetch("https://localhost:44314/api/v1/Resources/UpdateResources", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

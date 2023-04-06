@@ -6,7 +6,7 @@ const initialState = {
   status : ["Active","InActive"],
   locations: [],
   subLocations: [],
-  ptoTypes :["Sick Leave","Casual Leave","Previlege Leave"],
+  ptoTypes :[{id : 16, ptoType : "Privilege"},{id : 18, ptoType : "Casual"},{id : 19, ptoType : "Sick"},{id : 20, ptoType : "Primary Caregiver"},{id : 21, ptoType : "Secondary Caregiver"},],
   months :["January","February","March","April","May","June","July","August","September","October","November","December"]
 };
 
