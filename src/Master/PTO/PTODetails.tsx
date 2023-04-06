@@ -14,6 +14,7 @@ import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { ptoActions } from "../../Store/Slices/Pto";
 import { filterActions } from "../../Store/Slices/Filters";
 import DatePicker from "react-date-picker";
+import { employeeActions } from "../../Store/Slices/Employee";
 
 const columns = [
   {
@@ -118,13 +119,18 @@ const PTO = () => {
   const dispatch = useDispatch();
   // const resources = useSelector((state: any) => state.Employee.data);
   const managers: any = [];
-  const resources = useSelector((state: any) => state.Pto.data);
+  const ptos = useSelector((store: any) => store.Pto.data);
+  const resourcesForPto = useSelector((state: any) => state.Pto.data)
+  const resources = useSelector((state: any) => state.Employee.data);
   const toggle = useSelector((store: any) => store.Pto.toggle);
-  const resourceList = useSelector((state: any) => state.Employee.data);
   const managerSelected = useSelector((state: any) => state.Employee.manager);
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("Add");
   const [updatePTODetails, setUpdatePTODetails] = useState({});
+  const ptoTypes=useSelector((state:any)=>state.Filters.ptoTypes);
+  const ptoTypeSelected = useSelector((state: any) => state.Pto.ptoTypes);
+  const months=useSelector((state:any)=>state.Filters.months);
+  const monthSelected = useSelector((state: any) => state.Pto.months);
   const openModal = () => {
     setShowModal(true);
   }
@@ -183,27 +189,7 @@ const PTO = () => {
   //end constants for export
  let filteredColumns=columns;
     //Resource, Resource Manager, PTO Type, Month, Status 
-    const resourceSelected = useSelector((state: any) => state.Pto.resourceName);
-    const ptoTypes = [
-      { label: "Privileged", value: "Privileged" },
-      { label: "Casual", value: "Casual" },
-      { label: "Sick", value: "Sick" },
-    ];
-    const month = [
-      { label: "January", value: "January" },
-      { label: "February", value: "February" },
-      { label: "March", value: "March" },
-      { label: "April", value: "April" },
-      { label: "May", value: "May" },
-      { label: "June", value: "June" },
-      { label: "July", value: "July" },
-      { label: "August", value: "August" },
-      { label: "September", value: "September" },
-      { label: "October", value: "October" },
-      { label: "November", value: "November" },
-      { label: "December", value: "December" },
-    ];
-  
+  const resourceSelected = useSelector((state: any) => state.Pto.resourceName);
   const status = useSelector((state: any) => state.Filters.status);
 
   const changeResourceHandler = (event: any) => {
@@ -221,6 +207,40 @@ const PTO = () => {
   const changeStatusHandler = (event: any) => {
     dispatch(ptoActions.changeStatus(event));
   }
+
+  const getEmployeeDetails = async () => {
+    try {
+      const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
+      let dataGet = await response.json();
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+      dispatch(employeeActions.changeData(dataGet));
+    } catch {
+      console.log("Error occured During Employee Fetch");
+    }
+  };
+  useEffect(() => {
+    getEmployeeDetails();
+  }, [toggle]);
+
+  const filteredPtos = ptos.filter(
+    (pto: any) => {
+      const resourceNameOptions = resourceSelected.map((resourceName: any) => resourceName.value);
+      const managerNameOptions = managerSelected.map((managerName: any) => managerName.value);
+      const ptoTypeOptions = ptoTypeSelected.map((ptoType: any) => ptoType.value);
+      const monthOptions = monthSelected.map((month: any) => month.value);
+      if((!resourceSelected.length) || (resourceSelected.length > 0 && resourceNameOptions.includes(pto.resourceName) == true)){
+        if((!managerSelected.length) || (managerSelected.length > 0 && managerNameOptions.includes(pto.resourceManager) == true)){
+          if((!ptoTypeSelected.length) || (ptoTypeSelected.length > 0 && ptoTypeOptions.includes(pto.ptoTypes) == true)){
+            if((!monthSelected.length) || (monthSelected.length > 0 && monthOptions.includes(pto.months) == true)){
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+  )
+
   return (
     <div>
       <SideBar></SideBar>
@@ -244,7 +264,8 @@ const PTO = () => {
                 Resource
               </label>
               <MultiSelect
-                options={resourceList}
+                options={resourcesForPto.map((resource: any) => ({label: resource, value: resource}))
+                }
                 value={resourceSelected}
                 onChange={(event: any) => dispatch(ptoActions.changeResourceName(event))}
                 labelledBy="Select Resource"
@@ -263,6 +284,30 @@ const PTO = () => {
                 valueRenderer={customValueRenderer}
               />
             </div>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                PTO Type
+              </label>
+              <MultiSelect
+                options={ptoTypes.map((ptoType: any) => ({label:ptoType, value: ptoType }))}
+                value={ptoTypeSelected}
+                onChange={(event: any) => dispatch(ptoActions.changePtoType(event))}
+                labelledBy="Select PTO Type"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Month
+              </label>
+              <MultiSelect
+                options={months.map((month: any) => ({label:month, value: month }))}
+                value={monthSelected}
+                onChange={(event: any) => dispatch(ptoActions.changeMonth(event))}
+                labelledBy="Select Month"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
 
             
             <div className="col-md-2" style={{ marginTop: "24px" }}>
@@ -270,7 +315,7 @@ const PTO = () => {
             </div>
           </div>
           <div className="TableContentBorder">
-            <Table  columnsAndSelectors={columnsAndSelectors} columns={filteredColumns} data={resources} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
+            <Table  columnsAndSelectors={columnsAndSelectors} columns={filteredColumns} data={filteredPtos} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
           </div>
         </div>
       </div>

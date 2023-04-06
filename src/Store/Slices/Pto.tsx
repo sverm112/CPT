@@ -3,10 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   resourceName : [],
   resourceManager: [],
-  ptoType: [],
+  ptoTypes: [],
   startDate: [],
   endDate: [],
-  month: [],
+  months: [],
   numberOfDays: [],
   remarks: [],
   status: [],
@@ -27,7 +27,7 @@ const ptoSlice = createSlice({
       state.resourceManager = action.payload;
     },
     changePtoType(state, action) {
-      state.ptoType = action.payload;
+      state.ptoTypes = action.payload;
     },
     changeStartDate(state, action){
         state.startDate = action.payload;
@@ -36,7 +36,7 @@ const ptoSlice = createSlice({
         state.endDate = action.payload;
     },
     changeMonth(state, action){
-        state.month = action.payload;
+        state.months = action.payload;
     },
     changeNumberOfDays(state, action){
         state.numberOfDays = action.payload;
@@ -62,10 +62,10 @@ const ptoSlice = createSlice({
     clearFilters(state){
         state.resourceName = [];
         state.resourceManager= [];
-        state.ptoType= [];
+        state.ptoTypes= [];
         state.startDate= [];
         state.endDate= [];
-        state.month= [];
+        state.months = [];
         state.numberOfDays= [];
         state.remarks= [];
         state.status= [];
