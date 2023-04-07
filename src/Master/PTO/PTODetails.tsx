@@ -361,6 +361,7 @@ const AddModal = (props: any) => {
     setResourceId(event.target.value);
   };
   const formSubmitHandler = async (event: any) => {
+    validateForm('#AddPtoForm');
     event.preventDefault();
     let payload = {
       resourceId : Number(resourceId),
@@ -416,7 +417,7 @@ const AddModal = (props: any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id='AddPtoForm'>
           <div className="row">
               <div className="col-md-6 form-group" id="ResourceAddPto">
                 <label className="form-label" htmlFor="resource">
@@ -575,6 +576,7 @@ const UpdateModal = (props: any) => {
     selectedResourceDetails.resourceManager = filteredResource[0].manager
   }
   const formSubmitHandler = async (event: any) => {
+    validateForm('#AddPtoForm');
     event.preventDefault();
     let payload = {
       id : formValues.id,
@@ -637,7 +639,7 @@ const UpdateModal = (props: any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id='AddPtoForm'>
           <div className="row">
               <div className="col-md-6 form-group" id="ResourceAddPto">
                 <label className="form-label" htmlFor="resource">

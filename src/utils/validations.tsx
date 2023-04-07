@@ -108,6 +108,48 @@ export function validateSingleFormGroup(formGroup: any, controlType: any){
   };
 
 export function validateForm(formSelector: any){
+    const formGroupToBeValidated = document.querySelector(formSelector);
+    const formFields = Array.from(formGroupToBeValidated.querySelectorAll('.form-group'));
+    let i=0;
+    // console.log("Form Fields", formFields);
+    formFields.forEach((ff: any) => {
+      console.log(`Form Fields ${++i}`, ff);
+      const selectFields = ff.getElementsByTagName('select');
+      const inputFields = ff.getElementsByTagName('input');
+      // const dateFields = ff.querySelector('.react-date-picker__inputGroup__day');
+      i=0;
+      for(const selectField of selectFields){
+        console.log(`Select Field ${++i}`, selectField);
+        validateSingleFormGroup(ff, 'select');
+      }
+      i=0;
+      for(const inputField of inputFields){
+        console.log(`Input Field ${++i}`, inputField);
+        validateSingleFormGroup(ff, 'input');
+      }
+      // i=0;
+      // for(const dateField of dateFields){
+      //   console.log(`Date Field ${++i}`, dateField);
+      // }
+    })
+    // for(const ff of formFields){
+    //   console.log(`Form Field ${++i}`, ff);
+    //   const selectFields = ff.getElementsByTagName('select');
+    //   const inputFields = formGroupToBeValidated.getElementsByTagName('input');
+    //   const dateFields = formGroupToBeValidated.querySelector('.react-date-picker__inputGroup__day');
+    //   for(const selectField of selectFields){
+    //     console.log(`Select Field ${++i}`, selectField.parentNode);
+    //   }
+    //   i=0;
+    //   for(const inputField of inputFields){
+    //     console.log(`Input Field ${++i}`, inputField);
+    //   }
+    //   i=0;
+    //   for(const dateField of dateFields){
+    //     console.log(`Date Field ${++i}`, dateField);
+    //   }
+    // }
+
     const validateAllFormGroups = (formToValidate: any) => {
       const formGroups = Array.from(formToValidate.querySelectorAll('.form-group'));
       console.log("Validate Form: ", formGroups);
