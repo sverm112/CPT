@@ -11,14 +11,14 @@
 
 const inputValidationOptions = [
     {
-      attribute:'minlength',
-      isValid: (input: any)=> input.value && input.value.length >= parseInt(input.minLength,4),
-      errorMessage: (input: any, label: any) => `${label.textContent} needs to be atleast ${input.minLength} characters`
-    },
-    {
       attribute: 'required',
       isValid: (input: any) => input.value.trim() !== '',
       errorMessage : (input: any, label: any) => `${label.textContent} is required`
+    },
+    {
+      attribute:'minlength',
+      isValid: (input: any)=> input.value && input.value.length >= parseInt(input.minLength,4),
+      errorMessage: (input: any, label: any) => `${label.textContent} needs to be atleast ${input.minLength} characters`
     },
     {
       attribute: 'pattern',
@@ -34,7 +34,7 @@ const inputValidationOptions = [
     {
       attribute: 'required',
       isValid: (select: any) => select.value.trim() !== '',
-      errorMessage : (select: any, label: any) => `Please select a valid ${label.textContent}`
+      errorMessage : (select: any, label: any) => `${label.textContent} is required`
     },
   ];
   const dateValidationOptions = [
@@ -48,25 +48,30 @@ export function validateInputFields(formGroup: any){
   const label = formGroup.querySelector('label');
   const input = formGroup.querySelector('input');
   const errorContainer = formGroup.querySelector('.error');
-  errorContainer.textContent='';
+  let formError = false;
   for(const option of inputValidationOptions){
-    if(input !==null && input.hasAttribute(option.attribute) && !option.isValid(input)){
+    if(input.hasAttribute(option.attribute) && !option.isValid(input)){
+      console.log("Validation for: ", option.attribute)
       errorContainer.textContent = option.errorMessage(input, label);
+      console.log("Error message: ", errorContainer.textContent);
+      formError = true;
     }
-}
+  }
+  if(!formError){
+    errorContainer.textContent = '';
+  }
 }
 
 export function validateSelectFields(formGroup: any){
   const label = formGroup.querySelector('label');
   const select = formGroup.querySelector('select');
   const errorContainer = formGroup.querySelector('.error');
-  errorContainer.textContent='';
   for(const option of selectValidationOptions){
-    if(select !==null ){
+    if(select !==null && select.hasAttribute(option.attribute) ){
       if(select.value==="0"){
         errorContainer.textContent = option.errorMessage(select, label);
-        // formGroup.querySelector('select').setAttribute('style','border-color:red;color:red');
       }else{
+        errorContainer.textContent='';
         formGroup.querySelector('select').setAttribute('style','');
       }
     }
@@ -80,13 +85,7 @@ export function validateDatePicker(formGroup: any){
   const monthPicker = formGroup.querySelector('.react-date-picker__inputGroup__month');
   const yearPicker = formGroup.querySelector('.react-date-picker__inputGroup__year');
   const errorContainer = formGroup.querySelector('.error');
-  errorContainer.textContent='';
-  console.log("Date value", datePicker.value);
-  console.log("Month value", monthPicker.value);
-  console.log("Year value", yearPicker.value);
   for(const option of dateValidationOptions){
-    console.log("Hello: ",datePicker.value);
-    errorContainer.textContent = "";
       if(datePicker !== null && !option.isValid(datePicker) ){
         errorContainer.textContent = option.errorMessage(datePicker, label);
       }else{
@@ -96,8 +95,6 @@ export function validateDatePicker(formGroup: any){
 }
 
 export function validateSingleFormGroup(formGroup: any, controlType: any){
-    const errorContainer = formGroup.querySelector('.error');
-    errorContainer.textContent='';
     if(controlType=='input'){
       validateInputFields(formGroup);
     }else if(controlType=='select'){
@@ -111,44 +108,35 @@ export function validateForm(formSelector: any){
     const formGroupToBeValidated = document.querySelector(formSelector);
     const formFields = Array.from(formGroupToBeValidated.querySelectorAll('.form-group'));
     let i=0;
-    // console.log("Form Fields", formFields);
+    console.log("Form Fields", formFields);
     formFields.forEach((ff: any) => {
-      console.log(`Form Fields ${++i}`, ff);
+      // console.log(`Form Fields ${++i}`, ff);
       const selectFields = ff.getElementsByTagName('select');
       const inputFields = ff.getElementsByTagName('input');
       // const dateFields = ff.querySelector('.react-date-picker__inputGroup__day');
       i=0;
       for(const selectField of selectFields){
-        console.log(`Select Field ${++i}`, selectField);
-        validateSingleFormGroup(ff, 'select');
+        for(const option of selectValidationOptions){
+          if(selectField.hasAttribute(option.attribute)){
+            console.log(`Select Field ${++i}`, selectField);
+            validateSingleFormGroup(ff, 'select');
+          }
+        }
       }
       i=0;
       for(const inputField of inputFields){
-        console.log(`Input Field ${++i}`, inputField);
-        validateSingleFormGroup(ff, 'input');
+        for(const option of inputValidationOptions){
+          if(inputField.hasAttribute(option.attribute)){
+            console.log(`Input Field ${++i}`, inputField);
+            validateSingleFormGroup(ff, 'input');
+          }
+        }
       }
       // i=0;
       // for(const dateField of dateFields){
       //   console.log(`Date Field ${++i}`, dateField);
       // }
     })
-    // for(const ff of formFields){
-    //   console.log(`Form Field ${++i}`, ff);
-    //   const selectFields = ff.getElementsByTagName('select');
-    //   const inputFields = formGroupToBeValidated.getElementsByTagName('input');
-    //   const dateFields = formGroupToBeValidated.querySelector('.react-date-picker__inputGroup__day');
-    //   for(const selectField of selectFields){
-    //     console.log(`Select Field ${++i}`, selectField.parentNode);
-    //   }
-    //   i=0;
-    //   for(const inputField of inputFields){
-    //     console.log(`Input Field ${++i}`, inputField);
-    //   }
-    //   i=0;
-    //   for(const dateField of dateFields){
-    //     console.log(`Date Field ${++i}`, dateField);
-    //   }
-    // }
 
     const validateAllFormGroups = (formToValidate: any) => {
       const formGroups = Array.from(formToValidate.querySelectorAll('.form-group'));

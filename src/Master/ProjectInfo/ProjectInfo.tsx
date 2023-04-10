@@ -10,7 +10,8 @@ import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { employeeActions } from "../../Store/Slices/Employee";
 import DownloadBtn from "../../Export/DownloadBtn";
-import { validateSingleFormGroup } from "../../utils/validations";
+import { validateForm, validateSingleFormGroup } from "../../utils/validations";
+import { Base_URL } from "../../constants";
 
 const columns = [
   {
@@ -142,7 +143,7 @@ const ProjectInfo = () => {
   }
 
   const getProjectDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Projects/GetAllProjects");
+    const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/GetAllProjects`);
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, createdDate: row.createdDate.slice(0, 10), isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(projectActions.changeData(dataGet));
@@ -152,7 +153,7 @@ const ProjectInfo = () => {
   }, [toggle]);
 
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const response = await fetch(`http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets`);
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     console.log(dataGet);
@@ -319,7 +320,8 @@ const AddModal = (props: any) => {
       createdBy: "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/Projects/PostProjects", {
+      validateForm('#AddProjectForm');
+      const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/PostProjects`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -360,7 +362,7 @@ const AddModal = (props: any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id="AddProjectForm" noValidate>
             <div className="row">
               <div className="col-md-6 form-group" id="ProjectCodeInput">
                 <label className="form-label" htmlFor="projectCode">
@@ -401,6 +403,7 @@ const AddModal = (props: any) => {
                 <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
+                    required
                     className="form-control"
                     id="projectModel"
                     value={projectModel}
@@ -503,7 +506,8 @@ const UpdateModal = (props: any) => {
       updatedBy: "Admin",
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/Projects/UpdateProjects", {
+      validateForm('#UpdateProjectForm');
+      const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/UpdateProjects`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -551,7 +555,7 @@ const UpdateModal = (props: any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id="UpdateProjectForm" noValidate>
             <div className="row">
               <div className="col-md-6 form-group" id="ProjectCodeInput">
                 <label className="form-label" htmlFor="projectCode">
