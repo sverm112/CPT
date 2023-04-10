@@ -164,26 +164,29 @@ const AddModal = (props : any) => {
       createdBy: "Admin"
     };
     try {
-      validateForm('#AddMarket');
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/PostMarket", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-
-          dispatch(marketActions.changeToggle());
-          resetFormFields();
-          props.closeModal();
-          toast.success("Market Added Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#AddMarket')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/PostMarket", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+  
+            dispatch(marketActions.changeToggle());
+            resetFormFields();
+            props.closeModal();
+            toast.success("Market Added Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -270,24 +273,27 @@ const UpdateModal = (props: any) => {
       updatedBy: "Admin",
     };
     try {
-      validateForm('#UpdateMarketForm');
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/UpdateMarket", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-          dispatch(marketActions.changeToggle());
-          props.closeModal();
-          toast.success("Market Updated Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#UpdateMarketForm')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/UpdateMarket", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+            dispatch(marketActions.changeToggle());
+            props.closeModal();
+            toast.success("Market Updated Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }

@@ -12,6 +12,7 @@ import { employeeActions } from "../../Store/Slices/Employee";
 import DownloadBtn from "../../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { Base_URL } from "../../constants";
+import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 
 const columns = [
   {
@@ -320,26 +321,30 @@ const AddModal = (props: any) => {
       createdBy: "Admin"
     };
     try {
-      validateForm('#AddProjectForm');
-      const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/PostProjects`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-
-          dispatch(projectActions.changeToggle());
-          resetFormFields();
-          props.closeModal();
-          toast.success("Project Added Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#AddProjectForm')){
+        const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/PostProjects`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+  
+            dispatch(projectActions.changeToggle());
+            resetFormFields();
+            props.closeModal();
+            toast.success("Project Added Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+  
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -371,6 +376,7 @@ const AddModal = (props: any) => {
                 <span className="requiredField">*</span>
                 <input
                   required
+                  pattern={PatternsAndMessages.numberOnly.pattern}
                   type="text"
                   className="form-control"
                   id="projectCode"
@@ -463,6 +469,7 @@ const AddModal = (props: any) => {
                 <span className="requiredField">*</span>
                 <input
                   required
+                  pattern={PatternsAndMessages.nameLike.pattern}
                   type="text"
                   className="form-control"
                   id="programManager"
@@ -506,24 +513,27 @@ const UpdateModal = (props: any) => {
       updatedBy: "Admin",
     };
     try {
-      validateForm('#UpdateProjectForm');
-      const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/UpdateProjects`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-          dispatch(projectActions.changeToggle());
-          props.closeModal();
-          toast.success("Project Updated Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#UpdateProjectForm')){
+        const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/UpdateProjects`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+            dispatch(projectActions.changeToggle());
+            props.closeModal();
+            toast.success("Project Updated Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }

@@ -8,13 +8,8 @@
 
 // We have to add attributes like PatternsAndMessages, required and others , 
 // we also have to give ids for form-group 
-
+let isFormValid = false;
 const inputValidationOptions = [
-    {
-      attribute: 'required',
-      isValid: (input: any) => input.value.trim() !== '',
-      errorMessage : (input: any, label: any) => `${label.textContent} is required`
-    },
     {
       attribute:'minlength',
       isValid: (input: any)=> input.value && input.value.length >= parseInt(input.minLength,4),
@@ -27,7 +22,12 @@ const inputValidationOptions = [
         return patternRegex.test(input.value);
       },
       errorMessage: (input: any, label: any) => `Please enter a valid ${label.textContent}`
-    }
+    },
+    {
+      attribute: 'required',
+      isValid: (input: any) => input.value.trim() !== '',
+      errorMessage : (input: any, label: any) => `${label.textContent} is required`
+    },
   ];
 
   const selectValidationOptions = [
@@ -49,15 +49,16 @@ export function validateInputFields(formGroup: any){
   const input = formGroup.querySelector('input');
   const errorContainer = formGroup.querySelector('.error');
   let formError = false;
+  // console.log('Input value', input.value);
   for(const option of inputValidationOptions){
     if(input.hasAttribute(option.attribute) && !option.isValid(input)){
-      console.log("Validation for: ", option.attribute)
       errorContainer.textContent = option.errorMessage(input, label);
-      console.log("Error message: ", errorContainer.textContent);
       formError = true;
+      isFormValid = false;
     }
   }
   if(!formError){
+    isFormValid = true;
     errorContainer.textContent = '';
   }
 }
@@ -70,8 +71,10 @@ export function validateSelectFields(formGroup: any){
     if(select !==null && select.hasAttribute(option.attribute) ){
       if(select.value==="0"){
         errorContainer.textContent = option.errorMessage(select, label);
+        isFormValid = false;
       }else{
         errorContainer.textContent='';
+        isFormValid = true;
         formGroup.querySelector('select').setAttribute('style','');
       }
     }
@@ -88,8 +91,10 @@ export function validateDatePicker(formGroup: any){
   for(const option of dateValidationOptions){
       if(datePicker !== null && !option.isValid(datePicker) ){
         errorContainer.textContent = option.errorMessage(datePicker, label);
+        isFormValid= false;
       }else{
         errorContainer.textContent = "";
+        isFormValid = true;
       }
   }
 }
@@ -108,7 +113,7 @@ export function validateForm(formSelector: any){
     const formGroupToBeValidated = document.querySelector(formSelector);
     const formFields = Array.from(formGroupToBeValidated.querySelectorAll('.form-group'));
     let i=0;
-    console.log("Form Fields", formFields);
+    // console.log("Form Fields", formFields);
     formFields.forEach((ff: any) => {
       // console.log(`Form Fields ${++i}`, ff);
       const selectFields = ff.getElementsByTagName('select');
@@ -118,7 +123,6 @@ export function validateForm(formSelector: any){
       for(const selectField of selectFields){
         for(const option of selectValidationOptions){
           if(selectField.hasAttribute(option.attribute)){
-            console.log(`Select Field ${++i}`, selectField);
             validateSingleFormGroup(ff, 'select');
           }
         }
@@ -127,7 +131,6 @@ export function validateForm(formSelector: any){
       for(const inputField of inputFields){
         for(const option of inputValidationOptions){
           if(inputField.hasAttribute(option.attribute)){
-            console.log(`Input Field ${++i}`, inputField);
             validateSingleFormGroup(ff, 'input');
           }
         }
@@ -138,17 +141,19 @@ export function validateForm(formSelector: any){
       // }
     })
 
-    const validateAllFormGroups = (formToValidate: any) => {
-      const formGroups = Array.from(formToValidate.querySelectorAll('.form-group'));
-      console.log("Validate Form: ", formGroups);
-      formGroups.forEach(formGroup => {
-        validateSingleFormGroup(formGroup, 'input');
-      })
-    }
-    const formElement = document.querySelector(formSelector);
-    validateAllFormGroups(formElement);
+    // const validateAllFormGroups = (formToValidate: any) => {
+    //   const formGroups = Array.from(formToValidate.querySelectorAll('.form-group'));
+    //   console.log("Validate Form: ", formGroups);
+    //   formGroups.forEach(formGroup => {
+    //     validateSingleFormGroup(formGroup, 'input');
+    //   })
+    // }
+    // const formElement = document.querySelector(formSelector);
+    // validateAllFormGroups(formElement);
 
-    formElement.setAttribute('novalidate','');
+    // formElement.setAttribute('novalidate','');
+    // console.log('Form validity: ', isFormValid);
+    return isFormValid;
   };
 
 //   validateForm('#AddMarket')

@@ -307,26 +307,29 @@ const AddModal = () => {
       createdBy: "Admin"
     };
     try {
-      validateForm('#HolidayForm');
-      const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/PostHoliday", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-
-          dispatch(holidayActions.changeToggle());
-          resetFormFields();
-          closeModal();
-          toast.success("Holiday Added Successfully");
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#HolidayForm')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/PostHoliday", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+  
+            dispatch(holidayActions.changeToggle());
+            resetFormFields();
+            closeModal();
+            toast.success("Holiday Added Successfully");
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");  
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }

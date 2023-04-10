@@ -375,26 +375,29 @@ const AddModal = (props: any) => {
       createdBy: "Admin"
     };
     try {
-      validateForm('#AddPtoForm');
-      const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/PostPTO", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-
-          dispatch(ptoActions.changeToggle());
-          resetFormFields();
-          props.closeModal();
-          toast.success("PTO Added Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#AddPtoForm')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/PostPTO", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+  
+            dispatch(ptoActions.changeToggle());
+            resetFormFields();
+            props.closeModal();
+            toast.success("PTO Added Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -583,7 +586,7 @@ const UpdateModal = (props: any) => {
     selectedResourceDetails.resourceManager = filteredResource[0].manager
   }
   const formSubmitHandler = async (event: any) => {
-    validateForm('#UpdatePtoForm');
+    
     event.preventDefault();
     let payload = {
       id : formValues.id,
@@ -598,23 +601,27 @@ const UpdateModal = (props: any) => {
       updatedBy: "Admin",
     };
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/UpdatePTO", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-          dispatch(ptoActions.changeToggle());
-          props.closeModal();
-          toast.success("PTO Updated Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#UpdatePtoForm')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/UpdatePTO", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+            dispatch(ptoActions.changeToggle());
+            props.closeModal();
+            toast.success("PTO Updated Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
