@@ -10,6 +10,8 @@ import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { filterActions } from "../../Store/Slices/Filters";
 import DownloadBtn from "../../Export/DownloadBtn";
+import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
+import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 
 
 const columns = [
@@ -468,25 +470,29 @@ const AddModal = (props: any) => {
       createdBy: "Admin",
     };
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/PostResources", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-
-          dispatch(employeeActions.changeToggle());
-          resetFormFields();
-          props.closeModal();
-          toast.success("Resource Added Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#AddEmployeeForm')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/PostResources", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+  
+            dispatch(employeeActions.changeToggle());
+            resetFormFields();
+            props.closeModal();
+            toast.success("Resource Added Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -520,107 +526,142 @@ const AddModal = (props: any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id="AddEmployeeForm" noValidate>
             <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AddResourceField">
                 <label className="form-label">Resource</label>
+                <span className="requiredField">*</span>
                 <input
+                  required
+                  pattern={PatternsAndMessages.nameLike.pattern}
                   type="text"
                   className="form-control"
                   id="resource"
                   value={employeeName}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceField'), 'input')}
                   onChange={(event) => setEmployeeName(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group ">
+              <div className="col-md-6 form-group " id="AddRoleField">
                 <label className="form-label">Role</label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
+                    required
                     id="employeeRole"
                     className="form-control"
                     value={role}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('AddRoleField'), 'select')}
                     onChange={(event) => setRole(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AddResourceEmailField">
                 <label className="form-label">Email Address</label>
+                <span className="requiredField">*</span>
                 <input
+                  required
+                  pattern={PatternsAndMessages.email.pattern}
                   type="text"
                   className="form-control"
                   id="employeeEmailAddress"
                   value={employeeEmailAddress}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceEmailField'),'input')}
                   onChange={(event) => setEmployeeEmailAddress(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AddResourceManagerField">
                 <label className="form-label">Manager</label>
+                <span className="requiredField">*</span>
                 <input
                   type="text"
+                  required
+                  pattern={PatternsAndMessages.nameLike.pattern}
                   className="form-control"
                   id="manager"
                   value={manager}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceManagerField'), 'input')}
                   onChange={(event) => setManager(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AddResourceResourceTypeField">
                 <label className="form-label">Resource Type</label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
+                    required
                     id="resourceType"
                     className="form-control"
                     value={resourceType}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceResourceTypeField'),'select')}
                     onChange={(event) => setResourceType(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {resourceTypes.map((resourceType: any) => (<option key={resourceType} value={resourceType}>{resourceType}</option>))}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AddResourceMarketField">
                 <label className="form-label">Market</label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     id="market"
+                    required
                     className="form-control"
                     value={market}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceMarketField'), 'select')}
                     onChange={(event) => setMarket(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.marketName}>{market.marketName}</option>)}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AddResourceLocationField">
                 <label className="form-label">Location</label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     id="location"
+                    required
                     className="form-control"
                     value={location}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceLocationField'), 'select')}
                     onChange={(event) => setLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {locations.map((location: any) => (<option key={location.locationId} value={location.locationName}> {location.locationName}</option>))}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
 
-              <div className="col-md-6 form-group ">
+              <div className="col-md-6 form-group " id="AddResourceSubLocationField">
                 <label className="form-label">Sub Location</label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     className="form-control"
+                    required
                     id="holidaySubLocation"
                     value={subLocation}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceSubLocationField'), 'select')}
                     onChange={(event: any) => setSubLocation(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {location == "0" ? [] : (subLocations.filter((subLocation: any) => location == subLocation.locationName).map((subLocation: any) => (<option key={subLocation.subLocationId} value={subLocation.subLocationName}>{subLocation.subLocationName}</option>)))}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
 
@@ -670,23 +711,27 @@ const UpdateModal = (props: any) => {
       updatedBy: "Admin",
     };
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/UpdateResources", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-          dispatch(employeeActions.changeToggle());
-          props.closeModal();
-          toast.success("Resource Updated Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#UpdateResourceForm')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/UpdateResources", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+            dispatch(employeeActions.changeToggle());
+            props.closeModal();
+            toast.success("Resource Updated Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -718,115 +763,150 @@ const UpdateModal = (props: any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={handleSave}>
+          <form onSubmit={handleSave} id="UpdateResourceForm" noValidate>
             <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="UpdateResourceResourceField">
                 <label className="form-label">Resource</label>
+                <span className="requiredField">*</span>
                 <input
                   type="text"
+                  required
+                  pattern={PatternsAndMessages.nameLike.pattern}
                   name="resourceName"
                   className="form-control"
                   id="resource"
                   value={formValues.resourceName}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceResourceField'), 'input')}
                   onChange={handleChange}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group ">
+              <div className="col-md-6 form-group " id="UpdateResourceRoleField">
                 <label className="form-label">Role</label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     id="employeeRole"
+                    required
                     name="role"
                     className="form-control"
                     value={formValues.role}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceRoleField'), 'select')}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
                     {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="UpdateResourceEmailField">
                 <label className="form-label">Email Address</label>
+                <span className="requiredField">*</span>
                 <input
                   type="text"
+                  required
+                  pattern={PatternsAndMessages.email.pattern}
                   name="emailAddress"
                   className="form-control"
                   id="employeeEmailAddress"
                   value={formValues.emailAddress}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceEmailField'), 'input')}
                   onChange={handleChange}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="UpdateResourceManagerField">
                 <label className="form-label">Manager</label>
+                <span className="requiredField">*</span>
                 <input
                   type="text"
+                  required
+                  pattern={PatternsAndMessages.nameLike.pattern}
                   name="manager"
                   className="form-control"
                   id="manager"
                   value={formValues.manager}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceManagerField'), 'input')}
                   onChange={handleChange}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="UpdateResourceResourceTypeField">
                 <label className="form-label">Resource Type</label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     id="resourceType"
+                    required
                     name="resourceType"
                     className="form-control"
                     value={formValues.resourceType}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceResourceTypeField'), 'select')}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
                     {resourceTypes.map((resourceType: any) => (<option key={resourceType} value={resourceType}>{resourceType}</option>))}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="UpdateResourceMarketField">
                 <label className="form-label">Market</label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     id="market"
+                    required
                     name="resourceMarket"
                     className="form-control"
                     value={formValues.resourceMarket}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceMarketField'), 'select')}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
                     {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.marketName}>{market.marketName}</option>)}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="UpdateResourceLocationField">
                 <label className="form-label">Location</label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     id="location"
+                    required
                     name="location"
                     className="form-control"
                     value={formValues.location}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceLocationField'), 'select')}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
                     {locations.map((location: any) => (<option key={location.locationId} value={location.locationName}> {location.locationName}</option>))}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
 
-              <div className="col-md-6 form-group ">
+              <div className="col-md-6 form-group " id="UpdateResourceSubLocationField">
                 <label className="form-label">Sub Location</label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     name="subLocation"
+                    required
                     className="form-control"
                     id="holidaySubLocation"
                     value={formValues.subLocation}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceSubLocationField'), 'select')}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
                     {location == "0" ? [] : (subLocations.filter((subLocation: any) => location == subLocation.locationName).map((subLocation: any) => (<option key={subLocation.subLocationId} value={subLocation.subLocationName}>{subLocation.subLocationName}</option>)))}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
               <div className="col-md-6 form-group ">

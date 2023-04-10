@@ -339,7 +339,7 @@ const UpdateModal = (props: any) => {
                   className="form-control"
                   id="marketName"
                   value={formValues.marketName}
-                  onBeforeInput={()=>validateSingleFormGroup(document.getElementById('MarketNameUpdateField'), 'input')}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('MarketNameUpdateField'), 'input')}
                   onChange={handleChange}
                 />
                 <div className="error"></div>

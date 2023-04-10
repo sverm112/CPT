@@ -8,7 +8,7 @@
 
 // We have to add attributes like PatternsAndMessages, required and others , 
 // we also have to give ids for form-group 
-let isFormValid = false;
+let isFormValid = true;
 const inputValidationOptions = [
     {
       attribute:'minlength',
@@ -54,12 +54,14 @@ export function validateInputFields(formGroup: any){
     if(input.hasAttribute(option.attribute) && !option.isValid(input)){
       errorContainer.textContent = option.errorMessage(input, label);
       formError = true;
-      isFormValid = false;
+      isFormValid = isFormValid && false;
+      // console.log("Form Validity: ", isFormValid);
     }
   }
   if(!formError){
-    isFormValid = true;
+    isFormValid = isFormValid && true;
     errorContainer.textContent = '';
+    // console.log("Form VValidity: ", isFormValid);
   }
 }
 
@@ -71,10 +73,12 @@ export function validateSelectFields(formGroup: any){
     if(select !==null && select.hasAttribute(option.attribute) ){
       if(select.value==="0"){
         errorContainer.textContent = option.errorMessage(select, label);
-        isFormValid = false;
+        isFormValid =isFormValid && false;
+        // console.log("Form VValidity: ", isFormValid);
       }else{
         errorContainer.textContent='';
-        isFormValid = true;
+        isFormValid =isFormValid && true;
+        // console.log("Form VValidity: ", isFormValid);
         formGroup.querySelector('select').setAttribute('style','');
       }
     }
@@ -91,10 +95,10 @@ export function validateDatePicker(formGroup: any){
   for(const option of dateValidationOptions){
       if(datePicker !== null && !option.isValid(datePicker) ){
         errorContainer.textContent = option.errorMessage(datePicker, label);
-        isFormValid= false;
+        isFormValid=isFormValid && false;
       }else{
         errorContainer.textContent = "";
-        isFormValid = true;
+        isFormValid =isFormValid && true;
       }
   }
 }
@@ -110,10 +114,11 @@ export function validateSingleFormGroup(formGroup: any, controlType: any){
   };
 
 export function validateForm(formSelector: any){
+    isFormValid = true;
     const formGroupToBeValidated = document.querySelector(formSelector);
     const formFields = Array.from(formGroupToBeValidated.querySelectorAll('.form-group'));
     let i=0;
-    // console.log("Form Fields", formFields);
+    console.log("Form Validity: ", isFormValid);
     formFields.forEach((ff: any) => {
       // console.log(`Form Fields ${++i}`, ff);
       const selectFields = ff.getElementsByTagName('select');
