@@ -147,7 +147,7 @@ const PTO = () => {
 
   const getPTODetails = async () => {
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/GetAllPTOs");
+      const response = await fetch("https://localhost:44314/api/v1/PTOs/GetAllPTOs");
       let dataGet = await response.json();
       dispatch(ptoActions.changeData(dataGet));
     }
@@ -177,11 +177,11 @@ const PTO = () => {
   {'name' :'Resource Manager','selector':'resourceManager','default':'true'},
   {'name': 'PTO Type', 'selector': 'ptoType', 'default': 'true' },
   {'name': 'Start Date', 'selector': 'startDate', 'default': 'true'},
-  {'name': 'End Date','selector':'endDate', 'default': 'true' },
+  {'name': 'End Date','selector':'enddDate', 'default': 'true' },
   {'name': 'Month','selector':'month', 'default': 'true' },
   {'name': 'Number of Days','selector':'numberOfDays', 'default': 'true' },
   {'name': 'Remarks','selector':'remarks', 'default': 'false' },
-  {'name' :'Status','selector':'isActive','default':'true'},
+  {'name' :'Status','selector':'status','default':'true'},
   {'name' :'Created Date','selector':'createdDate','default':'true'},
   {'name' :'Created By','selector':'createdBy','default':'true'},
   {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
