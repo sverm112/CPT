@@ -147,7 +147,7 @@ const PTO = () => {
 
   const getPTODetails = async () => {
     try {
-      const response = await fetch("https://localhost:44314/api/v1/PTOs/GetAllPTOs");
+      const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/GetAllPTOs");
       let dataGet = await response.json();
       dispatch(ptoActions.changeData(dataGet));
     }
@@ -205,7 +205,7 @@ const PTO = () => {
     }
   };
   const getPTOTypeDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/PTOType/GetAllPTOTypes");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/PTOType/GetAllPTOTypes");
     const dataGet = await response.json();
     dispatch(filterActions.changePTOTypes(dataGet));
   }
@@ -375,25 +375,29 @@ const AddModal = (props: any) => {
       createdBy: "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/PTOs/PostPTO", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-
-          dispatch(ptoActions.changeToggle());
-          resetFormFields();
-          props.closeModal();
-          toast.success("PTO Added Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#AddPtoForm')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/PostPTO", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+  
+            dispatch(ptoActions.changeToggle());
+            resetFormFields();
+            props.closeModal();
+            toast.success("PTO Added Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -416,7 +420,7 @@ const AddModal = (props: any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id='AddPtoForm' noValidate>
           <div className="row">
               <div className="col-md-6 form-group" id="ResourceAddPto">
                 <label className="form-label" htmlFor="resource">
@@ -424,8 +428,11 @@ const AddModal = (props: any) => {
                 </label>
                 <span className="requiredField">*</span>
                 <div className="dropdown">
-                  <select className="form-control" required id="resource" value={resourceId} onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} onChange={setResourceDetails}>
+                  <select className="form-control" required id="resource" value={resourceId} 
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} onChange={setResourceDetails}>
                     <option value="0">Select</option>
+                    {/* {months.map((month: any) => (<option key={month} value={month}>{month}</option>))} */}
+                  
                     {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   </select>
                   <div className="error"></div>
@@ -443,20 +450,24 @@ const AddModal = (props: any) => {
                   disabled
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="PTOTypeDropdown">
                 <label className="form-label" htmlFor="ptoType">
                   PTO Type 
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
+                    required
                     className="form-control "
                     id="ptoTypeDropdown"
                     value={ptoTypeId}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select')}
                     onChange={(event) => setPTOTypeId(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
 
@@ -575,6 +586,7 @@ const UpdateModal = (props: any) => {
     selectedResourceDetails.resourceManager = filteredResource[0].manager
   }
   const formSubmitHandler = async (event: any) => {
+    
     event.preventDefault();
     let payload = {
       id : formValues.id,
@@ -589,23 +601,27 @@ const UpdateModal = (props: any) => {
       updatedBy: "Admin",
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/PTOs/UpdatePTO", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-          dispatch(ptoActions.changeToggle());
-          props.closeModal();
-          toast.success("PTO Updated Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#UpdatePtoForm')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/UpdatePTO", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+            dispatch(ptoActions.changeToggle());
+            props.closeModal();
+            toast.success("PTO Updated Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -637,7 +653,7 @@ const UpdateModal = (props: any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id='UpdatePtoForm' noValidate>
           <div className="row">
               <div className="col-md-6 form-group" id="ResourceAddPto">
                 <label className="form-label" htmlFor="resource">

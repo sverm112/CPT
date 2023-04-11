@@ -1,14 +1,14 @@
 export const PatternsAndMessages = {
     numberOnly : {
-        pattern:"[A-Za-z]{3}",
+        pattern:'^[0-9]+',
         message:"Only numbers are allowed"
     },
     email:{
-        pattern: "/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/",
+        pattern: '^(.+)@(.+).(.+)$',
         message: "Invalid email id"
     },
     nameLike:{
-        pattern: "^[a-zA-Z\\s]+",
+        pattern: "^[a-zA-Z]+[ ][a-zA-z]",
         message: "Invaid character for name"
     }
 };

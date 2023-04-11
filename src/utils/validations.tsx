@@ -8,17 +8,12 @@
 
 // We have to add attributes like PatternsAndMessages, required and others , 
 // we also have to give ids for form-group 
-
+let isFormValid = true;
 const inputValidationOptions = [
     {
       attribute:'minlength',
       isValid: (input: any)=> input.value && input.value.length >= parseInt(input.minLength,4),
       errorMessage: (input: any, label: any) => `${label.textContent} needs to be atleast ${input.minLength} characters`
-    },
-    {
-      attribute: 'required',
-      isValid: (input: any) => input.value.trim() !== '',
-      errorMessage : (input: any, label: any) => `${label.textContent} is required`
     },
     {
       attribute: 'pattern',
@@ -27,14 +22,19 @@ const inputValidationOptions = [
         return patternRegex.test(input.value);
       },
       errorMessage: (input: any, label: any) => `Please enter a valid ${label.textContent}`
-    }
+    },
+    {
+      attribute: 'required',
+      isValid: (input: any) => input.value.trim() !== '',
+      errorMessage : (input: any, label: any) => `${label.textContent} is required`
+    },
   ];
 
   const selectValidationOptions = [
     {
       attribute: 'required',
       isValid: (select: any) => select.value.trim() !== '',
-      errorMessage : (select: any, label: any) => `Please select a valid ${label.textContent}`
+      errorMessage : (select: any, label: any) => `${label.textContent} is required`
     },
   ];
   const dateValidationOptions = [
@@ -48,25 +48,37 @@ export function validateInputFields(formGroup: any){
   const label = formGroup.querySelector('label');
   const input = formGroup.querySelector('input');
   const errorContainer = formGroup.querySelector('.error');
-  errorContainer.textContent='';
+  let formError = false;
+  // console.log('Input value', input.value);
   for(const option of inputValidationOptions){
-    if(input !==null && input.hasAttribute(option.attribute) && !option.isValid(input)){
+    if(input.hasAttribute(option.attribute) && !option.isValid(input)){
       errorContainer.textContent = option.errorMessage(input, label);
+      formError = true;
+      isFormValid = isFormValid && false;
+      // console.log("Form Validity: ", isFormValid);
     }
-}
+  }
+  if(!formError){
+    isFormValid = isFormValid && true;
+    errorContainer.textContent = '';
+    // console.log("Form VValidity: ", isFormValid);
+  }
 }
 
 export function validateSelectFields(formGroup: any){
   const label = formGroup.querySelector('label');
   const select = formGroup.querySelector('select');
   const errorContainer = formGroup.querySelector('.error');
-  errorContainer.textContent='';
   for(const option of selectValidationOptions){
-    if(select !==null ){
+    if(select !==null && select.hasAttribute(option.attribute) ){
       if(select.value==="0"){
         errorContainer.textContent = option.errorMessage(select, label);
-        // formGroup.querySelector('select').setAttribute('style','border-color:red;color:red');
+        isFormValid =isFormValid && false;
+        // console.log("Form VValidity: ", isFormValid);
       }else{
+        errorContainer.textContent='';
+        isFormValid =isFormValid && true;
+        // console.log("Form VValidity: ", isFormValid);
         formGroup.querySelector('select').setAttribute('style','');
       }
     }
@@ -80,24 +92,18 @@ export function validateDatePicker(formGroup: any){
   const monthPicker = formGroup.querySelector('.react-date-picker__inputGroup__month');
   const yearPicker = formGroup.querySelector('.react-date-picker__inputGroup__year');
   const errorContainer = formGroup.querySelector('.error');
-  errorContainer.textContent='';
-  console.log("Date value", datePicker.value);
-  console.log("Month value", monthPicker.value);
-  console.log("Year value", yearPicker.value);
   for(const option of dateValidationOptions){
-    console.log("Hello: ",datePicker.value);
-    errorContainer.textContent = "";
       if(datePicker !== null && !option.isValid(datePicker) ){
         errorContainer.textContent = option.errorMessage(datePicker, label);
+        isFormValid=isFormValid && false;
       }else{
         errorContainer.textContent = "";
+        isFormValid =isFormValid && true;
       }
   }
 }
 
 export function validateSingleFormGroup(formGroup: any, controlType: any){
-    const errorContainer = formGroup.querySelector('.error');
-    errorContainer.textContent='';
     if(controlType=='input'){
       validateInputFields(formGroup);
     }else if(controlType=='select'){
@@ -108,17 +114,51 @@ export function validateSingleFormGroup(formGroup: any, controlType: any){
   };
 
 export function validateForm(formSelector: any){
-    const validateAllFormGroups = (formToValidate: any) => {
-      const formGroups = Array.from(formToValidate.querySelectorAll('.form-group'));
-      console.log("Validate Form: ", formGroups);
-      formGroups.forEach(formGroup => {
-        validateSingleFormGroup(formGroup, 'input');
-      })
-    }
-    const formElement = document.querySelector(formSelector);
-    validateAllFormGroups(formElement);
+    isFormValid = true;
+    const formGroupToBeValidated = document.querySelector(formSelector);
+    const formFields = Array.from(formGroupToBeValidated.querySelectorAll('.form-group'));
+    let i=0;
+    console.log("Form Validity: ", isFormValid);
+    formFields.forEach((ff: any) => {
+      // console.log(`Form Fields ${++i}`, ff);
+      const selectFields = ff.getElementsByTagName('select');
+      const inputFields = ff.getElementsByTagName('input');
+      // const dateFields = ff.querySelector('.react-date-picker__inputGroup__day');
+      i=0;
+      for(const selectField of selectFields){
+        for(const option of selectValidationOptions){
+          if(selectField.hasAttribute(option.attribute)){
+            validateSingleFormGroup(ff, 'select');
+          }
+        }
+      }
+      i=0;
+      for(const inputField of inputFields){
+        for(const option of inputValidationOptions){
+          if(inputField.hasAttribute(option.attribute)){
+            validateSingleFormGroup(ff, 'input');
+          }
+        }
+      }
+      // i=0;
+      // for(const dateField of dateFields){
+      //   console.log(`Date Field ${++i}`, dateField);
+      // }
+    })
 
-    formElement.setAttribute('novalidate','');
+    // const validateAllFormGroups = (formToValidate: any) => {
+    //   const formGroups = Array.from(formToValidate.querySelectorAll('.form-group'));
+    //   console.log("Validate Form: ", formGroups);
+    //   formGroups.forEach(formGroup => {
+    //     validateSingleFormGroup(formGroup, 'input');
+    //   })
+    // }
+    // const formElement = document.querySelector(formSelector);
+    // validateAllFormGroups(formElement);
+
+    // formElement.setAttribute('novalidate','');
+    // console.log('Form validity: ', isFormValid);
+    return isFormValid;
   };
 
 //   validateForm('#AddMarket')

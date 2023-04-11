@@ -6,7 +6,8 @@ import Table from "../../DataTable/DataTable";
 import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
-import { validateSingleFormGroup } from "../../utils/validations";
+import { validateForm, validateSingleFormGroup } from "../../utils/validations";
+import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 
 const columns = [
   {
@@ -81,7 +82,7 @@ const Market = () => {
   }
   const getMarketDetails = async () => {
     try {
-      const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+      const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
       let dataGet = await response.json();
       dispatch(marketActions.changeData(dataGet));
     }
@@ -157,34 +158,35 @@ const AddModal = (props : any) => {
   }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
-    // validateForm('#AddMarket');
-    // validateSingleFormGroup(document.getElementById('MarketName'),'input');
-    // validateSingleFormGroup(document.getElementById('MarketDomain'), 'input');
     let payload = {
       marketName: marketName,
       marketDomain: marketDomain,
       createdBy: "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/Markets/PostMarket", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-
-          dispatch(marketActions.changeToggle());
-          resetFormFields();
-          props.closeModal();
-          toast.success("Market Added Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#AddMarket')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/PostMarket", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+  
+            dispatch(marketActions.changeToggle());
+            resetFormFields();
+            props.closeModal();
+            toast.success("Market Added Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -209,25 +211,25 @@ const AddModal = (props : any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form id="AddMarket" onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id="AddMarket" noValidate>
             <div className="row">
-              <div className="col-md-6 form-group" id="MarketName">
+              <div className="col-md-6 form-group" id="MarketNameField">
                 <label className="form-label" htmlFor="marketName">
                   Market Name
                 </label>
                 <span className="requiredField">*</span>
                 <input
-                  required
+                  required                  
                   type="text"
                   className="form-control"
                   id="marketName"
                   value={marketName}
-                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketName'),'input')}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketNameField'),'input')}
                   onChange={(event: any) => setMarketName(event.target.value)}
                 />
                 <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group" id="MarketDomain">
+              <div className="col-md-6 form-group" id="MarketDomainField">
                 <label className="form-label" htmlFor="marketDomain">
                   Market Domain
                 </label>
@@ -238,7 +240,7 @@ const AddModal = (props : any) => {
                   className="form-control"
                   id="marketDomain"
                   value={marketDomain}
-                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketDomain'), 'input')}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketDomainField'), 'input')}
                   onChange={(event: any) => setMarketDomain(event.target.value)}
                 />
                 <div className="error"></div>
@@ -271,23 +273,27 @@ const UpdateModal = (props: any) => {
       updatedBy: "Admin",
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/Markets/UpdateMarket", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-          dispatch(marketActions.changeToggle());
-          props.closeModal();
-          toast.success("Market Updated Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#UpdateMarketForm')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/UpdateMarket", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+            dispatch(marketActions.changeToggle());
+            props.closeModal();
+            toast.success("Market Updated Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -319,33 +325,41 @@ const UpdateModal = (props: any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id="UpdateMarketForm"  noValidate>
             <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="MarketNameUpdateField">
                 <label className="form-label" htmlFor="marketName">
                   Market Name
                 </label>
+                <span className="requiredField">*</span>
                 <input
+                  required
                   type="text"
                   name="marketName"
                   className="form-control"
                   id="marketName"
                   value={formValues.marketName}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('MarketNameUpdateField'), 'input')}
                   onChange={handleChange}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="MarketUpdateField">
                 <label className="form-label" htmlFor="marketDomain">
                   Market Domain
                 </label>
+                <span className="requiredField">*</span>
                 <input
+                  required
                   type="text"
                   name="marketDomain"
                   className="form-control"
                   id="marketDomain"
                   value={formValues.marketDomain}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('MarketUpdateField'),'input')}
                   onChange={handleChange}
-                />
+                />                
+                <div className="error"></div>
               </div>
               <div className="col-md-6 form-group ">
                 <label className="form-label">Status</label>

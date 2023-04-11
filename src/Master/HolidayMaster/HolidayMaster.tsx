@@ -11,7 +11,7 @@ import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { filterActions } from "../../Store/Slices/Filters";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
-import { validateSingleFormGroup } from "../../utils/validations";
+import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 
 //Data Table
 const columns = [
@@ -116,7 +116,7 @@ const HolidayMaster = () => {
     dispatch(holidayActions.changeMarket(event));
   };
   const getHolidayDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/HolidaysList/GetAllHolidaysLists");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/GetAllHolidaysLists");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(holidayActions.changeData(dataGet));
@@ -128,18 +128,18 @@ const HolidayMaster = () => {
 
   
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     let dataGet = await response.json();
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Location/GetAllLocations");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Location/GetAllLocations");
     const dataGet = await response.json();
     dispatch(filterActions.changeLocations(dataGet));
   }
   const getSubLocationDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/SubLocation/GetAllSubLocations");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/SubLocation/GetAllSubLocations");
     const dataGet = await response.json();
     dispatch(filterActions.changeSubLocations(dataGet));
   }
@@ -307,32 +307,36 @@ const AddModal = () => {
       createdBy: "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/HolidaysList/PostHoliday", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-
-          dispatch(holidayActions.changeToggle());
-          resetFormFields();
-          closeModal();
-          toast.success("Holiday Added Successfully");
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#HolidayForm')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/PostHoliday", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+  
+            dispatch(holidayActions.changeToggle());
+            resetFormFields();
+            closeModal();
+            toast.success("Holiday Added Successfully");
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");  
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
   };
   const marketList = useSelector((state: any) => state.Market.data);
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     const dataGet = await response.json();
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
@@ -357,7 +361,7 @@ const AddModal = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id="HolidayForm" noValidate>
             <div className="row">
               <div className="col-md-6 form-group" id="Occasion">
                 <label className="form-label" htmlFor="holidayOccasion">
@@ -399,6 +403,7 @@ const AddModal = () => {
                 <label className="form-label" htmlFor="holidayMarket">
                   Market
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     required
@@ -418,6 +423,7 @@ const AddModal = () => {
                 <label className="form-label" htmlFor="holidayCountry">
                   Location
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     required
@@ -437,6 +443,7 @@ const AddModal = () => {
                 <label className="form-label" htmlFor="holidaySubLocation">
                   Sub Location
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     required

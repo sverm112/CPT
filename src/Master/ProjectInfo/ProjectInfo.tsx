@@ -10,7 +10,9 @@ import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { employeeActions } from "../../Store/Slices/Employee";
 import DownloadBtn from "../../Export/DownloadBtn";
-import { validateSingleFormGroup } from "../../utils/validations";
+import { validateForm, validateSingleFormGroup } from "../../utils/validations";
+import { Base_URL } from "../../constants";
+import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 
 const columns = [
   {
@@ -142,7 +144,7 @@ const ProjectInfo = () => {
   }
 
   const getProjectDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Projects/GetAllProjects");
+    const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/GetAllProjects`);
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, createdDate: row.createdDate.slice(0, 10), isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(projectActions.changeData(dataGet));
@@ -152,7 +154,7 @@ const ProjectInfo = () => {
   }, [toggle]);
 
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const response = await fetch(`http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets`);
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     console.log(dataGet);
@@ -319,25 +321,30 @@ const AddModal = (props: any) => {
       createdBy: "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/Projects/PostProjects", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-
-          dispatch(projectActions.changeToggle());
-          resetFormFields();
-          props.closeModal();
-          toast.success("Project Added Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#AddProjectForm')){
+        const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/PostProjects`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+  
+            dispatch(projectActions.changeToggle());
+            resetFormFields();
+            props.closeModal();
+            toast.success("Project Added Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+  
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -360,7 +367,7 @@ const AddModal = (props: any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id="AddProjectForm" noValidate>
             <div className="row">
               <div className="col-md-6 form-group" id="ProjectCodeInput">
                 <label className="form-label" htmlFor="projectCode">
@@ -369,6 +376,7 @@ const AddModal = (props: any) => {
                 <span className="requiredField">*</span>
                 <input
                   required
+                  pattern={PatternsAndMessages.numberOnly.pattern}
                   type="text"
                   className="form-control"
                   id="projectCode"
@@ -401,6 +409,7 @@ const AddModal = (props: any) => {
                 <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
+                    required
                     className="form-control"
                     id="projectModel"
                     value={projectModel}
@@ -460,6 +469,7 @@ const AddModal = (props: any) => {
                 <span className="requiredField">*</span>
                 <input
                   required
+                  pattern={PatternsAndMessages.nameLike.pattern}
                   type="text"
                   className="form-control"
                   id="programManager"
@@ -503,23 +513,27 @@ const UpdateModal = (props: any) => {
       updatedBy: "Admin",
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/Projects/UpdateProjects", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-          dispatch(projectActions.changeToggle());
-          props.closeModal();
-          toast.success("Project Updated Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#UpdateProjectForm')){
+        const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/UpdateProjects`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+            dispatch(projectActions.changeToggle());
+            props.closeModal();
+            toast.success("Project Updated Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -551,7 +565,7 @@ const UpdateModal = (props: any) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id="UpdateProjectForm" noValidate>
             <div className="row">
               <div className="col-md-6 form-group" id="ProjectCodeInput">
                 <label className="form-label" htmlFor="projectCode">

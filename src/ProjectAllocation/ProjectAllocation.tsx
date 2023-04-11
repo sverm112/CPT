@@ -14,6 +14,8 @@ import { toast } from "react-toastify";
 import { filterActions } from "../Store/Slices/Filters";
 import { holidayActions } from "../Store/Slices/Holiday";
 import DownloadBtn from "../Export/DownloadBtn";
+import { validateForm, validateSingleFormGroup } from "../utils/validations";
+import { PatternsAndMessages } from "../utils/ValidationPatternAndMessage";
 
 const columns = [
   {
@@ -587,25 +589,29 @@ const ModalDialog = () => {
       createdBy: "Admin"
     };
     try {
-      const response = await fetch("https://localhost:44314/api/v1/ProjectAllocations/PostProjectAllocations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-
-          dispatch(projectAllocationActions.changeToggle());
-          resetFormFields();
-          closeModal();
-          toast.success("Project Allocated Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#AllocateProjectForm')){
+        const response = await fetch("https://localhost:44314/api/v1/ProjectAllocations/PostProjectAllocations", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+  
+            dispatch(projectAllocationActions.changeToggle());
+            resetFormFields();
+            closeModal();
+            toast.success("Project Allocated Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -630,17 +636,25 @@ const ModalDialog = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id="AllocateProjectForm" noValidate>
             <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AllocateProjectResource">
                 <label className="form-label" htmlFor="resource">
                   Resource
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
-                  <select className="form-control" id="resource" value={resourceId} onChange={setResourceDetails}>
+                  <select 
+                    className="form-control" 
+                    required
+                    id="resource" 
+                    value={resourceId}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select')} 
+                    onChange={setResourceDetails}>
                     <option value="0">Select</option>
                     {resourcesList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
               <div className="col-md-6 form-group">
@@ -697,31 +711,43 @@ const ModalDialog = () => {
                   disabled
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AllocateProjectField">
                 <label className="form-label" htmlFor="project">
                   Project
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
-                  <select className="form-control" id="project" value={projectId} onChange={setProjectDetails}>
+                  <select 
+                    className="form-control" 
+                    required
+                    id="project" 
+                    value={projectId} 
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select')}
+                    onChange={setProjectDetails}>
                     <option value="0">Select</option>
                     {projectsList.filter((project: any) => project.isActive == "Active").map((project: any) => <option key={project.pkProjectID} value={project.pkProjectID.toString()}>{project.projectName}</option>)}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AllocateProjectResourceType">
                 <label className="form-label" htmlFor="resourceType1">
                   Resource Type 1
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     className="form-control "
+                    required
                     id="resourceType1Dropdown"
                     value={resourceType1}
+                    onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select')}
                     onChange={(event) => setResourceType1(event.target.value)}
                   >
                     <option value="0">Select</option>
                     {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
                   </select>
+                <div className="error"></div>
                 </div>
               </div>
 
@@ -779,32 +805,41 @@ const ModalDialog = () => {
                   yearPlaceholder="yyyy"
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AllocateProjectPTODays">
                 <label className="form-label" htmlFor="ptoDays">
                   PTO Days
                 </label>
+                <span className="requiredField">*</span>
                 <input
                   type="text"
+                  required
+                  pattern={PatternsAndMessages.numberOnly.pattern}
                   className="form-control"
                   id="ptoDays"
                   value={ptoDays}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
                   onChange={(event) => setPTODays(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
 
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AllocateProjectPercentage">
                 <label className="form-label" htmlFor="allocationHours">
                   Allocation(Percentage)
                   {allocatedPercentage != 0 && <span style={{ color: "red" }}> Allocated : {allocatedPercentage}</span>}
                 </label>
+                <span className="requiredField">*</span>
                 <input
                   type="text"
+                  required
+                  pattern={PatternsAndMessages.numberOnly.pattern}
                   className="form-control"
                   id="allocationPercentage"
                   value={allocationPercentage}
-
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPercentage'), 'input')}
                   onChange={(event) => setAllocationPercentage(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="allocationHoursPerDay">
