@@ -238,7 +238,7 @@ const ProjectAllocation = () => {
   };
 
   const getProjectAllocationDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/ProjectAllocations/GetAllProjectAllocations ");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/ProjectAllocations/GetAllProjectAllocations ");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, isActive: row.isActive == "1" ? "Active" : "Inactive" }));
 
@@ -249,13 +249,13 @@ const ProjectAllocation = () => {
   }, [toggle]);
 
   const getMarketDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Markets/GetAllMarkets");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
     const dataGet = await response.json();
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
   };
   const getHolidayDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/HolidaysList/GetAllHolidaysLists");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/HolidaysList/GetAllHolidaysLists");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(holidayActions.changeData(dataGet));
@@ -458,18 +458,18 @@ const ModalDialog = () => {
   const projectsList = useSelector((store: any) => store.Project.data);
   const roles = useSelector((state: any) => state.Filters.roles);
   const getEmployeeDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Resources/GetAllResources");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(employeeActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Location/GetAllLocations");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Location/GetAllLocations");
     const dataGet = await response.json();
     dispatch(filterActions.changeLocations(dataGet));
   }
   const getSubLocationDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/SubLocation/GetAllSubLocations");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/SubLocation/GetAllSubLocations");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(filterActions.changeSubLocations(dataGet));
@@ -480,7 +480,7 @@ const ModalDialog = () => {
     getSubLocationDetails();
   }, []);
   const getProjectDetails = async () => {
-    const response = await fetch("https://localhost:44314/api/v1/Projects/GetAllProjects");
+    const response = await fetch("http://10.147.172.18:9190/api/v1/Projects/GetAllProjects");
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(projectActions.changeData(dataGet));
@@ -554,7 +554,7 @@ const ModalDialog = () => {
       endDate: allocationEndDate
     };
     try {
-      const response = await fetch(`https://localhost:44314/api/v1/ProjectAllocations/GetTotalAlocPerForResourceIds?fkResourceID=${resourceId}&startDate=${allocationStartDate?.toISOString().slice(0, 10)}&endDate=${allocationEndDate?.toISOString().slice(0, 10)}`, {
+      const response = await fetch(`http://10.147.172.18:9190/api/v1/ProjectAllocations/GetTotalAlocPerForResourceIds?fkResourceID=${resourceId}&startDate=${allocationStartDate?.toISOString().slice(0, 10)}&endDate=${allocationEndDate?.toISOString().slice(0, 10)}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -590,7 +590,7 @@ const ModalDialog = () => {
     };
     try {
       if(validateForm('#AllocateProjectForm')){
-        const response = await fetch("https://localhost:44314/api/v1/ProjectAllocations/PostProjectAllocations", {
+        const response = await fetch("http://10.147.172.18:9190/api/v1/ProjectAllocations/PostProjectAllocations", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
