@@ -6,12 +6,15 @@ import marketSliceReducer from "./Slices/Market";
 import projectSliceReducer from "./Slices/Project";
 import projectAllocationReducer from "./Slices/ProjectAllocation";
 import userSliceReducer from './Slices/User';
+import ptoSliceReducer from './Slices/Pto';
+
 
 const store = configureStore({
   reducer: {
     Employee: employeeSliceReducer,
     Filters: filterSliceReducer,
     Holiday: holidaySliceReducer,
+    Pto: ptoSliceReducer,
     Market: marketSliceReducer,
     Project: projectSliceReducer,
     ProjectAllocation: projectAllocationReducer,

@@ -1,25 +1,15 @@
-import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
+import { useState, useEffect } from "react";
 import SideBar from "../../SideBar/SideBar";
-// import ModalDialog from '../../modal/modal';
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { Modal, Button } from "react-bootstrap";
 import Table from "../../DataTable/DataTable";
-import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
-import DownloadBtn from "../../Export/DownloadBtn";
+import { validateForm, validateSingleFormGroup } from "../../utils/validations";
+import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 
 const columns = [
-  // {
-  //   name: "Market Id",
-  //   selector: (row: { pkMarketID: any }) => row.pkMarketID,
-
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
   {
     name: "Market Name",
     selector: (row: { marketName: any }) => row.marketName,
@@ -36,7 +26,7 @@ const columns = [
   },
   {
     name: "Status",
-    selector: (row: { isActive: any }) => row.isActive,
+    selector: (row: { status: any }) => row.status,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -77,25 +67,23 @@ const customValueRenderer = (selected: any, _options: any) => {
 };
 
 const Market = () => {
-  const marketNames = [
-    { label: "AppleCare", value: "AppleCare" },
-    { label: "Beaver", value: "Beaver" },
-    { label: "CA", value: "CA" },
-    { label: "HCP", value: "HCP" },
-    { label: "Monarch", value: "Monarch" },
-    { label: "NAMM", value: "NAMM" },
-  ];
   const dispatch = useDispatch();
   const markets = useSelector((store: any) => store.Market.data);
-  
-  //const marketNameSelected = useSelector((store: any) => store.Market.marketName);
   const toggle = useSelector((store: any) => store.Market.toggle);
-
+  const [showModal, setShowModal] = useState(false);
+  const [action, setAction] = useState("Add");
+  const [updateMarketDetails, setUpdateMarketDetails] = useState({});
+  const openModal = () => {
+    setShowModal(true);
+  }
+  const closeModal = () => {
+    setShowModal(false);
+    setAction("Add");
+  }
   const getMarketDetails = async () => {
     try {
       const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
       dispatch(marketActions.changeData(dataGet));
     }
     catch {
@@ -105,22 +93,26 @@ const Market = () => {
   useEffect(() => {
     getMarketDetails();
   }, [toggle]);
-
   //start constants for export
-  const selectors = ['marketName', 'marketDomain', 'isActive', 'createdDate', 'createdBy']
   const title = "Market Details";
-
   const columnsAndSelectors=[
     {'name' :'Market Name','selector':'marketName','default':'true'},
   {'name' :'Market Domain','selector':'marketDomain','default':'true'},
-  {'name' :'Status','selector':'isActive','default':'true'},
+  {'name' :'Status','selector':'status','default':'true'},
   {'name' :'Created Date','selector':'createdDate','default':'true'},
   {'name' :'Created By','selector':'createdBy','default':'true'},
   {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
   {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},];
   //end constants for export
  let filteredColumns=columns;
-  
+ const handleRowDoubleClicked = (row: any) => {
+    console.log(row);
+    setShowModal(true);
+    setAction("Update");
+    let data = { ...row}
+    console.log(data);
+    setUpdateMarketDetails(data);
+  };
 
   return (
     <div>
@@ -143,46 +135,21 @@ const Market = () => {
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 
               /> */}
-              <ModalDialog />
+              {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action == "Update" && <UpdateModal initialValues={updateMarketDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
             </div>
           </div>
-          {/* <div className="row filter-row">
-            <div className="col-md-2 form-group">
-              <label htmlFor="" className="form-label">
-                Columns
-              </label>
-              <MultiSelect
-                options={columns.map((column:any)=>({label : column['name'],value:column['name']}))}
-                value={columnsSelected}
-                onChange={(event: any) => dispatch(marketActions.changeColumns(event))}
-                labelledBy="Select Market Code"
-                valueRenderer={customValueRenderer}
-              />
-            </div>
-          </div> */}
-          {/* <DownloadBtn 
-            columns={columns}
-            filteredRecords={markets}
-            selectors={selectors}
-            title={title}>
-          </DownloadBtn> */}
-          <Table  columnsAndSelectors={columnsAndSelectors}columns={filteredColumns} data={markets} customValueRenderer={customValueRenderer} title={title}/>
+          <div className="TableContentBorder">
+            <Table  columnsAndSelectors={columnsAndSelectors}columns={columns} data={markets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-const ModalDialog = () => {
+const AddModal = (props : any) => {
   const dispatch = useDispatch();
-  const [isShow, invokeModal] = useState(false);
-  const initModal = () => {
-    return invokeModal(!false);
-  };
-
-  function closeModal() {
-    return invokeModal(false);
-  }
   const [marketName, setMarketName] = useState("");
   const [marketDomain, setMarketDomain] = useState("");
   const resetFormFields = () => {
@@ -197,25 +164,29 @@ const ModalDialog = () => {
       createdBy: "Admin"
     };
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/PostMarket", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const dataResponse = await response.json();
-      if (dataResponse.length) {
-        if (dataResponse[0].statusCode == "201") {
-          console.log(dataResponse[0].statusReason);
-          console.log(dataResponse[0].recordsCreated);
-
-          dispatch(marketActions.changeToggle());
-          resetFormFields();
-          closeModal();
-          toast.success("Market Added Successfully")
-        } else toast.error(dataResponse[0].errorMessage);
-      } else toast.error("Some Error occured.");
+      if(validateForm('#AddMarket')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/PostMarket", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+  
+            dispatch(marketActions.changeToggle());
+            resetFormFields();
+            props.closeModal();
+            toast.success("Market Added Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
     } catch {
       toast.error("Some Error occured.");
     }
@@ -229,42 +200,50 @@ const ModalDialog = () => {
         className="btn btn-primary"
         style={{ float: "right", marginTop: "-68px" }}
         variant="primary"
-        onClick={initModal}
+        onClick={props.openModal}
       >
         <i className="las la-plus"></i> Add Market
       </Button>
-      <Modal show={isShow} onHide={closeModal}>
-        <Modal.Header closeButton onClick={closeModal}>
+      <Modal show={props.showModal} onHide={props.closeModal}>
+        <Modal.Header closeButton onClick={props.closeModal}>
           <Modal.Title>
             <h6>Add New Market</h6>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formSubmitHandler}>
+          <form onSubmit={formSubmitHandler} id="AddMarket" noValidate>
             <div className="row">
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="MarketNameField">
                 <label className="form-label" htmlFor="marketName">
                   Market Name
                 </label>
+                <span className="requiredField">*</span>
                 <input
+                  required                  
                   type="text"
                   className="form-control"
                   id="marketName"
                   value={marketName}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketNameField'),'input')}
                   onChange={(event: any) => setMarketName(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="MarketDomainField">
                 <label className="form-label" htmlFor="marketDomain">
                   Market Domain
                 </label>
+                <span className="requiredField">*</span>
                 <input
+                  required
                   type="text"
                   className="form-control"
                   id="marketDomain"
                   value={marketDomain}
+                  onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketDomainField'), 'input')}
                   onChange={(event: any) => setMarketDomain(event.target.value)}
                 />
+                <div className="error"></div>
               </div>
             </div>
             <div className="row">
@@ -276,14 +255,142 @@ const ModalDialog = () => {
             </div>
           </form>
         </Modal.Body>
-        {/* <Modal.Footer>
-                    <Button variant="danger" onClick={closeModal}>
-                        Close
-                    </Button>
-                </Modal.Footer> */}
       </Modal>
     </>
   );
 };
+
+const UpdateModal = (props: any) => {
+  const dispatch = useDispatch();
+  const [formValues, setFormValues] = useState(props.initialValues || {});
+  const formSubmitHandler = async (event: any) => {
+    event.preventDefault();
+    let payload = {
+      id: formValues.id,
+      marketName : formValues.marketName,
+      marketDomain : formValues.marketDomain,
+      status: formValues.status,
+      updatedBy: "Admin",
+    };
+    try {
+      if(validateForm('#UpdateMarketForm')){
+        const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/UpdateMarket", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+            dispatch(marketActions.changeToggle());
+            props.closeModal();
+            toast.success("Market Updated Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }else{
+        toast.error("Some Error occured.");
+      }
+    } catch {
+      toast.error("Some Error occured.");
+    }
+  };
+
+
+  const handleChange = (e: any) => {
+    console.log("Update")
+    setFormValues({
+      ...formValues,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  return (
+    <>
+      <Button
+        className="btn btn-primary"
+        style={{ float: "right", marginTop: "-68px" }}
+        variant="primary"
+        onClick={props.openModal}
+      >
+        <i className="las la-plus"></i> Update Market
+      </Button>
+      <Modal show={props.showModal} onHide={props.closeModal}>
+        <Modal.Header closeButton onClick={props.closeModal}>
+          <Modal.Title>
+            <h6>Update Market</h6>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={formSubmitHandler} id="UpdateMarketForm"  noValidate>
+            <div className="row">
+              <div className="col-md-6 form-group" id="MarketNameUpdateField">
+                <label className="form-label" htmlFor="marketName">
+                  Market Name
+                </label>
+                <span className="requiredField">*</span>
+                <input
+                  required
+                  type="text"
+                  name="marketName"
+                  className="form-control"
+                  id="marketName"
+                  value={formValues.marketName}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('MarketNameUpdateField'), 'input')}
+                  onChange={handleChange}
+                />
+                <div className="error"></div>
+              </div>
+              <div className="col-md-6 form-group" id="MarketUpdateField">
+                <label className="form-label" htmlFor="marketDomain">
+                  Market Domain
+                </label>
+                <span className="requiredField">*</span>
+                <input
+                  required
+                  type="text"
+                  name="marketDomain"
+                  className="form-control"
+                  id="marketDomain"
+                  value={formValues.marketDomain}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('MarketUpdateField'),'input')}
+                  onChange={handleChange}
+                />                
+                <div className="error"></div>
+              </div>
+              <div className="col-md-6 form-group ">
+                <label className="form-label">Status</label>
+                <div className="dropdown">
+                  <select
+                    name="status"
+                    className="form-control"
+                    id="statusDropdown"
+                    value={formValues.status}
+                    onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    <option value="Active">Active</option>
+                    <option value="InActive">InActive</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-12">
+                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
+    </>
+  );
+}
+
 
 export default Market;

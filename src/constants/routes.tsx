@@ -12,3 +12,4 @@ export const MARKET = "/Master/MarketDetails";
 export const DASHBOARD = "/Dashboard";
 export const HELP = "/Help";
 export const PROJECTALLOCATION= "/ProjectAllocation";
+export const PAIDTIMEOFF = "/Master/PTO";

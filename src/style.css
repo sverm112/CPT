@@ -27,7 +27,14 @@ h1.Heading-Cls {
   border-right: 1px solid #000;
   margin-right: 7px;
 }
+.requiredField{
+  color: red;
+}
 
+.error{
+  color: red;
+  margin-top: 12px;
+}
 .modal {
   margin-top: 40px !important;
 }
@@ -52,6 +59,11 @@ h1.Heading-Cls {
 .custom-file-input::-webkit-file-upload-button {
   visibility: hidden;
 }
+
+/* input:invalid{
+  color: red;
+  border-color: red;
+} */
 
 .custom-file-input::before {
   content: "Select some files";
@@ -405,6 +417,13 @@ label.form-label {
 }
 
 
+.TableContentBorder{
+  border: 1px solid rgba(47,79,79, 0.2);
+  background-color:#fff;
+  border-bottom: none;
+  border-right: none;
+}
+
 .jmSsVz>button.btn.btn-primary {
   position: absolute !important;
   height: 26px !important;
@@ -412,6 +431,7 @@ label.form-label {
   padding: 0px 9px 0px 9px !important;
   border-top-left-radius: 0px !important;
   border-bottom-left-radius: 0px !important;
+  background-color: #0078d7;
 }
 
 .search-btn::-webkit-input-placeholder {
@@ -479,8 +499,9 @@ button#export-excel-btn:hover {
 
 #ExportBox {
   margin-top: 6px;
-  /* margin-left: 6px; */
-  padding: 4px 6px 4px 6px;
+  width: 90px;
+  padding: 3px 6px 4px 6px;
+  border-radius: 4px;
 }
 
 #export-dropdowns-content {
@@ -508,10 +529,80 @@ button#export-excel-btn:hover {
   background: #FFF;
   z-index: 110;
 }
- .col-md-2:hover div#export-dropdowns-content {
-    display: block;
-    z-index: 1;
+.col-md-2:hover div#export-dropdowns-content {
+  display: block;
+  z-index: 1;
 } 
+.UploadBulkEmployeeDetails{
+  position: relative;
+  display: inline-block;
+}
+
+.UploadBulkEmployeeDetails .BulkUploadEmployeeTooltip{
+  visibility: hidden;
+  width: 120px;
+  /* border: 1px solid black; */
+  color: #000;
+  text-align: center;
+  border-radius: 6px;
+  padding: 2px 0;
+  position: absolute;
+  z-index: 1;
+  top: -32px;
+  /* left: -23px; */
+  margin-left: -70%;
+  box-shadow: 0 0px 10px rgb(0 0 0 / 50%);
+}
+
+.UploadBulkEmployeeDetails .BulkUploadEmployeeTooltip::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 60px;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #fff transparent;
+}
+ .UploadBulkEmployeeDetails:hover div.BulkUploadEmployeeTooltip {
+  visibility: visible;
+} 
+
+.DownloadEmployeeTemplate {
+  position: relative;
+  display: inline-block;
+  /* border-bottom: 1px dotted black; */
+}
+.DownloadEmployeeTemplate .DownloadEmployeeTemplateTooltip{
+  visibility: hidden;
+  width: 120px;
+  /* border: 1px solid black; */
+  color: #000;
+  text-align: center;
+  border-radius: 6px;
+  padding: 2px 0;
+  position: absolute;
+  z-index: 1;
+  top: -32px;
+  left: -23px;
+  margin-left: -185px;
+  box-shadow: 0 0px 10px rgb(0 0 0 / 50%);
+}
+
+.DownloadEmployeeTemplate .DownloadEmployeeTemplateTooltip::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 60px;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #fff transparent;
+}
+ .DownloadEmployeeTemplate:hover div.DownloadEmployeeTemplateTooltip {
+  visibility: visible;
+} 
+
 
 /* sc-dmctIk WQNxq  */
 .table-striped{
@@ -519,7 +610,8 @@ button#export-excel-btn:hover {
 }
 
 .HoverMultiSelect{
-  width: 70px;
+  width: 90px;
+  border-radius: 5px;
   /* margin-left: -20px; */
 }
 /* .ClickMultiSelect{
@@ -542,11 +634,11 @@ button#export-excel-btn:hover {
 
 .ClickMultiSelect > .rmsc > .dropdown-container {
   margin-left: 5px;
-  width: 70px;
+  width: 90px;
 }
 
 #root > div > div:nth-child(3) > div.col-md-12.bg-mainclass > div > header > div > div.DownloadAndDropdown > div.ClickMultiSelect.col-md-2.form-group{
-  width: 70px;
+  width: 90px;
   margin-right: 6px;
 }
 
@@ -559,7 +651,7 @@ button#export-excel-btn:hover {
 .DownloadAndDropdown > * > .rmsc > .dropdown-container > .dropdown-heading{
   background-color: #0078d7;
   color: #fff;
-  width: 70px;
+  width: 90px;
   border-radius: 5px;
   padding: 4px 6px 4px 6px;
   height: 28px;
