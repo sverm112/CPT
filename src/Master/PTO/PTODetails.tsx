@@ -147,7 +147,7 @@ const PTO = () => {
 
   const getPTODetails = async () => {
     try {
-      const response = await fetch("https://localhost:44314/api/v1/PTOs/GetAllPTOs");
+      const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/GetAllPTOs");
       let dataGet = await response.json();
       dispatch(ptoActions.changeData(dataGet));
     }
