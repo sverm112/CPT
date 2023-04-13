@@ -8,6 +8,7 @@ import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
+import { GET_ALL_MARKETS, POST_MARKET, UPDATE_MARKET } from "../../constants";
 
 const columns = [
   {
@@ -82,7 +83,7 @@ const Market = () => {
   }
   const getMarketDetails = async () => {
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
+      const response = await fetch(`${GET_ALL_MARKETS}`);
       let dataGet = await response.json();
       dispatch(marketActions.changeData(dataGet));
     }
@@ -165,7 +166,7 @@ const AddModal = (props : any) => {
     };
     try {
       if(validateForm('#AddMarket')){
-        const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/PostMarket", {
+        const response = await fetch(`${POST_MARKET}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -274,7 +275,7 @@ const UpdateModal = (props: any) => {
     };
     try {
       if(validateForm('#UpdateMarketForm')){
-        const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/UpdateMarket", {
+        const response = await fetch(`${UPDATE_MARKET}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

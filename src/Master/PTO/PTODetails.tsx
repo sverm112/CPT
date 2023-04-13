@@ -15,6 +15,7 @@ import { ptoActions } from "../../Store/Slices/Pto";
 import { filterActions } from "../../Store/Slices/Filters";
 import DatePicker from "react-date-picker";
 import { employeeActions } from "../../Store/Slices/Employee";
+import { GET_ALL_PTOS, GET_ALL_PTO_TYPES, GET_ALL_RESOURCES, POST_PTO, UPDATE_PTO } from "../../constants";
 
 const columns = [
   {
@@ -147,7 +148,7 @@ const PTO = () => {
 
   const getPTODetails = async () => {
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/GetAllPTOs");
+      const response = await fetch(`${GET_ALL_PTOS}`);
       let dataGet = await response.json();
       dispatch(ptoActions.changeData(dataGet));
     }
@@ -196,7 +197,7 @@ const PTO = () => {
 
   const getEmployeeDetails = async () => {
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
+      const response = await fetch(`${GET_ALL_RESOURCES}`);
       let dataGet = await response.json();
       dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
       dispatch(employeeActions.changeData(dataGet));
@@ -205,7 +206,7 @@ const PTO = () => {
     }
   };
   const getPTOTypeDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/PTOType/GetAllPTOTypes");
+    const response = await fetch(`${GET_ALL_PTO_TYPES}`);
     const dataGet = await response.json();
     dispatch(filterActions.changePTOTypes(dataGet));
   }
@@ -376,7 +377,7 @@ const AddModal = (props: any) => {
     };
     try {
       if(validateForm('#AddPtoForm')){
-        const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/PostPTO", {
+        const response = await fetch(`${POST_PTO}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -602,7 +603,7 @@ const UpdateModal = (props: any) => {
     };
     try {
       if(validateForm('#UpdatePtoForm')){
-        const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/UpdatePTO", {
+        const response = await fetch(`${UPDATE_PTO}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
