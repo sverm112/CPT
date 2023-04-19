@@ -179,7 +179,7 @@ const PTO = () => {
   {'name': 'PTO Type', 'selector': 'ptoType', 'default': 'true' },
   {'name': 'Start Date', 'selector': 'startDate', 'default': 'true'},
   {'name': 'End Date','selector':'enddDate', 'default': 'true' },
-  {'name': 'Month','selector':'month', 'default': 'true' },
+  {'name': 'Month','selector':'month', 'default': 'false' },
   {'name': 'Number of Days','selector':'numberOfDays', 'default': 'true' },
   {'name': 'Remarks','selector':'remarks', 'default': 'false' },
   {'name' :'Status','selector':'status','default':'true'},
