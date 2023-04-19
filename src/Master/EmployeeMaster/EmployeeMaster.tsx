@@ -428,8 +428,8 @@ const EmployeeMaster = () => {
                 valueRenderer={customValueRenderer}
               />
             </div>
-            <div className="col-md-2" style={{ marginTop: "24px" }}>
-              <button type="button" className="btn btn-primary" onClick={() => dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            <div className="col-md-2" style={{ marginTop: "27px" }}>
+              <button type="button" style={{ padding:"3px 6px 4px 6px", borderRadius:"4px" }} className="btn btn-primary" onClick={() => dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
         <div className="TableContentBorder" >

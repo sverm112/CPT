@@ -548,6 +548,7 @@ button#export-excel-btn:hover {
   padding: 2px 0;
   position: absolute;
   z-index: 1;
+  height: 55px;
   top: -32px;
   /* left: -23px; */
   margin-left: -70%;
@@ -581,6 +582,7 @@ button#export-excel-btn:hover {
   text-align: center;
   border-radius: 6px;
   padding: 2px 0;
+  height: 55px;
   position: absolute;
   z-index: 1;
   top: -32px;
