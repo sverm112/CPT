@@ -610,8 +610,6 @@ const ModalDialog = () => {
             toast.success("Project Allocated Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
-      }else{
-        toast.error("Some Error occured.");
       }
     } catch {
       toast.error("Some Error occured.");

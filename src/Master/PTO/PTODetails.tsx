@@ -396,8 +396,6 @@ const AddModal = (props: any) => {
             toast.success("PTO Added Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
-      }else{
-        toast.error("Some Error occured.");
       }
     } catch {
       toast.error("Some Error occured.");
@@ -473,35 +471,43 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                 </div>
               </div>
 
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="PTOStartDate">
                 <label className="form-label" htmlFor="ptoStartDate" style={{ zIndex: "9" }}>
                  PTO Start Date
                 </label>
+                <span className="requiredField">*</span>
                 <DatePicker
                   className="form-control"
+                  required
                   onChange={setStartDate}
                   value={startDate}
+                  onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOStartDate'),'datePicker')}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="PTOEndDate">
                 <label className="form-label" htmlFor="ptoEndDate" style={{ zIndex: "9" }}>
                   PTO End Date
                 </label>
+                <span className="requiredField">*</span>
                 <DatePicker
                   className="form-control"
+                  required
                   onChange={setEndDate}
                   value={endDate}
+                  onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOEndDate'),'datePicker')}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group" id="PtoMonth">
+              {/* <div className="col-md-6 form-group" id="PtoMonth">
                 <label className="form-label" htmlFor="month">
                   Month 
                 </label>
@@ -520,7 +526,7 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   </select>
                 <div className="error"></div>
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="ptoDays">
                   No. Of Days
@@ -533,13 +539,15 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   disabled
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-12 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
                 </label>
                 <textarea
                   className="form-control"
                   id="remarks"
+                  cols={100} 
+                  rows={1}
                   value={remarks}
                   onChange={(event) => setRemarks(event.target.value)}
                 />
@@ -621,8 +629,6 @@ const UpdateModal = (props: any) => {
             toast.success("PTO Updated Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
-      }else{
-        toast.error("Some Error occured.");
       }
     } catch {
       toast.error("Some Error occured.");
@@ -701,37 +707,45 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                 </div>
               </div>
 
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="UpdatePTOStartDate">
                 <label className="form-label" htmlFor="ptoStartDate" style={{ zIndex: "9" }}>
                  PTO Start Date
                 </label>
+                <span className="requiredField">*</span>
                 <DatePicker
                   className="form-control"
+                  required
                   name="startDate"
                   onChange={setStartDate}
                   value={startDate}
+                  onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOStartDate'),'datePicker')}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="UpdatePTOEndDate">
                 <label className="form-label" htmlFor="ptoEndDate" style={{ zIndex: "9" }}>
                   PTO End Date
                 </label>
+                <span className="requiredField">*</span>
                 <DatePicker
                   className="form-control"
+                  required
                   name="endDate"
                   onChange={setEndDate}
                   value={endDate}
+                  onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOEndDate'),'datePicker')}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group" id="PtoMonth">
+              {/* <div className="col-md-6 form-group" id="PtoMonth">
                 <label className="form-label" htmlFor="month">
                   Month 
                 </label>
@@ -751,7 +765,7 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   </select>
                   <div className="error"></div>
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="ptoDays">
                   No. Of Days
@@ -764,13 +778,15 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   disabled
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-12 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
                 </label>
                 <textarea
                   className="form-control"
                   name="remarks"
+                  cols={100}
+                  rows={1}
                   id="remarks"
                   value={formValues.remarks}
                   onChange={handleChange}
