@@ -428,8 +428,8 @@ const EmployeeMaster = () => {
                 valueRenderer={customValueRenderer}
               />
             </div>
-            <div className="col-md-2" style={{ marginTop: "27px" }}>
-              <button type="button" style={{ padding:"3px 6px 4px 6px", borderRadius:"4px" }} className="btn btn-primary" onClick={() => dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            <div className="col-md-2" style={{ marginTop: "24px" }}>
+              <button type="button"  className="btn btn-primary" onClick={() => dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
         <div className="TableContentBorder" >
@@ -514,7 +514,7 @@ const AddModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRadius:"4px" }}
+style={{ float: "right", marginTop: "-68px"}}
         
         variant="primary"
         onClick={props.openModal}
@@ -752,7 +752,7 @@ const UpdateModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRadius:"4px" }}
+style={{ float: "right", marginTop: "-68px"}}
         
         variant="primary"
         onClick={props.openModal}
