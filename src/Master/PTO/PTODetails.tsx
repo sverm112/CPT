@@ -61,6 +61,13 @@ const columns = [
     filterable: true,
   },
   {
+    name: "Year",
+    selector: (row: { year: any }) => row.year,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
     name: "Number of Days",
     selector: (row: { numberOfDays: any }) => row.numberOfDays,
     sortable: true,
@@ -180,6 +187,7 @@ const PTO = () => {
   {'name': 'Start Date', 'selector': 'startDate', 'default': 'true'},
   {'name': 'End Date','selector':'enddDate', 'default': 'true' },
   {'name': 'Month','selector':'month', 'default': 'false' },
+  {'name': 'Year','selector':'year', 'default': 'false' },
   {'name': 'Number of Days','selector':'numberOfDays', 'default': 'true' },
   {'name': 'Remarks','selector':'remarks', 'default': 'false' },
   {'name' :'Status','selector':'status','default':'true'},
