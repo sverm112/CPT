@@ -213,6 +213,20 @@ const ProjectAllocation = () => {
   const projectMarketSelected = useSelector((store: any) => store.ProjectAllocation.projectMarket)
   const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
   const locationSelected = useSelector((store: any) => store.ProjectAllocation.location)
+  
+
+  const [showModal, setShowModal] = useState(false);
+  const [action, setAction] = useState("Add");
+  const [updateProjectDetails, setUpdateProjectDetails] = useState({});
+  const openModal = () => {
+    setShowModal(true);
+  }
+  const closeModal = () => {
+    setShowModal(false);
+    setAction("Add");
+  }
+
+
   const changeResourceMarketSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeResourceMarket(event));
   };
@@ -314,7 +328,10 @@ const ProjectAllocation = () => {
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 style={{ marginRight: "200px" }}
               /> */}
-              <ModalDialog />
+              <AddModal />
+              {/* {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action == "Update" && <UpdateModal initialValues={updateProjectDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />} */}
+
             </div>
           </div>
         </div>
@@ -411,7 +428,7 @@ const ProjectAllocation = () => {
   );
 };
 
-const ModalDialog = () => {
+const AddModal = () => {
   const [isShow, invokeModal] = useState(false);
   const initModal = () => {
     return invokeModal(!false);
