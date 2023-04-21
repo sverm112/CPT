@@ -571,8 +571,11 @@ const ModalDialog = () => {
   }
   useEffect(() => {
     setAllocatedPercentage(0);
+    setPTODays("");
     if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
-      getAllocationPercentage();
+      {getAllocationPercentage();
+      getPTODays();
+    }
   }, [resourceId, allocationStartDate, allocationEndDate]);
 
   const formSubmitHandler = async (event: any) => {
@@ -623,14 +626,17 @@ const ModalDialog = () => {
     if(resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
       if(allocationEndDate >= allocationStartDate){
         try{
-          allocationStartDate.setDate(allocationStartDate.getDate() + 1);
-          allocationEndDate.setDate(allocationEndDate.getDate()+1);
-          const response = await fetch(`${GET_TOTAL_PTO_DAYS}?resourceId=${resourceId}&startDate=${allocationStartDate?.toISOString().slice(0, 10)}&endDate=${allocationEndDate?.toISOString().slice(0, 10)}`, {
+          let paStartDate = new Date(allocationStartDate);
+          paStartDate.setDate(paStartDate.getDate() + 1);
+          let paEndDate = new Date(allocationEndDate);
+          paEndDate.setDate(paEndDate.getDate()+1);
+          const response = await fetch(`${GET_TOTAL_PTO_DAYS}?resourceId=${resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
           });
+          
           const dataResponse = await response.json();
           // console.log()
           setPTODays(dataResponse);
@@ -683,7 +689,7 @@ const ModalDialog = () => {
                     value={resourceId}
                     onBlur={()=>{
                       validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
-                      getPTODays();
+                      
                     }} 
                     onChange={setResourceDetails}>
                     <option value="0">Select</option>
@@ -822,7 +828,7 @@ const ModalDialog = () => {
                   required
                   onCalendarClose={()=>{
                     validateSingleFormGroup(document.getElementById('AllocationStartField'), 'datePicker');
-                    getPTODays();
+                    
                   }}
                   onChange={setAllocationStartDate}
                   value={allocationStartDate}
@@ -843,7 +849,7 @@ const ModalDialog = () => {
                   required
                   onCalendarClose={()=>{
                     validateSingleFormGroup(document.getElementById('AllocationEndField'), 'datePicker');
-                    getPTODays();
+                    
                   }}
                   onChange={setAllocationEndDate}
                   value={allocationEndDate}

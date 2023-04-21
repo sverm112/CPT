@@ -363,39 +363,77 @@ const AddModal = (props: any) => {
   };
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
-    let payload = {
-      resourceId : Number(resourceId),
-      resourceName : selectedResourceDetails.resourceName,
-      resourceManager : selectedResourceDetails.resourceManager,
-      ptoTypeId : Number(ptoTypeId),
-      startDate : startDate,
-      enddDate : endDate,
-      month : month,
-      numberOfDays : numberOfDays,
-      remarks : remarks,
-      createdBy: "Admin"
-    };
+    const startYear = startDate?.getFullYear();
+    const endYear = endDate?.getFullYear();
+    let payload = [{}];
+    // if(startYear == endYear){
+      payload = [{
+        resourceId : Number(resourceId),
+        resourceName : selectedResourceDetails.resourceName,
+        resourceManager : selectedResourceDetails.resourceManager,
+        ptoTypeId : Number(ptoTypeId),
+        startDate : startDate,
+        enddDate : endDate,
+        month : months[Number(startDate?.getMonth()) % 12 || 0],
+        year : startYear,
+        numberOfDays : numberOfDays,
+        remarks : remarks,
+        createdBy: "Admin"
+      }];
+    // }else{
+    //   payload = [{
+    //     resourceId : Number(resourceId),
+    //     resourceName : selectedResourceDetails.resourceName,
+    //     resourceManager : selectedResourceDetails.resourceManager,
+    //     ptoTypeId : Number(ptoTypeId),
+    //     startDate : startDate,
+    //     enddDate : endDate,
+    //     month : months[Number(startDate?.getMonth()) % 12 || 0],
+    //     year : startYear,
+    //     numberOfDays : numberOfDays,
+    //     remarks : remarks,
+    //     createdBy: "Admin"
+    //   },
+    //   {
+    //     resourceId : Number(resourceId),
+    //     resourceName : selectedResourceDetails.resourceName,
+    //     resourceManager : selectedResourceDetails.resourceManager,
+    //     ptoTypeId : Number(ptoTypeId),
+    //     startDate : startDate,
+    //     enddDate : endDate,
+    //     month : months[Number(endDate?.getMonth()) % 12 || 0],
+    //     year : endYear,
+    //     numberOfDays : numberOfDays,
+    //     remarks : remarks,
+    //     createdBy: "Admin"
+    //   }
+    // ];
+    // }
+    // console.log("Months:" ,months[startDate?.getMonth() || 0]);
     try {
       if(validateForm('#AddPtoForm')){
-        const response = await fetch(`${POST_PTO}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-        const dataResponse = await response.json();
-        if (dataResponse.length) {
-          if (dataResponse[0].statusCode == "201") {
-            console.log(dataResponse[0].statusReason);
-            console.log(dataResponse[0].recordsCreated);
-  
-            dispatch(ptoActions.changeToggle());
-            resetFormFields();
-            props.closeModal();
-            toast.success("PTO Added Successfully")
-          } else toast.error(dataResponse[0].errorMessage);
-        } else toast.error("Some Error occured.");
+        for(const pl of payload){
+          const response = await fetch(`${POST_PTO}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(pl),
+          });
+          console.log(pl);
+          const dataResponse = await response.json();
+          if (dataResponse.length) {
+            if (dataResponse[0].statusCode == "201") {
+              console.log(dataResponse[0].statusReason);
+              console.log(dataResponse[0].recordsCreated);
+    
+              dispatch(ptoActions.changeToggle());
+              resetFormFields();
+              props.closeModal();
+              toast.success("PTO Added Successfully")
+            } else toast.error(dataResponse[0].errorMessage);
+          } else toast.error("Some Error occured.");
+        }
       }
     } catch {
       toast.error("Some Error occured.");
@@ -548,6 +586,7 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   id="remarks"
                   cols={100} 
                   rows={1}
+                  maxLength={100}
                   value={remarks}
                   onChange={(event) => setRemarks(event.target.value)}
                 />
@@ -598,13 +637,16 @@ const UpdateModal = (props: any) => {
   const formSubmitHandler = async (event: any) => {
     
     event.preventDefault();
+
+    const startYear = startDate?.getFullYear();
     let payload = {
       id : formValues.id,
       resourceId : Number(formValues.resourceId),
       ptoTypeId : Number(formValues.ptoTypeId),
       startDate : startDate,
       enddDate : endDate,
-      month : formValues.month,
+      month : months[Number(startDate?.getMonth()) % 12 || 0],
+      year: startYear,
       numberOfDays : numberOfDays,
       remarks : formValues.remarks,
       status: formValues.status,
@@ -648,7 +690,7 @@ const UpdateModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRadius:"4px" }}
+        style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRadius:"4px" }}
         
         variant="primary"
         onClick={props.openModal}
