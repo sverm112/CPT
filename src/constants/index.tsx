@@ -1,5 +1,7 @@
 export * as APP_ROUTES from "./routes";
-export const Base_URL = 'http://10.147.172.18:9190/';
+export const Base_URL = 
+// 'https://localhost:44314';
+'http://10.147.172.18:9190/';
 
 // Get
 export const GET_ALL_RESOURCES = `${Base_URL}api/v1/Resources/GetAllResources`;
@@ -12,6 +14,7 @@ export const GET_ALL_PTOS = `${Base_URL}api/v1/PTOs/GetAllPTOs`;
 export const GET_ALL_PTO_TYPES = `${Base_URL}api/v1/PTOType/GetAllPTOTypes`;
 export const GET_ALL_PROJECT_ALLOCATIONS = `${Base_URL}api/v1/ProjectAllocations/GetAllProjectAllocations`;
 export const GET_TOTAL_ALLOCATED_PERCENTAGE = `${Base_URL}api/v1/ProjectAllocations/GetTotalAlocPerForResourceIds`;
+export const GET_TOTAL_PTO_DAYS = `${Base_URL}api/v1/PTOs/GetPTODaysPerResources`;
 // export const GET_ALL_PROJECT_ALLOCATIONS = `${Base_URL}api/v1/ProjectAllocations/GetAllProjectAllocations`;
 
 // Post

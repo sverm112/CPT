@@ -16,7 +16,7 @@ import { holidayActions } from "../Store/Slices/Holiday";
 import DownloadBtn from "../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../utils/validations";
 import { PatternsAndMessages } from "../utils/ValidationPatternAndMessage";
-import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_PROJECTS, GET_ALL_PROJECT_ALLOCATIONS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, GET_TOTAL_ALLOCATED_PERCENTAGE, POST_PROJECT_ALLOCATION } from "../constants";
+import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_PROJECTS, GET_ALL_PROJECT_ALLOCATIONS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, GET_TOTAL_ALLOCATED_PERCENTAGE, GET_TOTAL_PTO_DAYS, POST_PROJECT_ALLOCATION } from "../constants";
 
 const columns = [
   {
@@ -571,8 +571,11 @@ const ModalDialog = () => {
   }
   useEffect(() => {
     setAllocatedPercentage(0);
+    setPTODays("");
     if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
-      getAllocationPercentage();
+      {getAllocationPercentage();
+      getPTODays();
+    }
   }, [resourceId, allocationStartDate, allocationEndDate]);
 
   const formSubmitHandler = async (event: any) => {
@@ -610,8 +613,6 @@ const ModalDialog = () => {
             toast.success("Project Allocated Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
-      }else{
-        toast.error("Some Error occured.");
       }
     } catch {
       toast.error("Some Error occured.");
@@ -620,6 +621,42 @@ const ModalDialog = () => {
   };
   //console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
 
+  const getPTODays = async()=>{
+    console.log("Get PTO Days called: "+ resourceId+ allocationStartDate + allocationEndDate);
+    if(resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
+      if(allocationEndDate >= allocationStartDate){
+        try{
+          let paStartDate = new Date(allocationStartDate);
+          paStartDate.setDate(paStartDate.getDate() + 1);
+          let paEndDate = new Date(allocationEndDate);
+          paEndDate.setDate(paEndDate.getDate()+1);
+          const response = await fetch(`${GET_TOTAL_PTO_DAYS}?resourceId=${resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          
+          const dataResponse = await response.json();
+          // console.log()
+          setPTODays(dataResponse);
+          console.log("Data Response: "+ dataResponse);
+        }catch{
+          toast.error("Some Error Occured");
+        }
+      }
+      // else{
+      //   const formGroup1 = document.getElementById('AllocationStartField');
+      //   const errorContainer = formGroup1?.querySelector('.error');
+
+      //   errorContainer.textContent = "Start Date should be smaller that the End Date";
+      //   // option.errorMessage(input, label);
+  
+      //   const formGroup2 = document.getElementById('AllocationEndField');
+        
+      // }
+    }
+  }
   return (
     <>
       <Button
@@ -650,7 +687,10 @@ const ModalDialog = () => {
                     required
                     id="resource" 
                     value={resourceId}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select')} 
+                    onBlur={()=>{
+                      validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
+                      
+                    }} 
                     onChange={setResourceDetails}>
                     <option value="0">Select</option>
                     {resourcesList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
@@ -778,12 +818,18 @@ const ModalDialog = () => {
                 <input type="text" className="form-control" id="capex" value={selectedProjectDetails.expenseType} disabled />
               </div>
 
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AllocationStartField">
                 <label className="form-label" htmlFor="allocationStartDate" style={{ zIndex: "9" }}>
                   Allocation Start Date
                 </label>
+                <span className="requiredField">*</span>
                 <DatePicker
                   className="form-control"
+                  required
+                  onCalendarClose={()=>{
+                    validateSingleFormGroup(document.getElementById('AllocationStartField'), 'datePicker');
+                    
+                  }}
                   onChange={setAllocationStartDate}
                   value={allocationStartDate}
                   format="dd/MM/yyyy"
@@ -791,13 +837,20 @@ const ModalDialog = () => {
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AllocationEndField">
                 <label className="form-label" htmlFor="allocationEndDate" style={{ zIndex: "9" }}>
                   Allocation End Date
                 </label>
+                <span className="requiredField">*</span>
                 <DatePicker
                   className="form-control"
+                  required
+                  onCalendarClose={()=>{
+                    validateSingleFormGroup(document.getElementById('AllocationEndField'), 'datePicker');
+                    
+                  }}
                   onChange={setAllocationEndDate}
                   value={allocationEndDate}
                   format="dd/MM/yyyy"
@@ -805,23 +858,25 @@ const ModalDialog = () => {
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
                 />
+                <div className="error"></div>
               </div>
               <div className="col-md-6 form-group" id="AllocateProjectPTODays">
                 <label className="form-label" htmlFor="ptoDays">
                   PTO Days
                 </label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
                   type="text"
-                  required
-                  pattern={PatternsAndMessages.numberOnly.pattern}
+                  disabled
+                  // required
+                  // pattern={PatternsAndMessages.numberOnly.pattern}
                   className="form-control"
                   id="ptoDays"
                   value={ptoDays}
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
-                  onChange={(event) => setPTODays(event.target.value)}
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
+                  // onChange={(event) => setPTODays(event.target.value)}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
 
               <div className="col-md-6 form-group" id="AllocateProjectPercentage">
