@@ -15,6 +15,7 @@ import { ptoActions } from "../../Store/Slices/Pto";
 import { filterActions } from "../../Store/Slices/Filters";
 import DatePicker from "react-date-picker";
 import { employeeActions } from "../../Store/Slices/Employee";
+import { GET_ALL_PTOS, GET_ALL_PTO_TYPES, GET_ALL_RESOURCES, POST_PTO, UPDATE_PTO } from "../../constants";
 
 const columns = [
   {
@@ -55,6 +56,13 @@ const columns = [
   {
     name: "Month",
     selector: (row: { month: any }) => row.month,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Year",
+    selector: (row: { year: any }) => row.year,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -147,7 +155,7 @@ const PTO = () => {
 
   const getPTODetails = async () => {
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/GetAllPTOs");
+      const response = await fetch(`${GET_ALL_PTOS}`);
       let dataGet = await response.json();
       dispatch(ptoActions.changeData(dataGet));
     }
@@ -178,7 +186,8 @@ const PTO = () => {
   {'name': 'PTO Type', 'selector': 'ptoType', 'default': 'true' },
   {'name': 'Start Date', 'selector': 'startDate', 'default': 'true'},
   {'name': 'End Date','selector':'enddDate', 'default': 'true' },
-  {'name': 'Month','selector':'month', 'default': 'true' },
+  {'name': 'Month','selector':'month', 'default': 'false' },
+  {'name': 'Year','selector':'year', 'default': 'false' },
   {'name': 'Number of Days','selector':'numberOfDays', 'default': 'true' },
   {'name': 'Remarks','selector':'remarks', 'default': 'false' },
   {'name' :'Status','selector':'status','default':'true'},
@@ -196,7 +205,7 @@ const PTO = () => {
 
   const getEmployeeDetails = async () => {
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
+      const response = await fetch(`${GET_ALL_RESOURCES}`);
       let dataGet = await response.json();
       dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
       dispatch(employeeActions.changeData(dataGet));
@@ -205,7 +214,7 @@ const PTO = () => {
     }
   };
   const getPTOTypeDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/PTOType/GetAllPTOTypes");
+    const response = await fetch(`${GET_ALL_PTO_TYPES}`);
     const dataGet = await response.json();
     dispatch(filterActions.changePTOTypes(dataGet));
   }
@@ -362,41 +371,77 @@ const AddModal = (props: any) => {
   };
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
-    let payload = {
-      resourceId : Number(resourceId),
-      resourceName : selectedResourceDetails.resourceName,
-      resourceManager : selectedResourceDetails.resourceManager,
-      ptoTypeId : Number(ptoTypeId),
-      startDate : startDate,
-      enddDate : endDate,
-      month : month,
-      numberOfDays : numberOfDays,
-      remarks : remarks,
-      createdBy: "Admin"
-    };
+    const startYear = startDate?.getFullYear();
+    const endYear = endDate?.getFullYear();
+    let payload = [{}];
+    // if(startYear == endYear){
+      payload = [{
+        resourceId : Number(resourceId),
+        resourceName : selectedResourceDetails.resourceName,
+        resourceManager : selectedResourceDetails.resourceManager,
+        ptoTypeId : Number(ptoTypeId),
+        startDate : startDate,
+        enddDate : endDate,
+        month : months[Number(startDate?.getMonth()) % 12 || 0],
+        year : startYear,
+        numberOfDays : numberOfDays,
+        remarks : remarks,
+        createdBy: "Admin"
+      }];
+    // }else{
+    //   payload = [{
+    //     resourceId : Number(resourceId),
+    //     resourceName : selectedResourceDetails.resourceName,
+    //     resourceManager : selectedResourceDetails.resourceManager,
+    //     ptoTypeId : Number(ptoTypeId),
+    //     startDate : startDate,
+    //     enddDate : endDate,
+    //     month : months[Number(startDate?.getMonth()) % 12 || 0],
+    //     year : startYear,
+    //     numberOfDays : numberOfDays,
+    //     remarks : remarks,
+    //     createdBy: "Admin"
+    //   },
+    //   {
+    //     resourceId : Number(resourceId),
+    //     resourceName : selectedResourceDetails.resourceName,
+    //     resourceManager : selectedResourceDetails.resourceManager,
+    //     ptoTypeId : Number(ptoTypeId),
+    //     startDate : startDate,
+    //     enddDate : endDate,
+    //     month : months[Number(endDate?.getMonth()) % 12 || 0],
+    //     year : endYear,
+    //     numberOfDays : numberOfDays,
+    //     remarks : remarks,
+    //     createdBy: "Admin"
+    //   }
+    // ];
+    // }
+    // console.log("Months:" ,months[startDate?.getMonth() || 0]);
     try {
       if(validateForm('#AddPtoForm')){
-        const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/PostPTO", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-        const dataResponse = await response.json();
-        if (dataResponse.length) {
-          if (dataResponse[0].statusCode == "201") {
-            console.log(dataResponse[0].statusReason);
-            console.log(dataResponse[0].recordsCreated);
-  
-            dispatch(ptoActions.changeToggle());
-            resetFormFields();
-            props.closeModal();
-            toast.success("PTO Added Successfully")
-          } else toast.error(dataResponse[0].errorMessage);
-        } else toast.error("Some Error occured.");
-      }else{
-        toast.error("Some Error occured.");
+        for(const pl of payload){
+          const response = await fetch(`${POST_PTO}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(pl),
+          });
+          console.log(pl);
+          const dataResponse = await response.json();
+          if (dataResponse.length) {
+            if (dataResponse[0].statusCode == "201") {
+              console.log(dataResponse[0].statusReason);
+              console.log(dataResponse[0].recordsCreated);
+    
+              dispatch(ptoActions.changeToggle());
+              resetFormFields();
+              props.closeModal();
+              toast.success("PTO Added Successfully")
+            } else toast.error(dataResponse[0].errorMessage);
+          } else toast.error("Some Error occured.");
+        }
       }
     } catch {
       toast.error("Some Error occured.");
@@ -407,7 +452,8 @@ const AddModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-        style={{ float: "right", marginTop: "-68px" }}
+style={{ float: "right", marginTop: "-68px"}}
+        
         variant="primary"
         onClick={props.openModal}
       >
@@ -471,35 +517,43 @@ const AddModal = (props: any) => {
                 </div>
               </div>
 
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="PTOStartDate">
                 <label className="form-label" htmlFor="ptoStartDate" style={{ zIndex: "9" }}>
                  PTO Start Date
                 </label>
+                <span className="requiredField">*</span>
                 <DatePicker
                   className="form-control"
+                  required
                   onChange={setStartDate}
                   value={startDate}
+                  onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOStartDate'),'datePicker')}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="PTOEndDate">
                 <label className="form-label" htmlFor="ptoEndDate" style={{ zIndex: "9" }}>
                   PTO End Date
                 </label>
+                <span className="requiredField">*</span>
                 <DatePicker
                   className="form-control"
+                  required
                   onChange={setEndDate}
                   value={endDate}
+                  onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOEndDate'),'datePicker')}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group" id="PtoMonth">
+              {/* <div className="col-md-6 form-group" id="PtoMonth">
                 <label className="form-label" htmlFor="month">
                   Month 
                 </label>
@@ -518,7 +572,7 @@ const AddModal = (props: any) => {
                   </select>
                 <div className="error"></div>
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="ptoDays">
                   No. Of Days
@@ -531,13 +585,16 @@ const AddModal = (props: any) => {
                   disabled
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-12 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
                 </label>
                 <textarea
                   className="form-control"
                   id="remarks"
+                  cols={100} 
+                  rows={1}
+                  maxLength={100}
                   value={remarks}
                   onChange={(event) => setRemarks(event.target.value)}
                 />
@@ -588,13 +645,16 @@ const UpdateModal = (props: any) => {
   const formSubmitHandler = async (event: any) => {
     
     event.preventDefault();
+
+    const startYear = startDate?.getFullYear();
     let payload = {
       id : formValues.id,
       resourceId : Number(formValues.resourceId),
       ptoTypeId : Number(formValues.ptoTypeId),
       startDate : startDate,
       enddDate : endDate,
-      month : formValues.month,
+      month : months[Number(startDate?.getMonth()) % 12 || 0],
+      year: startYear,
       numberOfDays : numberOfDays,
       remarks : formValues.remarks,
       status: formValues.status,
@@ -602,7 +662,7 @@ const UpdateModal = (props: any) => {
     };
     try {
       if(validateForm('#UpdatePtoForm')){
-        const response = await fetch("http://10.147.172.18:9190/api/v1/PTOs/UpdatePTO", {
+        const response = await fetch(`${UPDATE_PTO}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -619,8 +679,6 @@ const UpdateModal = (props: any) => {
             toast.success("PTO Updated Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
-      }else{
-        toast.error("Some Error occured.");
       }
     } catch {
       toast.error("Some Error occured.");
@@ -640,7 +698,8 @@ const UpdateModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-        style={{ float: "right", marginTop: "-68px" }}
+        style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRadius:"4px" }}
+        
         variant="primary"
         onClick={props.openModal}
       >
@@ -698,37 +757,45 @@ const UpdateModal = (props: any) => {
                 </div>
               </div>
 
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="UpdatePTOStartDate">
                 <label className="form-label" htmlFor="ptoStartDate" style={{ zIndex: "9" }}>
                  PTO Start Date
                 </label>
+                <span className="requiredField">*</span>
                 <DatePicker
                   className="form-control"
+                  required
                   name="startDate"
                   onChange={setStartDate}
                   value={startDate}
+                  onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOStartDate'),'datePicker')}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="UpdatePTOEndDate">
                 <label className="form-label" htmlFor="ptoEndDate" style={{ zIndex: "9" }}>
                   PTO End Date
                 </label>
+                <span className="requiredField">*</span>
                 <DatePicker
                   className="form-control"
+                  required
                   name="endDate"
                   onChange={setEndDate}
                   value={endDate}
+                  onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOEndDate'),'datePicker')}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
                 />
+                <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group" id="PtoMonth">
+              {/* <div className="col-md-6 form-group" id="PtoMonth">
                 <label className="form-label" htmlFor="month">
                   Month 
                 </label>
@@ -748,7 +815,7 @@ const UpdateModal = (props: any) => {
                   </select>
                   <div className="error"></div>
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="ptoDays">
                   No. Of Days
@@ -761,13 +828,15 @@ const UpdateModal = (props: any) => {
                   disabled
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-12 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
                 </label>
                 <textarea
                   className="form-control"
                   name="remarks"
+                  cols={100}
+                  rows={1}
                   id="remarks"
                   value={formValues.remarks}
                   onChange={handleChange}

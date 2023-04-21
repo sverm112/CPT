@@ -12,6 +12,7 @@ import { filterActions } from "../../Store/Slices/Filters";
 import DownloadBtn from "../../Export/DownloadBtn";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
+import { GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, POST_BULK_UPLOAD_EMPLOYEE, POST_RESOURCE, UPDATE_RESOURCE } from "../../constants";
 
 
 const columns = [
@@ -157,7 +158,7 @@ const EmployeeMaster = () => {
 
   const getEmployeeDetails = async () => {
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/GetAllResources");
+      const response = await fetch(`${GET_ALL_RESOURCES}`);
       let dataGet = await response.json();
       dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
       dispatch(employeeActions.changeData(dataGet));
@@ -170,17 +171,17 @@ const EmployeeMaster = () => {
   }, [toggle]);
 
   const getMarketDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
+    const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
     dispatch(marketActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/Location/GetAllLocations");
+    const response = await fetch(`${GET_ALL_LOCATIONS}`);
     const dataGet = await response.json();
     dispatch(filterActions.changeLocations(dataGet));
   }
   const getSubLocationDetails = async () => {
-    const response = await fetch("http://10.147.172.18:9190/api/v1/SubLocation/GetAllSubLocations");
+    const response = await fetch(`${GET_ALL_SUB_LOCATIONS}`);
     const dataGet = await response.json();
     dispatch(filterActions.changeSubLocations(dataGet));
   }
@@ -218,7 +219,7 @@ const EmployeeMaster = () => {
       }));
       payload = payload.map((row: any) => ({ ...row, createdBy: "Admin" }));
       try {
-        const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/BulkUploadResources", {
+        const response = await fetch(`${POST_BULK_UPLOAD_EMPLOYEE}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -428,7 +429,7 @@ const EmployeeMaster = () => {
               />
             </div>
             <div className="col-md-2" style={{ marginTop: "24px" }}>
-              <button type="button" className="btn btn-primary" onClick={() => dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+              <button type="button"  className="btn btn-primary" onClick={() => dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
         <div className="TableContentBorder" >
@@ -471,7 +472,7 @@ const AddModal = (props: any) => {
     };
     try {
       if(validateForm('#AddEmployeeForm')){
-        const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/PostResources", {
+        const response = await fetch(`${POST_RESOURCE}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -490,8 +491,6 @@ const AddModal = (props: any) => {
             toast.success("Resource Added Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
-      }else{
-        toast.error("Some Error occured.");
       }
     } catch {
       toast.error("Some Error occured.");
@@ -513,7 +512,8 @@ const AddModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-        style={{ float: "right", marginTop: "-68px" }}
+style={{ float: "right", marginTop: "-68px"}}
+        
         variant="primary"
         onClick={props.openModal}
       >
@@ -712,7 +712,7 @@ const UpdateModal = (props: any) => {
     };
     try {
       if(validateForm('#UpdateResourceForm')){
-        const response = await fetch("http://10.147.172.18:9190/api/v1/Resources/UpdateResources", {
+        const response = await fetch(`${UPDATE_RESOURCE}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -729,8 +729,6 @@ const UpdateModal = (props: any) => {
             toast.success("Resource Updated Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
-      }else{
-        toast.error("Some Error occured.");
       }
     } catch {
       toast.error("Some Error occured.");
@@ -750,7 +748,8 @@ const UpdateModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-        style={{ float: "right", marginTop: "-68px" }}
+        style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRadius:"4px" }}
+        
         variant="primary"
         onClick={props.openModal}
       >

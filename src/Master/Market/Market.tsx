@@ -8,6 +8,7 @@ import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
+import { GET_ALL_MARKETS, POST_MARKET, UPDATE_MARKET } from "../../constants";
 
 const columns = [
   {
@@ -82,7 +83,7 @@ const Market = () => {
   }
   const getMarketDetails = async () => {
     try {
-      const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets");
+      const response = await fetch(`${GET_ALL_MARKETS}`);
       let dataGet = await response.json();
       dispatch(marketActions.changeData(dataGet));
     }
@@ -140,7 +141,7 @@ const Market = () => {
             </div>
           </div>
           <div className="TableContentBorder">
-            <Table  columnsAndSelectors={columnsAndSelectors}columns={columns} data={markets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
+            <Table  columnsAndSelectors={columnsAndSelectors} columns={columns} data={markets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
           </div>
         </div>
       </div>
@@ -165,7 +166,7 @@ const AddModal = (props : any) => {
     };
     try {
       if(validateForm('#AddMarket')){
-        const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/PostMarket", {
+        const response = await fetch(`${POST_MARKET}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -184,8 +185,6 @@ const AddModal = (props : any) => {
             toast.success("Market Added Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
-      }else{
-        toast.error("Some Error occured.");
       }
     } catch {
       toast.error("Some Error occured.");
@@ -198,7 +197,7 @@ const AddModal = (props : any) => {
     <>
       <Button
         className="btn btn-primary"
-        style={{ float: "right", marginTop: "-68px" }}
+        style={{ float: "right", marginTop: "-68px"}}
         variant="primary"
         onClick={props.openModal}
       >
@@ -274,7 +273,7 @@ const UpdateModal = (props: any) => {
     };
     try {
       if(validateForm('#UpdateMarketForm')){
-        const response = await fetch("http://10.147.172.18:9190/api/v1/Markets/UpdateMarket", {
+        const response = await fetch(`${UPDATE_MARKET}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -291,8 +290,6 @@ const UpdateModal = (props: any) => {
             toast.success("Market Updated Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
-      }else{
-        toast.error("Some Error occured.");
       }
     } catch {
       toast.error("Some Error occured.");
@@ -312,7 +309,8 @@ const UpdateModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-        style={{ float: "right", marginTop: "-68px" }}
+        style={{ float: "right", marginTop: "-68px"}}
+        
         variant="primary"
         onClick={props.openModal}
       >
