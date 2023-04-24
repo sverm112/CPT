@@ -3,7 +3,7 @@ import DataTable from "react-data-table-component";
 import SideBar from "../../SideBar/SideBar";
 // import ModalDialog from '../../modal/modal';
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Row } from "react-bootstrap";
 import Table from "../../DataTable/DataTable";
 import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
@@ -142,7 +142,9 @@ const PTO = () => {
   const months=useSelector((state:any)=>state.Filters.months);
   const monthSelected = useSelector((state: any) => state.Pto.months);
   const years = useSelector((state: any) =>state.Filters.years);
+  const status = useSelector((state: any) => state.Filters.status);
   const yearSelected = useSelector((state: any) => state.Pto.years);
+  const statusSelected= useSelector((state:any)=>state.Pto.status)
   const openModal = () => {
     setShowModal(true);
   }
@@ -161,6 +163,7 @@ const PTO = () => {
     try {
       const response = await fetch(`${GET_ALL_PTOS}`);
       let dataGet = await response.json();
+      dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
       dispatch(ptoActions.changeData(dataGet));
     }
     catch {
@@ -203,7 +206,6 @@ const PTO = () => {
  let filteredColumns=columns;
     //Resource, Resource Manager, PTO Type, Month, Status 
   const resourceSelected = useSelector((state: any) => state.Pto.resourceName);
-  const status = useSelector((state: any) => state.Filters.status);
 
   
 
@@ -234,12 +236,15 @@ const PTO = () => {
       const ptoTypeOptions = ptoTypeSelected.map((ptoType: any) => ptoType.value);
       const monthOptions = monthSelected.map((month: any) => month.value);
       const yearOptions = yearSelected.map((year: any) => year.value);
+      const statusOptions = statusSelected.map((status: any) => status.value);
       if((!resourceSelected.length) || (resourceSelected.length > 0 && resourceNameOptions.includes(pto.resourceName) == true)){
         if((!managerSelected.length) || (managerSelected.length > 0 && managerNameOptions.includes(pto.resourceManager) == true)){
           if((!ptoTypeSelected.length) || (ptoTypeSelected.length > 0 && ptoTypeOptions.includes(pto.ptoType) == true)){
             if((!monthSelected.length) || (monthSelected.length > 0 && monthOptions.includes(pto.month) == true)){
               if((!yearSelected.length) || (yearSelected.length > 0 && yearOptions.includes(pto.year) == true)){
-                return true;
+                if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(pto.status))) {
+                  return true;
+                }
               }
             }
           }
@@ -273,7 +278,7 @@ const PTO = () => {
               </label>
               <MultiSelect
                 options={
-                  resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => ({label: resource.resourceName, value: resource.resourceId.toString()}))
+                  resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
                   // resourcesForPto.map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
                 }
                 value={resourceSelected}
@@ -327,6 +332,18 @@ const PTO = () => {
                 value={yearSelected}
                 onChange={(event: any) => dispatch(ptoActions.changeYears(event))}
                 labelledBy="Select Month"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Status
+              </label>
+              <MultiSelect
+                options={status.map((status: any) => ({ label: status, value: status }))}
+                value={statusSelected}
+                onChange={(event: any) => dispatch(ptoActions.changeStatus(event))}
+                labelledBy="Select Status"
                 valueRenderer={customValueRenderer}
               />
             </div>
@@ -394,15 +411,28 @@ const AddModal = (props: any) => {
     event.preventDefault();
     const startYear = startDate?.getFullYear();
     const endYear = endDate?.getFullYear();
+    let paEndDate;
+    let paStartDate;
+
+    
     let payload = [{}];
+    let ptoStartDate=null,ptoEndDate=null;
+    if(startDate!=null){
+      ptoStartDate= new Date(startDate);
+      ptoStartDate.setDate(ptoStartDate.getDate() + 1);
+    }
+    if(endDate!=null){
+      ptoEndDate= new Date(endDate);
+      ptoEndDate.setDate(ptoEndDate.getDate() + 1);
+    }
     // if(startYear == endYear){
       payload = [{
         resourceId : Number(resourceId),
         resourceName : selectedResourceDetails.resourceName,
         resourceManager : selectedResourceDetails.resourceManager,
         ptoTypeId : Number(ptoTypeId),
-        startDate : startDate,
-        enddDate : endDate,
+        startDate : ptoStartDate,
+        enddDate : ptoEndDate,
         month : months[Number(startDate?.getMonth()) % 12 || 0],
         year : startYear,
         numberOfDays : numberOfDays,
@@ -496,7 +526,10 @@ style={{ float: "right", marginTop: "-68px"}}
                 <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select className="form-control" required id="resource" value={resourceId} 
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} onChange={setResourceDetails}>
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} 
+                  onChange={(e: any)=>{setResourceDetails(e);
+                    validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')
+                  }}>
                     <option value="0">Select</option>
                     {/* {months.map((month: any) => (<option key={month} value={month}>{month}</option>))} */}
                   
@@ -528,8 +561,11 @@ style={{ float: "right", marginTop: "-68px"}}
                     className="form-control "
                     id="ptoTypeDropdown"
                     value={ptoTypeId}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select')}
-                    onChange={(event) => setPTOTypeId(event.target.value)}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select')}
+                    onChange={(event) => {
+                      setPTOTypeId(event.target.value);
+                      validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
@@ -547,6 +583,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   className="form-control"
                   required
                   onChange={setStartDate}
+                  maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOStartDate'),'datePicker')}
                   format="dd/MM/yyyy"
@@ -565,6 +602,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   className="form-control"
                   required
                   onChange={setEndDate}
+                  minDate={startDate !== null ? startDate : new Date('December 31, 2000')}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOEndDate'),'datePicker')}
                   format="dd/MM/yyyy"
@@ -606,7 +644,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   disabled
                 />
               </div>
-              <div className="col-md-12 form-group">
+              <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
                 </label>
@@ -667,13 +705,24 @@ const UpdateModal = (props: any) => {
     
     event.preventDefault();
 
+    
+
     const startYear = startDate?.getFullYear();
+    let ptoStartDate=null,ptoEndDate=null;
+    if(startDate!=null){
+      ptoStartDate= new Date(startDate);
+      ptoStartDate.setDate(ptoStartDate.getDate() + 1);
+    }
+    if(endDate!=null){
+      ptoEndDate= new Date(endDate);
+      ptoEndDate.setDate(ptoEndDate.getDate() + 1);
+    }
     let payload = {
       id : formValues.id,
       resourceId : Number(formValues.resourceId),
       ptoTypeId : Number(formValues.ptoTypeId),
-      startDate : startDate,
-      enddDate : endDate,
+      startDate : ptoStartDate,
+      enddDate : ptoEndDate,
       month : months[Number(startDate?.getMonth()) % 12 || 0],
       year: startYear,
       numberOfDays : numberOfDays,
@@ -741,7 +790,9 @@ const UpdateModal = (props: any) => {
                 </label>
                 <span className="requiredField">*</span>
                 <div className="dropdown">
-                  <select required className="form-control" name="resourceId" id="resource" value={formValues.resourceId} onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} onChange={handleChange}>
+                  <select required className="form-control" name="resourceId" id="resource" value={formValues.resourceId}  
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')}
+                    onChange={(e: any)=>{handleChange(e);validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select');}}>
                     <option value="0">Select</option>
                     {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   </select>
@@ -764,17 +815,22 @@ const UpdateModal = (props: any) => {
                 <label className="form-label" htmlFor="ptoType">
                   PTO Type 
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     className="form-control"
                     name="ptoTypeId"
+                    required
                     id="ptoTypeDropdown"
                     value={formValues.ptoTypeId}
-                    onChange={handleChange}
+                    onChange={(e: any)=>{handleChange(e);
+                      validateSingleFormGroup(document.getElementById('PtoType'),'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
 
@@ -788,6 +844,7 @@ const UpdateModal = (props: any) => {
                   required
                   name="startDate"
                   onChange={setStartDate}
+                  maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOStartDate'),'datePicker')}
                   format="dd/MM/yyyy"
@@ -806,6 +863,7 @@ const UpdateModal = (props: any) => {
                   className="form-control"
                   required
                   name="endDate"
+                  minDate={startDate !== null ? startDate : new Date('December 31, 2000')}
                   onChange={setEndDate}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOEndDate'),'datePicker')}
@@ -849,7 +907,7 @@ const UpdateModal = (props: any) => {
                   disabled
                 />
               </div>
-              <div className="col-md-12 form-group">
+              <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
                 </label>

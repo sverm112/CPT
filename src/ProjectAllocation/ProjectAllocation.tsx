@@ -241,7 +241,7 @@ const ProjectAllocation = () => {
   const getProjectAllocationDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECT_ALLOCATIONS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, isActive: row.isActive == "1" ? "Active" : "Inactive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName,createddate:row.createdDate.slice(0, 10),updatedDate:row.updatedDate.slice(0,10), isActive: row.isActive == "1" ? "Active" : "Inactive" }));
 
     dispatch(projectAllocationActions.changeData(dataGet));
   };
@@ -687,11 +687,13 @@ const ModalDialog = () => {
                     required
                     id="resource" 
                     value={resourceId}
-                    onBlur={()=>{
-                      validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
+                    // onBlur={()=>{
+                    //   validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
                       
-                    }} 
-                    onChange={setResourceDetails}>
+                    // }} 
+                    onChange={(e: any) => {setResourceDetails(e);
+                      validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
+                      }}>
                     <option value="0">Select</option>
                     {resourcesList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   </select>
@@ -763,8 +765,10 @@ const ModalDialog = () => {
                     required
                     id="project" 
                     value={projectId} 
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select')}
-                    onChange={setProjectDetails}>
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select')}
+                    onChange={(e: any) => {setProjectDetails(e);
+                      validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select');
+                    }}>
                     <option value="0">Select</option>
                     {projectsList.filter((project: any) => project.isActive == "Active").map((project: any) => <option key={project.pkProjectID} value={project.pkProjectID.toString()}>{project.projectName}</option>)}
                   </select>
@@ -782,8 +786,10 @@ const ModalDialog = () => {
                     required
                     id="resourceType1Dropdown"
                     value={resourceType1}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select')}
-                    onChange={(event) => setResourceType1(event.target.value)}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select')}
+                    onChange={(event) => {setResourceType1(event.target.value);
+                      validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
@@ -830,6 +836,7 @@ const ModalDialog = () => {
                     validateSingleFormGroup(document.getElementById('AllocationStartField'), 'datePicker');
                     
                   }}
+                  maxDate={allocationEndDate !== null ? allocationEndDate : new Date('December 31, 2100')}
                   onChange={setAllocationStartDate}
                   value={allocationStartDate}
                   format="dd/MM/yyyy"
@@ -851,6 +858,7 @@ const ModalDialog = () => {
                     validateSingleFormGroup(document.getElementById('AllocationEndField'), 'datePicker');
                     
                   }}
+                  minDate={allocationStartDate !== null ? allocationStartDate : new Date('December 31, 2000')}
                   onChange={setAllocationEndDate}
                   value={allocationEndDate}
                   format="dd/MM/yyyy"

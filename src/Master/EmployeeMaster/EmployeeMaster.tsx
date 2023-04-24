@@ -160,7 +160,7 @@ const EmployeeMaster = () => {
     try {
       const response = await fetch(`${GET_ALL_RESOURCES}`);
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
       dispatch(employeeActions.changeData(dataGet));
     } catch {
       console.log("Error occured");
@@ -173,6 +173,7 @@ const EmployeeMaster = () => {
   const getMarketDetails = async () => {
     const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
     dispatch(marketActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
@@ -512,7 +513,7 @@ const AddModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-style={{ float: "right", marginTop: "-68px"}}
+        style={{ float: "right", marginTop: "-68px"}}
         
         variant="primary"
         onClick={props.openModal}
@@ -552,8 +553,10 @@ style={{ float: "right", marginTop: "-68px"}}
                     id="employeeRole"
                     className="form-control"
                     value={role}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('AddRoleField'), 'select')}
-                    onChange={(event) => setRole(event.target.value)}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AddRoleField'), 'select')}
+                    onChange={(event) => {setRole(event.target.value);
+                      validateSingleFormGroup(document.getElementById('AddRoleField'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
@@ -600,8 +603,10 @@ style={{ float: "right", marginTop: "-68px"}}
                     id="resourceType"
                     className="form-control"
                     value={resourceType}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceResourceTypeField'),'select')}
-                    onChange={(event) => setResourceType(event.target.value)}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceResourceTypeField'),'select')}
+                    onChange={(event) => {setResourceType(event.target.value);
+                      validateSingleFormGroup(document.getElementById('AddResourceResourceTypeField'),'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {resourceTypes.map((resourceType: any) => (<option key={resourceType} value={resourceType}>{resourceType}</option>))}
@@ -618,8 +623,10 @@ style={{ float: "right", marginTop: "-68px"}}
                     required
                     className="form-control"
                     value={market}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceMarketField'), 'select')}
-                    onChange={(event) => setMarket(event.target.value)}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceMarketField'), 'select')}
+                    onChange={(event) => {setMarket(event.target.value);
+                      validateSingleFormGroup(document.getElementById('AddResourceMarketField'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.marketName}>{market.marketName}</option>)}
@@ -636,8 +643,10 @@ style={{ float: "right", marginTop: "-68px"}}
                     required
                     className="form-control"
                     value={location}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceLocationField'), 'select')}
-                    onChange={(event) => setLocation(event.target.value)}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceLocationField'), 'select')}
+                    onChange={(event) => {setLocation(event.target.value);
+                      validateSingleFormGroup(document.getElementById('AddResourceLocationField'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {locations.map((location: any) => (<option key={location.locationId} value={location.locationName}> {location.locationName}</option>))}
@@ -655,8 +664,10 @@ style={{ float: "right", marginTop: "-68px"}}
                     required
                     id="holidaySubLocation"
                     value={subLocation}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceSubLocationField'), 'select')}
-                    onChange={(event: any) => setSubLocation(event.target.value)}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceSubLocationField'), 'select')}
+                    onChange={(event: any) => {setSubLocation(event.target.value);
+                      validateSingleFormGroup(document.getElementById('AddResourceSubLocationField'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {location == "0" ? [] : (subLocations.filter((subLocation: any) => location == subLocation.locationName).map((subLocation: any) => (<option key={subLocation.subLocationId} value={subLocation.subLocationName}>{subLocation.subLocationName}</option>)))}
@@ -790,8 +801,10 @@ const UpdateModal = (props: any) => {
                     name="role"
                     className="form-control"
                     value={formValues.role}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceRoleField'), 'select')}
-                    onChange={handleChange}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceRoleField'), 'select')}
+                    onChange={(e: any) => {handleChange(e);
+                      validateSingleFormGroup(document.getElementById('UpdateResourceRoleField'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
@@ -841,8 +854,10 @@ const UpdateModal = (props: any) => {
                     name="resourceType"
                     className="form-control"
                     value={formValues.resourceType}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceResourceTypeField'), 'select')}
-                    onChange={handleChange}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceResourceTypeField'), 'select')}
+                    onChange={(e: any)=>{handleChange(e);
+                      validateSingleFormGroup(document.getElementById('UpdateResourceResourceTypeField'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {resourceTypes.map((resourceType: any) => (<option key={resourceType} value={resourceType}>{resourceType}</option>))}
@@ -860,8 +875,10 @@ const UpdateModal = (props: any) => {
                     name="resourceMarket"
                     className="form-control"
                     value={formValues.resourceMarket}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceMarketField'), 'select')}
-                    onChange={handleChange}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceMarketField'), 'select')}
+                    onChange={(e: any)=>{handleChange(e);
+                      validateSingleFormGroup(document.getElementById('UpdateResourceMarketField'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.marketName}>{market.marketName}</option>)}
@@ -879,8 +896,10 @@ const UpdateModal = (props: any) => {
                     name="location"
                     className="form-control"
                     value={formValues.location}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceLocationField'), 'select')}
-                    onChange={handleChange}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceLocationField'), 'select')}
+                    onChange={(e: any)=>{handleChange(e);
+                      validateSingleFormGroup(document.getElementById('UpdateResourceLocationField'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {locations.map((location: any) => (<option key={location.locationId} value={location.locationName}> {location.locationName}</option>))}
@@ -899,8 +918,10 @@ const UpdateModal = (props: any) => {
                     className="form-control"
                     id="holidaySubLocation"
                     value={formValues.subLocation}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceSubLocationField'), 'select')}
-                    onChange={handleChange}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceSubLocationField'), 'select')}
+                    onChange={(e: any)=>{handleChange(e);
+                      validateSingleFormGroup(document.getElementById('UpdateResourceSubLocationField'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {location == "0" ? [] : (subLocations.filter((subLocation: any) => location == subLocation.locationName).map((subLocation: any) => (<option key={subLocation.subLocationId} value={subLocation.subLocationName}>{subLocation.subLocationName}</option>)))}

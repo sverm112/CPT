@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import SideBar from "../../SideBar/SideBar";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Row } from "react-bootstrap";
 import DatePicker from "react-date-picker";
 import { MultiSelect } from "react-multi-select-component";
 import Table from "../../DataTable/DataTable";
@@ -119,7 +119,7 @@ const HolidayMaster = () => {
   const getHolidayDetails = async () => {
     const response = await fetch(`${GET_ALL_HOLIDAYS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate.slice(0,10) }));
     dispatch(holidayActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -410,8 +410,10 @@ style={{ float: "right", marginTop: "-68px"}}
                     className="form-control"
                     id="holidayMarket"
                     value={market}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayMarket'),'select')}
-                    onChange={(event: any) => setMarket(event.target.value)}
+                    // onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayMarket'),'select')}
+                    onChange={(event: any) => {setMarket(event.target.value);
+                      validateSingleFormGroup(document.getElementById('HolidayMarket'),'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.id.toString()}>{market.marketName}</option>)}
@@ -430,8 +432,10 @@ style={{ float: "right", marginTop: "-68px"}}
                     className="form-control"
                     id="holidayCountry"
                     value={location}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayLocation'), 'select')}
-                    onChange={(event: any) => setLocation(event.target.value)}
+                    // onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayLocation'), 'select')}
+                    onChange={(event: any) => {setLocation(event.target.value);
+                      validateSingleFormGroup(document.getElementById('HolidayLocation'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {locations.map((location: any) => (<option key={location.locationId} value={location.locationId.toString()}> {location.locationName}</option>))}
@@ -450,8 +454,10 @@ style={{ float: "right", marginTop: "-68px"}}
                     className="form-control"
                     id="holidaySubLocation"
                     value={subLocation}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('isOffShore'), 'select')}
-                    onChange={(event: any) => setSubLocation(event.target.value)}
+                    // onBlur = {()=>validateSingleFormGroup(document.getElementById('isOffShore'), 'select')}
+                    onChange={(event: any) => {setSubLocation(event.target.value);
+                      validateSingleFormGroup(document.getElementById('isOffShore'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {location == "0" ? [] : (subLocations.filter((subLocation: any) => Number(location) == subLocation.locationId).map((subLocation: any) => (<option key={subLocation.subLocationId} value={subLocation.subLocationId.toString()}>{subLocation.subLocationName}</option>)))}
