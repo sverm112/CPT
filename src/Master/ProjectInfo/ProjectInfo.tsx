@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { employeeActions } from "../../Store/Slices/Employee";
 import DownloadBtn from "../../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
-//import { Base_URL } from "../../constants";
+import { Base_URL, GET_ALL_MARKETS, GET_ALL_PROJECTS, POST_PROJECT, UPDATE_PROJECT } from "../../constants";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 
 const columns = [
@@ -144,7 +144,7 @@ const ProjectInfo = () => {
   }
 
   const getProjectDetails = async () => {
-    const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/GetAllProjects`);
+    const response = await fetch(`${GET_ALL_PROJECTS}`);
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, createdDate: row.createdDate.slice(0, 10), isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(projectActions.changeData(dataGet));
@@ -154,7 +154,7 @@ const ProjectInfo = () => {
   }, [toggle]);
 
   const getMarketDetails = async () => {
-    const response = await fetch(`http://10.147.172.18:9190/api/v1/Markets/GetAllMarkets`);
+    const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     console.log(dataGet);
@@ -322,7 +322,7 @@ const AddModal = (props: any) => {
     };
     try {
       if(validateForm('#AddProjectForm')){
-        const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/PostProjects`, {
+        const response = await fetch(`${POST_PROJECT}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -341,9 +341,6 @@ const AddModal = (props: any) => {
             toast.success("Project Added Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
-  
-      }else{
-        toast.error("Some Error occured.");
       }
     } catch {
       toast.error("Some Error occured.");
@@ -354,7 +351,8 @@ const AddModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-        style={{ float: "right", marginTop: "-68px" }}
+style={{ float: "right", marginTop: "-68px"}}
+        
         variant="primary"
         onClick={props.openModal}
       >
@@ -514,7 +512,7 @@ const UpdateModal = (props: any) => {
     };
     try {
       if(validateForm('#UpdateProjectForm')){
-        const response = await fetch(`http://10.147.172.18:9190/api/v1/Projects/UpdateProjects`, {
+        const response = await fetch(`${UPDATE_PROJECT}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -531,8 +529,6 @@ const UpdateModal = (props: any) => {
             toast.success("Project Updated Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
-      }else{
-        toast.error("Some Error occured.");
       }
     } catch {
       toast.error("Some Error occured.");
@@ -552,7 +548,8 @@ const UpdateModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-        style={{ float: "right", marginTop: "-68px" }}
+style={{ float: "right", marginTop: "-68px"}}
+        
         variant="primary"
         onClick={props.openModal}
       >
