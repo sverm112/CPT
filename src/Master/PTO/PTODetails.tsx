@@ -394,6 +394,18 @@ const AddModal = (props: any) => {
     event.preventDefault();
     const startYear = startDate?.getFullYear();
     const endYear = endDate?.getFullYear();
+    let paEndDate;
+    let paStartDate;
+
+    if(startDate){
+      paStartDate = new Date(startDate);
+      paStartDate.setDate(paStartDate.getDate() + 1);
+    }
+
+    if(endDate){
+      paEndDate = new Date(endDate);
+      paEndDate.setDate(paEndDate.getDate()+1);
+    }
     let payload = [{}];
     // if(startYear == endYear){
       payload = [{
@@ -401,8 +413,8 @@ const AddModal = (props: any) => {
         resourceName : selectedResourceDetails.resourceName,
         resourceManager : selectedResourceDetails.resourceManager,
         ptoTypeId : Number(ptoTypeId),
-        startDate : startDate,
-        enddDate : endDate,
+        startDate : paStartDate,
+        enddDate : paEndDate,
         month : months[Number(startDate?.getMonth()) % 12 || 0],
         year : startYear,
         numberOfDays : numberOfDays,
@@ -496,7 +508,10 @@ style={{ float: "right", marginTop: "-68px"}}
                 <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select className="form-control" required id="resource" value={resourceId} 
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} onChange={setResourceDetails}>
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} 
+                  onChange={(e: any)=>{setResourceDetails(e);
+                    validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')
+                  }}>
                     <option value="0">Select</option>
                     {/* {months.map((month: any) => (<option key={month} value={month}>{month}</option>))} */}
                   
@@ -528,8 +543,11 @@ style={{ float: "right", marginTop: "-68px"}}
                     className="form-control "
                     id="ptoTypeDropdown"
                     value={ptoTypeId}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select')}
-                    onChange={(event) => setPTOTypeId(event.target.value)}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select')}
+                    onChange={(event) => {
+                      setPTOTypeId(event.target.value);
+                      validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
@@ -547,6 +565,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   className="form-control"
                   required
                   onChange={setStartDate}
+                  maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOStartDate'),'datePicker')}
                   format="dd/MM/yyyy"
@@ -565,6 +584,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   className="form-control"
                   required
                   onChange={setEndDate}
+                  minDate={startDate !== null ? startDate : new Date('December 31, 2000')}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOEndDate'),'datePicker')}
                   format="dd/MM/yyyy"
@@ -606,7 +626,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   disabled
                 />
               </div>
-              <div className="col-md-12 form-group">
+              <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
                 </label>
@@ -667,13 +687,26 @@ const UpdateModal = (props: any) => {
     
     event.preventDefault();
 
+    let paEndDate;
+    let paStartDate;
+
+    if(startDate){
+      paStartDate = new Date(startDate);
+      paStartDate.setDate(paStartDate.getDate() + 1);
+    }
+
+    if(endDate){
+      paEndDate = new Date(endDate);
+      paEndDate.setDate(paEndDate.getDate()+1);
+    }
+
     const startYear = startDate?.getFullYear();
     let payload = {
       id : formValues.id,
       resourceId : Number(formValues.resourceId),
       ptoTypeId : Number(formValues.ptoTypeId),
-      startDate : startDate,
-      enddDate : endDate,
+      startDate : paStartDate,
+      enddDate : paEndDate,
       month : months[Number(startDate?.getMonth()) % 12 || 0],
       year: startYear,
       numberOfDays : numberOfDays,
@@ -741,7 +774,9 @@ const UpdateModal = (props: any) => {
                 </label>
                 <span className="requiredField">*</span>
                 <div className="dropdown">
-                  <select required className="form-control" name="resourceId" id="resource" value={formValues.resourceId} onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} onChange={handleChange}>
+                  <select required className="form-control" name="resourceId" id="resource" value={formValues.resourceId}  
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')}
+                    onChange={(e: any)=>{handleChange(e);validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select');}}>
                     <option value="0">Select</option>
                     {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   </select>
@@ -764,17 +799,22 @@ const UpdateModal = (props: any) => {
                 <label className="form-label" htmlFor="ptoType">
                   PTO Type 
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     className="form-control"
                     name="ptoTypeId"
+                    required
                     id="ptoTypeDropdown"
                     value={formValues.ptoTypeId}
-                    onChange={handleChange}
+                    onChange={(e: any)=>{handleChange(e);
+                      validateSingleFormGroup(document.getElementById('PtoType'),'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
 
@@ -788,6 +828,7 @@ const UpdateModal = (props: any) => {
                   required
                   name="startDate"
                   onChange={setStartDate}
+                  maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOStartDate'),'datePicker')}
                   format="dd/MM/yyyy"
@@ -806,6 +847,7 @@ const UpdateModal = (props: any) => {
                   className="form-control"
                   required
                   name="endDate"
+                  minDate={startDate !== null ? startDate : new Date('December 31, 2000')}
                   onChange={setEndDate}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOEndDate'),'datePicker')}
@@ -849,7 +891,7 @@ const UpdateModal = (props: any) => {
                   disabled
                 />
               </div>
-              <div className="col-md-12 form-group">
+              <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
                 </label>

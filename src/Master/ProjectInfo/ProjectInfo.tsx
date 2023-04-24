@@ -411,8 +411,10 @@ style={{ float: "right", marginTop: "-68px"}}
                     className="form-control"
                     id="projectModel"
                     value={projectModel}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('ProjectModelDropdown'),'select')}
-                    onChange={(event: any) => setProjectModel(event.target.value)}
+                    // onBlur = {()=>validateSingleFormGroup(document.getElementById('ProjectModelDropdown'),'select')}
+                    onChange={(event: any) => {setProjectModel(event.target.value);
+                      validateSingleFormGroup(document.getElementById('ProjectModelDropdown'),'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     <option value="Waterfall">Waterfall</option>
@@ -434,8 +436,11 @@ style={{ float: "right", marginTop: "-68px"}}
                     className="form-control"
                     id="projectMarket"
                     value={projectMarket}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketInput'), 'select')}
-                    onChange={(event: any) => { console.log(projectMarket); setProjectMarket(event.target.value) }}
+                    // onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketInput'), 'select')}
+                    onChange={(event: any) => { 
+                      setProjectMarket(event.target.value);
+                      validateSingleFormGroup(document.getElementById('MarketInput'), 'select');
+                     }}
                   >
                     <option value="0">Select</option>
                     {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.id.toString()}>{market.marketName}</option>)}
@@ -606,11 +611,15 @@ style={{ float: "right", marginTop: "-68px"}}
                 <div className="dropdown">
                   <select
                     name="projectModel"
+                    required
                     className="form-control"
                     id="projectModel"
                     value={formValues.projectModel}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('ProjectModelDropdown'),'select')}
-                    onChange={handleChange}
+                    // onBlur = {()=>validateSingleFormGroup(document.getElementById('ProjectModelDropdown'),'select')}
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      validateSingleFormGroup(document.getElementById('ProjectModelDropdown'),'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     <option value="Waterfall">Waterfall</option>
@@ -633,8 +642,10 @@ style={{ float: "right", marginTop: "-68px"}}
                     className="form-control"
                     id="projectMarket"
                     value={formValues.fkMarketID}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketInput'),'select')}
-                    onChange={handleChange}
+                    // onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketInput'),'select')}
+                    onChange={(e: any) => {handleChange(e);
+                      validateSingleFormGroup(document.getElementById('MarketInput'),'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.id.toString()}>{market.marketName}</option>)}
