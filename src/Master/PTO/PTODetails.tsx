@@ -632,7 +632,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   disabled
                 />
               </div>
-              <div className="col-md-12 form-group">
+              <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
                 </label>
@@ -884,7 +884,7 @@ const UpdateModal = (props: any) => {
                   disabled
                 />
               </div>
-              <div className="col-md-12 form-group">
+              <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
                 </label>
