@@ -160,7 +160,7 @@ const EmployeeMaster = () => {
     try {
       const response = await fetch(`${GET_ALL_RESOURCES}`);
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
       dispatch(employeeActions.changeData(dataGet));
     } catch {
       console.log("Error occured");
@@ -173,6 +173,7 @@ const EmployeeMaster = () => {
   const getMarketDetails = async () => {
     const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
     dispatch(marketActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {

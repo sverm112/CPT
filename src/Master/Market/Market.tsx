@@ -34,7 +34,7 @@ const columns = [
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate.slice(0, 10),
+    selector: (row: { createdDate: any }) => row.createdDate,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -85,6 +85,7 @@ const Market = () => {
     try {
       const response = await fetch(`${GET_ALL_MARKETS}`);
       let dataGet = await response.json();
+      dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
       dispatch(marketActions.changeData(dataGet));
     }
     catch {

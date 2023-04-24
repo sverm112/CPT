@@ -241,7 +241,7 @@ const ProjectAllocation = () => {
   const getProjectAllocationDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECT_ALLOCATIONS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, isActive: row.isActive == "1" ? "Active" : "Inactive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName,createddate:row.createdDate.slice(0, 10),updatedDate:row.updatedDate.slice(0,10), isActive: row.isActive == "1" ? "Active" : "Inactive" }));
 
     dispatch(projectAllocationActions.changeData(dataGet));
   };
