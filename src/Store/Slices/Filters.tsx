@@ -7,7 +7,8 @@ const initialState = {
   locations: [],
   subLocations: [],
   ptoTypes :[],
-  months :["January","February","March","April","May","June","July","August","September","October","November","December"]
+  months :["January","February","March","April","May","June","July","August","September","October","November","December"],
+  years : ["2020", "2021","2022","2023","2024","2025","2026","2027","2028","2029","2030"]
 };
 
 const filterSlice = createSlice({
@@ -31,6 +32,9 @@ const filterSlice = createSlice({
     },
     changeMonths(state, action){
       state.months = action.payload;
+    },
+    changeYears(state, action){
+      state.years = action.payload;
     }
   },
 });
