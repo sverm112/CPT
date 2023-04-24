@@ -129,6 +129,8 @@ const PTO = () => {
   const managers: any = [];
   const ptos = useSelector((state: any) => state.Pto.data);
   const resourcesForPto = useSelector((state: any) => state.Pto.data)
+  
+  const resourceList = useSelector((state: any) => state.Employee.data);
   const resources = useSelector((state: any) => state.Employee.data);
   const toggle = useSelector((state: any) => state.Pto.toggle);
   const managerSelected = useSelector((state: any) => state.Pto.resourceManager);
@@ -139,6 +141,8 @@ const PTO = () => {
   const ptoTypeSelected = useSelector((state: any) => state.Pto.ptoTypes);
   const months=useSelector((state:any)=>state.Filters.months);
   const monthSelected = useSelector((state: any) => state.Pto.months);
+  const years = useSelector((state: any) =>state.Filters.years);
+  const yearSelected = useSelector((state: any) => state.Pto.years);
   const openModal = () => {
     setShowModal(true);
   }
@@ -229,11 +233,14 @@ const PTO = () => {
       const managerNameOptions = managerSelected.map((managerName: any) => managerName.value);
       const ptoTypeOptions = ptoTypeSelected.map((ptoType: any) => ptoType.value);
       const monthOptions = monthSelected.map((month: any) => month.value);
+      const yearOptions = yearSelected.map((year: any) => year.value);
       if((!resourceSelected.length) || (resourceSelected.length > 0 && resourceNameOptions.includes(pto.resourceName) == true)){
         if((!managerSelected.length) || (managerSelected.length > 0 && managerNameOptions.includes(pto.resourceManager) == true)){
           if((!ptoTypeSelected.length) || (ptoTypeSelected.length > 0 && ptoTypeOptions.includes(pto.ptoType) == true)){
             if((!monthSelected.length) || (monthSelected.length > 0 && monthOptions.includes(pto.month) == true)){
-              return true;
+              if((!yearSelected.length) || (yearSelected.length > 0 && yearOptions.includes(pto.year) == true)){
+                return true;
+              }
             }
           }
         }
@@ -265,7 +272,9 @@ const PTO = () => {
                 Resource
               </label>
               <MultiSelect
-                options={resourcesForPto.map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
+                options={
+                  resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => ({label: resource.resourceName, value: resource.resourceId.toString()}))
+                  // resourcesForPto.map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
                 }
                 value={resourceSelected}
                 onChange={(event: any) => dispatch(ptoActions.changeResourceName(event))}
@@ -305,6 +314,18 @@ const PTO = () => {
                 options={months.map((month: any) => ({label:month, value: month }))}
                 value={monthSelected}
                 onChange={(event: any) => dispatch(ptoActions.changeMonth(event))}
+                labelledBy="Select Month"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Year
+              </label>
+              <MultiSelect
+                options={years.map((month: any) => ({label:month, value: month }))}
+                value={yearSelected}
+                onChange={(event: any) => dispatch(ptoActions.changeYears(event))}
                 labelledBy="Select Month"
                 valueRenderer={customValueRenderer}
               />
@@ -837,6 +858,7 @@ const UpdateModal = (props: any) => {
                   name="remarks"
                   cols={100}
                   rows={1}
+                  maxLength={100}
                   id="remarks"
                   value={formValues.remarks}
                   onChange={handleChange}

@@ -7,6 +7,7 @@ const initialState = {
   startDate: [],
   endDate: [],
   months: [],
+  years: [],
   numberOfDays: [],
   remarks: [],
   status: [],
@@ -38,6 +39,9 @@ const ptoSlice = createSlice({
     changeMonth(state, action){
         state.months = action.payload;
     },
+    changeYears(state, action){
+        state.years = action.payload;
+    },
     changeNumberOfDays(state, action){
         state.numberOfDays = action.payload;
     },
@@ -66,6 +70,7 @@ const ptoSlice = createSlice({
         state.startDate= [];
         state.endDate= [];
         state.months = [];
+        state.years = [];
         state.numberOfDays= [];
         state.remarks= [];
         state.status= [];
