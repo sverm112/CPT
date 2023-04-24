@@ -823,7 +823,6 @@ const ModalDialog = () => {
                 </label>
                 <input type="text" className="form-control" id="capex" value={selectedProjectDetails.expenseType} disabled />
               </div>
-
               <div className="col-md-6 form-group" id="AllocationStartField">
                 <label className="form-label" htmlFor="allocationStartDate" style={{ zIndex: "9" }}>
                   Allocation Start Date
