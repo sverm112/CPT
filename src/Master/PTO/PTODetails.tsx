@@ -784,19 +784,22 @@ const UpdateModal = (props: any) => {
         <Modal.Body>
           <form onSubmit={formSubmitHandler} id='UpdatePtoForm' noValidate>
           <div className="row">
-              <div className="col-md-6 form-group" id="ResourceAddPto">
+              <div className="col-md-6 form-group" id="ResourceUpdatePto">
                 <label className="form-label" htmlFor="resource">
                   Resource
                 </label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <div className="dropdown">
-                  <select required className="form-control" name="resourceId" id="resource" value={formValues.resourceId}  
-                    // onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')}
-                    onChange={(e: any)=>{handleChange(e);validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select');}}>
+                  <select 
+                    className="form-control" name="resourceId" id="resource" value={formValues.resourceId}  
+                    disabled
+                    onChange={(e: any)=>{handleChange(e);
+                    // validateSingleFormGroup(document.getElementById('ResourceUpdatePto'), 'select');
+                    }}>
                     <option value="0">Select</option>
                     {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   </select>
-                  <div className="error"></div>
+                  {/* <div className="error"></div> */}
                 </div>
               </div>
               <div className="col-md-6 form-group">
