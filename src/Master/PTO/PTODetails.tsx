@@ -3,7 +3,7 @@ import DataTable from "react-data-table-component";
 import SideBar from "../../SideBar/SideBar";
 // import ModalDialog from '../../modal/modal';
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Row } from "react-bootstrap";
 import Table from "../../DataTable/DataTable";
 import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
@@ -142,7 +142,9 @@ const PTO = () => {
   const months=useSelector((state:any)=>state.Filters.months);
   const monthSelected = useSelector((state: any) => state.Pto.months);
   const years = useSelector((state: any) =>state.Filters.years);
+  const status = useSelector((state: any) => state.Filters.status);
   const yearSelected = useSelector((state: any) => state.Pto.years);
+  const statusSelected= useSelector((state:any)=>state.Pto.status)
   const openModal = () => {
     setShowModal(true);
   }
@@ -161,6 +163,7 @@ const PTO = () => {
     try {
       const response = await fetch(`${GET_ALL_PTOS}`);
       let dataGet = await response.json();
+      dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
       dispatch(ptoActions.changeData(dataGet));
     }
     catch {
@@ -203,7 +206,6 @@ const PTO = () => {
  let filteredColumns=columns;
     //Resource, Resource Manager, PTO Type, Month, Status 
   const resourceSelected = useSelector((state: any) => state.Pto.resourceName);
-  const status = useSelector((state: any) => state.Filters.status);
 
   
 
@@ -234,12 +236,15 @@ const PTO = () => {
       const ptoTypeOptions = ptoTypeSelected.map((ptoType: any) => ptoType.value);
       const monthOptions = monthSelected.map((month: any) => month.value);
       const yearOptions = yearSelected.map((year: any) => year.value);
+      const statusOptions = statusSelected.map((status: any) => status.value);
       if((!resourceSelected.length) || (resourceSelected.length > 0 && resourceNameOptions.includes(pto.resourceName) == true)){
         if((!managerSelected.length) || (managerSelected.length > 0 && managerNameOptions.includes(pto.resourceManager) == true)){
           if((!ptoTypeSelected.length) || (ptoTypeSelected.length > 0 && ptoTypeOptions.includes(pto.ptoType) == true)){
             if((!monthSelected.length) || (monthSelected.length > 0 && monthOptions.includes(pto.month) == true)){
               if((!yearSelected.length) || (yearSelected.length > 0 && yearOptions.includes(pto.year) == true)){
-                return true;
+                if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(pto.status))) {
+                  return true;
+                }
               }
             }
           }
@@ -273,7 +278,7 @@ const PTO = () => {
               </label>
               <MultiSelect
                 options={
-                  resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => ({label: resource.resourceName, value: resource.resourceId.toString()}))
+                  resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
                   // resourcesForPto.map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
                 }
                 value={resourceSelected}
@@ -327,6 +332,18 @@ const PTO = () => {
                 value={yearSelected}
                 onChange={(event: any) => dispatch(ptoActions.changeYears(event))}
                 labelledBy="Select Month"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Status
+              </label>
+              <MultiSelect
+                options={status.map((status: any) => ({ label: status, value: status }))}
+                value={statusSelected}
+                onChange={(event: any) => dispatch(ptoActions.changeStatus(event))}
+                labelledBy="Select Status"
                 valueRenderer={customValueRenderer}
               />
             </div>
@@ -397,24 +414,25 @@ const AddModal = (props: any) => {
     let paEndDate;
     let paStartDate;
 
-    if(startDate){
-      paStartDate = new Date(startDate);
-      paStartDate.setDate(paStartDate.getDate() + 1);
-    }
-
-    if(endDate){
-      paEndDate = new Date(endDate);
-      paEndDate.setDate(paEndDate.getDate()+1);
-    }
+    
     let payload = [{}];
+    let ptoStartDate=null,ptoEndDate=null;
+    if(startDate!=null){
+      ptoStartDate= new Date(startDate);
+      ptoStartDate.setDate(ptoStartDate.getDate() + 1);
+    }
+    if(endDate!=null){
+      ptoEndDate= new Date(endDate);
+      ptoEndDate.setDate(ptoEndDate.getDate() + 1);
+    }
     // if(startYear == endYear){
       payload = [{
         resourceId : Number(resourceId),
         resourceName : selectedResourceDetails.resourceName,
         resourceManager : selectedResourceDetails.resourceManager,
         ptoTypeId : Number(ptoTypeId),
-        startDate : paStartDate,
-        enddDate : paEndDate,
+        startDate : ptoStartDate,
+        enddDate : ptoEndDate,
         month : months[Number(startDate?.getMonth()) % 12 || 0],
         year : startYear,
         numberOfDays : numberOfDays,
@@ -687,26 +705,24 @@ const UpdateModal = (props: any) => {
     
     event.preventDefault();
 
-    let paEndDate;
-    let paStartDate;
-
-    if(startDate){
-      paStartDate = new Date(startDate);
-      paStartDate.setDate(paStartDate.getDate() + 1);
-    }
-
-    if(endDate){
-      paEndDate = new Date(endDate);
-      paEndDate.setDate(paEndDate.getDate()+1);
-    }
+    
 
     const startYear = startDate?.getFullYear();
+    let ptoStartDate=null,ptoEndDate=null;
+    if(startDate!=null){
+      ptoStartDate= new Date(startDate);
+      ptoStartDate.setDate(ptoStartDate.getDate() + 1);
+    }
+    if(endDate!=null){
+      ptoEndDate= new Date(endDate);
+      ptoEndDate.setDate(ptoEndDate.getDate() + 1);
+    }
     let payload = {
       id : formValues.id,
       resourceId : Number(formValues.resourceId),
       ptoTypeId : Number(formValues.ptoTypeId),
-      startDate : paStartDate,
-      enddDate : paEndDate,
+      startDate : ptoStartDate,
+      enddDate : ptoEndDate,
       month : months[Number(startDate?.getMonth()) % 12 || 0],
       year: startYear,
       numberOfDays : numberOfDays,

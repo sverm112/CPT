@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import SideBar from "../../SideBar/SideBar";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Row } from "react-bootstrap";
 import DatePicker from "react-date-picker";
 import { MultiSelect } from "react-multi-select-component";
 import Table from "../../DataTable/DataTable";
@@ -119,7 +119,7 @@ const HolidayMaster = () => {
   const getHolidayDetails = async () => {
     const response = await fetch(`${GET_ALL_HOLIDAYS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate.slice(0,10) }));
     dispatch(holidayActions.changeData(dataGet));
   };
   useEffect(() => {
