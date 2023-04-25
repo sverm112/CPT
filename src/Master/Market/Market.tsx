@@ -34,7 +34,7 @@ const columns = [
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate.slice(0, 10),
+    selector: (row: { createdDate: any }) => row.createdDate,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -85,6 +85,7 @@ const Market = () => {
     try {
       const response = await fetch(`${GET_ALL_MARKETS}`);
       let dataGet = await response.json();
+      dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
       dispatch(marketActions.changeData(dataGet));
     }
     catch {
@@ -141,7 +142,7 @@ const Market = () => {
             </div>
           </div>
           <div className="TableContentBorder">
-            <Table  columnsAndSelectors={columnsAndSelectors}columns={columns} data={markets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
+            <Table  columnsAndSelectors={columnsAndSelectors} columns={columns} data={markets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
           </div>
         </div>
       </div>
@@ -197,7 +198,7 @@ const AddModal = (props : any) => {
     <>
       <Button
         className="btn btn-primary"
-        style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRadius:"4px" }}
+        style={{ float: "right", marginTop: "-68px"}}
         variant="primary"
         onClick={props.openModal}
       >
@@ -309,7 +310,7 @@ const UpdateModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-        style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRadius:"4px" }}
+        style={{ float: "right", marginTop: "-68px"}}
         
         variant="primary"
         onClick={props.openModal}

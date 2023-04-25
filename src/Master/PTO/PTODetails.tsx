@@ -3,7 +3,7 @@ import DataTable from "react-data-table-component";
 import SideBar from "../../SideBar/SideBar";
 // import ModalDialog from '../../modal/modal';
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Row } from "react-bootstrap";
 import Table from "../../DataTable/DataTable";
 import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
@@ -56,6 +56,13 @@ const columns = [
   {
     name: "Month",
     selector: (row: { month: any }) => row.month,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Year",
+    selector: (row: { year: any }) => row.year,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -122,6 +129,8 @@ const PTO = () => {
   const managers: any = [];
   const ptos = useSelector((state: any) => state.Pto.data);
   const resourcesForPto = useSelector((state: any) => state.Pto.data)
+  
+  const resourceList = useSelector((state: any) => state.Employee.data);
   const resources = useSelector((state: any) => state.Employee.data);
   const toggle = useSelector((state: any) => state.Pto.toggle);
   const managerSelected = useSelector((state: any) => state.Pto.resourceManager);
@@ -132,6 +141,10 @@ const PTO = () => {
   const ptoTypeSelected = useSelector((state: any) => state.Pto.ptoTypes);
   const months=useSelector((state:any)=>state.Filters.months);
   const monthSelected = useSelector((state: any) => state.Pto.months);
+  const years = useSelector((state: any) =>state.Filters.years);
+  const status = useSelector((state: any) => state.Filters.status);
+  const yearSelected = useSelector((state: any) => state.Pto.years);
+  const statusSelected= useSelector((state:any)=>state.Pto.status)
   const openModal = () => {
     setShowModal(true);
   }
@@ -150,6 +163,7 @@ const PTO = () => {
     try {
       const response = await fetch(`${GET_ALL_PTOS}`);
       let dataGet = await response.json();
+      dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
       dispatch(ptoActions.changeData(dataGet));
     }
     catch {
@@ -180,6 +194,7 @@ const PTO = () => {
   {'name': 'Start Date', 'selector': 'startDate', 'default': 'true'},
   {'name': 'End Date','selector':'enddDate', 'default': 'true' },
   {'name': 'Month','selector':'month', 'default': 'false' },
+  {'name': 'Year','selector':'year', 'default': 'false' },
   {'name': 'Number of Days','selector':'numberOfDays', 'default': 'true' },
   {'name': 'Remarks','selector':'remarks', 'default': 'false' },
   {'name' :'Status','selector':'status','default':'true'},
@@ -191,7 +206,6 @@ const PTO = () => {
  let filteredColumns=columns;
     //Resource, Resource Manager, PTO Type, Month, Status 
   const resourceSelected = useSelector((state: any) => state.Pto.resourceName);
-  const status = useSelector((state: any) => state.Filters.status);
 
   
 
@@ -221,11 +235,17 @@ const PTO = () => {
       const managerNameOptions = managerSelected.map((managerName: any) => managerName.value);
       const ptoTypeOptions = ptoTypeSelected.map((ptoType: any) => ptoType.value);
       const monthOptions = monthSelected.map((month: any) => month.value);
+      const yearOptions = yearSelected.map((year: any) => year.value);
+      const statusOptions = statusSelected.map((status: any) => status.value);
       if((!resourceSelected.length) || (resourceSelected.length > 0 && resourceNameOptions.includes(pto.resourceName) == true)){
         if((!managerSelected.length) || (managerSelected.length > 0 && managerNameOptions.includes(pto.resourceManager) == true)){
           if((!ptoTypeSelected.length) || (ptoTypeSelected.length > 0 && ptoTypeOptions.includes(pto.ptoType) == true)){
             if((!monthSelected.length) || (monthSelected.length > 0 && monthOptions.includes(pto.month) == true)){
-              return true;
+              if((!yearSelected.length) || (yearSelected.length > 0 && yearOptions.includes(pto.year) == true)){
+                if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(pto.status))) {
+                  return true;
+                }
+              }
             }
           }
         }
@@ -257,7 +277,9 @@ const PTO = () => {
                 Resource
               </label>
               <MultiSelect
-                options={resourcesForPto.map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
+                options={
+                  resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
+                  // resourcesForPto.map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
                 }
                 value={resourceSelected}
                 onChange={(event: any) => dispatch(ptoActions.changeResourceName(event))}
@@ -298,6 +320,30 @@ const PTO = () => {
                 value={monthSelected}
                 onChange={(event: any) => dispatch(ptoActions.changeMonth(event))}
                 labelledBy="Select Month"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Year
+              </label>
+              <MultiSelect
+                options={years.map((month: any) => ({label:month, value: month }))}
+                value={yearSelected}
+                onChange={(event: any) => dispatch(ptoActions.changeYears(event))}
+                labelledBy="Select Month"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Status
+              </label>
+              <MultiSelect
+                options={status.map((status: any) => ({ label: status, value: status }))}
+                value={statusSelected}
+                onChange={(event: any) => dispatch(ptoActions.changeStatus(event))}
+                labelledBy="Select Status"
                 valueRenderer={customValueRenderer}
               />
             </div>
@@ -363,39 +409,90 @@ const AddModal = (props: any) => {
   };
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
-    let payload = {
-      resourceId : Number(resourceId),
-      resourceName : selectedResourceDetails.resourceName,
-      resourceManager : selectedResourceDetails.resourceManager,
-      ptoTypeId : Number(ptoTypeId),
-      startDate : startDate,
-      enddDate : endDate,
-      month : month,
-      numberOfDays : numberOfDays,
-      remarks : remarks,
-      createdBy: "Admin"
-    };
+    const startYear = startDate?.getFullYear();
+    const endYear = endDate?.getFullYear();
+    let paEndDate;
+    let paStartDate;
+
+    
+    let payload = [{}];
+    let ptoStartDate=null,ptoEndDate=null;
+    if(startDate!=null){
+      ptoStartDate= new Date(startDate);
+      ptoStartDate.setDate(ptoStartDate.getDate() + 1);
+    }
+    if(endDate!=null){
+      ptoEndDate= new Date(endDate);
+      ptoEndDate.setDate(ptoEndDate.getDate() + 1);
+    }
+    // if(startYear == endYear){
+      payload = [{
+        resourceId : Number(resourceId),
+        resourceName : selectedResourceDetails.resourceName,
+        resourceManager : selectedResourceDetails.resourceManager,
+        ptoTypeId : Number(ptoTypeId),
+        startDate : ptoStartDate,
+        enddDate : ptoEndDate,
+        month : months[Number(startDate?.getMonth()) % 12 || 0],
+        year : startYear,
+        numberOfDays : numberOfDays,
+        remarks : remarks,
+        createdBy: "Admin"
+      }];
+    // }else{
+    //   payload = [{
+    //     resourceId : Number(resourceId),
+    //     resourceName : selectedResourceDetails.resourceName,
+    //     resourceManager : selectedResourceDetails.resourceManager,
+    //     ptoTypeId : Number(ptoTypeId),
+    //     startDate : startDate,
+    //     enddDate : endDate,
+    //     month : months[Number(startDate?.getMonth()) % 12 || 0],
+    //     year : startYear,
+    //     numberOfDays : numberOfDays,
+    //     remarks : remarks,
+    //     createdBy: "Admin"
+    //   },
+    //   {
+    //     resourceId : Number(resourceId),
+    //     resourceName : selectedResourceDetails.resourceName,
+    //     resourceManager : selectedResourceDetails.resourceManager,
+    //     ptoTypeId : Number(ptoTypeId),
+    //     startDate : startDate,
+    //     enddDate : endDate,
+    //     month : months[Number(endDate?.getMonth()) % 12 || 0],
+    //     year : endYear,
+    //     numberOfDays : numberOfDays,
+    //     remarks : remarks,
+    //     createdBy: "Admin"
+    //   }
+    // ];
+    // }
+    // console.log("Months:" ,months[startDate?.getMonth() || 0]);
     try {
       if(validateForm('#AddPtoForm')){
-        const response = await fetch(`${POST_PTO}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-        const dataResponse = await response.json();
-        if (dataResponse.length) {
-          if (dataResponse[0].statusCode == "201") {
-            console.log(dataResponse[0].statusReason);
-            console.log(dataResponse[0].recordsCreated);
-  
-            dispatch(ptoActions.changeToggle());
-            resetFormFields();
-            props.closeModal();
-            toast.success("PTO Added Successfully")
-          } else toast.error(dataResponse[0].errorMessage);
-        } else toast.error("Some Error occured.");
+        for(const pl of payload){
+          const response = await fetch(`${POST_PTO}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(pl),
+          });
+          console.log(pl);
+          const dataResponse = await response.json();
+          if (dataResponse.length) {
+            if (dataResponse[0].statusCode == "201") {
+              console.log(dataResponse[0].statusReason);
+              console.log(dataResponse[0].recordsCreated);
+    
+              dispatch(ptoActions.changeToggle());
+              resetFormFields();
+              props.closeModal();
+              toast.success("PTO Added Successfully")
+            } else toast.error(dataResponse[0].errorMessage);
+          } else toast.error("Some Error occured.");
+        }
       }
     } catch {
       toast.error("Some Error occured.");
@@ -406,7 +503,7 @@ const AddModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRadius:"4px" }}
+style={{ float: "right", marginTop: "-68px"}}
         
         variant="primary"
         onClick={props.openModal}
@@ -429,7 +526,10 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                 <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select className="form-control" required id="resource" value={resourceId} 
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} onChange={setResourceDetails}>
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} 
+                  onChange={(e: any)=>{setResourceDetails(e);
+                    validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')
+                  }}>
                     <option value="0">Select</option>
                     {/* {months.map((month: any) => (<option key={month} value={month}>{month}</option>))} */}
                   
@@ -461,8 +561,11 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                     className="form-control "
                     id="ptoTypeDropdown"
                     value={ptoTypeId}
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select')}
-                    onChange={(event) => setPTOTypeId(event.target.value)}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select')}
+                    onChange={(event) => {
+                      setPTOTypeId(event.target.value);
+                      validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
@@ -480,6 +583,7 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   className="form-control"
                   required
                   onChange={setStartDate}
+                  maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOStartDate'),'datePicker')}
                   format="dd/MM/yyyy"
@@ -498,6 +602,7 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   className="form-control"
                   required
                   onChange={setEndDate}
+                  minDate={startDate !== null ? startDate : new Date('December 31, 2000')}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOEndDate'),'datePicker')}
                   format="dd/MM/yyyy"
@@ -539,7 +644,7 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   disabled
                 />
               </div>
-              <div className="col-md-12 form-group">
+              <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
                 </label>
@@ -548,6 +653,7 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   id="remarks"
                   cols={100} 
                   rows={1}
+                  maxLength={100}
                   value={remarks}
                   onChange={(event) => setRemarks(event.target.value)}
                 />
@@ -598,13 +704,27 @@ const UpdateModal = (props: any) => {
   const formSubmitHandler = async (event: any) => {
     
     event.preventDefault();
+
+    
+
+    const startYear = startDate?.getFullYear();
+    let ptoStartDate=null,ptoEndDate=null;
+    if(startDate!=null){
+      ptoStartDate= new Date(startDate);
+      ptoStartDate.setDate(ptoStartDate.getDate() + 1);
+    }
+    if(endDate!=null){
+      ptoEndDate= new Date(endDate);
+      ptoEndDate.setDate(ptoEndDate.getDate() + 1);
+    }
     let payload = {
       id : formValues.id,
       resourceId : Number(formValues.resourceId),
       ptoTypeId : Number(formValues.ptoTypeId),
-      startDate : startDate,
-      enddDate : endDate,
-      month : formValues.month,
+      startDate : ptoStartDate,
+      enddDate : ptoEndDate,
+      month : months[Number(startDate?.getMonth()) % 12 || 0],
+      year: startYear,
       numberOfDays : numberOfDays,
       remarks : formValues.remarks,
       status: formValues.status,
@@ -648,7 +768,7 @@ const UpdateModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRadius:"4px" }}
+        style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRadius:"4px" }}
         
         variant="primary"
         onClick={props.openModal}
@@ -664,17 +784,22 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
         <Modal.Body>
           <form onSubmit={formSubmitHandler} id='UpdatePtoForm' noValidate>
           <div className="row">
-              <div className="col-md-6 form-group" id="ResourceAddPto">
+              <div className="col-md-6 form-group" id="ResourceUpdatePto">
                 <label className="form-label" htmlFor="resource">
                   Resource
                 </label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <div className="dropdown">
-                  <select required className="form-control" name="resourceId" id="resource" value={formValues.resourceId} onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')} onChange={handleChange}>
+                  <select 
+                    className="form-control" name="resourceId" id="resource" value={formValues.resourceId}  
+                    disabled
+                    onChange={(e: any)=>{handleChange(e);
+                    // validateSingleFormGroup(document.getElementById('ResourceUpdatePto'), 'select');
+                    }}>
                     <option value="0">Select</option>
                     {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   </select>
-                  <div className="error"></div>
+                  {/* <div className="error"></div> */}
                 </div>
               </div>
               <div className="col-md-6 form-group">
@@ -693,17 +818,22 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                 <label className="form-label" htmlFor="ptoType">
                   PTO Type 
                 </label>
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     className="form-control"
                     name="ptoTypeId"
+                    required
                     id="ptoTypeDropdown"
                     value={formValues.ptoTypeId}
-                    onChange={handleChange}
+                    onChange={(e: any)=>{handleChange(e);
+                      validateSingleFormGroup(document.getElementById('PtoType'),'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
                   </select>
+                  <div className="error"></div>
                 </div>
               </div>
 
@@ -717,6 +847,7 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   required
                   name="startDate"
                   onChange={setStartDate}
+                  maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOStartDate'),'datePicker')}
                   format="dd/MM/yyyy"
@@ -735,6 +866,7 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   className="form-control"
                   required
                   name="endDate"
+                  minDate={startDate !== null ? startDate : new Date('December 31, 2000')}
                   onChange={setEndDate}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOEndDate'),'datePicker')}
@@ -778,7 +910,7 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   disabled
                 />
               </div>
-              <div className="col-md-12 form-group">
+              <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
                 </label>
@@ -787,6 +919,7 @@ style={{ float: "right", marginTop: "-68px", padding:"3px 6px 4px 6px", borderRa
                   name="remarks"
                   cols={100}
                   rows={1}
+                  maxLength={100}
                   id="remarks"
                   value={formValues.remarks}
                   onChange={handleChange}
