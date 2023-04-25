@@ -300,7 +300,7 @@ const UpdateModal = (props: any) =>{
   const locations = useSelector((state: any) => state.Filters.locations);
   const subLocations = useSelector((state: any) => state.Filters.subLocations);
   let location = formValues.location;
-
+ 
   const formSubmitHandler = async(event: any) => {
     event.preventDefault();
   }
