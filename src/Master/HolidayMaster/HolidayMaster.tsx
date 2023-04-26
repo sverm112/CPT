@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { filterActions } from "../../Store/Slices/Filters";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
-import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_SUB_LOCATIONS, POST_HOLIDAY } from "../../constants";
+import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_SUB_LOCATIONS, POST_HOLIDAY, UPDATE_HOLIDAY } from "../../constants";
 import { propTypes } from "react-bootstrap/esm/Image";
 
 //Data Table
@@ -291,18 +291,63 @@ const HolidayMaster = () => {
 //Modal
 
 const UpdateModal = (props: any) =>{
+  console.log("Props: ", props);
   const dispatch = useDispatch();
   const [formValues, setFormValues] = useState(props.initialValues || {location:"0"});
-  const [occasion, setOccasion] = useState("");
-  const [subLocation, setSubLocation] = useState("0");
-  const [market, setMarket] = useState("0");
-  const [date, setDate] = useState<Date | null>(null);
+  // console.log("Market Name: ", formValues.marketName);
+  // const [occasion, setOccasion] = useState("");
+  // const [subLocation, setSubLocation] = useState("0");
+  // const [market, setMarket] = useState("0");
+  // const [date, setDate] = useState<Date | null>(null);
   const locations = useSelector((state: any) => state.Filters.locations);
   const subLocations = useSelector((state: any) => state.Filters.subLocations);
-  let location = formValues.location;
+  const marketList = useSelector((state: any) => state.Market.data);
+  const [holidayDate, setHolidayDate] = useState<Date | null>(new Date(props.initialValues.holidayDate));
+  
+  let location = formValues.locationId;
  
   const formSubmitHandler = async(event: any) => {
     event.preventDefault();
+    let holidayStartDate=null;
+    if(holidayDate!=null){
+      holidayStartDate= new Date(holidayDate);
+      holidayStartDate.setDate(holidayStartDate.getDate() + 1);
+      holidayStartDate = holidayStartDate.toLocaleString().slice(0, 10);
+    }
+    let payload = {
+      id: formValues.id,
+      occasionName: formValues.occasionName,
+      locationId: formValues.locationId,
+      subLocationId: formValues.subLocationId,
+      marketId: formValues.marketId,
+      holidayDate: holidayStartDate,
+      status: formValues.isActive == "2" ? "0" : "1",
+      updatedBy: "Admin",
+    };
+    try {
+      if(validateForm('#UpdateHolidayForm')){
+        const response = await fetch(`${UPDATE_HOLIDAY}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+            dispatch(holidayActions.changeToggle());
+            props.closeModal();
+            toast.success("Holiday Updated Successfully");
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");  
+      }
+    } catch {
+      toast.error("Some Error occured.");
+    }
+
   }
   const handleChange = (e: any) => {
     setFormValues({
@@ -310,16 +355,6 @@ const UpdateModal = (props: any) =>{
       [e.target.name]: e.target.value
     });
   };
-  const marketList = useSelector((state: any) => state.Market.data);
-  const getMarketDetails = async () => {
-    const response = await fetch(`${GET_ALL_MARKETS}`);
-    const dataGet = await response.json();
-    console.log(dataGet);
-    dispatch(marketActions.changeData(dataGet));
-  };
-  useEffect(() => {
-    getMarketDetails();
-  }, []);
 
   return (
     <>
@@ -352,6 +387,7 @@ const UpdateModal = (props: any) =>{
                   type="text"
                   className="form-control"
                   id="holidayOccasion"
+                  name="occasionName"
                   value={formValues.occasionName}
                   onBlur = {()=>validateSingleFormGroup(document.getElementById('Occasion'), 'input')}
                   onChange={handleChange}
@@ -366,9 +402,10 @@ const UpdateModal = (props: any) =>{
                 <DatePicker
                   required
                   className="form-control"
+                  name="holidayDate"
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('HolidayDate'),'datePicker')}
-                  onChange={handleChange}
-                  value={formValues.HolidayDate}
+                  onChange={setHolidayDate}
+                  value={holidayDate}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
@@ -386,9 +423,12 @@ const UpdateModal = (props: any) =>{
                     required
                     className="form-control"
                     id="holidayMarket"
-                    value={formValues.fkMarketID}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayMarket'),'select')}
-                    onChange={handleChange}
+                    name="marketId"
+                    value={formValues.marketId}
+                    // onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayMarket'),'select')}
+                    onChange={(e: any)=>{handleChange(e);
+                      validateSingleFormGroup(document.getElementById('HolidayMarket'),'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {marketList.filter((market: any) => market.status == "Active").map((market: any) => <option key={market.id} value={market.id.toString()}>{market.marketName}</option>)}
@@ -406,9 +446,12 @@ const UpdateModal = (props: any) =>{
                     required
                     className="form-control"
                     id="holidayCountry"
-                    value={formValues.location}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayLocation'), 'select')}
-                    onChange={handleChange}
+                    name="locationId"
+                    value={formValues.locationId}
+                    // onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayLocation'), 'select')}
+                    onChange={(e: any)=>{handleChange(e);
+                      validateSingleFormGroup(document.getElementById('HolidayLocation'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {locations.map((location: any) => (<option key={location.locationId} value={location.locationId.toString()}> {location.locationName}</option>))}
@@ -426,14 +469,33 @@ const UpdateModal = (props: any) =>{
                     required
                     className="form-control"
                     id="holidaySubLocation"
-                    value={formValues.subLocation}
-                    onBlur = {()=>validateSingleFormGroup(document.getElementById('isOffShore'), 'select')}
-                    onChange={handleChange}
+                    value={formValues.subLocationId}
+                    name="subLocationId"
+                    // onBlur = {()=>validateSingleFormGroup(document.getElementById('isOffShore'), 'select')}
+                    onChange={(e: any)=>{handleChange(e);
+                      validateSingleFormGroup(document.getElementById('isOffShore'), 'select');
+                    }}
                   >
                     <option value="0">Select</option>
                     {location == "0" ? [] : (subLocations.filter((subLocation: any) => Number(location) == subLocation.locationId).map((subLocation: any) => (<option key={subLocation.subLocationId} value={subLocation.subLocationId.toString()}>{subLocation.subLocationName}</option>)))}
                   </select>
                   <div className="error"></div>
+                </div>
+              </div>
+              <div className="col-md-6 form-group ">
+                <label className="form-label">Status</label>
+                <div className="dropdown">
+                  <select
+                    name="isActive"
+                    className="form-control"
+                    id="statusDropdown"
+                    value={formValues.isActive}
+                    onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    <option value="1">Active</option>
+                    <option value="2">InActive</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -453,13 +515,6 @@ const UpdateModal = (props: any) =>{
 
 const AddModal = (props: any) => {
   const dispatch = useDispatch();
-  const [isShow, invokeModal] = useState(false);
-  // const initModal = () => {
-  //   return invokeModal(!false);
-  // };
-  // function closeModal() {
-  //   return invokeModal(false);
-  // }
   const [occasion, setOccasion] = useState("");
   const [location, setLocation] = useState("0");
   const [subLocation, setSubLocation] = useState("0");
@@ -484,12 +539,18 @@ const AddModal = (props: any) => {
   }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
+    let holidayStartDate=null;
+    if(date!=null){
+      holidayStartDate= new Date(date);
+      holidayStartDate.setDate(holidayStartDate.getDate() + 1);
+      holidayStartDate = holidayStartDate.toLocaleString().slice(0, 10);
+    }
     let payload = {
       occasionName: occasion,
-      fkLocationID: location,
-      fkSubLocationID: subLocation,
-      fkMarketID: market,
-      HolidayDate: date,
+      locationId: location,
+      subLocationId: subLocation,
+      marketId: market,
+      holidayDate: holidayStartDate,
       createdBy: "Admin"
     };
     try {
