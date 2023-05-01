@@ -130,6 +130,7 @@ const PTO = () => {
   const ptos = useSelector((state: any) => state.Pto.data);
   const resourcesForPto = useSelector((state: any) => state.Pto.data)
   
+  const [isLoading, setIsLoading] = useState(true);
   const resourceList = useSelector((state: any) => state.Employee.data);
   const resources = useSelector((state: any) => state.Employee.data);
   const toggle = useSelector((state: any) => state.Pto.toggle);
@@ -165,6 +166,7 @@ const PTO = () => {
       let dataGet = await response.json();
       dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
       dispatch(ptoActions.changeData(dataGet));
+      setIsLoading(false);
     }
     catch {
       console.log("Error occured");
@@ -354,7 +356,7 @@ const PTO = () => {
             </div>
           </div>
           <div className="TableContentBorder">
-            <Table  columnsAndSelectors={columnsAndSelectors} columns={filteredColumns} data={filteredPtos} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
+            <Table  columnsAndSelectors={columnsAndSelectors} isLoading={isLoading} columns={filteredColumns} data={filteredPtos} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
           </div>
         </div>
       </div>

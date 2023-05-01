@@ -133,6 +133,7 @@ const ProjectInfo = () => {
   const expenseTypeSelected = useSelector((store: any) => store.Project.expenseType);
   const statusSelected = useSelector((store: any) => store.Project.status);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [action, setAction] = useState("Add");
   const [updateProjectDetails, setUpdateProjectDetails] = useState({});
   const openModal = () => {
@@ -148,6 +149,7 @@ const ProjectInfo = () => {
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, createdDate: row.createdDate.slice(0, 10),updatedDate: row.updatedDate.slice(0, 10), isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(projectActions.changeData(dataGet));
+    setIsLoading(false);
   };
   useEffect(() => {
     getProjectDetails();
@@ -281,7 +283,7 @@ const ProjectInfo = () => {
             </div>
           </div>
           <div className="TableContentBorder">
-            <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
+            <Table columnsAndSelectors={columnsAndSelectors} columns={columns} isLoading={isLoading} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
           </div>
         </div>
       </div>

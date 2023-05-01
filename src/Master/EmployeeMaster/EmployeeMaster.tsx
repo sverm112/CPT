@@ -130,6 +130,7 @@ const EmployeeMaster = () => {
   const statusSelected = useSelector((state: any) => state.Employee.status);
   const managerSelected = useSelector((state: any) => state.Employee.manager);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [action, setAction] = useState("Add");
   const [updateResourceDetails, setUpdateResourceDetails] = useState({});
   const openModal = () => {
@@ -162,6 +163,7 @@ const EmployeeMaster = () => {
       let dataGet = await response.json();
       dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
       dispatch(employeeActions.changeData(dataGet));
+      setIsLoading(false);
     } catch {
       console.log("Error occured");
     }
@@ -434,7 +436,7 @@ const EmployeeMaster = () => {
             </div>
           </div>
         <div className="TableContentBorder" >
-        <Table columnsAndSelectors={columnsAndSelectors}columns={columns} data={filteredResources} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
+        <Table columnsAndSelectors={columnsAndSelectors}columns={columns} isLoading={isLoading} data={filteredResources} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
         </div>
         </div>
       </div>

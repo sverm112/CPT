@@ -211,6 +211,7 @@ const ProjectAllocation = () => {
   const resourceTypeSelected = useSelector((store: any) => store.ProjectAllocation.resourceType)
   const roleSelected = useSelector((store: any) => store.ProjectAllocation.role)
   const projectMarketSelected = useSelector((store: any) => store.ProjectAllocation.projectMarket)
+  const [isLoading, setIsLoading] = useState(true);
   const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
   const locationSelected = useSelector((store: any) => store.ProjectAllocation.location)
   const changeResourceMarketSelectHandler = (event: any) => {
@@ -244,6 +245,7 @@ const ProjectAllocation = () => {
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName,createddate:row.createdDate.slice(0, 10),updatedDate:row.updatedDate.slice(0,10), isActive: row.isActive == "1" ? "Active" : "Inactive" }));
 
     dispatch(projectAllocationActions.changeData(dataGet));
+    setIsLoading(false);
   };
   useEffect(() => {
     getProjectAllocationDetails();
@@ -404,7 +406,7 @@ const ProjectAllocation = () => {
             title={title}>
           </DownloadBtn> */}
           <div className="TableContentBorder">
-            <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredProjectAllocations} title={title}/>
+            <Table columnsAndSelectors={columnsAndSelectors} isLoadings={isLoading} columns={columns} data={filteredProjectAllocations} title={title}/>
           </div>
       </div>
     </div>

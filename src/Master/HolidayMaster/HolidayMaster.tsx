@@ -100,7 +100,7 @@ const HolidayMaster = () => {
   const subLocations = useSelector((state: any) => state.Filters.subLocations);
   const status = useSelector((state: any) => state.Filters.status);
   const marketList = useSelector((state: any) => state.Market.data);
-  
+  const [isLoading, setIsLoading] = useState(true);
   const marketSelected = useSelector((store: any) => store.Holiday.market);
   const locationSelected = useSelector((store: any) => store.Holiday.location);
   const subLocationSelected = useSelector((store: any) => store.Holiday.subLocation);
@@ -121,6 +121,7 @@ const HolidayMaster = () => {
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate.slice(0,10) }));
     dispatch(holidayActions.changeData(dataGet));
+    setIsLoading(false);
   };
   useEffect(() => {
     getHolidayDetails();
@@ -257,7 +258,7 @@ const HolidayMaster = () => {
             title={title}>
           </DownloadBtn> */}
         <div className="TableContentBorder" >
-          <Table columnsAndSelectors={columnsAndSelectors} columns={columns} data={filteredHolidays} id="data-table" title={title}/>
+          <Table columnsAndSelectors={columnsAndSelectors} columns={columns} isLoading={isLoading} data={filteredHolidays} id="data-table" title={title}/>
           </div>
         </div>
       </div>

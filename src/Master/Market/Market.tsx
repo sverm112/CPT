@@ -69,6 +69,7 @@ const customValueRenderer = (selected: any, _options: any) => {
 
 const Market = () => {
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
   const markets = useSelector((store: any) => store.Market.data);
   const toggle = useSelector((store: any) => store.Market.toggle);
   const [showModal, setShowModal] = useState(false);
@@ -87,6 +88,7 @@ const Market = () => {
       let dataGet = await response.json();
       dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
       dispatch(marketActions.changeData(dataGet));
+      setIsLoading(false);
     }
     catch {
       console.log("Error occured");
@@ -142,7 +144,7 @@ const Market = () => {
             </div>
           </div>
           <div className="TableContentBorder">
-            <Table  columnsAndSelectors={columnsAndSelectors} columns={columns} data={markets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
+            <Table  columnsAndSelectors={columnsAndSelectors} isLoading={isLoading} columns={columns} data={markets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
           </div>
         </div>
       </div>
