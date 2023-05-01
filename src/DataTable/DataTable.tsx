@@ -68,13 +68,13 @@ const Table = (props: any) => {
 
   return (
       <>
-      { !props.isLoading ? <ContentLoader
-        height={320}
+      { props.isLoading ? <ContentLoader
+        // height={320}
         speed={1}
         // backgroundColor={'#333'}
         // foregroundColor={'#999'}
         style={{width: '120%'}}
-        viewBox="0 0 700 70"
+        viewBox="0 0 700 150"
       >
         <rect x="1" y="4" rx="3" ry="3" width="49" height="16" />
         <rect x="51" y="4" rx="3" ry="3" width="49" height="16" />

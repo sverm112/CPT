@@ -149,7 +149,7 @@ const ProjectInfo = () => {
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, createdDate: row.createdDate.slice(0, 10),updatedDate: row.updatedDate.slice(0, 10), isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(projectActions.changeData(dataGet));
-    setIsLoading(false);
+    setTimeout(()=>setIsLoading(false), 2000);
   };
   useEffect(() => {
     getProjectDetails();
