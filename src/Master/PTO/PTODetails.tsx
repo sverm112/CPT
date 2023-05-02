@@ -130,6 +130,7 @@ const PTO = () => {
   const ptos = useSelector((state: any) => state.Pto.data);
   const resourcesForPto = useSelector((state: any) => state.Pto.data)
   
+  const [isLoading, setIsLoading] = useState(true);
   const resourceList = useSelector((state: any) => state.Employee.data);
   const resources = useSelector((state: any) => state.Employee.data);
   const toggle = useSelector((state: any) => state.Pto.toggle);
@@ -165,6 +166,7 @@ const PTO = () => {
       let dataGet = await response.json();
       dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
       dispatch(ptoActions.changeData(dataGet));
+      setTimeout(()=>setIsLoading(false), 2000);
     }
     catch {
       console.log("Error occured");
@@ -354,7 +356,7 @@ const PTO = () => {
             </div>
           </div>
           <div className="TableContentBorder">
-            <Table  columnsAndSelectors={columnsAndSelectors} columns={filteredColumns} data={filteredPtos} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
+            <Table  columnsAndSelectors={columnsAndSelectors} isLoading={isLoading} columns={filteredColumns} data={filteredPtos} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
           </div>
         </div>
       </div>
@@ -784,19 +786,22 @@ const UpdateModal = (props: any) => {
         <Modal.Body>
           <form onSubmit={formSubmitHandler} id='UpdatePtoForm' noValidate>
           <div className="row">
-              <div className="col-md-6 form-group" id="ResourceAddPto">
+              <div className="col-md-6 form-group" id="ResourceUpdatePto">
                 <label className="form-label" htmlFor="resource">
                   Resource
                 </label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <div className="dropdown">
-                  <select required className="form-control" name="resourceId" id="resource" value={formValues.resourceId}  
-                    // onBlur={()=>validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select')}
-                    onChange={(e: any)=>{handleChange(e);validateSingleFormGroup(document.getElementById('ResourceAddPto'), 'select');}}>
+                  <select 
+                    className="form-control" name="resourceId" id="resource" value={formValues.resourceId}  
+                    disabled
+                    onChange={(e: any)=>{handleChange(e);
+                    // validateSingleFormGroup(document.getElementById('ResourceUpdatePto'), 'select');
+                    }}>
                     <option value="0">Select</option>
                     {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   </select>
-                  <div className="error"></div>
+                  {/* <div className="error"></div> */}
                 </div>
               </div>
               <div className="col-md-6 form-group">

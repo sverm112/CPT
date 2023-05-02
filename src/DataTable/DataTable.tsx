@@ -7,6 +7,9 @@ import customStyles from "./customStyles";
 import { Columns } from "./DownloadBtnAndColumns";
 import {HoverMultiSelect} from './HoverMultiSelect';
 import DownloadBtn from "../Export/DownloadBtn";
+// import ContentLoader from 'react-content-loader';
+import {RotatingLines} from 'react-loader-spinner';
+
 const Table = (props: any) => {
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
@@ -17,10 +20,6 @@ const Table = (props: any) => {
     console.log(event);
     setColumnsSelected(event);
   }
-
-  // const filteredItems = data.filter(
-  //   item => item.name && item.name.includes(filterText)
-  // );
   let filteredColumns=props.columns;
   if(columnsSelected.length)
  {
@@ -69,7 +68,40 @@ const Table = (props: any) => {
   }, [filterText, resetPaginationToggle,options,columnsSelected,onColumnsChange]);
 
   return (
-    // <div style={{paddingBottom:'200px'}}>
+      <>
+      { props.isLoading ? 
+      // <ContentLoader
+      //   // height={320}
+      //   speed={1}
+      //   // backgroundColor={'#333'}
+      //   // foregroundColor={'#999'}
+      //   style={{width: '120%'}}
+      //   viewBox="0 0 700 150"
+      // >
+      //   <rect x="1" y="4" rx="3" ry="3" width="49" height="16" />
+      //   <rect x="51" y="4" rx="3" ry="3" width="49" height="16" />
+      //   <rect x="476" y="4" rx="3" ry="3" width="100" height="16" />
+      //   <rect x="1" y="23" rx="3" ry="3" width="580" height="10" />
+      //   <rect x="1" y="36" rx="3" ry="3" width="580" height="10" />
+      //   <rect x="1" y="49" rx="3" ry="3" width="580" height="10" />
+      //   <rect x="1" y="62" rx="3" ry="3" width="580" height="10" />
+      //   <rect x="1" y="75" rx="3" ry="3" width="580" height="10" />
+      //   <rect x="1" y="88" rx="3" ry="3" width="580" height="10" />
+      //   <rect x="1" y="101" rx="3" ry="3" width="580" height="10" />
+      //   <rect x="1" y="114" rx="3" ry="3" width="580" height="10" />
+      //   <rect x="1" y="127" rx="3" ry="3" width="580" height="10" />
+      //   <rect x="1" y="140" rx="3" ry="3" width="580" height="10" />
+      // </ContentLoader>
+      <div className="SpinnerLoader" style={{height:'50vh',textAlign:'center', justifyContent:'center', margin:'auto', display:'flex'}}>
+        <RotatingLines
+          strokeColor="#fa600d"
+          strokeWidth="5"
+          animationDuration="0.75"
+          width="96"
+          visible={true}
+        />
+      </div>
+      :
       <DataTable
       className="table-striped"
       columns={filteredColumns}
@@ -82,6 +114,8 @@ const Table = (props: any) => {
       persistTableHead={true}
       onRowDoubleClicked={props.onRowDoubleClicked}
     />
+      }
+    </>
     // </div>
   );
 };
