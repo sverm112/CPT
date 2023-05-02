@@ -214,6 +214,20 @@ const ProjectAllocation = () => {
   const [isLoading, setIsLoading] = useState(true);
   const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
   const locationSelected = useSelector((store: any) => store.ProjectAllocation.location)
+  
+
+  const [showModal, setShowModal] = useState(false);
+  const [action, setAction] = useState("Add");
+  const [updateProjectDetails, setUpdateProjectDetails] = useState({});
+  const openModal = () => {
+    setShowModal(true);
+  }
+  const closeModal = () => {
+    setShowModal(false);
+    setAction("Add");
+  }
+
+
   const changeResourceMarketSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeResourceMarket(event));
   };
@@ -299,6 +313,13 @@ const ProjectAllocation = () => {
     'startDate', 'enddDate', 'pTODays', 'allocationHours']
   //end constants for export
 
+  const handleRowDoubleClicked = (row: any) => {
+    setShowModal(true);
+    setAction("Update");
+    let data = { ...row, isActive: row.isActive == "Active" ? "1" : "2" }
+    setUpdateProjectDetails(data);
+    console.log("Project Allocation: ", row);
+  };
   return (
     <div>
       <SideBar></SideBar>
@@ -316,7 +337,10 @@ const ProjectAllocation = () => {
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 style={{ marginRight: "200px" }}
               /> */}
-              <ModalDialog />
+              {/* <AddModal /> */}
+              {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action == "Update" && <UpdateModal initialValues={updateProjectDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+
             </div>
           </div>
         </div>
@@ -406,14 +430,558 @@ const ProjectAllocation = () => {
             title={title}>
           </DownloadBtn> */}
           <div className="TableContentBorder">
-            <Table columnsAndSelectors={columnsAndSelectors} isLoading={isLoading} columns={columns} data={filteredProjectAllocations} title={title}/>
+            <Table columnsAndSelectors={columnsAndSelectors} columns={columns} isLoading={isLoading} onRowDoubleClicked={handleRowDoubleClicked} data={filteredProjectAllocations} title={title}/>
           </div>
       </div>
     </div>
   );
 };
 
-const ModalDialog = () => {
+const UpdateModal = (props: any) => {
+  const [formValues, setFormValues] = useState(props.initialValues || { location: "0" });
+  console.log("Update Allocation: ", props);
+  const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(null);
+  const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(null);
+  const [ptoDays, setPTODays] = useState("");
+  const [allocationPercentage, setAllocationPercentage] = useState("");
+  const [resourceType1, setResourceType1] = useState("0");
+  const [resourceId, setResourceId] = useState("0");
+  const [projectId, setProjectId] = useState("0");
+  const [allocatedPercentage, setAllocatedPercentage] = useState(0);
+  const holidayDetails = useSelector((state: any) => state.Holiday.data);
+  let allocationHours = 0, allocationHoursPerDay = 0;
+  
+  console.log("formValues: ", formValues);
+  const calculateAllocationDays = (startDate: Date, endDate: Date) => {
+    let count = 0;
+    const curDate = new Date(startDate.getTime());
+    while (curDate <= endDate) {
+      const dayOfWeek = curDate.getDay();
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
+      curDate.setDate(curDate.getDate() + 1);
+    }
+    console.log("AllocationDays Count " + count);
+    return count;
+  }
+  const calculateHolidays = (location: any, subLocation: any, startDate: Date, endDate: Date) => {
+    let count = 0;
+    let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.isActive == "Active");
+    console.log("filtered holidays ," + filteredHolidays.length)
+    for (let i = 0; i < filteredHolidays.length; i++) {
+      let holidayDate = new Date(filteredHolidays[i].holidayDate)
+      let dayOfWeek = holidayDate.getDay();
+      if (dayOfWeek !== 0 && dayOfWeek !== 6 && startDate <= holidayDate && endDate >= holidayDate)
+        count++;
+    }
+    console.log("Holiday Count " + count);
+    return count;
+  }
+  //allocationHours= Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
+  const dispatch = useDispatch();
+  const resourcesList = useSelector((store: any) => store.Employee.data);
+  const projectsList = useSelector((store: any) => store.Project.data);
+  const roles = useSelector((state: any) => state.Filters.roles);
+  const getEmployeeDetails = async () => {
+    const response = await fetch(`${GET_ALL_RESOURCES}`);
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dispatch(employeeActions.changeData(dataGet));
+  };
+  const getLocationDetails = async () => {
+    const response = await fetch(`${GET_ALL_LOCATIONS}`);
+    const dataGet = await response.json();
+    dispatch(filterActions.changeLocations(dataGet));
+  }
+  const getSubLocationDetails = async () => {
+    const response = await fetch(`${GET_ALL_SUB_LOCATIONS}`);
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dispatch(filterActions.changeSubLocations(dataGet));
+  }
+  useEffect(() => {
+    getEmployeeDetails();
+    getLocationDetails();
+    getSubLocationDetails();
+  }, []);
+  const getProjectDetails = async () => {
+    const response = await fetch(`${GET_ALL_PROJECTS}`);
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dispatch(projectActions.changeData(dataGet));
+  };
+  useEffect(() => {
+    getProjectDetails();
+  }, []);
+  let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
+  let selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
+
+  const setResourceDetails = (event: any) => {
+    console.log(selectedResourceDetails, event.target.value)
+    setResourceId(event.target.value);
+  };
+  const setProjectDetails = (event: any) => {
+    setProjectId(event.target.value);
+  };
+
+
+
+  if (resourceId == "0") {
+    selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
+  }
+  else {
+    const filteredResource = resourcesList.filter((resource: any) => resource.resourceId == Number(resourceId));
+    selectedResourceDetails.resourceId = filteredResource[0].resourceId
+    selectedResourceDetails.resourceType = filteredResource[0].resourceType
+    selectedResourceDetails.role = filteredResource[0].role
+    selectedResourceDetails.supervisor = filteredResource[0].manager
+    selectedResourceDetails.location = filteredResource[0].location
+    selectedResourceDetails.subLocation = filteredResource[0].subLocation
+    selectedResourceDetails.resourceMarket = filteredResource[0].resourceMarket
+  }
+
+  if (projectId == "0") {
+    selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
+  }
+  else {
+    let filteredProject = projectsList.filter((project: any) => project.pkProjectID == Number(projectId))
+    selectedProjectDetails.projectId = filteredProject[0].pkProjectID
+    selectedProjectDetails.projectMarket = filteredProject[0].projectMarket
+    selectedProjectDetails.expenseType = filteredProject[0].expenseType
+    selectedProjectDetails.PPSID = filteredProject[0].projectCode
+  }
+
+  if (selectedResourceDetails.resourceType == "OGS")
+    allocationHoursPerDay = 8.5;
+  else if (selectedResourceDetails.resourceType == "FTE" || selectedResourceDetails.resourceType == "GTM")
+    allocationHoursPerDay = 8;
+  else
+    allocationHoursPerDay = 0;
+
+  if (resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
+    let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
+    allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
+  }
+
+  const resetFormFields = () => {
+    setAllocationStartDate(null);
+    setAllocationEndDate(null);
+    setPTODays("");
+    setAllocationPercentage("");
+    setResourceType1("0");
+    setResourceId("0");
+    setProjectId("0");
+  }
+  const getAllocationPercentage = async () => {
+    let payload = {
+      fkResourceID: Number(resourceId),
+      startDate: allocationStartDate,
+      endDate: allocationEndDate
+    };
+    try {
+      const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?fkResourceID=${resourceId}&startDate=${allocationStartDate?.toISOString().slice(0, 10)}&endDate=${allocationEndDate?.toISOString().slice(0, 10)}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const dataResponse = await response.json();
+      setAllocatedPercentage(Number(dataResponse));
+    }
+    catch {
+      console.log("Some Error Occured")
+        ;
+    }
+  }
+  useEffect(() => {
+    setAllocatedPercentage(0);
+    setPTODays("");
+    if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
+      {getAllocationPercentage();
+      getPTODays();
+    }
+  }, [resourceId, allocationStartDate, allocationEndDate]);
+
+  const formSubmitHandler = async (event: any) => {
+    event.preventDefault();
+    let payload = {
+      fkResourceID: resourceId == "0" ? 0 : Number(resourceId),
+      fkProjectID: projectId == "0" ? 0 : Number(projectId),
+      resourceType1: resourceType1,
+      startDate: allocationStartDate,
+      enddDate: allocationEndDate,
+      pTODays: ptoDays == "" ? 0 : Number(ptoDays),
+      allocationHours: allocationHours,
+      allocationPercentage: Number(allocationPercentage),
+      isActive: 1,
+      createdBy: "Admin"
+    };
+    try {
+      if(validateForm('#AllocateProjectForm')){
+        const response = await fetch(`${POST_PROJECT_ALLOCATION}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const dataResponse = await response.json();
+        if (dataResponse.length) {
+          if (dataResponse[0].statusCode == "201") {
+            console.log(dataResponse[0].statusReason);
+            console.log(dataResponse[0].recordsCreated);
+  
+            dispatch(projectAllocationActions.changeToggle());
+            resetFormFields();
+            props.closeModal();
+            toast.success("Project Allocated Successfully")
+          } else toast.error(dataResponse[0].errorMessage);
+        } else toast.error("Some Error occured.");
+      }
+    } catch {
+      toast.error("Some Error occured.");
+    }
+
+  };
+  //console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
+
+  const getPTODays = async()=>{
+    console.log("Get PTO Days called: "+ resourceId+ allocationStartDate + allocationEndDate);
+    if(resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
+      if(allocationEndDate >= allocationStartDate){
+        try{
+          let paStartDate = new Date(allocationStartDate);
+          paStartDate.setDate(paStartDate.getDate() + 1);
+          let paEndDate = new Date(allocationEndDate);
+          paEndDate.setDate(paEndDate.getDate()+1);
+          const response = await fetch(`${GET_TOTAL_PTO_DAYS}?resourceId=${resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          
+          const dataResponse = await response.json();
+          // console.log()
+          setPTODays(dataResponse);
+          console.log("Data Response: "+ dataResponse);
+        }catch{
+          toast.error("Some Error Occured");
+        }
+      }
+      // else{
+      //   const formGroup1 = document.getElementById('AllocationStartField');
+      //   const errorContainer = formGroup1?.querySelector('.error');
+
+      //   errorContainer.textContent = "Start Date should be smaller that the End Date";
+      //   // option.errorMessage(input, label);
+  
+      //   const formGroup2 = document.getElementById('AllocationEndField');
+        
+      // }
+    }
+  }
+  const handleChange = (e: any) => {
+    console.log("Update")
+    setFormValues({
+      ...formValues,
+      [e.target.name]: e.target.value
+    });
+  };
+  return (
+    <>
+      <Button
+        className="btn btn-primary"
+        style={{ float: "right", marginTop: "-50px" }}
+        variant="primary"
+        onClick={props.openModal}
+      >
+        <i className="las la-plus"></i> Update Allocation
+      </Button>
+      <Modal show={props.showModal} id="project_allocation_modal" onHide={props.closeModal}>
+        <Modal.Header closeButton onClick={props.closeModal}>
+          <Modal.Title>
+            <h6>Update Allocation</h6>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={formSubmitHandler} id="AllocateProjectForm" noValidate>
+            <div className="row">
+              <div className="col-md-6 form-group" id="AllocateProjectResource">
+                <label className="form-label" htmlFor="resource">
+                  Resource
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select 
+                    className="form-control" 
+                    required
+                    id="resource" 
+                    value={formValues.resourceId}
+                    // onBlur={()=>{
+                    //   validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
+                      
+                    // }} 
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setResourceDetails(e);
+                      console.log("Changed", formValues.resourceName);
+                      validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
+                      }}>
+                    <option value="0">Select</option>
+                    {resourcesList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
+                  </select>
+                <div className="error"></div>
+                </div>
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="resourceType">
+                  Resource Type
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="resourceType"
+                  value={selectedResourceDetails.resourceType}
+                  disabled
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="role">
+                  Role
+                </label>
+                <input type="text" className="form-control" id="role" value={selectedResourceDetails.role} disabled />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="supervisor">
+                  Supervisor
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="supervisor"
+                  value={selectedResourceDetails.supervisor}
+                  disabled
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="ocation">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="location"
+                  value={selectedResourceDetails.location}
+                  disabled
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="resourceMarket">
+                  Resource Market
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="resourceMarket"
+                  value={selectedResourceDetails.resourceMarket}
+                  disabled
+                />
+              </div>
+              <div className="col-md-6 form-group" id="AllocateProjectField">
+                <label className="form-label" htmlFor="project">
+                  Project
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select 
+                    className="form-control" 
+                    required
+                    id="project" 
+                    value={formValues.pkProjectID} 
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select')}
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select');
+                    }}>
+                    <option value="0">Select</option>
+                    {projectsList.filter((project: any) => project.isActive == "Active").map((project: any) => <option key={project.pkProjectID} value={project.pkProjectID.toString()}>{project.projectName}</option>)}
+                  </select>
+                <div className="error"></div>
+                </div>
+              </div>
+              <div className="col-md-6 form-group" id="AllocateProjectResourceType">
+                <label className="form-label" htmlFor="resourceType1">
+                  Resource Type 1
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select
+                    className="form-control "
+                    required
+                    id="resourceType1Dropdown"
+                    value={formValues.resourceType1}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select')}
+                    onChange={(event) => {setResourceType1(event.target.value);
+                      validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select');
+                    }}
+                  >
+                    <option value="0">Select</option>
+                    {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
+                  </select>
+                <div className="error"></div>
+                </div>
+              </div>
+
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="project Market">
+                  Project Market
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="projectMarket"
+                  value={
+                    // selectedProjectDetails.projectMarket
+                  formValues.projectMarket
+                  }
+                  disabled
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="ppsid">
+                  PPSID
+                </label>
+                <input type="text" className="form-control" id="ppsid" value={formValues.projectCode} disabled />
+              </div>
+
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="capex">
+                  Expense Type
+                </label>
+                <input type="text" className="form-control" id="capex" value={formValues.expenseType} disabled />
+              </div>
+              <div className="col-md-6 form-group" id="AllocationStartField">
+                <label className="form-label" htmlFor="allocationStartDate" style={{ zIndex: "9" }}>
+                  Allocation Start Date
+                </label>
+                <span className="requiredField">*</span>
+                <DatePicker
+                  className="form-control"
+                  required
+                  onCalendarClose={()=>{
+                    validateSingleFormGroup(document.getElementById('AllocationStartField'), 'datePicker');
+                    
+                  }}
+                  // maxDate={formValues.enddDate !== null ? formValues.enddDate : new Date('December 31, 2100')}
+                  onChange={setAllocationStartDate}
+                  value={formValues.startDate}
+                  format="dd/MM/yyyy"
+                  dayPlaceholder="dd"
+                  monthPlaceholder="mm"
+                  yearPlaceholder="yyyy"
+                />
+                <div className="error"></div>
+              </div>
+              <div className="col-md-6 form-group" id="AllocationEndField">
+                <label className="form-label" htmlFor="allocationEndDate" style={{ zIndex: "9" }}>
+                  Allocation End Date
+                </label>
+                <span className="requiredField">*</span>
+                <DatePicker
+                  className="form-control"
+                  required
+                  onCalendarClose={()=>{
+                    validateSingleFormGroup(document.getElementById('AllocationEndField'), 'datePicker');
+                    
+                  }}
+                  // minDate={formValues.startDate !== null ? formValues.startDate : new Date('December 31, 2000')}
+                  onChange={setAllocationEndDate}
+                  value={formValues.enddDate}
+                  format="dd/MM/yyyy"
+                  dayPlaceholder="dd"
+                  monthPlaceholder="mm"
+                  yearPlaceholder="yyyy"
+                />
+                <div className="error"></div>
+              </div>
+              <div className="col-md-6 form-group" id="AllocateProjectPTODays">
+                <label className="form-label" htmlFor="ptoDays">
+                  PTO Days
+                </label>
+                {/* <span className="requiredField">*</span> */}
+                <input
+                  type="text"
+                  disabled
+                  // required
+                  // pattern={PatternsAndMessages.numberOnly.pattern}
+                  className="form-control"
+                  id="ptoDays"
+                  value={formValues.pTODays}
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
+                  // onChange={(event) => setPTODays(event.target.value)}
+                />
+                {/* <div className="error"></div> */}
+              </div>
+
+              <div className="col-md-6 form-group" id="AllocateProjectPercentage">
+                <label className="form-label" htmlFor="allocationHours">
+                  Allocation(Percentage)
+                  {allocatedPercentage != 0 && <span style={{ color: "red" }}> Allocated : {allocatedPercentage}</span>}
+                </label>
+                <span className="requiredField">*</span>
+                <input
+                  type="text"
+                  required
+                  pattern={PatternsAndMessages.numberOnly.pattern}
+                  className="form-control"
+                  id="allocationPercentage"
+                  value={formValues.allocationPercentage}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPercentage'), 'input')}
+                  onChange={(event) => setAllocationPercentage(event.target.value)}
+                />
+                <div className="error"></div>
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="allocationHoursPerDay">
+                  Allocation Hours Per Day
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="allocationHoursPerDay"
+                  value={allocationHoursPerDay}
+                  disabled
+                />
+              </div>
+              <div className="col-md-6 form-group">
+                <label className="form-label" htmlFor="allocationHours">
+                  Allocation(Hours)
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="allocationHours"
+                  value={formValues.allocationHours}
+                  disabled
+                // onChange={(event) => setAllocationHours(event.target.value)}
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-12">
+                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
+    </>
+  );
+};
+
+const AddModal = (props: any) => {
   const [isShow, invokeModal] = useState(false);
   const initModal = () => {
     return invokeModal(!false);
@@ -665,12 +1233,12 @@ const ModalDialog = () => {
         className="btn btn-primary"
         style={{ float: "right", marginTop: "-50px" }}
         variant="primary"
-        onClick={initModal}
+        onClick={props.openModal}
       >
         <i className="las la-plus"></i> Allocate New Project
       </Button>
-      <Modal show={isShow} id="project_allocation_modal" onHide={closeModal}>
-        <Modal.Header closeButton onClick={closeModal}>
+      <Modal show={props.showModal} id="project_allocation_modal" onHide={props.closeModal}>
+        <Modal.Header closeButton onClick={props.closeModal}>
           <Modal.Title>
             <h6>Allocate New Project</h6>
           </Modal.Title>

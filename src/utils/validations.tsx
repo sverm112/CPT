@@ -118,27 +118,34 @@ export function validateForm(formSelector: any){
     const formGroupToBeValidated = document.querySelector(formSelector);
     const formFields = Array.from(formGroupToBeValidated.querySelectorAll('.form-group'));
     let i=0;
-    console.log("Form Validity: ", isFormValid);
     formFields.forEach((ff: any) => {
       // console.log(`Form Fields ${++i}`, ff);
       const selectFields = ff.getElementsByTagName('select');
       const inputFields = ff.getElementsByTagName('input');
       // const dateFields = ff.querySelector('.react-date-picker__inputGroup__day');
       i=0;
-      for(const selectField of selectFields){
-        for(const option of selectValidationOptions){
-          if(selectField.hasAttribute(option.attribute)){
-            validateSingleFormGroup(ff, 'select');
+      try{
+        for(const selectField of selectFields){
+          for(const option of selectValidationOptions){
+            if(selectField.hasAttribute(option.attribute)){
+              validateSingleFormGroup(ff, 'select');
+            }
           }
         }
+      }catch{
+        console.log("Error in Select Field");
       }
       i=0;
-      for(const inputField of inputFields){
-        for(const option of inputValidationOptions){
-          if(inputField.hasAttribute(option.attribute)){
-            validateSingleFormGroup(ff, 'input');
+      try{
+        for(const inputField of inputFields){
+          for(const option of inputValidationOptions){
+            if(inputField.hasAttribute(option.attribute)){
+              validateSingleFormGroup(ff, 'input');
+            }
           }
         }
+      }catch{
+        console.log("Error in Input Field");
       }
       // i=0;
       // for(const dateField of dateFields){
@@ -158,6 +165,7 @@ export function validateForm(formSelector: any){
 
     // formElement.setAttribute('novalidate','');
     // console.log('Form validity: ', isFormValid);
+    // console.log("Finished Validate Form");
     return isFormValid;
   };
 

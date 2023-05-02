@@ -32,4 +32,5 @@ export const UPDATE_RESOURCE = `${Base_URL}api/v1/Resources/UpdateResources`;
 export const UPDATE_MARKET = `${Base_URL}api/v1/Markets/UpdateMarket`;
 export const UPDATE_PROJECT = `${Base_URL}api/v1/Projects/UpdateProjects`;
 export const UPDATE_PTO = `${Base_URL}api/v1/PTOs/UpdatePTO`;
+export const UPDATE_HOLIDAY = `${Base_URL}api/v1/HolidaysList/UpdateHoliday`;
 // export const UPDATE_PTO = `${Base_URL}api/v1/PTOs/UpdatePTO`;
