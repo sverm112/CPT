@@ -31,14 +31,14 @@ const columns = [
   },
   {
     name: "Project Model",
-    selector: (row: { projectModel: any }) => row.projectModel == "0" ? "" : row.projectModel,
+    selector: (row: { projectModel: any }) => row.projectModel,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Market",
-    selector: (row: { projectMarket: any }) => row.projectMarket == "0" ? "" : row.projectMarket,
+    selector: (row: { projectMarket: any }) => row.projectMarket ,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -52,14 +52,14 @@ const columns = [
   },
   {
     name: "Expense Type",
-    selector: (row: { expenseType: any }) => row.expenseType == "0" ? "" : row.expenseType,
+    selector: (row: { expenseType: any }) => row.expenseType,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Status",
-    selector: (row: { isActive: any }) => row.isActive,
+    selector: (row: { status: any }) => row.status,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -100,7 +100,7 @@ const columnsAndSelectors=[
   {'name':'Project Model','selector':'projectModel','default':'true'},
   {'name':'Market','selector':'projectMarket','default':'true'},
   {'name':'Program Manager','selector':'programManager','default':'true'},
-  {'name':'Status','selector':'isActive','default':'true'},
+  {'name':'Status','selector':'status','default':'true'},
   {'name':'Created Date','selector':'createdDate','default':'true'},
   {'name':'Created By','selector':'createdBy','default':'true'},
   {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
@@ -147,7 +147,7 @@ const ProjectInfo = () => {
   const getProjectDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, createdDate: row.createdDate.slice(0, 10),updatedDate: row.updatedDate.slice(0, 10), isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, createdDate: row.createdDate.slice(0, 10),updatedDate: row.updatedDate.slice(0, 10)}));
     dispatch(projectActions.changeData(dataGet));
     setTimeout(()=>setIsLoading(false), 2000);
   };
@@ -190,7 +190,7 @@ const ProjectInfo = () => {
     console.log(row);
     setShowModal(true);
     setAction("Update");
-    let data = { ...row, isActive: row.isActive == "Active" ? "1" : "2" }
+    let data = { ...row}
     console.log(data);
     setUpdateProjectDetails(data);
   };
@@ -318,7 +318,7 @@ const AddModal = (props: any) => {
       projectName: projectName,
       projectModel: projectModel,
       expenseType: expenseType,
-      fkMarketID: projectMarket == "0" ? 0 : Number(projectMarket),
+      marketId: projectMarket,
       programManager: programManager,
       createdBy: "Admin"
     };
@@ -507,14 +507,14 @@ const UpdateModal = (props: any) => {
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
     let payload = {
-      pkProjectID: formValues.pkProjectID,
+      id: formValues.id,
       projectCode: formValues.projectCode,
       projectName: formValues.projectName,
       projectModel: formValues.projectModel,
       expenseType: formValues.expenseType,
-      fkMarketID: formValues.fkMarketID == "0" ? 0 : Number(formValues.fkMarketID),
+      marketId: formValues.marketId ,
       programManager: formValues.programManager,
-      isActive: formValues.isActive == "2" ? "0" : "1",
+      status: formValues.status,
       updatedBy: "Admin",
     };
     try {
@@ -640,10 +640,10 @@ style={{ float: "right", marginTop: "-68px"}}
                 <div className="dropdown">
                   <select
                     required
-                    name="fkMarketID"
+                    name="marketId"
                     className="form-control"
                     id="projectMarket"
-                    value={formValues.fkMarketID}
+                    value={formValues.marketId}
                     // onBlur = {()=>validateSingleFormGroup(document.getElementById('MarketInput'),'select')}
                     onChange={(e: any) => {handleChange(e);
                       validateSingleFormGroup(document.getElementById('MarketInput'),'select');
@@ -694,15 +694,15 @@ style={{ float: "right", marginTop: "-68px"}}
                 <label className="form-label">Status</label>
                 <div className="dropdown">
                   <select
-                    name="isActive"
+                    name="status"
                     className="form-control"
                     id="statusDropdown"
-                    value={formValues.isActive}
+                    value={formValues.status}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    <option value="1">Active</option>
-                    <option value="2">InActive</option>
+                    <option value="Active">Active</option>
+                    <option value="InActive">InActive</option>
                   </select>
                 </div>
               </div>

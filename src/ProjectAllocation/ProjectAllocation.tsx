@@ -42,7 +42,7 @@ const columns = [
   },
   {
     name: "Supervisor",
-    selector: (row: { manager: any }) => row.manager,
+    selector: (row: { resourceManager: any }) => row.resourceManager,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -71,7 +71,7 @@ const columns = [
   },
   {
     name: "Resource Type1",
-    selector: (row: { resourceType1: any }) => row.resourceType1 == "0" ? "" : row.resourceType1,
+    selector: (row: { resourceType1: any }) => row.resourceType1,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -114,7 +114,7 @@ const columns = [
   },
   {
     name: "PTO Days",
-    selector: (row: { pTODays: any }) => row.pTODays,
+    selector: (row: { numberOfPTODays: any }) => row.numberOfPTODays,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -128,14 +128,14 @@ const columns = [
   },
   {
     name: "Status",
-    selector: (row: { isActive: any }) => row.isActive,
+    selector: (row: { status: any }) => row.status,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate.slice(0, 10),
+    selector: (row: { createdDate: any }) => row.createdDate,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -167,7 +167,7 @@ const columnsAndSelectors=[
   {'name':'Resource','selector':'resourceName','default':'true'},
   {'name':'Resource Type','selector':'resourceType','default':'true'},
   {'name':'Role','selector':'role','default':'false'},
-  {'name':'Supervisor','selector':'manager','default':'false'},
+  {'name':'Supervisor','selector':'resourceManager','default':'false'},
   {'name':'Location','selector':'location','default':'true'},
   {'name':'Resource Market','selector':'resourceMarket','default':'false'},
   {'name':'Project','selector':'projectName','default':'true'},
@@ -177,9 +177,9 @@ const columnsAndSelectors=[
   {'name':'Expense Type','selector':'expenseType','default':'false'},
   {'name':'Start Date','selector':'startDate','default':'true'},
   {'name':'End Date','selector':'enddDate','default':'true'},
-  {'name':'PTO Days','selector':'pTODays','default':'true'},
+  {'name':'PTO Days','selector':'numberOfPTODays','default':'true'},
   {'name':'Allocation(Hours)','selector':'allocationHours','default':'true'},
-  {'name':'Status','selector':'isActive','default':'false'},
+  {'name':'Status','selector':'status','default':'false'},
   {'name':'Created Date','selector':'createdDate','default':'false'},
   {'name':'Created By','selector':'createdBy','default':'false'},
   {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
@@ -256,8 +256,7 @@ const ProjectAllocation = () => {
   const getProjectAllocationDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECT_ALLOCATIONS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName,createddate:row.createdDate.slice(0, 10),updatedDate:row.updatedDate.slice(0,10), isActive: row.isActive == "1" ? "Active" : "Inactive" }));
-
+    dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
     dispatch(projectAllocationActions.changeData(dataGet));
     setTimeout(()=>setIsLoading(false), 2000);
   };
@@ -267,14 +266,14 @@ const ProjectAllocation = () => {
 
   const getMarketDetails = async () => {
     const response = await fetch(`${GET_ALL_MARKETS}`);
-    const dataGet = await response.json();
-    console.log(dataGet);
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
     dispatch(marketActions.changeData(dataGet));
   };
   const getHolidayDetails = async () => {
     const response = await fetch(`${GET_ALL_HOLIDAYS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
     dispatch(holidayActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -577,21 +576,21 @@ const UpdateModal = (props: any) => {
       startDate: allocationStartDate,
       endDate: allocationEndDate
     };
-    try {
+        try {
       const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?fkResourceID=${resourceId}&startDate=${allocationStartDate?.toISOString().slice(0, 10)}&endDate=${allocationEndDate?.toISOString().slice(0, 10)}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const dataResponse = await response.json();
-      setAllocatedPercentage(Number(dataResponse));
-    }
-    catch {
-      console.log("Some Error Occured")
-        ;
-    }
-  }
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const dataResponse = await response.json();
+          setAllocatedPercentage(Number(dataResponse));
+        }
+        catch {
+          console.log("Some Error Occured")
+            ;
+        }
+      }
   useEffect(() => {
     setAllocatedPercentage(0);
     setPTODays("");
@@ -1053,7 +1052,7 @@ const AddModal = (props: any) => {
   const getProjectDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, createdDate: row.createdDate.slice(0, 10),updatedDate: row.updatedDate.slice(0, 10)}));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -1090,8 +1089,8 @@ const AddModal = (props: any) => {
     selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
   }
   else {
-    let filteredProject = projectsList.filter((project: any) => project.pkProjectID == Number(projectId))
-    selectedProjectDetails.projectId = filteredProject[0].pkProjectID
+    let filteredProject = projectsList.filter((project: any) => project.id == Number(projectId))
+    selectedProjectDetails.projectId = filteredProject[0].id
     selectedProjectDetails.projectMarket = filteredProject[0].projectMarket
     selectedProjectDetails.expenseType = filteredProject[0].expenseType
     selectedProjectDetails.PPSID = filteredProject[0].projectCode
@@ -1119,24 +1118,27 @@ const AddModal = (props: any) => {
     setProjectId("0");
   }
   const getAllocationPercentage = async () => {
-    let payload = {
-      fkResourceID: Number(resourceId),
-      startDate: allocationStartDate,
-      endDate: allocationEndDate
-    };
-    try {
-      const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?fkResourceID=${resourceId}&startDate=${allocationStartDate?.toISOString().slice(0, 10)}&endDate=${allocationEndDate?.toISOString().slice(0, 10)}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const dataResponse = await response.json();
-      setAllocatedPercentage(Number(dataResponse));
-    }
-    catch {
-      console.log("Some Error Occured")
-        ;
+    if(resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
+      if(allocationEndDate >= allocationStartDate){
+        try {
+          let paStartDate = new Date(allocationStartDate);
+              paStartDate.setDate(paStartDate.getDate() + 1);
+              let paEndDate = new Date(allocationEndDate);
+              paEndDate.setDate(paEndDate.getDate()+1);
+          const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?resourceId=${resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const dataResponse = await response.json();
+          setAllocatedPercentage(Number(dataResponse));
+        }
+        catch {
+          console.log("Some Error Occured")
+            ;
+        }
+      }
     }
   }
   useEffect(() => {
@@ -1150,16 +1152,24 @@ const AddModal = (props: any) => {
 
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
+    let paStartDate=null,paEndDate=null;
+    if(allocationStartDate!=null){
+      paStartDate= new Date(allocationStartDate);
+      paStartDate.setDate(allocationStartDate.getDate() + 1);
+    }
+    if(allocationEndDate!=null){
+      paEndDate= new Date(allocationEndDate);
+      paEndDate.setDate(allocationEndDate.getDate() + 1);
+    }
     let payload = {
       fkResourceID: resourceId == "0" ? 0 : Number(resourceId),
       fkProjectID: projectId == "0" ? 0 : Number(projectId),
       resourceType1: resourceType1,
-      startDate: allocationStartDate,
-      enddDate: allocationEndDate,
-      pTODays: ptoDays == "" ? 0 : Number(ptoDays),
+      startDate: paStartDate,
+      enddDate: paEndDate,
+      numberOfPTODays: ptoDays == "" ? 0 : Number(ptoDays),
       allocationHours: allocationHours,
       allocationPercentage: Number(allocationPercentage),
-      isActive: 1,
       createdBy: "Admin"
     };
     try {

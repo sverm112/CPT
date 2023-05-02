@@ -26,7 +26,7 @@ const columns = [
   },
   {
     name: "Holiday Date",
-    selector: (row: { holidayDate: any }) => row.holidayDate.slice(0, 10),
+    selector: (row: { holidayDate: any }) => row.holidayDate,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -54,7 +54,7 @@ const columns = [
   },
   {
     name: "Status",
-    selector: (row: { isActive: any }) => row.isActive,
+    selector: (row: { status: any }) => row.status,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -134,7 +134,7 @@ const HolidayMaster = () => {
   const getHolidayDetails = async () => {
     const response = await fetch(`${GET_ALL_HOLIDAYS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate.slice(0,10) }));
+    dataGet = dataGet.map((row: any) => ({ ...row, holidayDate : row.holidayDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10) }));
     dispatch(holidayActions.changeData(dataGet));
     setTimeout(()=>setIsLoading(false), 2000);
   };
@@ -147,7 +147,7 @@ const HolidayMaster = () => {
   const getMarketDetails = async () => {
     const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
-    console.log(dataGet);
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
     dispatch(marketActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
@@ -183,7 +183,7 @@ const HolidayMaster = () => {
   const handleRowDoubleClicked = (row: any) =>{
     setShowModal(true);
     setAction("Update");
-    let data = {...row, isActive: row.isActive == "Active" ? "1" : "2"}
+    let data = {...row}
     setUpdateHolidayDetails(data);
   }
 
@@ -194,7 +194,7 @@ const HolidayMaster = () => {
     {'name':'Market','selector':'marketName','default':'true'},
     {'name':'Location','selector':'locationName','default':'true'},
     {'name':'Sub Location','selector':'subLocationName','default':'true'},
-    {'name':'Status','selector':'isActive','default':'true'},
+    {'name':'Status','selector':'status','default':'true'},
     {'name':'Created Date','selector':'createdDate','default':'true'},
     {'name':'Created By','selector':'createdBy','default':'true'},
     {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
@@ -323,7 +323,7 @@ const UpdateModal = (props: any) =>{
       subLocationId: formValues.subLocationId,
       marketId: formValues.marketId,
       holidayDate: holidayStartDate,
-      status: formValues.isActive == "2" ? "0" : "1",
+      status: formValues.status,
       updatedBy: "Admin",
     };
     try {
@@ -488,15 +488,15 @@ const UpdateModal = (props: any) =>{
                 <label className="form-label">Status</label>
                 <div className="dropdown">
                   <select
-                    name="isActive"
+                    name="status"
                     className="form-control"
                     id="statusDropdown"
-                    value={formValues.isActive}
+                    value={formValues.status}
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    <option value="1">Active</option>
-                    <option value="2">InActive</option>
+                    <option value="Active">Active</option>
+                    <option value="InActive">InActive</option>
                   </select>
                 </div>
               </div>
