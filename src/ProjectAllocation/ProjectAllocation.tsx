@@ -505,11 +505,14 @@ const UpdateModal = (props: any) => {
   const getProjectDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);
     let dataGet = await response.json();
+    console.log("Project Details: ",dataGet)
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
     getProjectDetails();
+    setResourceId(resourceId);
+    // setProjectId(formValues.projectId);
   }, []);
   let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
   let selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
@@ -518,17 +521,19 @@ const UpdateModal = (props: any) => {
     console.log(selectedResourceDetails, event.target.value)
     setResourceId(event.target.value);
   };
+  
   const setProjectDetails = (event: any) => {
     setProjectId(event.target.value);
   };
 
 
 
-  if (resourceId == "0") {
+  if (formValues.resourceId == "0") {
     selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
   }
   else {
-    const filteredResource = resourcesList.filter((resource: any) => resource.resourceId == Number(resourceId));
+    const filteredResource = resourcesList.filter((resource: any) => resource.resourceId == Number(formValues.resourceId));
+    console.log("Resource: ",filteredResource);
     selectedResourceDetails.resourceId = filteredResource[0].resourceId
     selectedResourceDetails.resourceType = filteredResource[0].resourceType
     selectedResourceDetails.role = filteredResource[0].role
@@ -542,8 +547,8 @@ const UpdateModal = (props: any) => {
     selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
   }
   else {
-    let filteredProject = projectsList.filter((project: any) => project.pkProjectID == Number(projectId))
-    selectedProjectDetails.projectId = filteredProject[0].pkProjectID
+    let filteredProject = projectsList.filter((project: any) => project.id == Number(formValues.projectId))
+    selectedProjectDetails.projectId = filteredProject[0].id
     selectedProjectDetails.projectMarket = filteredProject[0].projectMarket
     selectedProjectDetails.expenseType = filteredProject[0].expenseType
     selectedProjectDetails.PPSID = filteredProject[0].projectCode
@@ -796,14 +801,14 @@ const UpdateModal = (props: any) => {
                     className="form-control" 
                     required
                     id="project" 
-                    value={formValues.pkProjectID} 
+                    value={formValues.projectId} 
                     // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select')}
                     onChange={(e: any) => {
                       handleChange(e);
                       validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select');
                     }}>
                     <option value="0">Select</option>
-                    {projectsList.filter((project: any) => project.isActive == "Active").map((project: any) => <option key={project.pkProjectID} value={project.pkProjectID.toString()}>{project.projectName}</option>)}
+                    {projectsList.filter((project: any) => project.status == "Active").map((project: any) => <option key={project.id} value={project.id.toString()}>{project.projectName}</option>)}
                   </select>
                 <div className="error"></div>
                 </div>
@@ -1350,7 +1355,7 @@ const AddModal = (props: any) => {
                       validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select');
                     }}>
                     <option value="0">Select</option>
-                    {projectsList.filter((project: any) => project.isActive == "Active").map((project: any) => <option key={project.pkProjectID} value={project.pkProjectID.toString()}>{project.projectName}</option>)}
+                    {projectsList.filter((project: any) => project.status == "Active").map((project: any) => <option key={project.id} value={project.id.toString()}>{project.projectName}</option>)}
                   </select>
                 <div className="error"></div>
                 </div>
