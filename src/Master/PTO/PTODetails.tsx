@@ -166,7 +166,7 @@ const PTO = () => {
       let dataGet = await response.json();
       dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
       dispatch(ptoActions.changeData(dataGet));
-      setIsLoading(false);
+      setTimeout(()=>setIsLoading(false), 2000);
     }
     catch {
       console.log("Error occured");

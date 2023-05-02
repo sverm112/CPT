@@ -88,7 +88,7 @@ const Market = () => {
       let dataGet = await response.json();
       dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
       dispatch(marketActions.changeData(dataGet));
-      setIsLoading(false);
+      setTimeout(()=>setIsLoading(false), 2000);
     }
     catch {
       console.log("Error occured");

@@ -121,7 +121,7 @@ const HolidayMaster = () => {
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate.slice(0,10) }));
     dispatch(holidayActions.changeData(dataGet));
-    setIsLoading(false);
+    setTimeout(()=>setIsLoading(false), 2000);
   };
   useEffect(() => {
     getHolidayDetails();

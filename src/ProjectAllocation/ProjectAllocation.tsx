@@ -245,7 +245,7 @@ const ProjectAllocation = () => {
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName,createddate:row.createdDate.slice(0, 10),updatedDate:row.updatedDate.slice(0,10), isActive: row.isActive == "1" ? "Active" : "Inactive" }));
 
     dispatch(projectAllocationActions.changeData(dataGet));
-    setIsLoading(false);
+    setTimeout(()=>setIsLoading(false), 2000);
   };
   useEffect(() => {
     getProjectAllocationDetails();
@@ -406,7 +406,7 @@ const ProjectAllocation = () => {
             title={title}>
           </DownloadBtn> */}
           <div className="TableContentBorder">
-            <Table columnsAndSelectors={columnsAndSelectors} isLoadings={isLoading} columns={columns} data={filteredProjectAllocations} title={title}/>
+            <Table columnsAndSelectors={columnsAndSelectors} isLoading={isLoading} columns={columns} data={filteredProjectAllocations} title={title}/>
           </div>
       </div>
     </div>
