@@ -16,7 +16,7 @@ import { holidayActions } from "../Store/Slices/Holiday";
 import DownloadBtn from "../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../utils/validations";
 import { PatternsAndMessages } from "../utils/ValidationPatternAndMessage";
-import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_PROJECTS, GET_ALL_PROJECT_ALLOCATIONS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, GET_TOTAL_ALLOCATED_PERCENTAGE, GET_TOTAL_PTO_DAYS, POST_PROJECT_ALLOCATION } from "../constants";
+import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_PROJECTS, GET_ALL_PROJECT_ALLOCATIONS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, GET_TOTAL_ALLOCATED_PERCENTAGE, GET_TOTAL_PTO_DAYS, POST_PROJECT_ALLOCATION, UPDATE_PROJECT_ALLOCATION } from "../constants";
 
 const columns = [
   {
@@ -439,9 +439,9 @@ const ProjectAllocation = () => {
 const UpdateModal = (props: any) => {
   const [formValues, setFormValues] = useState(props.initialValues || { location: "0" });
   console.log("Update Allocation: ", props);
-  const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(null);
-  const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(null);
-  const [ptoDays, setPTODays] = useState("");
+  const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
+  const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
+  const [ptoDays, setPtoDays] = useState("0");
   const [allocationPercentage, setAllocationPercentage] = useState("");
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
@@ -512,7 +512,7 @@ const UpdateModal = (props: any) => {
   useEffect(() => {
     getProjectDetails();
     setResourceId(resourceId);
-    // setProjectId(formValues.projectId);
+    setProjectId(formValues.projectId);
   }, []);
   let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
   let selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
@@ -520,10 +520,12 @@ const UpdateModal = (props: any) => {
   const setResourceDetails = (event: any) => {
     console.log(selectedResourceDetails, event.target.value)
     setResourceId(event.target.value);
+    console.log("Set Resource Details Called: ",resourceId);
   };
   
   const setProjectDetails = (event: any) => {
     setProjectId(event.target.value);
+    console.log("SetProjectDetails Called: ",projectId);
   };
 
 
@@ -543,11 +545,13 @@ const UpdateModal = (props: any) => {
     selectedResourceDetails.resourceMarket = filteredResource[0].resourceMarket
   }
 
-  if (projectId == "0") {
+  if (formValues.projectId == "0") {
     selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
   }
   else {
     let filteredProject = projectsList.filter((project: any) => project.id == Number(formValues.projectId))
+    // console.log("Filtered Project Details: ", filteredProject);
+    console.log("Project List: ", projectsList);
     selectedProjectDetails.projectId = filteredProject[0].id
     selectedProjectDetails.projectMarket = filteredProject[0].projectMarket
     selectedProjectDetails.expenseType = filteredProject[0].expenseType
@@ -569,7 +573,7 @@ const UpdateModal = (props: any) => {
   const resetFormFields = () => {
     setAllocationStartDate(null);
     setAllocationEndDate(null);
-    setPTODays("");
+    setPtoDays("");
     setAllocationPercentage("");
     setResourceType1("0");
     setResourceId("0");
@@ -598,31 +602,42 @@ const UpdateModal = (props: any) => {
       }
   useEffect(() => {
     setAllocatedPercentage(0);
-    setPTODays("");
+    setPtoDays("");
     if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
-      {getAllocationPercentage();
-      getPTODays();
+      {
+        getAllocationPercentage();
+        getPTODays();
     }
   }, [resourceId, allocationStartDate, allocationEndDate]);
 
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
+    let paStartDate=null,paEndDate=null;
+    if(allocationStartDate!=null){
+      paStartDate= new Date(allocationStartDate);
+      paStartDate.setDate(allocationStartDate.getDate() + 1);
+    }
+    if(allocationEndDate!=null){
+      paEndDate= new Date(allocationEndDate);
+      paEndDate.setDate(allocationEndDate.getDate() + 1);
+    }
     let payload = {
-      fkResourceID: resourceId == "0" ? 0 : Number(resourceId),
-      fkProjectID: projectId == "0" ? 0 : Number(projectId),
-      resourceType1: resourceType1,
-      startDate: allocationStartDate,
-      enddDate: allocationEndDate,
-      pTODays: ptoDays == "" ? 0 : Number(ptoDays),
-      allocationHours: allocationHours,
-      allocationPercentage: Number(allocationPercentage),
-      isActive: 1,
-      createdBy: "Admin"
+      resourceId: formValues.resourceId == "0" ? 0 : Number(formValues.resourceId),
+      projectId: formValues.projectId == "0" ? 0 : Number(formValues.projectId),
+      resourceType1: formValues.resourceType1,
+      startDate: paStartDate,
+      enddDate: paEndDate,
+      numberOfPTODays: ptoDays =="0" ? formValues.numberOfPTODays : ptoDays,
+      // formValues.numberOfPTODays == "" ? 0 : Number(formValues.numberOfPTODays),
+      allocationHours: formValues.allocationHours,
+      allocationPercentage: Number(formValues.allocationPercentage),
+      status: formValues.status,
+      updatedBy: "Admin"
     };
     try {
       if(validateForm('#AllocateProjectForm')){
-        const response = await fetch(`${POST_PROJECT_ALLOCATION}`, {
-          method: "POST",
+        const response = await fetch(`${UPDATE_PROJECT_ALLOCATION}`, {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
@@ -647,17 +662,19 @@ const UpdateModal = (props: any) => {
 
   };
   //console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
-
+useEffect(()=>{
+  getPTODays();
+});
   const getPTODays = async()=>{
-    console.log("Get PTO Days called: "+ resourceId+ allocationStartDate + allocationEndDate);
-    if(resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
-      if(allocationEndDate >= allocationStartDate){
+    console.log("Get PTO Days called: "+ formValues.resourceId+ formValues.startDate + formValues.enddDate);
+    if(formValues.resourceId != "0" && formValues.startDate !== null && formValues.enddDate !== null){
+      if(formValues.enddDate >= formValues.startDate){
         try{
-          let paStartDate = new Date(allocationStartDate);
+          let paStartDate = new Date(formValues.startDate);
           paStartDate.setDate(paStartDate.getDate() + 1);
-          let paEndDate = new Date(allocationEndDate);
+          let paEndDate = new Date(formValues.enddDate);
           paEndDate.setDate(paEndDate.getDate()+1);
-          const response = await fetch(`${GET_TOTAL_PTO_DAYS}?resourceId=${resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
+          const response = await fetch(`${GET_TOTAL_PTO_DAYS}?resourceId=${formValues.resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -666,7 +683,7 @@ const UpdateModal = (props: any) => {
           
           const dataResponse = await response.json();
           // console.log()
-          setPTODays(dataResponse);
+          setPtoDays(dataResponse);
           console.log("Data Response: "+ dataResponse);
         }catch{
           toast.error("Some Error Occured");
@@ -720,11 +737,8 @@ const UpdateModal = (props: any) => {
                     className="form-control" 
                     required
                     id="resource" 
+                    name="resourceId"
                     value={formValues.resourceId}
-                    // onBlur={()=>{
-                    //   validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
-                      
-                    // }} 
                     onChange={(e: any) => {
                       handleChange(e);
                       setResourceDetails(e);
@@ -745,6 +759,7 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="resourceType"
+                  name="resourceType"
                   value={selectedResourceDetails.resourceType}
                   disabled
                 />
@@ -753,7 +768,7 @@ const UpdateModal = (props: any) => {
                 <label className="form-label" htmlFor="role">
                   Role
                 </label>
-                <input type="text" className="form-control" id="role" value={selectedResourceDetails.role} disabled />
+                <input type="text" name="role" className="form-control" id="role" value={selectedResourceDetails.role} disabled />
               </div>
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="supervisor">
@@ -763,6 +778,7 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="supervisor"
+                  name="superVisor"
                   value={selectedResourceDetails.supervisor}
                   disabled
                 />
@@ -775,6 +791,7 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="location"
+                  name="location"
                   value={selectedResourceDetails.location}
                   disabled
                 />
@@ -787,6 +804,7 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="resourceMarket"
+                  name="resourceMarket"
                   value={selectedResourceDetails.resourceMarket}
                   disabled
                 />
@@ -800,11 +818,14 @@ const UpdateModal = (props: any) => {
                   <select 
                     className="form-control" 
                     required
-                    id="project" 
+                    id="project"
+                    name="projectId" 
                     value={formValues.projectId} 
-                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select')}
                     onChange={(e: any) => {
+                      setProjectDetails(e);
                       handleChange(e);
+                      console.log("E Value: ", e.target.value);
+                      // setProjectId(e);
                       validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select');
                     }}>
                     <option value="0">Select</option>
@@ -823,8 +844,8 @@ const UpdateModal = (props: any) => {
                     className="form-control "
                     required
                     id="resourceType1Dropdown"
+                    name="resourceType1Dropdown"
                     value={formValues.resourceType1}
-                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select')}
                     onChange={(event) => {setResourceType1(event.target.value);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select');
                     }}
@@ -844,9 +865,9 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="projectMarket"
+                  name="projectMarket"
                   value={
-                    // selectedProjectDetails.projectMarket
-                  formValues.projectMarket
+                    selectedProjectDetails.projectMarket
                   }
                   disabled
                 />
@@ -855,14 +876,14 @@ const UpdateModal = (props: any) => {
                 <label className="form-label" htmlFor="ppsid">
                   PPSID
                 </label>
-                <input type="text" className="form-control" id="ppsid" value={formValues.projectCode} disabled />
+                <input type="text" name="ppsid" className="form-control" id="ppsid" value={selectedProjectDetails.PPSID} disabled />
               </div>
 
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="capex">
                   Expense Type
                 </label>
-                <input type="text" className="form-control" id="capex" value={formValues.expenseType} disabled />
+                <input type="text" name="expenseType" className="form-control" id="capex" value={selectedProjectDetails.expenseType} disabled />
               </div>
               <div className="col-md-6 form-group" id="AllocationStartField">
                 <label className="form-label" htmlFor="allocationStartDate" style={{ zIndex: "9" }}>
@@ -872,13 +893,14 @@ const UpdateModal = (props: any) => {
                 <DatePicker
                   className="form-control"
                   required
+                  name="allocationStartDate"
                   onCalendarClose={()=>{
                     validateSingleFormGroup(document.getElementById('AllocationStartField'), 'datePicker');
                     
                   }}
                   // maxDate={formValues.enddDate !== null ? formValues.enddDate : new Date('December 31, 2100')}
                   onChange={setAllocationStartDate}
-                  value={formValues.startDate}
+                  value={allocationStartDate}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
@@ -894,13 +916,14 @@ const UpdateModal = (props: any) => {
                 <DatePicker
                   className="form-control"
                   required
+                  name="allocationEndDate"
                   onCalendarClose={()=>{
                     validateSingleFormGroup(document.getElementById('AllocationEndField'), 'datePicker');
                     
                   }}
                   // minDate={formValues.startDate !== null ? formValues.startDate : new Date('December 31, 2000')}
                   onChange={setAllocationEndDate}
-                  value={formValues.enddDate}
+                  value={allocationEndDate}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
@@ -916,13 +939,14 @@ const UpdateModal = (props: any) => {
                 <input
                   type="text"
                   disabled
+                  name="numberOfPTODays"
                   // required
                   // pattern={PatternsAndMessages.numberOnly.pattern}
                   className="form-control"
                   id="ptoDays"
-                  value={formValues.pTODays}
+                  value={ptoDays =="0" ? formValues.numberOfPTODays : ptoDays}
                   // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
-                  // onChange={(event) => setPTODays(event.target.value)}
+                  // onChange={(event) => setPtoDays(event.target.value)}
                 />
                 {/* <div className="error"></div> */}
               </div>
@@ -936,12 +960,16 @@ const UpdateModal = (props: any) => {
                 <input
                   type="text"
                   required
+                  name="allocationPercentage"
                   pattern={PatternsAndMessages.numberOnly.pattern}
                   className="form-control"
                   id="allocationPercentage"
                   value={formValues.allocationPercentage}
                   onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPercentage'), 'input')}
-                  onChange={(event) => setAllocationPercentage(event.target.value)}
+                  onChange={
+                    handleChange
+                    // (event) => setAllocationPercentage(event.target.value)
+                  }
                 />
                 <div className="error"></div>
               </div>
@@ -953,6 +981,7 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="allocationHoursPerDay"
+                  name="allocationHoursPerDay"
                   value={allocationHoursPerDay}
                   disabled
                 />
@@ -965,10 +994,27 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="allocationHours"
+                  name="allocationHours"
                   value={formValues.allocationHours}
                   disabled
                 // onChange={(event) => setAllocationHours(event.target.value)}
                 />
+              </div>
+              <div className="col-md-6 form-group ">
+                <label className="form-label">Status</label>
+                <div className="dropdown">
+                  <select
+                    name="status"
+                    className="form-control"
+                    id="statusDropdown"
+                    value={formValues.status}
+                    onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    <option value="Active">Active</option>
+                    <option value="InActive">InActive</option>
+                  </select>
+                </div>
               </div>
             </div>
             <div className="row">
@@ -995,7 +1041,7 @@ const AddModal = (props: any) => {
   }
   const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(null);
   const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(null);
-  const [ptoDays, setPTODays] = useState("");
+  const [ptoDays, setPtoDays] = useState("");
   const [allocationPercentage, setAllocationPercentage] = useState("");
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
@@ -1067,7 +1113,7 @@ const AddModal = (props: any) => {
   let selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
 
   const setResourceDetails = (event: any) => {
-    console.log(selectedResourceDetails, event.target.value)
+    // console.log(selectedResourceDetails, event.target.value)
     setResourceId(event.target.value);
   };
   const setProjectDetails = (event: any) => {
@@ -1116,7 +1162,7 @@ const AddModal = (props: any) => {
   const resetFormFields = () => {
     setAllocationStartDate(null);
     setAllocationEndDate(null);
-    setPTODays("");
+    setPtoDays("");
     setAllocationPercentage("");
     setResourceType1("0");
     setResourceId("0");
@@ -1148,7 +1194,7 @@ const AddModal = (props: any) => {
   }
   useEffect(() => {
     setAllocatedPercentage(0);
-    setPTODays("");
+    setPtoDays("");
     if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
       {getAllocationPercentage();
       getPTODays();
@@ -1167,8 +1213,8 @@ const AddModal = (props: any) => {
       paEndDate.setDate(allocationEndDate.getDate() + 1);
     }
     let payload = {
-      fkResourceID: resourceId == "0" ? 0 : Number(resourceId),
-      fkProjectID: projectId == "0" ? 0 : Number(projectId),
+      resourceId: resourceId == "0" ? 0 : Number(resourceId),
+      projectId: projectId == "0" ? 0 : Number(projectId),
       resourceType1: resourceType1,
       startDate: paStartDate,
       enddDate: paEndDate,
@@ -1224,7 +1270,7 @@ const AddModal = (props: any) => {
           
           const dataResponse = await response.json();
           // console.log()
-          setPTODays(dataResponse);
+          setPtoDays(dataResponse);
           console.log("Data Response: "+ dataResponse);
         }catch{
           toast.error("Some Error Occured");
@@ -1272,11 +1318,8 @@ const AddModal = (props: any) => {
                     required
                     id="resource" 
                     value={resourceId}
-                    // onBlur={()=>{
-                    //   validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
-                      
-                    // }} 
-                    onChange={(e: any) => {setResourceDetails(e);
+                    onChange={(e: any) => {
+                      setResourceDetails(e);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
                       }}>
                     <option value="0">Select</option>
@@ -1466,7 +1509,7 @@ const AddModal = (props: any) => {
                   id="ptoDays"
                   value={ptoDays}
                   // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
-                  // onChange={(event) => setPTODays(event.target.value)}
+                  // onChange={(event) => setPtoDays(event.target.value)}
                 />
                 {/* <div className="error"></div> */}
               </div>
