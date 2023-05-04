@@ -17,6 +17,7 @@ import DownloadBtn from "../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../utils/validations";
 import { PatternsAndMessages } from "../utils/ValidationPatternAndMessage";
 import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_PROJECTS, GET_ALL_PROJECT_ALLOCATIONS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, GET_TOTAL_ALLOCATED_PERCENTAGE, GET_TOTAL_PTO_DAYS, POST_PROJECT_ALLOCATION, UPDATE_PROJECT_ALLOCATION } from "../constants";
+import { PassThrough } from "stream";
 
 const columns = [
   {
@@ -258,6 +259,27 @@ const ProjectAllocation = () => {
     let dataGet = await response.json();
     dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
     dispatch(projectAllocationActions.changeData(dataGet));
+
+    let employeeIds: any[] = [];
+    let projectIds : any[] = [];
+    let project: any[] = [];
+    for(const datapoints of dataGet){
+      if(employeeIds.includes( datapoints.resourceId)){
+        if(!project.includes( datapoints.projectId)){
+          project.push(datapoints.projectId);
+        }
+      }else{
+        employeeIds.push(datapoints.resourceId);
+        if(project.length != 0){
+          projectIds.push(project);
+        }
+        project = [];
+        project.push(datapoints.projectId);
+      }
+    }
+    projectIds.push(project);
+    console.log("Project Ids: ", projectIds);
+    console.log("Employee Ids: ", employeeIds);  
     setTimeout(()=>setIsLoading(false), 2000);
   };
   useEffect(() => {
@@ -422,12 +444,6 @@ const ProjectAllocation = () => {
             <button type="button" className="btn btn-primary" onClick={() => dispatch(projectAllocationActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
           </div>
         </div>
-        {/* <DownloadBtn 
-            columns={columns}
-            filteredRecords={filteredProjectAllocations}
-            selectors={selectors}
-            title={title}>
-          </DownloadBtn> */}
           <div className="TableContentBorder">
             <Table columnsAndSelectors={columnsAndSelectors} columns={columns} isLoading={isLoading} onRowDoubleClicked={handleRowDoubleClicked} data={filteredProjectAllocations} title={title}/>
           </div>
