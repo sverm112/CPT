@@ -385,7 +385,7 @@ const UpdateModal = (props: any) =>{
 
                 <input
                   required
-                  pattern={PatternsAndMessages.nameLike.pattern}
+                  pattern={PatternsAndMessages.singleWordName.pattern}
                   type="text"
                   className="form-control"
                   id="holidayOccasion"
