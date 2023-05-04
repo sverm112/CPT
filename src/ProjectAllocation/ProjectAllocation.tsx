@@ -622,12 +622,13 @@ const UpdateModal = (props: any) => {
       paEndDate.setDate(allocationEndDate.getDate() + 1);
     }
     let payload = {
+      id: formValues.id,
       resourceId: formValues.resourceId == "0" ? 0 : Number(formValues.resourceId),
       projectId: formValues.projectId == "0" ? 0 : Number(formValues.projectId),
       resourceType1: formValues.resourceType1,
       startDate: paStartDate,
       enddDate: paEndDate,
-      numberOfPTODays: ptoDays =="0" ? formValues.numberOfPTODays : ptoDays,
+      numberOfPTODays: ptoDays =="" ? formValues.numberOfPTODays : ptoDays,
       // formValues.numberOfPTODays == "" ? 0 : Number(formValues.numberOfPTODays),
       allocationHours: formValues.allocationHours,
       allocationPercentage: Number(formValues.allocationPercentage),
@@ -666,13 +667,13 @@ useEffect(()=>{
   getPTODays();
 });
   const getPTODays = async()=>{
-    console.log("Get PTO Days called: "+ formValues.resourceId+ formValues.startDate + formValues.enddDate);
-    if(formValues.resourceId != "0" && formValues.startDate !== null && formValues.enddDate !== null){
-      if(formValues.enddDate >= formValues.startDate){
+    console.log("Get PTO Days called: "+ formValues.resourceId+ allocationStartDate + allocationEndDate);
+    if(formValues.resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
+      if(allocationEndDate >= allocationStartDate){
         try{
-          let paStartDate = new Date(formValues.startDate);
+          let paStartDate = new Date(allocationStartDate);
           paStartDate.setDate(paStartDate.getDate() + 1);
-          let paEndDate = new Date(formValues.enddDate);
+          let paEndDate = new Date(allocationEndDate);
           paEndDate.setDate(paEndDate.getDate()+1);
           const response = await fetch(`${GET_TOTAL_PTO_DAYS}?resourceId=${formValues.resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
             method: "GET",
@@ -944,7 +945,7 @@ useEffect(()=>{
                   // pattern={PatternsAndMessages.numberOnly.pattern}
                   className="form-control"
                   id="ptoDays"
-                  value={ptoDays =="0" ? formValues.numberOfPTODays : ptoDays}
+                  value={ptoDays =="" ? formValues.numberOfPTODays : ptoDays}
                   // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
                   // onChange={(event) => setPtoDays(event.target.value)}
                 />
