@@ -259,6 +259,62 @@ const ProjectAllocation = () => {
     let dataGet = await response.json();
     dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
     dispatch(projectAllocationActions.changeData(dataGet));
+
+    
+// Segment #1: Purpose of this segment is to store unique human 
+// resource and their corresponding unique projects
+let employeeIds: any[] = [];
+let projectIds : any[] = [];
+let project: any[] = [];
+for(const datapoints of dataGet){
+  if(employeeIds.includes( datapoints.resourceId)){
+    if(!project.includes( datapoints.projectId)){
+      project.push(datapoints.projectId);
+    }
+  }else{
+    employeeIds.push(datapoints.resourceId);
+    if(project.length != 0){
+      projectIds.push(project);
+    }
+    project = [];
+    project.push(datapoints.projectId);
+  }
+}
+projectIds.push(project);    
+// console.log("Project Ids: ", (dataGet[0].projectId == projectIds[0][0] && dataGet[0].resourceId == employeeIds[0]) ? dataGet[0] : null);
+// console.log("Employee Ids: ", employeeIds);
+// End of Segment #1
+
+
+// Segment #2: Purpose of this segment is to return all 
+// common projects for an employee and we are planning to call this function after clicking project from the accordion of Project Allocation
+// for getting all allocations for an employee on a project
+function getAllAllocatedProjects(resourceId: any, projectId: any){
+  let allocatedProject: any[] = [];
+  for(const datapoints of dataGet){
+    if(datapoints.resourceId == resourceId) 
+      allocatedProject.push(datapoints);
+  }
+  let commonProjects: any[] = [];
+  for(const project of allocatedProject){
+    if(project.projectId == projectId)
+    commonProjects.push(project);
+  }
+  return commonProjects;
+}
+// End of Segment #2
+
+// Segment #3: For testing Segment #2
+let x=0;
+for(const emp of employeeIds){
+  console.log("Emp Id: ", emp);
+  console.log("Fetched Data: ", getAllAllocatedProjects(emp, projectIds[x++]));
+  console.log("Project Id: ",projectIds[x]);
+}
+// End of Segment #3
+
+
+
     setTimeout(()=>setIsLoading(false), 2000);
   };
   useEffect(() => {
