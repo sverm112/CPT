@@ -259,27 +259,6 @@ const ProjectAllocation = () => {
     let dataGet = await response.json();
     dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
     dispatch(projectAllocationActions.changeData(dataGet));
-
-    let employeeIds: any[] = [];
-    let projectIds : any[] = [];
-    let project: any[] = [];
-    for(const datapoints of dataGet){
-      if(employeeIds.includes( datapoints.resourceId)){
-        if(!project.includes( datapoints.projectId)){
-          project.push(datapoints.projectId);
-        }
-      }else{
-        employeeIds.push(datapoints.resourceId);
-        if(project.length != 0){
-          projectIds.push(project);
-        }
-        project = [];
-        project.push(datapoints.projectId);
-      }
-    }
-    projectIds.push(project);
-    console.log("Project Ids: ", projectIds);
-    console.log("Employee Ids: ", employeeIds);  
     setTimeout(()=>setIsLoading(false), 2000);
   };
   useEffect(() => {
@@ -581,9 +560,10 @@ const UpdateModal = (props: any) => {
   else
     allocationHoursPerDay = 0;
 
-  if (resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
+  if (formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
     let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
-    allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
+    formValues.allocationHours = Math.ceil((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
+    console.log("Allocation Hours: ", formValues.allocationHours);
   }
 
   const resetFormFields = () => {
@@ -645,7 +625,6 @@ const UpdateModal = (props: any) => {
       startDate: paStartDate,
       enddDate: paEndDate,
       numberOfPTODays: ptoDays =="" ? formValues.numberOfPTODays : ptoDays,
-      // formValues.numberOfPTODays == "" ? 0 : Number(formValues.numberOfPTODays),
       allocationHours: formValues.allocationHours,
       allocationPercentage: Number(formValues.allocationPercentage),
       status: formValues.status,
@@ -665,7 +644,6 @@ const UpdateModal = (props: any) => {
           if (dataResponse[0].statusCode == "201") {
             console.log(dataResponse[0].statusReason);
             console.log(dataResponse[0].recordsCreated);
-  
             dispatch(projectAllocationActions.changeToggle());
             resetFormFields();
             props.closeModal();
