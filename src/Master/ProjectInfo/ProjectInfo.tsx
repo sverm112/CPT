@@ -13,6 +13,7 @@ import DownloadBtn from "../../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { Base_URL, GET_ALL_MARKETS, GET_ALL_PROJECTS, POST_PROJECT, UPDATE_PROJECT } from "../../constants";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
+import { RotatingLines } from "react-loader-spinner";
 
 const columns = [
   {
@@ -205,6 +206,15 @@ const ProjectInfo = () => {
   return (
     <div>
       <SideBar></SideBar>
+      {isLoading ? <div className="SpinnerLoader" style={{height:'110vh',textAlign:'center', justifyContent:'center', margin:'auto', display:'flex'}}>
+        <RotatingLines
+          strokeColor="#fa600d"
+          strokeWidth="5"
+          animationDuration="0.75"
+          width="96"
+          visible={true}
+        />
+      </div> :
       <div className="col-md-12 bg-mainclass">
         <div>
           <div className="row Page-Heading">
@@ -286,7 +296,7 @@ const ProjectInfo = () => {
             <Table columnsAndSelectors={columnsAndSelectors} columns={columns} isLoading={isLoading} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

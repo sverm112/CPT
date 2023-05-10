@@ -16,6 +16,7 @@ import { filterActions } from "../../Store/Slices/Filters";
 import DatePicker from "react-date-picker";
 import { employeeActions } from "../../Store/Slices/Employee";
 import { GET_ALL_PTOS, GET_ALL_PTO_TYPES, GET_ALL_RESOURCES, POST_PTO, UPDATE_PTO } from "../../constants";
+import { RotatingLines } from "react-loader-spinner";
 
 const columns = [
   {
@@ -259,7 +260,17 @@ const PTO = () => {
   return (
     <div>
       <SideBar></SideBar>
-      <div className="col-md-12 bg-mainclass">
+      { isLoading ? 
+      <div className="SpinnerLoader" style={{height:'110vh',textAlign:'center', justifyContent:'center', margin:'auto', display:'flex'}}>
+        <RotatingLines
+          strokeColor="#fa600d"
+          strokeWidth="5"
+          animationDuration="0.75"
+          width="96"
+          visible={true}
+        />
+      </div> :
+        <div className="col-md-12 bg-mainclass">
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">PTO Details</h1>
@@ -359,7 +370,7 @@ const PTO = () => {
             <Table  columnsAndSelectors={columnsAndSelectors} isLoading={isLoading} columns={filteredColumns} data={filteredPtos} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

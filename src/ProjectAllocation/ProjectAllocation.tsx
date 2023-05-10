@@ -18,8 +18,9 @@ import { validateForm, validateSingleFormGroup } from "../utils/validations";
 import { PatternsAndMessages } from "../utils/ValidationPatternAndMessage";
 import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_PROJECTS, GET_ALL_PROJECT_ALLOCATIONS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, GET_TOTAL_ALLOCATED_PERCENTAGE, GET_TOTAL_PTO_DAYS, POST_PROJECT_ALLOCATION, UPDATE_PROJECT_ALLOCATION } from "../constants";
 import { PassThrough } from "stream";
+import { RotatingLines } from "react-loader-spinner";
 
-const columns = [
+const employeeColumns = [
   {
     name: "Resource",
     selector: (row: { resourceName: any }) => row.resourceName,
@@ -62,14 +63,6 @@ const columns = [
     reorder: true,
     filterable: true,
   },
-
-  {
-    name: "Project",
-    selector: (row: { projectName: any }) => row.projectName,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
   {
     name: "Resource Type1",
     selector: (row: { resourceType1: any }) => row.resourceType1,
@@ -78,6 +71,13 @@ const columns = [
     filterable: true,
   },
 
+  {
+    name: "Project",
+    selector: (row: { projectName: any }) => row.projectName,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
   {
     name: "Project Market",
     selector: (row: { projectMarket: any }) => row.projectMarket,
@@ -164,6 +164,99 @@ const columns = [
   },
 ];
 
+const projectColumns = [
+    {
+    name: "Project",
+    selector: (row: { projectName: any }) => row.projectName,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Project Market",
+    selector: (row: { projectMarket: any }) => row.projectMarket,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Project Code",
+    selector: (row: { projectCode: any }) => row.projectCode,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Expense Type",
+    selector: (row: { expenseType: any }) => row.expenseType,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Start Date",
+    selector: (row: { startDate: any }) => row.startDate.slice(0, 10),
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "End Date",
+    selector: (row: { enddDate: any }) => row.enddDate.slice(0, 10),
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "PTO Days",
+    selector: (row: { numberOfPTODays: any }) => row.numberOfPTODays,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Allocation(Hours)",
+    selector: (row: { allocationHours: any }) => row.allocationHours,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Status",
+    selector: (row: { status: any }) => row.status,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Created Date",
+    selector: (row: { createdDate: any }) => row.createdDate,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Created By",
+    selector: (row: { createdBy: any }) => row.createdBy,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Updated Date",
+    selector: (row: { updatedDate: any }) => row.updatedDate,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Updated By",
+    selector: (row: { updatedBy: any }) => row.updatedBy,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+]
 const columnsAndSelectors=[
   {'name':'Resource','selector':'resourceName','default':'true'},
   {'name':'Resource Type','selector':'resourceType','default':'true'},
@@ -185,9 +278,6 @@ const columnsAndSelectors=[
   {'name':'Created By','selector':'createdBy','default':'false'},
   {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
   {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
-
-  
-
 ]
 
 
@@ -361,7 +451,8 @@ for(const emp of employeeIds){
   });
 
   //start constants for export
-  const title = "Project Allocation Details";
+  const title ="";
+  //  "Project Allocation Details";
   const headers = [['Resource', 'Resource Type', 'Location',
     'Project', 'Project Market', 'Start Date', 'End Date', 'PTO Days', 'Allocation(Hours)']];
   const selectors = ['resourceName', 'resourceType',
@@ -376,9 +467,21 @@ for(const emp of employeeIds){
     setUpdateProjectDetails(data);
     console.log("Project Allocation: ", row);
   };
+  // const ExpandableEmployee = ( filteredProjectAllocations: any ) => <Table columnsAndSelectors={columnsAndSelectors} expandableRows columns={projectColumns} isLoading={isLoading} onRowDoubleClicked={handleRowDoubleClicked} data={filteredProjectAllocations} title={title}/>;
+  // console.log("Expandable Employee: ", ExpandableEmployee);
   return (
-    <div>
+   <div>
       <SideBar></SideBar>
+      <>{
+        isLoading ? <div className="SpinnerLoader" style={{height:'110vh',textAlign:'center', justifyContent:'center', margin:'auto', display:'flex'}}>
+        <RotatingLines
+          strokeColor="#fa600d"
+          strokeWidth="5"
+          animationDuration="0.75"
+          width="96"
+          visible={true}
+        />
+      </div> : 
       <div className="col-md-12 bg-mainclass">
         <div>
           <div className="row Page-Heading">
@@ -480,9 +583,12 @@ for(const emp of employeeIds){
           </div>
         </div>
           <div className="TableContentBorder">
-            <Table columnsAndSelectors={columnsAndSelectors} columns={columns} isLoading={isLoading} onRowDoubleClicked={handleRowDoubleClicked} data={filteredProjectAllocations} title={title}/>
+            <Table columnsAndSelectors={columnsAndSelectors} 
+            // expandableRows expandableRowsComponent={ExpandableEmployee}
+             columns={employeeColumns} isLoading={isLoading} onRowDoubleClicked={handleRowDoubleClicked} data={filteredProjectAllocations} title={title}/>
           </div>
       </div>
+      }</>
     </div>
   );
 };

@@ -13,6 +13,7 @@ import DownloadBtn from "../../Export/DownloadBtn";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, POST_BULK_UPLOAD_EMPLOYEE, POST_RESOURCE, UPDATE_RESOURCE } from "../../constants";
+import { RotatingLines } from "react-loader-spinner";
 
 
 const columns = [
@@ -323,6 +324,15 @@ const EmployeeMaster = () => {
   return (
     <div>
       <SideBar></SideBar>
+      {isLoading ? <div className="SpinnerLoader" style={{height:'110vh',textAlign:'center', justifyContent:'center', margin:'auto', display:'flex'}}>
+        <RotatingLines
+          strokeColor="#fa600d"
+          strokeWidth="5"
+          animationDuration="0.75"
+          width="96"
+          visible={true}
+        />
+      </div> :
       <div className="col-md-12 bg-mainclass">
         <div>
           <div className="row Page-Heading">
@@ -355,7 +365,7 @@ const EmployeeMaster = () => {
                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
                   onChange={handleUploadResourceFile}
                 />
-                                <div className="BulkUploadEmployeeTooltip">
+                <div className="BulkUploadEmployeeTooltip">
                   <p>
                     Add Bulk Employees
                   </p>
@@ -439,7 +449,7 @@ const EmployeeMaster = () => {
         <Table columnsAndSelectors={columnsAndSelectors}columns={columns} isLoading={isLoading} data={filteredResources} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
         </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };
