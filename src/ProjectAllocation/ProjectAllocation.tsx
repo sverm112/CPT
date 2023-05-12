@@ -68,8 +68,15 @@ const employeeColumns = [
 ];
 
 const projectColumns = [
-    {
+  {
     name: "Project",
+    selector: (row:  any ) => row.projectName,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Project Code",
     selector: (row:  any ) => row.projectCode,
     sortable: true,
     reorder: true,
@@ -83,75 +90,19 @@ const projectColumns = [
     filterable: true,
   },
   {
+    name: "Project Manager",
+    selector: (row:  any ) => row.projectManager,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
     name: "Expense Type",
     selector: (row:  any )  => row.projectExpenseType,
     sortable: true,
     reorder: true,
     filterable: true,
   },
-  // {
-  //   name: "Start Date",
-  //   selector: (row: { startDate: any }) => row.startDate.slice(0, 10),
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
-  // {
-  //   name: "End Date",
-  //   selector: (row: { enddDate: any }) => row.enddDate.slice(0, 10),
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
-  // {
-  //   name: "PTO Days",
-  //   selector: (row: { numberOfPTODays: any }) => row.numberOfPTODays,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
-  // {
-  //   name: "Allocation(Hours)",
-  //   selector: (row: { allocationHours: any }) => row.allocationHours,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
-  // {
-  //   name: "Status",
-  //   selector: (row: { status: any }) => row.status,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
-  // {
-  //   name: "Created Date",
-  //   selector: (row: { createdDate: any }) => row.createdDate,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
-  // {
-  //   name: "Created By",
-  //   selector: (row: { createdBy: any }) => row.createdBy,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
-  // {
-  //   name: "Updated Date",
-  //   selector: (row: { updatedDate: any }) => row.updatedDate,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
-  // {
-  //   name: "Updated By",
-  //   selector: (row: { updatedBy: any }) => row.updatedBy,
-  //   sortable: true,
-  //   reorder: true,
-  //   filterable: true,
-  // },
 ]
 const allocationDetailsColumn = [
     {
@@ -283,7 +234,8 @@ const ProjectAllocation = () => {
   const [isLoading, setIsLoading] = useState(true);
   const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
   const locationSelected = useSelector((store: any) => store.ProjectAllocation.location)
-  
+  const [currentProject, setCurrentProject] = useState(null);
+  const [currentRow, setCurrentRow] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("Add");
@@ -390,6 +342,8 @@ const ProjectAllocation = () => {
             projectMarket: projectAllocation.projectMarket,
             projectExpenseType: projectAllocation.expenseType,
             projectAllocationsInfo:projectAllocationsInfo,
+            projectName: projectAllocation.projectName !== null ? projectAllocation.projectName : null,
+            projectManager: projectAllocation.projectManager !== null ? projectAllocation.projectManager : null,
           }
           resourceItem.projectsInfo.push(projectInfo);
 
@@ -484,21 +438,34 @@ const ProjectAllocation = () => {
     setUpdateProjectDetails(data);
     console.log("Project Allocation: ", row);
   };
+
   const ExpandableAllocationDetails = (allocationData: any)=>{
     console.log("Passed Allocation Data: ", allocationData.data.projectAllocationsInfo);
-    return <DataTable customStyles={customStyles} onRowDoubleClicked={handleRowDoubleClicked}
-    striped={true} columns={allocationDetailsColumn} data={allocationData.data.projectAllocationsInfo}/>;
+    return <div className="projectAllocationChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid'}}>
+      <DataTable 
+        customStyles={customStyles} 
+        onRowDoubleClicked={handleRowDoubleClicked}
+        striped={true}
+        pagination 
+        columns={allocationDetailsColumn} 
+        data={allocationData.data.projectAllocationsInfo}/>
+    </div>;
   }
   const ExpandableEmployee = ( resourceData: any ) => {
     // console.log("Passed Project Data: ", resourceData.data.projectsInfo);
-    return <DataTable 
-    columns={projectColumns} 
-    expandableRows
-    customStyles={customStyles}
-      striped={true}
-    expandableRowsComponent={ExpandableAllocationDetails}
-    data={resourceData.data.projectsInfo}/>;
-    ;
+    return <div className="projectChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid', boxSizing:'content-box', width:'89.4vw',overflow:'hidden'}}>
+      <DataTable 
+        columns={projectColumns} 
+        expandableRows
+        customStyles={customStyles}
+        striped={true}
+        expandableRowExpanded={(row: any) => row.projectId === currentProject }
+        expandOnRowClicked
+        onRowClicked={(row) => setCurrentProject(row)}
+        onRowExpandToggled={(bool, row: any) => setCurrentProject(row.projectId)}
+        expandableRowsComponent={ExpandableAllocationDetails}
+        data={resourceData.data.projectsInfo}/>
+    </div>;
 }
 
   return (
@@ -615,9 +582,13 @@ const ProjectAllocation = () => {
           </div>
         </div>
           <div className="TableContentBorder">
-            <Table columnsAndSelectors={columnsAndSelectors}  expandableRows expandableRowsComponent={ExpandableEmployee} columns={employeeColumns} data={newData} title={title}/>
+            <Table columnsAndSelectors={columnsAndSelectors}    
+            expandableRowExpanded={(row: any) => row.resourceId === currentRow }
+            expandOnRowClicked
+            onRowClicked={(row:any) => setCurrentRow(row)}
+            onRowExpandToggled={(bool:any, row: any) => setCurrentRow(row.resourceId)}
+            expandableRows expandableRowsComponent={ExpandableEmployee} columns={employeeColumns} data={newData} title={title}/>
           </div>
-          {/* <ExpandableEmployee resourceData={newData[0].projectsInfo}/> */}
       </div>
       }</>
     </div>
