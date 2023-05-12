@@ -99,7 +99,8 @@ const Market = () => {
     getMarketDetails();
   }, [toggle]);
   //start constants for export
-  const title = "Market Details";
+  const title = "";
+  //  "Market Details";
   const columnsAndSelectors=[
     {'name' :'Market Name','selector':'marketName','default':'true'},
   {'name' :'Market Domain','selector':'marketDomain','default':'true'},

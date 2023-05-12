@@ -201,7 +201,8 @@ const HolidayMaster = () => {
     {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
     {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
   ]
-  const title = "Holiday Details";
+  const title = "";
+  //  "Holiday Details";
   //end constants for export
 
   return (

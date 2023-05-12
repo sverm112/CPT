@@ -19,6 +19,8 @@ import { PatternsAndMessages } from "../utils/ValidationPatternAndMessage";
 import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_PROJECTS, GET_ALL_PROJECT_ALLOCATIONS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, GET_TOTAL_ALLOCATED_PERCENTAGE, GET_TOTAL_PTO_DAYS, POST_PROJECT_ALLOCATION, UPDATE_PROJECT_ALLOCATION } from "../constants";
 import { PassThrough } from "stream";
 import { RotatingLines } from "react-loader-spinner";
+import DataTable from "react-data-table-component";
+import customStyles from "../DataTable/customStyles";
 
 const employeeColumns = [
   {
@@ -63,195 +65,171 @@ const employeeColumns = [
     reorder: true,
     filterable: true,
   },
-  {
-    name: "Resource Type1",
-    selector: (row: { resourceType1: any }) => row.resourceType1,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-
-  {
-    name: "Project",
-    selector: (row: { projectName: any }) => row.projectName,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Project Market",
-    selector: (row: { projectMarket: any }) => row.projectMarket,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Project Code",
-    selector: (row: { projectCode: any }) => row.projectCode,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Expense Type",
-    selector: (row: { expenseType: any }) => row.expenseType,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Start Date",
-    selector: (row: { startDate: any }) => row.startDate.slice(0, 10),
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "End Date",
-    selector: (row: { enddDate: any }) => row.enddDate.slice(0, 10),
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "PTO Days",
-    selector: (row: { numberOfPTODays: any }) => row.numberOfPTODays,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Allocation(Hours)",
-    selector: (row: { allocationHours: any }) => row.allocationHours,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Status",
-    selector: (row: { status: any }) => row.status,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Created By",
-    selector: (row: { createdBy: any }) => row.createdBy,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Updated Date",
-    selector: (row: { updatedDate: any }) => row.updatedDate,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Updated By",
-    selector: (row: { updatedBy: any }) => row.updatedBy,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
 ];
 
 const projectColumns = [
     {
     name: "Project",
-    selector: (row: { projectName: any }) => row.projectName,
+    selector: (row:  any ) => row.projectCode,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Project Market",
-    selector: (row: { projectMarket: any }) => row.projectMarket,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Project Code",
-    selector: (row: { projectCode: any }) => row.projectCode,
+    selector: (row:  any ) => row.projectMarket,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Expense Type",
-    selector: (row: { expenseType: any }) => row.expenseType,
+    selector: (row:  any )  => row.projectExpenseType,
     sortable: true,
     reorder: true,
     filterable: true,
   },
-  {
+  // {
+  //   name: "Start Date",
+  //   selector: (row: { startDate: any }) => row.startDate.slice(0, 10),
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
+  // {
+  //   name: "End Date",
+  //   selector: (row: { enddDate: any }) => row.enddDate.slice(0, 10),
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
+  // {
+  //   name: "PTO Days",
+  //   selector: (row: { numberOfPTODays: any }) => row.numberOfPTODays,
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
+  // {
+  //   name: "Allocation(Hours)",
+  //   selector: (row: { allocationHours: any }) => row.allocationHours,
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
+  // {
+  //   name: "Status",
+  //   selector: (row: { status: any }) => row.status,
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
+  // {
+  //   name: "Created Date",
+  //   selector: (row: { createdDate: any }) => row.createdDate,
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
+  // {
+  //   name: "Created By",
+  //   selector: (row: { createdBy: any }) => row.createdBy,
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
+  // {
+  //   name: "Updated Date",
+  //   selector: (row: { updatedDate: any }) => row.updatedDate,
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
+  // {
+  //   name: "Updated By",
+  //   selector: (row: { updatedBy: any }) => row.updatedBy,
+  //   sortable: true,
+  //   reorder: true,
+  //   filterable: true,
+  // },
+]
+const allocationDetailsColumn = [
+    {
     name: "Start Date",
-    selector: (row: { startDate: any }) => row.startDate.slice(0, 10),
+    selector: (row:  any ) => row.startDate?.slice(0, 10),
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "End Date",
-    selector: (row: { enddDate: any }) => row.enddDate.slice(0, 10),
+    selector: (row:  any ) => row.enddDate?.slice(0, 10),
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Resource Type1",
+    selector: (row:any ) => row.resourceType1,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "PTO Days",
-    selector: (row: { numberOfPTODays: any }) => row.numberOfPTODays,
+    selector: (row:  any ) => row.numberOfPTODays,
     sortable: true,
     reorder: true,
     filterable: true,
   },
+  // // Allocation Start Date	Allocation End Date	Resource Type 1	PTO Days	Allocation Hours	Allocation Percentage	Status	Created Date	Created By	Updated Date	Updated By
+   
   {
     name: "Allocation(Hours)",
-    selector: (row: { allocationHours: any }) => row.allocationHours,
+    selector: (row:  any ) => row.allocationHours,
     sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  // allocationPercentage
+  {
+    name: "Allocation Percentage",
+    selector: (row: any)=> row.allocationPercentage,
+    sortable:true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Status",
-    selector: (row: { status: any }) => row.status,
+    selector: (row:  any ) => row.status,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate,
+    selector: (row:  any ) => row.createdDate,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Created By",
-    selector: (row: { createdBy: any }) => row.createdBy,
+    selector: (row:  any ) => row.createdBy,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Updated Date",
-    selector: (row: { updatedDate: any }) => row.updatedDate,
+    selector: (row:  any ) => row.updatedDate,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Updated By",
-    selector: (row: { updatedBy: any }) => row.updatedBy,
+    selector: (row:  any ) => row.updatedBy,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -349,62 +327,6 @@ const ProjectAllocation = () => {
     let dataGet = await response.json();
     dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
     dispatch(projectAllocationActions.changeData(dataGet));
-
-    
-// Segment #1: Purpose of this segment is to store unique human 
-// resource and their corresponding unique projects
-let employeeIds: any[] = [];
-let projectIds : any[] = [];
-let project: any[] = [];
-for(const datapoints of dataGet){
-  if(employeeIds.includes( datapoints.resourceId)){
-    if(!project.includes( datapoints.projectId)){
-      project.push(datapoints.projectId);
-    }
-  }else{
-    employeeIds.push(datapoints.resourceId);
-    if(project.length != 0){
-      projectIds.push(project);
-    }
-    project = [];
-    project.push(datapoints.projectId);
-  }
-}
-projectIds.push(project);    
-// console.log("Project Ids: ", (dataGet[0].projectId == projectIds[0][0] && dataGet[0].resourceId == employeeIds[0]) ? dataGet[0] : null);
-// console.log("Employee Ids: ", employeeIds);
-// End of Segment #1
-
-
-// Segment #2: Purpose of this segment is to return all 
-// common projects for an employee and we are planning to call this function after clicking project from the accordion of Project Allocation
-// for getting all allocations for an employee on a project
-function getAllAllocatedProjects(resourceId: any, projectId: any){
-  let allocatedProject: any[] = [];
-  for(const datapoints of dataGet){
-    if(datapoints.resourceId == resourceId) 
-      allocatedProject.push(datapoints);
-  }
-  let commonProjects: any[] = [];
-  for(const project of allocatedProject){
-    if(project.projectId == projectId)
-    commonProjects.push(project);
-  }
-  return commonProjects;
-}
-// End of Segment #2
-
-// Segment #3: For testing Segment #2
-let x=0;
-for(const emp of employeeIds){
-  console.log("Emp Id: ", emp);
-  console.log("Fetched Data: ", getAllAllocatedProjects(emp, projectIds[x++]));
-  console.log("Project Id: ",projectIds[x]);
-}
-// End of Segment #3
-
-
-
     setTimeout(()=>setIsLoading(false), 2000);
   };
   useEffect(() => {
@@ -428,7 +350,102 @@ for(const emp of employeeIds){
     getHolidayDetails();
   }, []);
 
+  // Resource 										
+// Resource	Resource Type	Role	Supervisor	Location	Resource Market					
+// Project										
+// Project	Project Code	Project Market	Project Manager	Expense Type						
+// Allocation Details										
+// Allocation Start Date	Allocation End Date	Resource Type 1	PTO Days	Allocation Hours	Allocation Percentage	Status	Created Date	Created By	Updated Date	Updated By
+   let resourceIds: any[]=[];
+   let newData : any[]=[];
+   //console.log(projectAllocations)
+   projectAllocations.map((projectAllocation:any)=>{
+    console.log("Project Allocation: ",projectAllocation);
+    if(resourceIds.includes(projectAllocation.resourceId)==true){
+        let resourceItem=newData.find((resource:any)=>resource.resourceId==projectAllocation.resourceId)
+         
+        let projectAllocationsInfo: any[]=[];
+        let projectAllocationInfo = {
+          id: projectAllocation.id,
+          startDate: projectAllocation.startDate,
+          enddDate: projectAllocation.enddDate,
+          allocationHours: projectAllocation.allocationHours,
+          numberOfPTODays: projectAllocation.numberOfPTODays,
+          resourceType1 : projectAllocation.resourceType1,
+          allocationPercentage: projectAllocation.allocationPercentage,
+          status: projectAllocation.status,
+          createdDate: projectAllocation.createdDate,
+          createdBy: projectAllocation.createdBy,
+          updatedDate: projectAllocation.updatedDate,
+          updatedBy: projectAllocation.updatedBy,
+          resourceId: projectAllocation.resourceId,
+          projectId: projectAllocation.projectId,
+        }
+        console.log("Project Infos: ", resourceItem.projectsInfo);
+        if(!resourceItem.projectsInfo.find((pi: any)=>pi.projectId == projectAllocation.projectId)){
+          projectAllocationsInfo.push(projectAllocationInfo);
+          let projectInfo = {
+            projectCode:projectAllocation.projectCode,
+            projectId : projectAllocation.projectId,
+            projectMarket: projectAllocation.projectMarket,
+            projectExpenseType: projectAllocation.expenseType,
+            projectAllocationsInfo:projectAllocationsInfo,
+          }
+          resourceItem.projectsInfo.push(projectInfo);
 
+        }else{
+          console.log("Errro cause: ", resourceItem.projectsInfo.find((project: any)=>project.projectId == projectAllocation.projectId));
+          resourceItem.projectsInfo.find((project: any)=>project.projectId == projectAllocation.projectId).projectAllocationsInfo.push(projectAllocationInfo);
+        }
+        console.log("Resource: ",resourceItem);
+    }
+    if(resourceIds.includes(projectAllocation.resourceId)==false){
+      resourceIds.push(projectAllocation.resourceId);
+      let projectsInfo: any[]=[];
+      let projectAllocationsInfo: any[]=[];
+      let projectAllocationInfo = {
+        id: projectAllocation.id,
+        startDate: projectAllocation.startDate,
+        enddDate: projectAllocation.enddDate,
+        allocationHours: projectAllocation.allocationHours,
+        numberOfPTODays: projectAllocation.numberOfPTODays,
+        resourceType1 : projectAllocation.resourceType1,
+        allocationPercentage: projectAllocation.allocationPercentage,
+        status: projectAllocation.status,
+        createdDate: projectAllocation.createdDate,
+        createdBy: projectAllocation.createdBy,
+        updatedDate: projectAllocation.updatedDate,
+        updatedBy: projectAllocation.updatedBy,
+        resourceId: projectAllocation.resourceId,
+        projectId: projectAllocation.projectId,
+      }
+      // : any[]=[];
+      projectAllocationsInfo.push(projectAllocationInfo);
+      let projectInfo={
+      projectCode:projectAllocation.projectCode,
+      projectId : projectAllocation.projectId,
+      projectMarket: projectAllocation.projectMarket,
+      projectExpenseType: projectAllocation.expenseType,
+      projectAllocationsInfo: projectAllocationsInfo
+    }
+      projectsInfo.push(projectInfo); 
+      let newResourceItem={
+      resourceId : projectAllocation.resourceId,
+      resourceName : projectAllocation.resourceName,
+      role : projectAllocation.role,
+      resourceType : projectAllocation.resourceType,
+      resourceManager : projectAllocation.resourceManager,
+      location : projectAllocation.location,
+      subLocation : projectAllocation.subLocation,
+      resourceMarket : projectAllocation.resourceMarket,
+      projectsInfo : projectsInfo
+    }
+
+      console.log("New Resource Item: ",newResourceItem)
+      newData.push(newResourceItem);
+    }
+  })
+  console.log("New Data: ", newData);
   const filteredProjectAllocations = projectAllocations.filter((projectAllocation: any) => {
     const resourceMarketOptions = resourceMarketSelected.map((resourceMarket: any) => resourceMarket.value);
     const resourceTypeOptions = resourceTypeSelected.map((resourceType: any) => resourceType.value);
@@ -463,12 +480,27 @@ for(const emp of employeeIds){
   const handleRowDoubleClicked = (row: any) => {
     setShowModal(true);
     setAction("Update");
-    let data = { ...row, isActive: row.isActive == "Active" ? "1" : "2" }
+    let data = { ...row }
     setUpdateProjectDetails(data);
     console.log("Project Allocation: ", row);
   };
-  // const ExpandableEmployee = ( filteredProjectAllocations: any ) => <Table columnsAndSelectors={columnsAndSelectors} expandableRows columns={projectColumns} isLoading={isLoading} onRowDoubleClicked={handleRowDoubleClicked} data={filteredProjectAllocations} title={title}/>;
-  // console.log("Expandable Employee: ", ExpandableEmployee);
+  const ExpandableAllocationDetails = (allocationData: any)=>{
+    console.log("Passed Allocation Data: ", allocationData.data.projectAllocationsInfo);
+    return <DataTable customStyles={customStyles} onRowDoubleClicked={handleRowDoubleClicked}
+    striped={true} columns={allocationDetailsColumn} data={allocationData.data.projectAllocationsInfo}/>;
+  }
+  const ExpandableEmployee = ( resourceData: any ) => {
+    // console.log("Passed Project Data: ", resourceData.data.projectsInfo);
+    return <DataTable 
+    columns={projectColumns} 
+    expandableRows
+    customStyles={customStyles}
+      striped={true}
+    expandableRowsComponent={ExpandableAllocationDetails}
+    data={resourceData.data.projectsInfo}/>;
+    ;
+}
+
   return (
    <div>
       <SideBar></SideBar>
@@ -583,10 +615,9 @@ for(const emp of employeeIds){
           </div>
         </div>
           <div className="TableContentBorder">
-            <Table columnsAndSelectors={columnsAndSelectors} 
-            // expandableRows expandableRowsComponent={ExpandableEmployee}
-             columns={employeeColumns} isLoading={isLoading} onRowDoubleClicked={handleRowDoubleClicked} data={filteredProjectAllocations} title={title}/>
+            <Table columnsAndSelectors={columnsAndSelectors}  expandableRows expandableRowsComponent={ExpandableEmployee} columns={employeeColumns} data={newData} title={title}/>
           </div>
+          {/* <ExpandableEmployee resourceData={newData[0].projectsInfo}/> */}
       </div>
       }</>
     </div>
@@ -809,7 +840,7 @@ const UpdateModal = (props: any) => {
             dispatch(projectAllocationActions.changeToggle());
             resetFormFields();
             props.closeModal();
-            toast.success("Project Allocated Successfully")
+            toast.success("Update Allocation Successful")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
       }

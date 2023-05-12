@@ -13,17 +13,17 @@ import {RotatingLines} from 'react-loader-spinner';
 const Table = (props: any) => {
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
-  const options=props.columnsAndSelectors.map((item:any)=>({label : item.name, value:item.selector}));
-  const [columnsSelected,setColumnsSelected]=useState(props.columnsAndSelectors.filter((columnAndSelector:any)=>columnAndSelector.default=="true").map((columnAndSelector:any)=>({label : columnAndSelector.name, value:columnAndSelector.selector})));
+  const options=props.columnsAndSelectors?.map((item:any)=>({label : item.name, value:item.selector}));
+  const [columnsSelected,setColumnsSelected]=useState(props.columnsAndSelectors?.filter((columnAndSelector:any)=>columnAndSelector.default=="true").map((columnAndSelector:any)=>({label : columnAndSelector.name, value:columnAndSelector.selector})));
   
   const onColumnsChange=(event:any)=>{
     console.log(event);
     setColumnsSelected(event);
   }
   let filteredColumns=props.columns;
-  if(columnsSelected.length)
+  if(columnsSelected?.length)
  {
-  const columnsSelectedList=columnsSelected.map((column:any)=>column.label);
+  const columnsSelectedList=columnsSelected?.map((column:any)=>column.label);
    filteredColumns=props.columns.filter((column:any)=> columnsSelectedList.includes(column['name'])==true)
    console.log(columnsSelectedList,filteredColumns);
  }
@@ -31,7 +31,7 @@ const Table = (props: any) => {
     (item: any) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1
   );
   let selectedColumnsAndSelectors=columnsSelected;
-  if(columnsSelected.length==0)
+  if(columnsSelected?.length==0)
   selectedColumnsAndSelectors=options;
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
@@ -77,8 +77,8 @@ const Table = (props: any) => {
       subHeaderComponent={subHeaderComponent}
       customStyles={customStyles}
       striped={true}
-      // {...props}
-      // expandableRowsComponent={props.expandableRowsComponent}
+      {...props}
+      expandableRowsComponent={props.expandableRowsComponent}
       persistTableHead={true}
       onRowDoubleClicked={props.onRowDoubleClicked}
     />
