@@ -21,6 +21,7 @@ import { PassThrough } from "stream";
 import { RotatingLines } from "react-loader-spinner";
 import DataTable from "react-data-table-component";
 import customStyles from "../DataTable/customStyles";
+import { ptoActions } from "../Store/Slices/Pto";
 
 const employeeColumns = [
   {
@@ -240,6 +241,9 @@ const ProjectAllocation = () => {
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("Add");
   const [updateProjectDetails, setUpdateProjectDetails] = useState({});
+  const resourceSelected = useSelector((state: any) => state.Pto.resourceName);
+  const resourceList = useSelector((state: any) => state.Employee.data);
+  
   const openModal = () => {
     setShowModal(true);
   }
@@ -503,7 +507,20 @@ const ProjectAllocation = () => {
           </div>
         </div>
         <div className="row filter-row">
-
+        <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Resource
+              </label>
+              <MultiSelect
+                options={
+                  resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
+                }
+                value={resourceSelected}
+                onChange={(event: any) => dispatch(ptoActions.changeResourceName(event))}
+                labelledBy="Select Resource"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
           <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Resource Type
@@ -565,7 +582,7 @@ const ProjectAllocation = () => {
             />
           </div>
 
-          <div className="col-md-2 form-group">
+          {/* <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Expense Type
             </label>
@@ -576,7 +593,7 @@ const ProjectAllocation = () => {
               labelledBy="Select Expense Type"
               valueRenderer={customValueRenderer}
             />
-          </div>
+          </div> */}
           <div className="col-md-2" style={{ marginTop: "24px" }}>
             <button type="button" className="btn btn-primary" onClick={() => dispatch(projectAllocationActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
           </div>
@@ -883,7 +900,7 @@ useEffect(()=>{
             <h6>Update Allocation</h6>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body id="ModalBody">
           <form onSubmit={formSubmitHandler} id="AllocateProjectForm" noValidate>
             <div className="row">
               <div className="col-md-6 form-group" id="AllocateProjectResource">
