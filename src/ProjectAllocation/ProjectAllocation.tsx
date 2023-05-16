@@ -306,114 +306,16 @@ const ProjectAllocation = () => {
     getHolidayDetails();
   }, []);
 
-  // Resource 										
-// Resource	Resource Type	Role	Supervisor	Location	Resource Market					
-// Project										
-// Project	Project Code	Project Market	Project Manager	Expense Type						
-// Allocation Details										
-// Allocation Start Date	Allocation End Date	Resource Type 1	PTO Days	Allocation Hours	Allocation Percentage	Status	Created Date	Created By	Updated Date	Updated By
-   let resourceIds: any[]=[];
-   let newData : any[]=[];
-   //console.log(projectAllocations)
-   projectAllocations.map((projectAllocation:any)=>{
-    console.log("Project Allocation: ",projectAllocation);
-    if(resourceIds.includes(projectAllocation.resourceId)==true){
-        let resourceItem=newData.find((resource:any)=>resource.resourceId==projectAllocation.resourceId)
-         
-        let projectAllocationsInfo: any[]=[];
-        let projectAllocationInfo = {
-          id: projectAllocation.id,
-          startDate: projectAllocation.startDate,
-          enddDate: projectAllocation.enddDate,
-          allocationHours: projectAllocation.allocationHours,
-          numberOfPTODays: projectAllocation.numberOfPTODays,
-          resourceType1 : projectAllocation.resourceType1,
-          allocationPercentage: projectAllocation.allocationPercentage,
-          status: projectAllocation.status,
-          createdDate: projectAllocation.createdDate,
-          createdBy: projectAllocation.createdBy,
-          updatedDate: projectAllocation.updatedDate,
-          updatedBy: projectAllocation.updatedBy,
-          resourceId: projectAllocation.resourceId,
-          projectId: projectAllocation.projectId,
-        }
-        console.log("Project Infos: ", resourceItem.projectsInfo);
-        if(!resourceItem.projectsInfo.find((pi: any)=>pi.projectId == projectAllocation.projectId)){
-          projectAllocationsInfo.push(projectAllocationInfo);
-          let projectInfo = {
-            projectCode:projectAllocation.projectCode,
-            projectId : projectAllocation.projectId,
-            projectMarket: projectAllocation.projectMarket,
-            projectExpenseType: projectAllocation.expenseType,
-            projectAllocationsInfo:projectAllocationsInfo,
-            projectName: projectAllocation.projectName !== null ? projectAllocation.projectName : null,
-            projectManager: projectAllocation.projectManager !== null ? projectAllocation.projectManager : null,
-          }
-          resourceItem.projectsInfo.push(projectInfo);
-
-        }else{
-          console.log("Errro cause: ", resourceItem.projectsInfo.find((project: any)=>project.projectId == projectAllocation.projectId));
-          resourceItem.projectsInfo.find((project: any)=>project.projectId == projectAllocation.projectId).projectAllocationsInfo.push(projectAllocationInfo);
-        }
-        console.log("Resource: ",resourceItem);
-    }
-    if(resourceIds.includes(projectAllocation.resourceId)==false){
-      resourceIds.push(projectAllocation.resourceId);
-      let projectsInfo: any[]=[];
-      let projectAllocationsInfo: any[]=[];
-      let projectAllocationInfo = {
-        id: projectAllocation.id,
-        startDate: projectAllocation.startDate,
-        enddDate: projectAllocation.enddDate,
-        allocationHours: projectAllocation.allocationHours,
-        numberOfPTODays: projectAllocation.numberOfPTODays,
-        resourceType1 : projectAllocation.resourceType1,
-        allocationPercentage: projectAllocation.allocationPercentage,
-        status: projectAllocation.status,
-        createdDate: projectAllocation.createdDate,
-        createdBy: projectAllocation.createdBy,
-        updatedDate: projectAllocation.updatedDate,
-        updatedBy: projectAllocation.updatedBy,
-        resourceId: projectAllocation.resourceId,
-        projectId: projectAllocation.projectId,
-      }
-      // : any[]=[];
-      projectAllocationsInfo.push(projectAllocationInfo);
-      let projectInfo={
-      projectCode:projectAllocation.projectCode,
-      projectId : projectAllocation.projectId,
-      projectMarket: projectAllocation.projectMarket,
-      projectExpenseType: projectAllocation.expenseType,
-      projectAllocationsInfo: projectAllocationsInfo
-    }
-      projectsInfo.push(projectInfo); 
-      let newResourceItem={
-      resourceId : projectAllocation.resourceId,
-      resourceName : projectAllocation.resourceName,
-      role : projectAllocation.role,
-      resourceType : projectAllocation.resourceType,
-      resourceManager : projectAllocation.resourceManager,
-      location : projectAllocation.location,
-      subLocation : projectAllocation.subLocation,
-      resourceMarket : projectAllocation.resourceMarket,
-      projectsInfo : projectsInfo
-    }
-
-      console.log("New Resource Item: ",newResourceItem)
-      newData.push(newResourceItem);
-    }
-  })
-  console.log("New Data: ", newData);
   const filteredProjectAllocations = projectAllocations.filter((projectAllocation: any) => {
     const resourceMarketOptions = resourceMarketSelected.map((resourceMarket: any) => resourceMarket.value);
     const resourceTypeOptions = resourceTypeSelected.map((resourceType: any) => resourceType.value);
     const roleOptions = roleSelected.map((role: any) => role.value);
-    const expenseTypeOptions = expenseTypeSelected.map((expenseType: any) => expenseType.value);
+    const resourceOptions = resourceSelected.map((resource: any) => resource.value);
     const projectMarketOptions = projectMarketSelected.map((projectMarket: any) => projectMarket.value);
     if ((!resourceMarketSelected.length) || (resourceMarketSelected.length > 0 && resourceMarketOptions.includes(projectAllocation.resourceMarket) == true)) {
       if ((!resourceTypeSelected.length) || (resourceTypeSelected.length > 0 && resourceTypeOptions.includes(projectAllocation.resourceType) == true)) {
         if ((!roleSelected.length) || (roleSelected.length > 0 && roleOptions.includes(projectAllocation.role) == true)) {
-          if ((!expenseTypeSelected.length) || (expenseTypeSelected.length > 0 && expenseTypeOptions.includes(projectAllocation.expenseType) == true)) {
+          if ((!resourceSelected.length) || (resourceSelected.length > 0 && resourceOptions.includes(projectAllocation.resourceName) == true)) {
             if ((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket) == true)) {
               if (locationSelected == "0" || locationSelected == projectAllocation.location)
                 return true;
@@ -424,6 +326,104 @@ const ProjectAllocation = () => {
     }
     return false;
   });
+  // Resource 										
+// Resource	Resource Type	Role	Supervisor	Location	Resource Market					
+// Project										
+// Project	Project Code	Project Market	Project Manager	Expense Type						
+// Allocation Details										
+// Allocation Start Date	Allocation End Date	Resource Type 1	PTO Days	Allocation Hours	Allocation Percentage	Status	Created Date	Created By	Updated Date	Updated By
+let resourceIds: any[]=[];
+let newData : any[]=[];
+//console.log(projectAllocations)
+filteredProjectAllocations.map((projectAllocation:any)=>{
+ console.log("Project Allocation: ",projectAllocation);
+ if(resourceIds.includes(projectAllocation.resourceId)==true){
+     let resourceItem=newData.find((resource:any)=>resource.resourceId==projectAllocation.resourceId)
+      
+     let projectAllocationsInfo: any[]=[];
+     let projectAllocationInfo = {
+       id: projectAllocation.id,
+       startDate: projectAllocation.startDate,
+       enddDate: projectAllocation.enddDate,
+       allocationHours: projectAllocation.allocationHours,
+       numberOfPTODays: projectAllocation.numberOfPTODays,
+       resourceType1 : projectAllocation.resourceType1,
+       allocationPercentage: projectAllocation.allocationPercentage,
+       status: projectAllocation.status,
+       createdDate: projectAllocation.createdDate,
+       createdBy: projectAllocation.createdBy,
+       updatedDate: projectAllocation.updatedDate,
+       updatedBy: projectAllocation.updatedBy,
+       resourceId: projectAllocation.resourceId,
+       projectId: projectAllocation.projectId,
+     }
+     console.log("Project Infos: ", resourceItem.projectsInfo);
+     if(!resourceItem.projectsInfo.find((pi: any)=>pi.projectId == projectAllocation.projectId)){
+       projectAllocationsInfo.push(projectAllocationInfo);
+       let projectInfo = {
+         projectCode:projectAllocation.projectCode,
+         projectId : projectAllocation.projectId,
+         projectMarket: projectAllocation.projectMarket,
+         projectExpenseType: projectAllocation.expenseType,
+         projectAllocationsInfo:projectAllocationsInfo,
+         projectName: projectAllocation.projectName !== null ? projectAllocation.projectName : null,
+         projectManager: projectAllocation.projectManager !== null ? projectAllocation.projectManager : null,
+       }
+       resourceItem.projectsInfo.push(projectInfo);
+
+     }else{
+       console.log("Errro cause: ", resourceItem.projectsInfo.find((project: any)=>project.projectId == projectAllocation.projectId));
+       resourceItem.projectsInfo.find((project: any)=>project.projectId == projectAllocation.projectId).projectAllocationsInfo.push(projectAllocationInfo);
+     }
+     console.log("Resource: ",resourceItem);
+ }
+ if(resourceIds.includes(projectAllocation.resourceId)==false){
+   resourceIds.push(projectAllocation.resourceId);
+   let projectsInfo: any[]=[];
+   let projectAllocationsInfo: any[]=[];
+   let projectAllocationInfo = {
+     id: projectAllocation.id,
+     startDate: projectAllocation.startDate,
+     enddDate: projectAllocation.enddDate,
+     allocationHours: projectAllocation.allocationHours,
+     numberOfPTODays: projectAllocation.numberOfPTODays,
+     resourceType1 : projectAllocation.resourceType1,
+     allocationPercentage: projectAllocation.allocationPercentage,
+     status: projectAllocation.status,
+     createdDate: projectAllocation.createdDate,
+     createdBy: projectAllocation.createdBy,
+     updatedDate: projectAllocation.updatedDate,
+     updatedBy: projectAllocation.updatedBy,
+     resourceId: projectAllocation.resourceId,
+     projectId: projectAllocation.projectId,
+   }
+   // : any[]=[];
+   projectAllocationsInfo.push(projectAllocationInfo);
+   let projectInfo={
+   projectCode:projectAllocation.projectCode,
+   projectId : projectAllocation.projectId,
+   projectMarket: projectAllocation.projectMarket,
+   projectExpenseType: projectAllocation.expenseType,
+   projectAllocationsInfo: projectAllocationsInfo
+ }
+   projectsInfo.push(projectInfo); 
+   let newResourceItem={
+   resourceId : projectAllocation.resourceId,
+   resourceName : projectAllocation.resourceName,
+   role : projectAllocation.role,
+   resourceType : projectAllocation.resourceType,
+   resourceManager : projectAllocation.resourceManager,
+   location : projectAllocation.location,
+   subLocation : projectAllocation.subLocation,
+   resourceMarket : projectAllocation.resourceMarket,
+   projectsInfo : projectsInfo
+ }
+
+   console.log("New Resource Item: ",newResourceItem)
+   newData.push(newResourceItem);
+ }
+})
+console.log("New Data: ", newData);
 
   //start constants for export
   const title ="";
