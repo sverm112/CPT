@@ -67,17 +67,19 @@ const Table = (props: any) => {
     );
   }, [filterText, resetPaginationToggle,options,columnsSelected,onColumnsChange]);
 
+  console.log("Filtered Items", filteredItems);
+  console.log("Filtered Text", filterText);
   return (
       <DataTable
       className="table-striped"
       columns={filteredColumns}
+      {...props}
       data={filteredItems}
       pagination
       subHeader
       subHeaderComponent={subHeaderComponent}
       customStyles={customStyles}
       striped={true}
-      {...props}
       expandableRowsComponent={props.expandableRowsComponent}
       persistTableHead={true}
       onRowDoubleClicked={props.onRowDoubleClicked}
