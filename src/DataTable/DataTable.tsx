@@ -72,17 +72,23 @@ const Table = (props: any) => {
   return (
       <DataTable
       className="table-striped"
+      // {...props}
       columns={filteredColumns}
-      {...props}
+      expandableRowExpanded = {props.expandableRowExpanded}
+      expandOnRowClicked = {props.expandOnRowClicked}
+      onRowClicked = {props.onRowClicked}
+      onRowExpandToggled = {props.onRowExpandToggled}
+      expandableRows = {props.expandableRows}
+      expandableRowsComponent = {props.expandableRowsComponent}
       data={filteredItems}
       pagination
       subHeader
       subHeaderComponent={subHeaderComponent}
       customStyles={customStyles}
       striped={true}
-      expandableRowsComponent={props.expandableRowsComponent}
+      // expandableRowsComponent={props.expandableRowsComponent}
       persistTableHead={true}
-      onRowDoubleClicked={props.onRowDoubleClicked}
+      // onRowDoubleClicked={props.onRowDoubleClicked}
     />
     // </div>
   );

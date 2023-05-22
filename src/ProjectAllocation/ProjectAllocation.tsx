@@ -190,10 +190,10 @@ const allocationDetailsColumn = [
 const columnsAndSelectors=[
   {'name':'Resource','selector':'resourceName','default':'true'},
   {'name':'Resource Type','selector':'resourceType','default':'true'},
-  {'name':'Role','selector':'role','default':'false'},
-  {'name':'Supervisor','selector':'resourceManager','default':'false'},
+  {'name':'Role','selector':'role','default':'true'},
+  {'name':'Supervisor','selector':'resourceManager','default':'true'},
   {'name':'Location','selector':'location','default':'true'},
-  {'name':'Resource Market','selector':'resourceMarket','default':'false'},
+  {'name':'Resource Market','selector':'resourceMarket','default':'true'},
   {'name':'Project','selector':'projectName','default':'true'},
   {'name':'Resource Type1','selector':'resourceType1','default':'false'},
   {'name':'Project Market','selector':'projectMarket','default':'true'},
