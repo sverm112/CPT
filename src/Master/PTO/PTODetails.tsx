@@ -188,8 +188,7 @@ const PTO = () => {
 
   //start constants for export
   const selectors = ['resourceName', 'resourceManager', 'ptoType','startDate', 'endDate', 'month', 'numberOfDays', 'remarks', 'isActive', 'createdDate', 'createdBy']
-  const title = "";
-  //  "PTO Details";
+  const title = "PTO Details";
 
   const columnsAndSelectors=[
   {'name' :'Resource','selector':'resourceName','default':'true'},

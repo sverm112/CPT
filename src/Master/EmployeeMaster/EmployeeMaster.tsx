@@ -318,8 +318,7 @@ const EmployeeMaster = () => {
     {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
     {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
   ]
-  const title = "";
-  // "Employee Details";
+  const title = "Employee Details";
   //end constants for export
 
   return (

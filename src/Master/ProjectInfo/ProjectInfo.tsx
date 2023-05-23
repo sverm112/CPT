@@ -197,8 +197,7 @@ const ProjectInfo = () => {
   };
 
   //start constants for export
-  const title = "";
-  // "Project Details";
+  const title = "Project Details";
   const selectors = ['projectCode', 'projectName', 'projectModel',
     'projectMarket', 'programManager', 'expenseType',
     'isActive', 'createdDate', 'createdBy'];

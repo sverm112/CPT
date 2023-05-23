@@ -426,8 +426,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
 console.log("New Data: ", newData);
 
   //start constants for export
-  const title ="";
-  //  "Project Allocation Details";
+  const title ="Project Allocation Details";
   const headers = [['Resource', 'Resource Type', 'Location',
     'Project', 'Project Market', 'Start Date', 'End Date', 'PTO Days', 'Allocation(Hours)']];
   const selectors = ['resourceName', 'resourceType',
