@@ -17,8 +17,21 @@ const Table = (props: any) => {
   const [columnsSelected,setColumnsSelected]=useState(props.columnsAndSelectors?.filter((columnAndSelector:any)=>columnAndSelector.default=="true").map((columnAndSelector:any)=>({label : columnAndSelector.name, value:columnAndSelector.selector})));
   
   const onColumnsChange=(event:any)=>{
-    console.log(event);
-    setColumnsSelected(event);
+    // console.log("Options: ",options);
+    // console.log("Passed Columns: ", props.columns);
+    let newColumns: any[] =[] ;
+    //  = options.map((op : any)=>{event.find((ev: any)=>ev.value == op.value)})
+    for(const op of options){
+      if(event.find((e: any)=> e.value == op.value)){
+        let x = {
+          label: op.label,
+          value: op.value
+        }
+        newColumns.push(x);
+      }
+    }
+    // console.log("New Column Changes: ",newColumns);
+    setColumnsSelected(newColumns);
   }
   let filteredColumns=props.columns;
   if(columnsSelected?.length)

@@ -7,9 +7,6 @@ const Columns=(props:any)=>{
     return(
         <>
             <div className="ClickMultiSelect col-md-2 form-group" style={{marginLeft:'-40px'}}>
-              {/* <label htmlFor="" className="form-label">
-                Columns
-              </label> */}
               <MultiSelect
                 options={props.options}
                 value={props.columnsSelected}
