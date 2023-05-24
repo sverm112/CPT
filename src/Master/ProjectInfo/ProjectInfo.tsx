@@ -38,7 +38,7 @@ const columns = [
     filterable: true,
   },
   {
-    name: "Market",
+    name: "Project Market",
     selector: (row: { projectMarket: any }) => row.projectMarket ,
     sortable: true,
     reorder: true,
@@ -99,7 +99,7 @@ const columnsAndSelectors=[
   {'name':'Project Code"','selector':'projectCode','default':'true'},
   {'name':'Project Name','selector':'projectName','default':'true'},
   {'name':'Project Model','selector':'projectModel','default':'true'},
-  {'name':'Market','selector':'projectMarket','default':'true'},
+  {'name':'Project Market','selector':'projectMarket','default':'true'},
   {'name':'Program Manager','selector':'programManager','default':'true'},
   {'name':'Status','selector':'status','default':'true'},
   {'name':'Created Date','selector':'createdDate','default':'true'},
@@ -253,7 +253,7 @@ const ProjectInfo = () => {
             </div>
             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
-                Market
+                Project Market
               </label>
               <MultiSelect
                 options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}

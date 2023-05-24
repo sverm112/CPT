@@ -450,7 +450,7 @@ console.log("New Data: ", newData);
 
   const ExpandableAllocationDetails = (allocationData: any)=>{
     console.log("Passed Allocation Data: ", allocationData.data.projectAllocationsInfo);
-    return <div className="projectAllocationChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid'}}>
+    return <div className="projectAllocationChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid', boxSizing:'content-box', width:'89.4vw',overflow:'hidden'}}>
       <DataTable 
         customStyles={customStyles} 
         onRowDoubleClicked={handleRowDoubleClicked}
@@ -462,7 +462,7 @@ console.log("New Data: ", newData);
   }
   const ExpandableEmployee = ( resourceData: any ) => {
     // console.log("Passed Project Data: ", resourceData.data.projectsInfo);
-    return <div className="projectChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid', boxSizing:'content-box', width:'89.4vw',overflow:'hidden'}}>
+    return <div className="projectChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid'}}>
       <DataTable 
         columns={projectColumns} 
         expandableRows
