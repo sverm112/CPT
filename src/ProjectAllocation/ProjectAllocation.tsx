@@ -70,7 +70,7 @@ const employeeColumns = [
 
 const projectColumns = [
   {
-    name: "Project",
+    name: "Project Name",
     selector: (row:  any ) => row.projectName,
     sortable: true,
     reorder: true,
@@ -217,10 +217,10 @@ const customValueRenderer = (selected: any, _options: any) => {
 };
 
 const ProjectAllocation = () => {
-  const expenseTypes = [
-    { label: "CAPEX", value: "CAPEX" },
-    { label: "OPEX", value: "OPEX" },
-  ];
+  // const expenseTypes = [
+  //   { label: "CAPEX", value: "CAPEX" },
+  //   { label: "OPEX", value: "OPEX" },
+  // ];
   const dispatch = useDispatch();
   const marketList = useSelector((state: any) => state.Market.data);
   const locations = useSelector((state: any) => state.Filters.locations);
@@ -233,17 +233,20 @@ const ProjectAllocation = () => {
   const roleSelected = useSelector((store: any) => store.ProjectAllocation.role)
   const projectMarketSelected = useSelector((store: any) => store.ProjectAllocation.projectMarket)
   const [isLoading, setIsLoading] = useState(true);
-  const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
+  // const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
   const locationSelected = useSelector((store: any) => store.ProjectAllocation.location)
   const [currentProject, setCurrentProject] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
+  const resources = useSelector((state: any) => state.Employee.data);
 
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("Add");
   const [updateProjectDetails, setUpdateProjectDetails] = useState({});
   const resourceSelected = useSelector((state: any) => state.Pto.resourceName);
   const resourceList = useSelector((state: any) => state.Employee.data);
-  
+  const managerSelected = useSelector((state: any) => state.Employee.manager);
+  const managerOptions = managerSelected.map((manager: any) => manager.value);
+      
   const openModal = () => {
     setShowModal(true);
   }
@@ -252,7 +255,10 @@ const ProjectAllocation = () => {
     setAction("Add");
   }
 
-
+  
+  const changeManagerSelectHandler = (event: any) => {
+    dispatch(employeeActions.changeManager(event));
+  };
   const changeResourceMarketSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeResourceMarket(event));
   };
@@ -265,14 +271,14 @@ const ProjectAllocation = () => {
 
   };
 
-  const changeProjectMarketSelectHandler = (event: any) => {
-    dispatch(projectAllocationActions.changeProjectMarket(event));
+  // const changeProjectMarketSelectHandler = (event: any) => {
+  //   dispatch(projectAllocationActions.changeProjectMarket(event));
 
-  };
-  const changeExpenseTypeSelectHandler = (event: any) => {
-    dispatch(projectAllocationActions.changeExpenseType(event));
+  // };
+  // const changeExpenseTypeSelectHandler = (event: any) => {
+  //   dispatch(projectAllocationActions.changeExpenseType(event));
 
-  };
+  // };
   const changeLocationSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeLocation(event.target.value));
 
@@ -306,6 +312,13 @@ const ProjectAllocation = () => {
     getHolidayDetails();
   }, []);
 
+  
+  const supervisors: any = [];
+  resources.map((resource: any) => {
+    if (supervisors.indexOf(resource.manager) === -1) {
+      supervisors.push(resource.manager);
+    }
+  })
   const filteredProjectAllocations = projectAllocations.filter((projectAllocation: any) => {
     const resourceMarketOptions = resourceMarketSelected.map((resourceMarket: any) => resourceMarket.value);
     const resourceTypeOptions = resourceTypeSelected.map((resourceType: any) => resourceType.value);
@@ -316,7 +329,7 @@ const ProjectAllocation = () => {
       if ((!resourceTypeSelected.length) || (resourceTypeSelected.length > 0 && resourceTypeOptions.includes(projectAllocation.resourceType) == true)) {
         if ((!roleSelected.length) || (roleSelected.length > 0 && roleOptions.includes(projectAllocation.role) == true)) {
           if ((!resourceSelected.length) || (resourceSelected.length > 0 && resourceOptions.includes(projectAllocation.resourceName) == true)) {
-            if ((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket) == true)) {
+            if ((!managerSelected.length) || (managerSelected.length > 0 && managerOptions.includes(projectAllocation.resourceManager) == true)) {
               if (locationSelected == "0" || locationSelected == projectAllocation.location)
                 return true;
             }
@@ -326,15 +339,8 @@ const ProjectAllocation = () => {
     }
     return false;
   });
-  // Resource 										
-// Resource	Resource Type	Role	Supervisor	Location	Resource Market					
-// Project										
-// Project	Project Code	Project Market	Project Manager	Expense Type						
-// Allocation Details										
-// Allocation Start Date	Allocation End Date	Resource Type 1	PTO Days	Allocation Hours	Allocation Percentage	Status	Created Date	Created By	Updated Date	Updated By
 let resourceIds: any[]=[];
 let newData : any[]=[];
-//console.log(projectAllocations)
 filteredProjectAllocations.map((projectAllocation:any)=>{
  console.log("Project Allocation: ",projectAllocation);
  if(resourceIds.includes(projectAllocation.resourceId)==true){
@@ -545,6 +551,18 @@ console.log("New Data: ", newData);
               valueRenderer={customValueRenderer}
             />
           </div>
+          <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Supervisor
+              </label>
+              <MultiSelect
+                options={supervisors.map((manager: any) => ({ label: manager, value: manager }))}
+                value={managerSelected}
+                onChange={changeManagerSelectHandler}
+                labelledBy="Select Supervisor"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
           <div className=" col-md-2 form-group">
             <label htmlFor="locationDropdown" className="form-label">
               Location
@@ -568,7 +586,7 @@ console.log("New Data: ", newData);
               valueRenderer={customValueRenderer}
             />
           </div>
-          <div className="col-md-2 form-group">
+          {/* <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Project Market
             </label>
@@ -579,7 +597,7 @@ console.log("New Data: ", newData);
               labelledBy="Select Project Market"
               valueRenderer={customValueRenderer}
             />
-          </div>
+          </div> */}
 
           {/* <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
@@ -594,7 +612,7 @@ console.log("New Data: ", newData);
             />
           </div> */}
           <div className="col-md-2" style={{ marginTop: "24px" }}>
-            <button type="button" className="btn btn-primary" onClick={() => dispatch(projectAllocationActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}>Clear Filters<i className="las la-filter"></i></button>
           </div>
         </div>
           <div className="TableContentBorder">
