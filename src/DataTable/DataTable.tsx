@@ -101,7 +101,7 @@ const Table = (props: any) => {
       striped={true}
       // expandableRowsComponent={props.expandableRowsComponent}
       persistTableHead={true}
-      // onRowDoubleClicked={props.onRowDoubleClicked}
+      onRowDoubleClicked={props.onRowDoubleClicked}
     />
     // </div>
   );
