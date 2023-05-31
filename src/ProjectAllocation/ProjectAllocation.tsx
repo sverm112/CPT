@@ -373,7 +373,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
          projectExpenseType: projectAllocation.expenseType,
          projectAllocationsInfo:projectAllocationsInfo,
          projectName: projectAllocation.projectName !== null ? projectAllocation.projectName : null,
-         projectManager: projectAllocation.projectManager !== null ? projectAllocation.projectManager : null,
+         projectManager: projectAllocation.programManager !== null ? projectAllocation.programManager : null,
        }
        resourceItem.projectsInfo.push(projectInfo);
 
@@ -410,7 +410,8 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
    projectId : projectAllocation.projectId,
    projectMarket: projectAllocation.projectMarket,
    projectExpenseType: projectAllocation.expenseType,
-   projectAllocationsInfo: projectAllocationsInfo
+   projectAllocationsInfo: projectAllocationsInfo,
+   projectManager: projectAllocation.programManager,
  }
    projectsInfo.push(projectInfo); 
    let newResourceItem={
@@ -935,7 +936,6 @@ useEffect(()=>{
                     onChange={(e: any) => {
                       handleChange(e);
                       setResourceDetails(e);
-                      console.log("Changed", formValues.resourceName);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
                       }}>
                     <option value="0">Select</option>
