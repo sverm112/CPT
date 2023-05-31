@@ -211,6 +211,7 @@ const EmployeeMaster = () => {
   const [path, setPath] = useState("");
   const sendBulkResourcesData = async (payload: any) => {
     if (payload.length) {
+      console.log("Payload: ",payload);
       payload = payload.map((row: any) => ({
         resourceName: row.ResourceName,
         resourceType: row.ResourceType,
