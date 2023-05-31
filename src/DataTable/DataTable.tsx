@@ -13,17 +13,30 @@ import {RotatingLines} from 'react-loader-spinner';
 const Table = (props: any) => {
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
-  const options=props.columnsAndSelectors.map((item:any)=>({label : item.name, value:item.selector}));
-  const [columnsSelected,setColumnsSelected]=useState(props.columnsAndSelectors.filter((columnAndSelector:any)=>columnAndSelector.default=="true").map((columnAndSelector:any)=>({label : columnAndSelector.name, value:columnAndSelector.selector})));
+  const options=props.columnsAndSelectors?.map((item:any)=>({label : item.name, value:item.selector}));
+  const [columnsSelected,setColumnsSelected]=useState(props.columnsAndSelectors?.filter((columnAndSelector:any)=>columnAndSelector.default=="true").map((columnAndSelector:any)=>({label : columnAndSelector.name, value:columnAndSelector.selector})));
   
   const onColumnsChange=(event:any)=>{
-    console.log(event);
-    setColumnsSelected(event);
+    // console.log("Options: ",options);
+    // console.log("Passed Columns: ", props.columns);
+    let newColumns: any[] =[] ;
+    //  = options.map((op : any)=>{event.find((ev: any)=>ev.value == op.value)})
+    for(const op of options){
+      if(event.find((e: any)=> e.value == op.value)){
+        let x = {
+          label: op.label,
+          value: op.value
+        }
+        newColumns.push(x);
+      }
+    }
+    // console.log("New Column Changes: ",newColumns);
+    setColumnsSelected(newColumns);
   }
   let filteredColumns=props.columns;
-  if(columnsSelected.length)
+  if(columnsSelected?.length)
  {
-  const columnsSelectedList=columnsSelected.map((column:any)=>column.label);
+  const columnsSelectedList=columnsSelected?.map((column:any)=>column.label);
    filteredColumns=props.columns.filter((column:any)=> columnsSelectedList.includes(column['name'])==true)
    console.log(columnsSelectedList,filteredColumns);
  }
@@ -31,7 +44,7 @@ const Table = (props: any) => {
     (item: any) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1
   );
   let selectedColumnsAndSelectors=columnsSelected;
-  if(columnsSelected.length==0)
+  if(columnsSelected?.length==0)
   selectedColumnsAndSelectors=options;
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
@@ -67,55 +80,29 @@ const Table = (props: any) => {
     );
   }, [filterText, resetPaginationToggle,options,columnsSelected,onColumnsChange]);
 
+  console.log("Filtered Items", filteredItems);
+  console.log("Filtered Text", filterText);
   return (
-      <>
-      { props.isLoading ? 
-      // <ContentLoader
-      //   // height={320}
-      //   speed={1}
-      //   // backgroundColor={'#333'}
-      //   // foregroundColor={'#999'}
-      //   style={{width: '120%'}}
-      //   viewBox="0 0 700 150"
-      // >
-      //   <rect x="1" y="4" rx="3" ry="3" width="49" height="16" />
-      //   <rect x="51" y="4" rx="3" ry="3" width="49" height="16" />
-      //   <rect x="476" y="4" rx="3" ry="3" width="100" height="16" />
-      //   <rect x="1" y="23" rx="3" ry="3" width="580" height="10" />
-      //   <rect x="1" y="36" rx="3" ry="3" width="580" height="10" />
-      //   <rect x="1" y="49" rx="3" ry="3" width="580" height="10" />
-      //   <rect x="1" y="62" rx="3" ry="3" width="580" height="10" />
-      //   <rect x="1" y="75" rx="3" ry="3" width="580" height="10" />
-      //   <rect x="1" y="88" rx="3" ry="3" width="580" height="10" />
-      //   <rect x="1" y="101" rx="3" ry="3" width="580" height="10" />
-      //   <rect x="1" y="114" rx="3" ry="3" width="580" height="10" />
-      //   <rect x="1" y="127" rx="3" ry="3" width="580" height="10" />
-      //   <rect x="1" y="140" rx="3" ry="3" width="580" height="10" />
-      // </ContentLoader>
-      <div className="SpinnerLoader" style={{height:'50vh',textAlign:'center', justifyContent:'center', margin:'auto', display:'flex'}}>
-        <RotatingLines
-          strokeColor="#fa600d"
-          strokeWidth="5"
-          animationDuration="0.75"
-          width="96"
-          visible={true}
-        />
-      </div>
-      :
       <DataTable
       className="table-striped"
+      // {...props}
       columns={filteredColumns}
+      expandableRowExpanded = {props.expandableRowExpanded}
+      expandOnRowClicked = {props.expandOnRowClicked}
+      onRowClicked = {props.onRowClicked}
+      onRowExpandToggled = {props.onRowExpandToggled}
+      expandableRows = {props.expandableRows}
+      expandableRowsComponent = {props.expandableRowsComponent}
       data={filteredItems}
       pagination
       subHeader
       subHeaderComponent={subHeaderComponent}
       customStyles={customStyles}
       striped={true}
+      // expandableRowsComponent={props.expandableRowsComponent}
       persistTableHead={true}
-      onRowDoubleClicked={props.onRowDoubleClicked}
+      // onRowDoubleClicked={props.onRowDoubleClicked}
     />
-      }
-    </>
     // </div>
   );
 };

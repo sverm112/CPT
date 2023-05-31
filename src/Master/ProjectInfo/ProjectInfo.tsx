@@ -13,6 +13,7 @@ import DownloadBtn from "../../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { Base_URL, GET_ALL_MARKETS, GET_ALL_PROJECTS, POST_PROJECT, UPDATE_PROJECT } from "../../constants";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
+import { RotatingLines } from "react-loader-spinner";
 
 const columns = [
   {
@@ -37,7 +38,7 @@ const columns = [
     filterable: true,
   },
   {
-    name: "Market",
+    name: "Project Market",
     selector: (row: { projectMarket: any }) => row.projectMarket ,
     sortable: true,
     reorder: true,
@@ -98,7 +99,7 @@ const columnsAndSelectors=[
   {'name':'Project Code"','selector':'projectCode','default':'true'},
   {'name':'Project Name','selector':'projectName','default':'true'},
   {'name':'Project Model','selector':'projectModel','default':'true'},
-  {'name':'Market','selector':'projectMarket','default':'true'},
+  {'name':'Project Market','selector':'projectMarket','default':'true'},
   {'name':'Program Manager','selector':'programManager','default':'true'},
   {'name':'Status','selector':'status','default':'true'},
   {'name':'Created Date','selector':'createdDate','default':'true'},
@@ -205,6 +206,15 @@ const ProjectInfo = () => {
   return (
     <div>
       <SideBar></SideBar>
+      {isLoading ? <div className="SpinnerLoader" style={{height:'110vh',textAlign:'center', justifyContent:'center', margin:'auto', display:'flex'}}>
+        <RotatingLines
+          strokeColor="#fa600d"
+          strokeWidth="5"
+          animationDuration="0.75"
+          width="96"
+          visible={true}
+        />
+      </div> :
       <div className="col-md-12 bg-mainclass">
         <div>
           <div className="row Page-Heading">
@@ -243,7 +253,7 @@ const ProjectInfo = () => {
             </div>
             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
-                Market
+                Project Market
               </label>
               <MultiSelect
                 options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
@@ -286,7 +296,7 @@ const ProjectInfo = () => {
             <Table columnsAndSelectors={columnsAndSelectors} columns={columns} isLoading={isLoading} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

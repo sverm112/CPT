@@ -270,7 +270,7 @@ const customStyles = {
     },
     cells: {
         style: {
-            fontSize : '11px !important',
+            fontSize : '13px !important',
             paddingLeft: '2px', // override the cell padding for data cells
             paddingRight: '2px',
         },

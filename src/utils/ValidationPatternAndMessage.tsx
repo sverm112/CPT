@@ -10,5 +10,9 @@ export const PatternsAndMessages = {
     nameLike:{
         pattern: "^[a-zA-Z]+[ ][a-zA-z]",
         message: "Invaid character for name"
+    },
+    singleWordName: {
+        pattern: "^[a-zA-Z]",
+        message: "Invaid character for name"
     }
 };

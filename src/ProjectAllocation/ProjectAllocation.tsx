@@ -16,9 +16,14 @@ import { holidayActions } from "../Store/Slices/Holiday";
 import DownloadBtn from "../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../utils/validations";
 import { PatternsAndMessages } from "../utils/ValidationPatternAndMessage";
-import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_PROJECTS, GET_ALL_PROJECT_ALLOCATIONS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, GET_TOTAL_ALLOCATED_PERCENTAGE, GET_TOTAL_PTO_DAYS, POST_PROJECT_ALLOCATION } from "../constants";
+import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_PROJECTS, GET_ALL_PROJECT_ALLOCATIONS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, GET_TOTAL_ALLOCATED_PERCENTAGE, GET_TOTAL_PTO_DAYS, POST_PROJECT_ALLOCATION, UPDATE_PROJECT_ALLOCATION } from "../constants";
+import { PassThrough } from "stream";
+import { RotatingLines } from "react-loader-spinner";
+import DataTable from "react-data-table-component";
+import customStyles from "../DataTable/customStyles";
+import { ptoActions } from "../Store/Slices/Pto";
 
-const columns = [
+const employeeColumns = [
   {
     name: "Resource",
     selector: (row: { resourceName: any }) => row.resourceName,
@@ -61,132 +66,148 @@ const columns = [
     reorder: true,
     filterable: true,
   },
+];
 
+const projectColumns = [
   {
-    name: "Project",
-    selector: (row: { projectName: any }) => row.projectName,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-  {
-    name: "Resource Type1",
-    selector: (row: { resourceType1: any }) => row.resourceType1,
-    sortable: true,
-    reorder: true,
-    filterable: true,
-  },
-
-  {
-    name: "Project Market",
-    selector: (row: { projectMarket: any }) => row.projectMarket,
+    name: "Project Name",
+    selector: (row:  any ) => row.projectName,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Project Code",
-    selector: (row: { projectCode: any }) => row.projectCode,
+    selector: (row:  any ) => row.projectCode,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Project Market",
+    selector: (row:  any ) => row.projectMarket,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Project Manager",
+    selector: (row:  any ) => row.projectManager,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Expense Type",
-    selector: (row: { expenseType: any }) => row.expenseType,
+    selector: (row:  any )  => row.projectExpenseType,
     sortable: true,
     reorder: true,
     filterable: true,
   },
-  {
+]
+const allocationDetailsColumn = [
+    {
     name: "Start Date",
-    selector: (row: { startDate: any }) => row.startDate.slice(0, 10),
+    selector: (row:  any ) => row.startDate?.slice(0, 10),
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "End Date",
-    selector: (row: { enddDate: any }) => row.enddDate.slice(0, 10),
+    selector: (row:  any ) => row.enddDate?.slice(0, 10),
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Resource Type1",
+    selector: (row:any ) => row.resourceType1,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "PTO Days",
-    selector: (row: { numberOfPTODays: any }) => row.numberOfPTODays,
+    selector: (row:  any ) => row.numberOfPTODays,
     sortable: true,
     reorder: true,
     filterable: true,
   },
+  // // Allocation Start Date	Allocation End Date	Resource Type 1	PTO Days	Allocation Hours	Allocation Percentage	Status	Created Date	Created By	Updated Date	Updated By
+   
   {
     name: "Allocation(Hours)",
-    selector: (row: { allocationHours: any }) => row.allocationHours,
+    selector: (row:  any ) => row.allocationHours,
     sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  // allocationPercentage
+  {
+    name: "Allocation Percentage",
+    selector: (row: any)=> row.allocationPercentage,
+    sortable:true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Status",
-    selector: (row: { status: any }) => row.status,
+    selector: (row:  any ) => row.status,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate,
+    selector: (row:  any ) => row.createdDate,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Created By",
-    selector: (row: { createdBy: any }) => row.createdBy,
+    selector: (row:  any ) => row.createdBy,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Updated Date",
-    selector: (row: { updatedDate: any }) => row.updatedDate,
+    selector: (row:  any ) => row.updatedDate,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "Updated By",
-    selector: (row: { updatedBy: any }) => row.updatedBy,
+    selector: (row:  any ) => row.updatedBy,
     sortable: true,
     reorder: true,
     filterable: true,
   },
-];
-
+]
 const columnsAndSelectors=[
   {'name':'Resource','selector':'resourceName','default':'true'},
   {'name':'Resource Type','selector':'resourceType','default':'true'},
-  {'name':'Role','selector':'role','default':'false'},
-  {'name':'Supervisor','selector':'resourceManager','default':'false'},
+  {'name':'Role','selector':'role','default':'true'},
+  {'name':'Supervisor','selector':'resourceManager','default':'true'},
   {'name':'Location','selector':'location','default':'true'},
-  {'name':'Resource Market','selector':'resourceMarket','default':'false'},
-  {'name':'Project','selector':'projectName','default':'true'},
-  {'name':'Resource Type1','selector':'resourceType1','default':'false'},
-  {'name':'Project Market','selector':'projectMarket','default':'true'},
-  {'name':'Project Code','selector':'projectCode','default':'false'},
-  {'name':'Expense Type','selector':'expenseType','default':'false'},
-  {'name':'Start Date','selector':'startDate','default':'true'},
-  {'name':'End Date','selector':'enddDate','default':'true'},
-  {'name':'PTO Days','selector':'numberOfPTODays','default':'true'},
-  {'name':'Allocation(Hours)','selector':'allocationHours','default':'true'},
-  {'name':'Status','selector':'status','default':'false'},
-  {'name':'Created Date','selector':'createdDate','default':'false'},
-  {'name':'Created By','selector':'createdBy','default':'false'},
-  {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
-  {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
-
-  
-
+  {'name':'Resource Market','selector':'resourceMarket','default':'true'},
+  // {'name':'Project','selector':'projectName','default':'true'},
+  // {'name':'Resource Type1','selector':'resourceType1','default':'false'},
+  // {'name':'Project Market','selector':'projectMarket','default':'true'},
+  // {'name':'Project Code','selector':'projectCode','default':'false'},
+  // {'name':'Expense Type','selector':'expenseType','default':'false'},
+  // {'name':'Start Date','selector':'startDate','default':'true'},
+  // {'name':'End Date','selector':'enddDate','default':'true'},
+  // {'name':'PTO Days','selector':'numberOfPTODays','default':'true'},
+  // {'name':'Allocation(Hours)','selector':'allocationHours','default':'true'},
+  // {'name':'Status','selector':'status','default':'false'},
+  // {'name':'Created Date','selector':'createdDate','default':'false'},
+  // {'name':'Created By','selector':'createdBy','default':'false'},
+  // {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
+  // {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
 ]
 
 
@@ -196,10 +217,10 @@ const customValueRenderer = (selected: any, _options: any) => {
 };
 
 const ProjectAllocation = () => {
-  const expenseTypes = [
-    { label: "CAPEX", value: "CAPEX" },
-    { label: "OPEX", value: "OPEX" },
-  ];
+  // const expenseTypes = [
+  //   { label: "CAPEX", value: "CAPEX" },
+  //   { label: "OPEX", value: "OPEX" },
+  // ];
   const dispatch = useDispatch();
   const marketList = useSelector((state: any) => state.Market.data);
   const locations = useSelector((state: any) => state.Filters.locations);
@@ -212,13 +233,20 @@ const ProjectAllocation = () => {
   const roleSelected = useSelector((store: any) => store.ProjectAllocation.role)
   const projectMarketSelected = useSelector((store: any) => store.ProjectAllocation.projectMarket)
   const [isLoading, setIsLoading] = useState(true);
-  const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
+  // const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
   const locationSelected = useSelector((store: any) => store.ProjectAllocation.location)
-  
+  const [currentProject, setCurrentProject] = useState(null);
+  const [currentRow, setCurrentRow] = useState(null);
+  const resources = useSelector((state: any) => state.Employee.data);
 
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("Add");
   const [updateProjectDetails, setUpdateProjectDetails] = useState({});
+  const resourceSelected = useSelector((state: any) => state.Pto.resourceName);
+  const resourceList = useSelector((state: any) => state.Employee.data);
+  const managerSelected = useSelector((state: any) => state.Employee.manager);
+  const managerOptions = managerSelected.map((manager: any) => manager.value);
+      
   const openModal = () => {
     setShowModal(true);
   }
@@ -227,7 +255,10 @@ const ProjectAllocation = () => {
     setAction("Add");
   }
 
-
+  
+  const changeManagerSelectHandler = (event: any) => {
+    dispatch(employeeActions.changeManager(event));
+  };
   const changeResourceMarketSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeResourceMarket(event));
   };
@@ -240,14 +271,14 @@ const ProjectAllocation = () => {
 
   };
 
-  const changeProjectMarketSelectHandler = (event: any) => {
-    dispatch(projectAllocationActions.changeProjectMarket(event));
+  // const changeProjectMarketSelectHandler = (event: any) => {
+  //   dispatch(projectAllocationActions.changeProjectMarket(event));
 
-  };
-  const changeExpenseTypeSelectHandler = (event: any) => {
-    dispatch(projectAllocationActions.changeExpenseType(event));
+  // };
+  // const changeExpenseTypeSelectHandler = (event: any) => {
+  //   dispatch(projectAllocationActions.changeExpenseType(event));
 
-  };
+  // };
   const changeLocationSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeLocation(event.target.value));
 
@@ -281,18 +312,24 @@ const ProjectAllocation = () => {
     getHolidayDetails();
   }, []);
 
-
+  
+  const supervisors: any = [];
+  resources.map((resource: any) => {
+    if (supervisors.indexOf(resource.manager) === -1) {
+      supervisors.push(resource.manager);
+    }
+  })
   const filteredProjectAllocations = projectAllocations.filter((projectAllocation: any) => {
     const resourceMarketOptions = resourceMarketSelected.map((resourceMarket: any) => resourceMarket.value);
     const resourceTypeOptions = resourceTypeSelected.map((resourceType: any) => resourceType.value);
     const roleOptions = roleSelected.map((role: any) => role.value);
-    const expenseTypeOptions = expenseTypeSelected.map((expenseType: any) => expenseType.value);
+    const resourceOptions = resourceSelected.map((resource: any) => resource.value);
     const projectMarketOptions = projectMarketSelected.map((projectMarket: any) => projectMarket.value);
     if ((!resourceMarketSelected.length) || (resourceMarketSelected.length > 0 && resourceMarketOptions.includes(projectAllocation.resourceMarket) == true)) {
       if ((!resourceTypeSelected.length) || (resourceTypeSelected.length > 0 && resourceTypeOptions.includes(projectAllocation.resourceType) == true)) {
         if ((!roleSelected.length) || (roleSelected.length > 0 && roleOptions.includes(projectAllocation.role) == true)) {
-          if ((!expenseTypeSelected.length) || (expenseTypeSelected.length > 0 && expenseTypeOptions.includes(projectAllocation.expenseType) == true)) {
-            if ((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket) == true)) {
+          if ((!resourceSelected.length) || (resourceSelected.length > 0 && resourceOptions.includes(projectAllocation.resourceName) == true)) {
+            if ((!managerSelected.length) || (managerSelected.length > 0 && managerOptions.includes(projectAllocation.resourceManager) == true)) {
               if (locationSelected == "0" || locationSelected == projectAllocation.location)
                 return true;
             }
@@ -302,9 +339,101 @@ const ProjectAllocation = () => {
     }
     return false;
   });
+let resourceIds: any[]=[];
+let newData : any[]=[];
+filteredProjectAllocations.map((projectAllocation:any)=>{
+ console.log("Project Allocation: ",projectAllocation);
+ if(resourceIds.includes(projectAllocation.resourceId)==true){
+     let resourceItem=newData.find((resource:any)=>resource.resourceId==projectAllocation.resourceId)
+      
+     let projectAllocationsInfo: any[]=[];
+     let projectAllocationInfo = {
+       id: projectAllocation.id,
+       startDate: projectAllocation.startDate,
+       enddDate: projectAllocation.enddDate,
+       allocationHours: projectAllocation.allocationHours,
+       numberOfPTODays: projectAllocation.numberOfPTODays,
+       resourceType1 : projectAllocation.resourceType1,
+       allocationPercentage: projectAllocation.allocationPercentage,
+       status: projectAllocation.status,
+       createdDate: projectAllocation.createdDate,
+       createdBy: projectAllocation.createdBy,
+       updatedDate: projectAllocation.updatedDate,
+       updatedBy: projectAllocation.updatedBy,
+       resourceId: projectAllocation.resourceId,
+       projectId: projectAllocation.projectId,
+     }
+     console.log("Project Infos: ", resourceItem.projectsInfo);
+     if(!resourceItem.projectsInfo.find((pi: any)=>pi.projectId == projectAllocation.projectId)){
+       projectAllocationsInfo.push(projectAllocationInfo);
+       let projectInfo = {
+         projectCode:projectAllocation.projectCode,
+         projectId : projectAllocation.projectId,
+         projectMarket: projectAllocation.projectMarket,
+         projectExpenseType: projectAllocation.expenseType,
+         projectAllocationsInfo:projectAllocationsInfo,
+         projectName: projectAllocation.projectName !== null ? projectAllocation.projectName : null,
+         projectManager: projectAllocation.programManager !== null ? projectAllocation.programManager : null,
+       }
+       resourceItem.projectsInfo.push(projectInfo);
+
+     }else{
+       console.log("Errro cause: ", resourceItem.projectsInfo.find((project: any)=>project.projectId == projectAllocation.projectId));
+       resourceItem.projectsInfo.find((project: any)=>project.projectId == projectAllocation.projectId).projectAllocationsInfo.push(projectAllocationInfo);
+     }
+     console.log("Resource: ",resourceItem);
+ }
+ if(resourceIds.includes(projectAllocation.resourceId)==false){
+   resourceIds.push(projectAllocation.resourceId);
+   let projectsInfo: any[]=[];
+   let projectAllocationsInfo: any[]=[];
+   let projectAllocationInfo = {
+     id: projectAllocation.id,
+     startDate: projectAllocation.startDate,
+     enddDate: projectAllocation.enddDate,
+     allocationHours: projectAllocation.allocationHours,
+     numberOfPTODays: projectAllocation.numberOfPTODays,
+     resourceType1 : projectAllocation.resourceType1,
+     allocationPercentage: projectAllocation.allocationPercentage,
+     status: projectAllocation.status,
+     createdDate: projectAllocation.createdDate,
+     createdBy: projectAllocation.createdBy,
+     updatedDate: projectAllocation.updatedDate,
+     updatedBy: projectAllocation.updatedBy,
+     resourceId: projectAllocation.resourceId,
+     projectId: projectAllocation.projectId,
+   }
+   // : any[]=[];
+   projectAllocationsInfo.push(projectAllocationInfo);
+   let projectInfo={
+   projectCode:projectAllocation.projectCode,
+   projectId : projectAllocation.projectId,
+   projectMarket: projectAllocation.projectMarket,
+   projectExpenseType: projectAllocation.expenseType,
+   projectAllocationsInfo: projectAllocationsInfo,
+   projectManager: projectAllocation.programManager,
+ }
+   projectsInfo.push(projectInfo); 
+   let newResourceItem={
+   resourceId : projectAllocation.resourceId,
+   resourceName : projectAllocation.resourceName,
+   role : projectAllocation.role,
+   resourceType : projectAllocation.resourceType,
+   resourceManager : projectAllocation.resourceManager,
+   location : projectAllocation.location,
+   subLocation : projectAllocation.subLocation,
+   resourceMarket : projectAllocation.resourceMarket,
+   projectsInfo : projectsInfo
+ }
+
+   console.log("New Resource Item: ",newResourceItem)
+   newData.push(newResourceItem);
+ }
+})
+console.log("New Data: ", newData);
 
   //start constants for export
-  const title = "Project Allocation Details";
+  const title ="Project Allocation Details";
   const headers = [['Resource', 'Resource Type', 'Location',
     'Project', 'Project Market', 'Start Date', 'End Date', 'PTO Days', 'Allocation(Hours)']];
   const selectors = ['resourceName', 'resourceType',
@@ -315,13 +444,53 @@ const ProjectAllocation = () => {
   const handleRowDoubleClicked = (row: any) => {
     setShowModal(true);
     setAction("Update");
-    let data = { ...row, isActive: row.isActive == "Active" ? "1" : "2" }
+    let data = { ...row }
     setUpdateProjectDetails(data);
     console.log("Project Allocation: ", row);
   };
+
+  const ExpandableAllocationDetails = (allocationData: any)=>{
+    console.log("Passed Allocation Data: ", allocationData.data.projectAllocationsInfo);
+    return <div className="projectAllocationChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid', boxSizing:'content-box', width:'89.4vw',overflow:'hidden'}}>
+      <DataTable 
+        customStyles={customStyles} 
+        onRowDoubleClicked={handleRowDoubleClicked}
+        striped={true}
+        pagination 
+        columns={allocationDetailsColumn} 
+        data={allocationData.data.projectAllocationsInfo}/>
+    </div>;
+  }
+  const ExpandableEmployee = ( resourceData: any ) => {
+    // console.log("Passed Project Data: ", resourceData.data.projectsInfo);
+    return <div className="projectChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid'}}>
+      <DataTable 
+        columns={projectColumns} 
+        expandableRows
+        customStyles={customStyles}
+        striped={true}
+        expandableRowExpanded={(row: any) => row.projectId === currentProject }
+        expandOnRowClicked
+        onRowClicked={(row) => setCurrentProject(row)}
+        onRowExpandToggled={(bool, row: any) => setCurrentProject(row.projectId)}
+        expandableRowsComponent={ExpandableAllocationDetails}
+        data={resourceData.data.projectsInfo}/>
+    </div>;
+}
+
   return (
-    <div>
+   <div>
       <SideBar></SideBar>
+      <>{
+        isLoading ? <div className="SpinnerLoader" style={{height:'110vh',textAlign:'center', justifyContent:'center', margin:'auto', display:'flex'}}>
+        <RotatingLines
+          strokeColor="#fa600d"
+          strokeWidth="5"
+          animationDuration="0.75"
+          width="96"
+          visible={true}
+        />
+      </div> : 
       <div className="col-md-12 bg-mainclass">
         <div>
           <div className="row Page-Heading">
@@ -344,7 +513,20 @@ const ProjectAllocation = () => {
           </div>
         </div>
         <div className="row filter-row">
-
+        <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Resource
+              </label>
+              <MultiSelect
+                options={
+                  resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
+                }
+                value={resourceSelected}
+                onChange={(event: any) => dispatch(ptoActions.changeResourceName(event))}
+                labelledBy="Select Resource"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
           <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Resource Type
@@ -370,6 +552,18 @@ const ProjectAllocation = () => {
               valueRenderer={customValueRenderer}
             />
           </div>
+          <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Supervisor
+              </label>
+              <MultiSelect
+                options={supervisors.map((manager: any) => ({ label: manager, value: manager }))}
+                value={managerSelected}
+                onChange={changeManagerSelectHandler}
+                labelledBy="Select Supervisor"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
           <div className=" col-md-2 form-group">
             <label htmlFor="locationDropdown" className="form-label">
               Location
@@ -393,7 +587,7 @@ const ProjectAllocation = () => {
               valueRenderer={customValueRenderer}
             />
           </div>
-          <div className="col-md-2 form-group">
+          {/* <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Project Market
             </label>
@@ -404,9 +598,9 @@ const ProjectAllocation = () => {
               labelledBy="Select Project Market"
               valueRenderer={customValueRenderer}
             />
-          </div>
+          </div> */}
 
-          <div className="col-md-2 form-group">
+          {/* <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Expense Type
             </label>
@@ -417,21 +611,21 @@ const ProjectAllocation = () => {
               labelledBy="Select Expense Type"
               valueRenderer={customValueRenderer}
             />
-          </div>
+          </div> */}
           <div className="col-md-2" style={{ marginTop: "24px" }}>
-            <button type="button" className="btn btn-primary" onClick={() => dispatch(projectAllocationActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}>Clear Filters<i className="las la-filter"></i></button>
           </div>
         </div>
-        {/* <DownloadBtn 
-            columns={columns}
-            filteredRecords={filteredProjectAllocations}
-            selectors={selectors}
-            title={title}>
-          </DownloadBtn> */}
           <div className="TableContentBorder">
-            <Table columnsAndSelectors={columnsAndSelectors} columns={columns} isLoading={isLoading} onRowDoubleClicked={handleRowDoubleClicked} data={filteredProjectAllocations} title={title}/>
+            <Table columnsAndSelectors={columnsAndSelectors}    
+            expandableRowExpanded={(row: any) => row.resourceId === currentRow }
+            expandOnRowClicked
+            onRowClicked={(row:any) => setCurrentRow(row)}
+            onRowExpandToggled={(bool:any, row: any) => setCurrentRow(row.resourceId)}
+            expandableRows expandableRowsComponent={ExpandableEmployee} columns={employeeColumns} data={newData} title={title}/>
           </div>
       </div>
+      }</>
     </div>
   );
 };
@@ -439,9 +633,9 @@ const ProjectAllocation = () => {
 const UpdateModal = (props: any) => {
   const [formValues, setFormValues] = useState(props.initialValues || { location: "0" });
   console.log("Update Allocation: ", props);
-  const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(null);
-  const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(null);
-  const [ptoDays, setPTODays] = useState("");
+  const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
+  const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
+  const [ptoDays, setPtoDays] = useState("0");
   const [allocationPercentage, setAllocationPercentage] = useState("");
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
@@ -505,11 +699,14 @@ const UpdateModal = (props: any) => {
   const getProjectDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);
     let dataGet = await response.json();
+    console.log("Project Details: ",dataGet)
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.isActive == 1 ? "Active" : "InActive" }));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
     getProjectDetails();
+    setResourceId(resourceId);
+    setProjectId(formValues.projectId);
   }, []);
   let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
   let selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
@@ -517,18 +714,22 @@ const UpdateModal = (props: any) => {
   const setResourceDetails = (event: any) => {
     console.log(selectedResourceDetails, event.target.value)
     setResourceId(event.target.value);
+    console.log("Set Resource Details Called: ",resourceId);
   };
+  
   const setProjectDetails = (event: any) => {
     setProjectId(event.target.value);
+    console.log("SetProjectDetails Called: ",projectId);
   };
 
 
 
-  if (resourceId == "0") {
+  if (formValues.resourceId == "0") {
     selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
   }
   else {
-    const filteredResource = resourcesList.filter((resource: any) => resource.resourceId == Number(resourceId));
+    const filteredResource = resourcesList.filter((resource: any) => resource.resourceId == Number(formValues.resourceId));
+    console.log("Resource: ",filteredResource);
     selectedResourceDetails.resourceId = filteredResource[0].resourceId
     selectedResourceDetails.resourceType = filteredResource[0].resourceType
     selectedResourceDetails.role = filteredResource[0].role
@@ -538,12 +739,14 @@ const UpdateModal = (props: any) => {
     selectedResourceDetails.resourceMarket = filteredResource[0].resourceMarket
   }
 
-  if (projectId == "0") {
+  if (formValues.projectId == "0") {
     selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
   }
   else {
-    let filteredProject = projectsList.filter((project: any) => project.pkProjectID == Number(projectId))
-    selectedProjectDetails.projectId = filteredProject[0].pkProjectID
+    let filteredProject = projectsList.filter((project: any) => project.id == Number(formValues.projectId))
+    // console.log("Filtered Project Details: ", filteredProject);
+    console.log("Project List: ", projectsList);
+    selectedProjectDetails.projectId = filteredProject[0].id
     selectedProjectDetails.projectMarket = filteredProject[0].projectMarket
     selectedProjectDetails.expenseType = filteredProject[0].expenseType
     selectedProjectDetails.PPSID = filteredProject[0].projectCode
@@ -556,15 +759,16 @@ const UpdateModal = (props: any) => {
   else
     allocationHoursPerDay = 0;
 
-  if (resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
+  if (formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
     let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
-    allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
+    formValues.allocationHours = Math.ceil((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
+    console.log("Allocation Hours: ", formValues.allocationHours);
   }
 
   const resetFormFields = () => {
     setAllocationStartDate(null);
     setAllocationEndDate(null);
-    setPTODays("");
+    setPtoDays("");
     setAllocationPercentage("");
     setResourceType1("0");
     setResourceId("0");
@@ -593,31 +797,42 @@ const UpdateModal = (props: any) => {
       }
   useEffect(() => {
     setAllocatedPercentage(0);
-    setPTODays("");
+    setPtoDays("");
     if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
-      {getAllocationPercentage();
-      getPTODays();
+      {
+        getAllocationPercentage();
+        getPTODays();
     }
   }, [resourceId, allocationStartDate, allocationEndDate]);
 
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
+    let paStartDate=null,paEndDate=null;
+    if(allocationStartDate!=null){
+      paStartDate= new Date(allocationStartDate);
+      paStartDate.setDate(allocationStartDate.getDate() + 1);
+    }
+    if(allocationEndDate!=null){
+      paEndDate= new Date(allocationEndDate);
+      paEndDate.setDate(allocationEndDate.getDate() + 1);
+    }
     let payload = {
-      fkResourceID: resourceId == "0" ? 0 : Number(resourceId),
-      fkProjectID: projectId == "0" ? 0 : Number(projectId),
-      resourceType1: resourceType1,
-      startDate: allocationStartDate,
-      enddDate: allocationEndDate,
-      pTODays: ptoDays == "" ? 0 : Number(ptoDays),
-      allocationHours: allocationHours,
-      allocationPercentage: Number(allocationPercentage),
-      isActive: 1,
-      createdBy: "Admin"
+      id: formValues.id,
+      resourceId: formValues.resourceId == "0" ? 0 : Number(formValues.resourceId),
+      projectId: formValues.projectId == "0" ? 0 : Number(formValues.projectId),
+      resourceType1: formValues.resourceType1,
+      startDate: paStartDate,
+      enddDate: paEndDate,
+      numberOfPTODays: ptoDays =="" ? formValues.numberOfPTODays : ptoDays,
+      allocationHours: formValues.allocationHours,
+      allocationPercentage: Number(formValues.allocationPercentage),
+      status: formValues.status,
+      updatedBy: "Admin"
     };
     try {
       if(validateForm('#AllocateProjectForm')){
-        const response = await fetch(`${POST_PROJECT_ALLOCATION}`, {
-          method: "POST",
+        const response = await fetch(`${UPDATE_PROJECT_ALLOCATION}`, {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
@@ -628,11 +843,10 @@ const UpdateModal = (props: any) => {
           if (dataResponse[0].statusCode == "201") {
             console.log(dataResponse[0].statusReason);
             console.log(dataResponse[0].recordsCreated);
-  
             dispatch(projectAllocationActions.changeToggle());
             resetFormFields();
             props.closeModal();
-            toast.success("Project Allocated Successfully")
+            toast.success("Update Allocation Successful")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
       }
@@ -642,17 +856,19 @@ const UpdateModal = (props: any) => {
 
   };
   //console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
-
+useEffect(()=>{
+  getPTODays();
+});
   const getPTODays = async()=>{
-    console.log("Get PTO Days called: "+ resourceId+ allocationStartDate + allocationEndDate);
-    if(resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
+    console.log("Get PTO Days called: "+ formValues.resourceId+ allocationStartDate + allocationEndDate);
+    if(formValues.resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
       if(allocationEndDate >= allocationStartDate){
         try{
           let paStartDate = new Date(allocationStartDate);
           paStartDate.setDate(paStartDate.getDate() + 1);
           let paEndDate = new Date(allocationEndDate);
           paEndDate.setDate(paEndDate.getDate()+1);
-          const response = await fetch(`${GET_TOTAL_PTO_DAYS}?resourceId=${resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
+          const response = await fetch(`${GET_TOTAL_PTO_DAYS}?resourceId=${formValues.resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -661,7 +877,7 @@ const UpdateModal = (props: any) => {
           
           const dataResponse = await response.json();
           // console.log()
-          setPTODays(dataResponse);
+          setPtoDays(dataResponse);
           console.log("Data Response: "+ dataResponse);
         }catch{
           toast.error("Some Error Occured");
@@ -702,7 +918,7 @@ const UpdateModal = (props: any) => {
             <h6>Update Allocation</h6>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body id="ModalBody">
           <form onSubmit={formSubmitHandler} id="AllocateProjectForm" noValidate>
             <div className="row">
               <div className="col-md-6 form-group" id="AllocateProjectResource">
@@ -715,15 +931,11 @@ const UpdateModal = (props: any) => {
                     className="form-control" 
                     required
                     id="resource" 
+                    name="resourceId"
                     value={formValues.resourceId}
-                    // onBlur={()=>{
-                    //   validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
-                      
-                    // }} 
                     onChange={(e: any) => {
                       handleChange(e);
                       setResourceDetails(e);
-                      console.log("Changed", formValues.resourceName);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
                       }}>
                     <option value="0">Select</option>
@@ -740,6 +952,7 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="resourceType"
+                  name="resourceType"
                   value={selectedResourceDetails.resourceType}
                   disabled
                 />
@@ -748,7 +961,7 @@ const UpdateModal = (props: any) => {
                 <label className="form-label" htmlFor="role">
                   Role
                 </label>
-                <input type="text" className="form-control" id="role" value={selectedResourceDetails.role} disabled />
+                <input type="text" name="role" className="form-control" id="role" value={selectedResourceDetails.role} disabled />
               </div>
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="supervisor">
@@ -758,6 +971,7 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="supervisor"
+                  name="superVisor"
                   value={selectedResourceDetails.supervisor}
                   disabled
                 />
@@ -770,6 +984,7 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="location"
+                  name="location"
                   value={selectedResourceDetails.location}
                   disabled
                 />
@@ -782,6 +997,7 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="resourceMarket"
+                  name="resourceMarket"
                   value={selectedResourceDetails.resourceMarket}
                   disabled
                 />
@@ -795,15 +1011,18 @@ const UpdateModal = (props: any) => {
                   <select 
                     className="form-control" 
                     required
-                    id="project" 
-                    value={formValues.pkProjectID} 
-                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select')}
+                    id="project"
+                    name="projectId" 
+                    value={formValues.projectId} 
                     onChange={(e: any) => {
+                      setProjectDetails(e);
                       handleChange(e);
+                      console.log("E Value: ", e.target.value);
+                      // setProjectId(e);
                       validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select');
                     }}>
                     <option value="0">Select</option>
-                    {projectsList.filter((project: any) => project.isActive == "Active").map((project: any) => <option key={project.pkProjectID} value={project.pkProjectID.toString()}>{project.projectName}</option>)}
+                    {projectsList.filter((project: any) => project.status == "Active").map((project: any) => <option key={project.id} value={project.id.toString()}>{project.projectName}</option>)}
                   </select>
                 <div className="error"></div>
                 </div>
@@ -818,8 +1037,8 @@ const UpdateModal = (props: any) => {
                     className="form-control "
                     required
                     id="resourceType1Dropdown"
+                    name="resourceType1Dropdown"
                     value={formValues.resourceType1}
-                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select')}
                     onChange={(event) => {setResourceType1(event.target.value);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select');
                     }}
@@ -839,9 +1058,9 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="projectMarket"
+                  name="projectMarket"
                   value={
-                    // selectedProjectDetails.projectMarket
-                  formValues.projectMarket
+                    selectedProjectDetails.projectMarket
                   }
                   disabled
                 />
@@ -850,14 +1069,14 @@ const UpdateModal = (props: any) => {
                 <label className="form-label" htmlFor="ppsid">
                   PPSID
                 </label>
-                <input type="text" className="form-control" id="ppsid" value={formValues.projectCode} disabled />
+                <input type="text" name="ppsid" className="form-control" id="ppsid" value={selectedProjectDetails.PPSID} disabled />
               </div>
 
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="capex">
                   Expense Type
                 </label>
-                <input type="text" className="form-control" id="capex" value={formValues.expenseType} disabled />
+                <input type="text" name="expenseType" className="form-control" id="capex" value={selectedProjectDetails.expenseType} disabled />
               </div>
               <div className="col-md-6 form-group" id="AllocationStartField">
                 <label className="form-label" htmlFor="allocationStartDate" style={{ zIndex: "9" }}>
@@ -867,13 +1086,14 @@ const UpdateModal = (props: any) => {
                 <DatePicker
                   className="form-control"
                   required
+                  name="allocationStartDate"
                   onCalendarClose={()=>{
                     validateSingleFormGroup(document.getElementById('AllocationStartField'), 'datePicker');
                     
                   }}
                   // maxDate={formValues.enddDate !== null ? formValues.enddDate : new Date('December 31, 2100')}
                   onChange={setAllocationStartDate}
-                  value={formValues.startDate}
+                  value={allocationStartDate}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
@@ -889,13 +1109,14 @@ const UpdateModal = (props: any) => {
                 <DatePicker
                   className="form-control"
                   required
+                  name="allocationEndDate"
                   onCalendarClose={()=>{
                     validateSingleFormGroup(document.getElementById('AllocationEndField'), 'datePicker');
                     
                   }}
                   // minDate={formValues.startDate !== null ? formValues.startDate : new Date('December 31, 2000')}
                   onChange={setAllocationEndDate}
-                  value={formValues.enddDate}
+                  value={allocationEndDate}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
@@ -911,13 +1132,14 @@ const UpdateModal = (props: any) => {
                 <input
                   type="text"
                   disabled
+                  name="numberOfPTODays"
                   // required
                   // pattern={PatternsAndMessages.numberOnly.pattern}
                   className="form-control"
                   id="ptoDays"
-                  value={formValues.pTODays}
+                  value={ptoDays =="" ? formValues.numberOfPTODays : ptoDays}
                   // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
-                  // onChange={(event) => setPTODays(event.target.value)}
+                  // onChange={(event) => setPtoDays(event.target.value)}
                 />
                 {/* <div className="error"></div> */}
               </div>
@@ -931,12 +1153,16 @@ const UpdateModal = (props: any) => {
                 <input
                   type="text"
                   required
+                  name="allocationPercentage"
                   pattern={PatternsAndMessages.numberOnly.pattern}
                   className="form-control"
                   id="allocationPercentage"
                   value={formValues.allocationPercentage}
                   onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPercentage'), 'input')}
-                  onChange={(event) => setAllocationPercentage(event.target.value)}
+                  onChange={
+                    handleChange
+                    // (event) => setAllocationPercentage(event.target.value)
+                  }
                 />
                 <div className="error"></div>
               </div>
@@ -948,6 +1174,7 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="allocationHoursPerDay"
+                  name="allocationHoursPerDay"
                   value={allocationHoursPerDay}
                   disabled
                 />
@@ -960,10 +1187,27 @@ const UpdateModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="allocationHours"
+                  name="allocationHours"
                   value={formValues.allocationHours}
                   disabled
                 // onChange={(event) => setAllocationHours(event.target.value)}
                 />
+              </div>
+              <div className="col-md-6 form-group ">
+                <label className="form-label">Status</label>
+                <div className="dropdown">
+                  <select
+                    name="status"
+                    className="form-control"
+                    id="statusDropdown"
+                    value={formValues.status}
+                    onChange={handleChange}
+                  >
+                    <option value="0">Select</option>
+                    <option value="Active">Active</option>
+                    <option value="InActive">InActive</option>
+                  </select>
+                </div>
               </div>
             </div>
             <div className="row">
@@ -990,7 +1234,7 @@ const AddModal = (props: any) => {
   }
   const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(null);
   const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(null);
-  const [ptoDays, setPTODays] = useState("");
+  const [ptoDays, setPtoDays] = useState("");
   const [allocationPercentage, setAllocationPercentage] = useState("");
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
@@ -1062,7 +1306,7 @@ const AddModal = (props: any) => {
   let selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
 
   const setResourceDetails = (event: any) => {
-    console.log(selectedResourceDetails, event.target.value)
+    // console.log(selectedResourceDetails, event.target.value)
     setResourceId(event.target.value);
   };
   const setProjectDetails = (event: any) => {
@@ -1111,7 +1355,7 @@ const AddModal = (props: any) => {
   const resetFormFields = () => {
     setAllocationStartDate(null);
     setAllocationEndDate(null);
-    setPTODays("");
+    setPtoDays("");
     setAllocationPercentage("");
     setResourceType1("0");
     setResourceId("0");
@@ -1143,7 +1387,7 @@ const AddModal = (props: any) => {
   }
   useEffect(() => {
     setAllocatedPercentage(0);
-    setPTODays("");
+    setPtoDays("");
     if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
       {getAllocationPercentage();
       getPTODays();
@@ -1162,8 +1406,8 @@ const AddModal = (props: any) => {
       paEndDate.setDate(allocationEndDate.getDate() + 1);
     }
     let payload = {
-      fkResourceID: resourceId == "0" ? 0 : Number(resourceId),
-      fkProjectID: projectId == "0" ? 0 : Number(projectId),
+      resourceId: resourceId == "0" ? 0 : Number(resourceId),
+      projectId: projectId == "0" ? 0 : Number(projectId),
       resourceType1: resourceType1,
       startDate: paStartDate,
       enddDate: paEndDate,
@@ -1219,7 +1463,7 @@ const AddModal = (props: any) => {
           
           const dataResponse = await response.json();
           // console.log()
-          setPTODays(dataResponse);
+          setPtoDays(dataResponse);
           console.log("Data Response: "+ dataResponse);
         }catch{
           toast.error("Some Error Occured");
@@ -1267,11 +1511,8 @@ const AddModal = (props: any) => {
                     required
                     id="resource" 
                     value={resourceId}
-                    // onBlur={()=>{
-                    //   validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
-                      
-                    // }} 
-                    onChange={(e: any) => {setResourceDetails(e);
+                    onChange={(e: any) => {
+                      setResourceDetails(e);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResource'), 'select');
                       }}>
                     <option value="0">Select</option>
@@ -1350,7 +1591,7 @@ const AddModal = (props: any) => {
                       validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select');
                     }}>
                     <option value="0">Select</option>
-                    {projectsList.filter((project: any) => project.isActive == "Active").map((project: any) => <option key={project.pkProjectID} value={project.pkProjectID.toString()}>{project.projectName}</option>)}
+                    {projectsList.filter((project: any) => project.status == "Active").map((project: any) => <option key={project.id} value={project.id.toString()}>{project.projectName}</option>)}
                   </select>
                 <div className="error"></div>
                 </div>
@@ -1461,7 +1702,7 @@ const AddModal = (props: any) => {
                   id="ptoDays"
                   value={ptoDays}
                   // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
-                  // onChange={(event) => setPTODays(event.target.value)}
+                  // onChange={(event) => setPtoDays(event.target.value)}
                 />
                 {/* <div className="error"></div> */}
               </div>

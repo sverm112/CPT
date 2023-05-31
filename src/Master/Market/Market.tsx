@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { GET_ALL_MARKETS, POST_MARKET, UPDATE_MARKET } from "../../constants";
+import { RotatingLines } from "react-loader-spinner";
 
 const columns = [
   {
@@ -121,6 +122,15 @@ const Market = () => {
   return (
     <div>
       <SideBar></SideBar>
+      {isLoading ? <div className="SpinnerLoader" style={{height:'110vh',textAlign:'center', justifyContent:'center', margin:'auto', display:'flex'}}>
+        <RotatingLines
+          strokeColor="#fa600d"
+          strokeWidth="5"
+          animationDuration="0.75"
+          width="96"
+          visible={true}
+        />
+      </div> :
       <div className="col-md-12 bg-mainclass">
         <div>
           <div className="row Page-Heading">
@@ -147,7 +157,7 @@ const Market = () => {
             <Table  columnsAndSelectors={columnsAndSelectors} isLoading={isLoading} columns={columns} data={markets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };
