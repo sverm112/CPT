@@ -411,7 +411,8 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
    projectMarket: projectAllocation.projectMarket,
    projectExpenseType: projectAllocation.expenseType,
    projectAllocationsInfo: projectAllocationsInfo,
-   projectManager: projectAllocation.programManager,
+   projectName: projectAllocation.projectName !== null ? projectAllocation.projectName : null,
+    projectManager: projectAllocation.programManager,
  }
    projectsInfo.push(projectInfo); 
    let newResourceItem={
