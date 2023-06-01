@@ -411,7 +411,8 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
    projectMarket: projectAllocation.projectMarket,
    projectExpenseType: projectAllocation.expenseType,
    projectAllocationsInfo: projectAllocationsInfo,
-   projectManager: projectAllocation.programManager,
+   projectName: projectAllocation.projectName !== null ? projectAllocation.projectName : null,
+    projectManager: projectAllocation.programManager,
  }
    projectsInfo.push(projectInfo); 
    let newResourceItem={
@@ -1037,9 +1038,11 @@ useEffect(()=>{
                     className="form-control "
                     required
                     id="resourceType1Dropdown"
-                    name="resourceType1Dropdown"
+                    name="resourceType1"
                     value={formValues.resourceType1}
-                    onChange={(event) => {setResourceType1(event.target.value);
+                    onChange={(event) => {
+                      handleChange(event);
+                      // setResourceType1(event.target.value);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select');
                     }}
                   >
@@ -1093,6 +1096,7 @@ useEffect(()=>{
                   }}
                   // maxDate={formValues.enddDate !== null ? formValues.enddDate : new Date('December 31, 2100')}
                   onChange={setAllocationStartDate}
+                  maxDate={allocationEndDate !== null ? allocationEndDate : new Date('December 31, 2100')}
                   value={allocationStartDate}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
@@ -1114,7 +1118,7 @@ useEffect(()=>{
                     validateSingleFormGroup(document.getElementById('AllocationEndField'), 'datePicker');
                     
                   }}
-                  // minDate={formValues.startDate !== null ? formValues.startDate : new Date('December 31, 2000')}
+                  minDate={allocationStartDate !== null ? allocationStartDate : new Date('December 31, 2000')}
                   onChange={setAllocationEndDate}
                   value={allocationEndDate}
                   format="dd/MM/yyyy"

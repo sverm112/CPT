@@ -162,7 +162,9 @@ const EmployeeMaster = () => {
     try {
       const response = await fetch(`${GET_ALL_RESOURCES}`);
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
+      // console.log("dataGet: ", dataGet);
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
+      console.log("dataGet: ", dataGet);
       dispatch(employeeActions.changeData(dataGet));
       setTimeout(()=>setIsLoading(false), 2000);
     } catch {
