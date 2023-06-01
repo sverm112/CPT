@@ -455,6 +455,7 @@ console.log("New Data: ", newData);
     return <div className="projectAllocationChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid', boxSizing:'content-box', width:'89.4vw',overflow:'hidden'}}>
       <DataTable 
         customStyles={customStyles} 
+        defaultSortFieldId={1}
         onRowDoubleClicked={handleRowDoubleClicked}
         striped={true}
         pagination 
@@ -467,6 +468,7 @@ console.log("New Data: ", newData);
     return <div className="projectChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid'}}>
       <DataTable 
         columns={projectColumns} 
+        defaultSortFieldId={1}
         expandableRows
         customStyles={customStyles}
         striped={true}
