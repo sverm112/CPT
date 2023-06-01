@@ -1037,9 +1037,11 @@ useEffect(()=>{
                     className="form-control "
                     required
                     id="resourceType1Dropdown"
-                    name="resourceType1Dropdown"
+                    name="resourceType1"
                     value={formValues.resourceType1}
-                    onChange={(event) => {setResourceType1(event.target.value);
+                    onChange={(event) => {
+                      handleChange(event);
+                      // setResourceType1(event.target.value);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select');
                     }}
                   >
