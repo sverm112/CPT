@@ -119,6 +119,7 @@ const customValueRenderer = (selected: any, _options: any) => {
 
 const EmployeeMaster = () => {
   const dispatch = useDispatch();
+  const username=useSelector((state:any)=>state.User.username);
   const roles = useSelector((state: any) => state.Filters.roles);
   const resourceTypes = useSelector((state: any) => state.Filters.resourceTypes);
   const status = useSelector((state: any) => state.Filters.status);
@@ -137,6 +138,7 @@ const EmployeeMaster = () => {
   const openModal = () => {
     setShowModal(true);
   }
+  console.log("Username: ", username);
   const closeModal = () => {
     setShowModal(false);
     setAction("Add");
@@ -162,9 +164,7 @@ const EmployeeMaster = () => {
     try {
       const response = await fetch(`${GET_ALL_RESOURCES}`);
       let dataGet = await response.json();
-      // console.log("dataGet: ", dataGet);
       dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
-      console.log("dataGet: ", dataGet);
       dispatch(employeeActions.changeData(dataGet));
       setTimeout(()=>setIsLoading(false), 2000);
     } catch {
@@ -459,6 +459,7 @@ const EmployeeMaster = () => {
 
 const AddModal = (props: any) => {
   const dispatch = useDispatch();
+  const username=useSelector((state:any)=>state.User.username);
   const roles = useSelector((state: any) => state.Filters.roles);
   const resourceTypes = useSelector((state: any) => state.Filters.resourceTypes);
   const marketList = useSelector((state: any) => state.Market.data);
@@ -484,7 +485,7 @@ const AddModal = (props: any) => {
       subLocation: subLocation,
       resourceMarket: market,
       emailAddress: employeeEmailAddress,
-      createdBy: "Admin",
+      createdBy: username,
     };
     try {
       if(validateForm('#AddEmployeeForm')){
@@ -712,6 +713,7 @@ const onSave = (props: any) => {
 
 const UpdateModal = (props: any) => {
   const dispatch = useDispatch();
+  const username=useSelector((state:any)=>state.User.username);
   const locations = useSelector((state: any) => state.Filters.locations);
   const subLocations = useSelector((state: any) => state.Filters.subLocations);
   const roles = useSelector((state: any) => state.Filters.roles);
@@ -734,7 +736,7 @@ const UpdateModal = (props: any) => {
       resourceMarket: formValues.resourceMarket,
       emailAddress: formValues.emailAddress,
       isActive: formValues.isActive == "2" ? "0" : "1",
-      updatedBy: "Admin",
+      updatedBy: username,
     };
     try {
       if(validateForm('#UpdateResourceForm')){

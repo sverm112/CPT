@@ -98,6 +98,7 @@ const customValueRenderer = (selected: any, _options: any) => {
 const HolidayMaster = () => {
 
   const dispatch = useDispatch();
+  const username=useSelector((state:any)=>state.User.username);
   const locations = useSelector((state: any) => state.Filters.locations);
   const subLocations = useSelector((state: any) => state.Filters.subLocations);
   const status = useSelector((state: any) => state.Filters.status);
@@ -306,6 +307,7 @@ const HolidayMaster = () => {
 const UpdateModal = (props: any) =>{
   console.log("Props: ", props);
   const dispatch = useDispatch();
+  const username=useSelector((state:any)=>state.User.username);
   const [formValues, setFormValues] = useState(props.initialValues || {location:"0"});
   // console.log("Market Name: ", formValues.marketName);
   // const [occasion, setOccasion] = useState("");
@@ -335,7 +337,7 @@ const UpdateModal = (props: any) =>{
       marketId: formValues.marketId,
       holidayDate: holidayStartDate,
       status: formValues.status,
-      updatedBy: "Admin",
+      updatedBy: username,
     };
     try {
       if(validateForm('#UpdateHolidayForm')){
@@ -528,6 +530,7 @@ const UpdateModal = (props: any) =>{
 
 const AddModal = (props: any) => {
   const dispatch = useDispatch();
+  const username=useSelector((state:any)=>state.User.username);
   const [occasion, setOccasion] = useState("");
   const [location, setLocation] = useState("0");
   const [subLocation, setSubLocation] = useState("0");
@@ -564,7 +567,7 @@ const AddModal = (props: any) => {
       subLocationId: subLocation,
       marketId: market,
       holidayDate: holidayStartDate,
-      createdBy: "Admin"
+      createdBy: username
     };
     try {
       if(validateForm('#HolidayForm')){

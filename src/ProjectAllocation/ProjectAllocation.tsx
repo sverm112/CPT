@@ -455,6 +455,7 @@ console.log("New Data: ", newData);
     return <div className="projectAllocationChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid', boxSizing:'content-box', width:'89.4vw',overflow:'hidden'}}>
       <DataTable 
         customStyles={customStyles} 
+        defaultSortFieldId={1}
         onRowDoubleClicked={handleRowDoubleClicked}
         striped={true}
         pagination 
@@ -467,6 +468,7 @@ console.log("New Data: ", newData);
     return <div className="projectChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid'}}>
       <DataTable 
         columns={projectColumns} 
+        defaultSortFieldId={1}
         expandableRows
         customStyles={customStyles}
         striped={true}
@@ -634,6 +636,7 @@ console.log("New Data: ", newData);
 const UpdateModal = (props: any) => {
   const [formValues, setFormValues] = useState(props.initialValues || { location: "0" });
   console.log("Update Allocation: ", props);
+  const username=useSelector((state:any)=>state.User.username);
   const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
   const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
   const [ptoDays, setPtoDays] = useState("0");
@@ -828,7 +831,7 @@ const UpdateModal = (props: any) => {
       allocationHours: formValues.allocationHours,
       allocationPercentage: Number(formValues.allocationPercentage),
       status: formValues.status,
-      updatedBy: "Admin"
+      updatedBy: username
     };
     try {
       if(validateForm('#AllocateProjectForm')){
@@ -1237,6 +1240,7 @@ const AddModal = (props: any) => {
     return invokeModal(false);
   }
   const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(null);
+  const username=useSelector((state:any)=>state.User.username);
   const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(null);
   const [ptoDays, setPtoDays] = useState("");
   const [allocationPercentage, setAllocationPercentage] = useState("");
@@ -1418,7 +1422,7 @@ const AddModal = (props: any) => {
       numberOfPTODays: ptoDays == "" ? 0 : Number(ptoDays),
       allocationHours: allocationHours,
       allocationPercentage: Number(allocationPercentage),
-      createdBy: "Admin"
+      createdBy: username
     };
     try {
       if(validateForm('#AllocateProjectForm')){

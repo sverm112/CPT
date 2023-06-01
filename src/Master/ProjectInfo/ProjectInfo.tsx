@@ -96,11 +96,12 @@ const columns = [
 ];
 
 const columnsAndSelectors=[
-  {'name':'Project Code"','selector':'projectCode','default':'true'},
+  {'name':'Project Code','selector':'projectCode','default':'true'},
   {'name':'Project Name','selector':'projectName','default':'true'},
   {'name':'Project Model','selector':'projectModel','default':'true'},
   {'name':'Project Market','selector':'projectMarket','default':'true'},
   {'name':'Program Manager','selector':'programManager','default':'true'},
+  {'name':'Expense Type','selector': 'expenseType', 'default':'true'},
   {'name':'Status','selector':'status','default':'true'},
   {'name':'Created Date','selector':'createdDate','default':'true'},
   {'name':'Created By','selector':'createdBy','default':'true'},
@@ -115,6 +116,7 @@ const customValueRenderer = (selected: any, _options: any) => {
 };
 const ProjectInfo = () => {
   const dispatch = useDispatch();
+  const username=useSelector((state:any)=>state.User.username);
   const expenseTypes = [
     { label: "CAPEX", value: "CAPEX" },
     { label: "OPEX", value: "OPEX" },
@@ -303,8 +305,7 @@ const ProjectInfo = () => {
 
 const AddModal = (props: any) => {
   const dispatch = useDispatch();
-
-
+  const username=useSelector((state:any)=>state.User.username);
   const marketList = useSelector((state: any) => state.Market.data);
   const [projectCode, setProjectCode] = useState("");
   const [projectName, setProjectName] = useState("");
@@ -330,7 +331,7 @@ const AddModal = (props: any) => {
       expenseType: expenseType,
       marketId: projectMarket,
       programManager: programManager,
-      createdBy: "Admin"
+      createdBy: username
     };
     try {
       if(validateForm('#AddProjectForm')){
@@ -512,6 +513,7 @@ style={{ float: "right", marginTop: "-68px"}}
 
 const UpdateModal = (props: any) => {
   const dispatch = useDispatch();
+  const username=useSelector((state:any)=>state.User.username);
   const marketList = useSelector((state: any) => state.Market.data);
   const [formValues, setFormValues] = useState(props.initialValues || {});
   const formSubmitHandler = async (event: any) => {
@@ -525,7 +527,7 @@ const UpdateModal = (props: any) => {
       marketId: formValues.marketId ,
       programManager: formValues.programManager,
       status: formValues.status,
-      updatedBy: "Admin",
+      updatedBy: username,
     };
     try {
       if(validateForm('#UpdateProjectForm')){
