@@ -1096,6 +1096,7 @@ useEffect(()=>{
                   }}
                   // maxDate={formValues.enddDate !== null ? formValues.enddDate : new Date('December 31, 2100')}
                   onChange={setAllocationStartDate}
+                  maxDate={allocationEndDate !== null ? allocationEndDate : new Date('December 31, 2100')}
                   value={allocationStartDate}
                   format="dd/MM/yyyy"
                   dayPlaceholder="dd"
@@ -1117,7 +1118,7 @@ useEffect(()=>{
                     validateSingleFormGroup(document.getElementById('AllocationEndField'), 'datePicker');
                     
                   }}
-                  // minDate={formValues.startDate !== null ? formValues.startDate : new Date('December 31, 2000')}
+                  minDate={allocationStartDate !== null ? allocationStartDate : new Date('December 31, 2000')}
                   onChange={setAllocationEndDate}
                   value={allocationEndDate}
                   format="dd/MM/yyyy"
