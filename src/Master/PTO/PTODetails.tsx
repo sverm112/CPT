@@ -165,7 +165,7 @@ const PTO = () => {
     try {
       const response = await fetch(`${GET_ALL_PTOS}`);
       let dataGet = await response.json();
-      dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
+      dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate?.slice(0,10) ,enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
       dispatch(ptoActions.changeData(dataGet));
       setTimeout(()=>setIsLoading(false), 2000);
     }
@@ -433,10 +433,12 @@ const AddModal = (props: any) => {
     let ptoStartDate=null,ptoEndDate=null;
     if(startDate!=null){
       ptoStartDate= new Date(startDate);
+      console.log("Start Date: ",ptoStartDate);
       ptoStartDate.setDate(ptoStartDate.getDate() + 1);
     }
     if(endDate!=null){
       ptoEndDate= new Date(endDate);
+      console.log("End Date: ",ptoEndDate);
       ptoEndDate.setDate(ptoEndDate.getDate() + 1);
     }
     // if(startYear == endYear){
@@ -704,7 +706,7 @@ const UpdateModal = (props: any) => {
     while (curDate <= endDate) {
       const dayOfWeek = curDate.getDay();
       if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
-      curDate.setDate(curDate.getDate() + 1);
+      curDate.setDate(curDate.getDate() );
     }
     return count;
   }
@@ -727,11 +729,15 @@ const UpdateModal = (props: any) => {
     let ptoStartDate=null,ptoEndDate=null;
     if(startDate!=null){
       ptoStartDate= new Date(startDate);
-      ptoStartDate.setDate(ptoStartDate.getDate() + 1);
+      console.log("Start Date: ", ptoStartDate);
+      console.log("Actual Start Date: ", startDate);
+      ptoStartDate.setDate(ptoStartDate.getDate() );
     }
     if(endDate!=null){
       ptoEndDate= new Date(endDate);
-      ptoEndDate.setDate(ptoEndDate.getDate() + 1);
+      console.log("End Date: ", ptoEndDate);
+      console.log("Actual End Date: ", endDate);
+      ptoEndDate.setDate(ptoEndDate.getDate() );
     }
     let payload = {
       id : formValues.id,

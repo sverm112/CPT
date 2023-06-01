@@ -136,7 +136,7 @@ const HolidayMaster = () => {
   const getHolidayDetails = async () => {
     const response = await fetch(`${GET_ALL_HOLIDAYS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, holidayDate : row.holidayDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10) }));
+    dataGet = dataGet.map((row: any) => ({ ...row, holidayDate : row.holidayDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10) }));
     dispatch(holidayActions.changeData(dataGet));
     setTimeout(()=>setIsLoading(false), 2000);
   };
@@ -149,7 +149,7 @@ const HolidayMaster = () => {
   const getMarketDetails = async () => {
     const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
     dispatch(marketActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
@@ -326,7 +326,7 @@ const UpdateModal = (props: any) =>{
     let holidayStartDate=null;
     if(holidayDate!=null){
       holidayStartDate= new Date(holidayDate);
-      holidayStartDate.setDate(holidayStartDate.getDate() + 1);
+      holidayStartDate.setDate(holidayStartDate.getDate());
       holidayStartDate = holidayStartDate.toLocaleString().slice(0, 10);
     }
     let payload = {
