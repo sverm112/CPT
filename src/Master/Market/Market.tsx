@@ -70,6 +70,7 @@ const customValueRenderer = (selected: any, _options: any) => {
 
 const Market = () => {
   const dispatch = useDispatch();
+  const username=useSelector((state:any)=>state.User.username);
   const [isLoading, setIsLoading] = useState(true);
   const markets = useSelector((store: any) => store.Market.data);
   const toggle = useSelector((store: any) => store.Market.toggle);
@@ -164,6 +165,7 @@ const Market = () => {
 
 const AddModal = (props : any) => {
   const dispatch = useDispatch();
+  const username=useSelector((state:any)=>state.User.username);
   const [marketName, setMarketName] = useState("");
   const [marketDomain, setMarketDomain] = useState("");
   const resetFormFields = () => {
@@ -175,7 +177,7 @@ const AddModal = (props : any) => {
     let payload = {
       marketName: marketName,
       marketDomain: marketDomain,
-      createdBy: "Admin"
+      createdBy: username
     };
     try {
       if(validateForm('#AddMarket')){
@@ -274,6 +276,7 @@ const AddModal = (props : any) => {
 
 const UpdateModal = (props: any) => {
   const dispatch = useDispatch();
+  const username=useSelector((state:any)=>state.User.username);
   const [formValues, setFormValues] = useState(props.initialValues || {});
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
@@ -282,7 +285,7 @@ const UpdateModal = (props: any) => {
       marketName : formValues.marketName,
       marketDomain : formValues.marketDomain,
       status: formValues.status,
-      updatedBy: "Admin",
+      updatedBy: username,
     };
     try {
       if(validateForm('#UpdateMarketForm')){

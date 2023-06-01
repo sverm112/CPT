@@ -378,6 +378,7 @@ const PTO = () => {
 const AddModal = (props: any) => {
   const dispatch = useDispatch();
 
+  const username=useSelector((state:any)=>state.User.username);
 
   const resourceList = useSelector((state: any) => state.Employee.data);
   const months=useSelector((state:any)=>state.Filters.months);
@@ -450,7 +451,7 @@ const AddModal = (props: any) => {
         year : startYear,
         numberOfDays : numberOfDays,
         remarks : remarks,
-        createdBy: "Admin"
+        createdBy: username
       }];
     // }else{
     //   payload = [{
@@ -506,6 +507,7 @@ const AddModal = (props: any) => {
             } else toast.error(dataResponse[0].errorMessage);
           } else toast.error("Some Error occured.");
         }
+      // console.log("PTO Payload: ", payload)
       }
     } catch {
       toast.error("Some Error occured.");
@@ -688,6 +690,7 @@ style={{ float: "right", marginTop: "-68px"}}
 
 const UpdateModal = (props: any) => {
   const dispatch = useDispatch();
+  const username=useSelector((state:any)=>state.User.username);
   const resourceList = useSelector((state: any) => state.Employee.data);
   const months=useSelector((state:any)=>state.Filters.months);
   const ptoTypes=useSelector((state:any)=>state.Filters.ptoTypes);
@@ -741,27 +744,28 @@ const UpdateModal = (props: any) => {
       numberOfDays : numberOfDays,
       remarks : formValues.remarks,
       status: formValues.status,
-      updatedBy: "Admin",
+      updatedBy: username,
     };
     try {
       if(validateForm('#UpdatePtoForm')){
         const response = await fetch(`${UPDATE_PTO}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-        const dataResponse = await response.json();
-        if (dataResponse.length) {
-          if (dataResponse[0].statusCode == "201") {
-            console.log(dataResponse[0].statusReason);
-            console.log(dataResponse[0].recordsCreated);
-            dispatch(ptoActions.changeToggle());
-            props.closeModal();
-            toast.success("PTO Updated Successfully")
-          } else toast.error(dataResponse[0].errorMessage);
-        } else toast.error("Some Error occured.");
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+          const dataResponse = await response.json();
+          if (dataResponse.length) {
+            if (dataResponse[0].statusCode == "201") {
+              console.log(dataResponse[0].statusReason);
+              console.log(dataResponse[0].recordsCreated);
+              dispatch(ptoActions.changeToggle());
+              props.closeModal();
+              toast.success("PTO Updated Successfully")
+            } else toast.error(dataResponse[0].errorMessage);
+          } else toast.error("Some Error occured.");
+        console.log(payload);
       }
     } catch {
       toast.error("Some Error occured.");
