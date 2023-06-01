@@ -287,7 +287,7 @@ const ProjectAllocation = () => {
   const getProjectAllocationDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECT_ALLOCATIONS}`);
     let dataGet = await response.json();
-    dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate.slice(0,10) ,enddDate:row.enddDate.slice(0,10),updatedDate : row.updatedDate.slice(0,10),createdDate:row.createdDate.slice(0,10)}))
+    dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate?.slice(0,10) ,enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
     dispatch(projectAllocationActions.changeData(dataGet));
     setTimeout(()=>setIsLoading(false), 2000);
   };
@@ -298,13 +298,13 @@ const ProjectAllocation = () => {
   const getMarketDetails = async () => {
     const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
     dispatch(marketActions.changeData(dataGet));
   };
   const getHolidayDetails = async () => {
     const response = await fetch(`${GET_ALL_HOLIDAYS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate.slice(0,10),updatedDate:row.updatedDate.slice(0,10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
     dispatch(holidayActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -814,11 +814,11 @@ const UpdateModal = (props: any) => {
     let paStartDate=null,paEndDate=null;
     if(allocationStartDate!=null){
       paStartDate= new Date(allocationStartDate);
-      paStartDate.setDate(allocationStartDate.getDate() + 1);
+      paStartDate.setDate(allocationStartDate.getDate() );
     }
     if(allocationEndDate!=null){
       paEndDate= new Date(allocationEndDate);
-      paEndDate.setDate(allocationEndDate.getDate() + 1);
+      paEndDate.setDate(allocationEndDate.getDate() );
     }
     let payload = {
       id: formValues.id,

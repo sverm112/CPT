@@ -36,6 +36,10 @@ const App = () => {
              dispatch(userActions.setUser({username:"Test User",userType:"User"}))
             else if(username=="Test Admin")
             dispatch(userActions.setUser({username:"Test Admin",userType:"Admin"}))
+            else if(username=="Leslie Kiheri")
+            dispatch(userActions.setUser({username:"Leslie Kiheri",userType:"Admin"}))
+            else if(username=="Ashish Khare")
+            dispatch(userActions.setUser({username:"Ashish Khare",userType:"Admin"}))
         }
     },[]);
     return (
