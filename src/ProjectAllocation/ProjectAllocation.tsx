@@ -456,6 +456,7 @@ console.log("New Data: ", newData);
       <DataTable 
         customStyles={customStyles} 
         defaultSortFieldId={1}
+        defaultSortAsc={false}
         onRowDoubleClicked={handleRowDoubleClicked}
         striped={true}
         pagination 
