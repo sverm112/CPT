@@ -271,10 +271,10 @@ const ProjectAllocation = () => {
 
   };
 
-  // const changeProjectMarketSelectHandler = (event: any) => {
-  //   dispatch(projectAllocationActions.changeProjectMarket(event));
+  const changeProjectMarketSelectHandler = (event: any) => {
+    dispatch(projectAllocationActions.changeProjectMarket(event));
 
-  // };
+  };
   // const changeExpenseTypeSelectHandler = (event: any) => {
   //   dispatch(projectAllocationActions.changeExpenseType(event));
 
@@ -330,8 +330,10 @@ const ProjectAllocation = () => {
         if ((!roleSelected.length) || (roleSelected.length > 0 && roleOptions.includes(projectAllocation.role) == true)) {
           if ((!resourceSelected.length) || (resourceSelected.length > 0 && resourceOptions.includes(projectAllocation.resourceName) == true)) {
             if ((!managerSelected.length) || (managerSelected.length > 0 && managerOptions.includes(projectAllocation.resourceManager) == true)) {
-              if (locationSelected == "0" || locationSelected == projectAllocation.location)
+              if((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket))){
+                if (locationSelected == "0" || locationSelected == projectAllocation.location)
                 return true;
+              }
             }
           }
         }
@@ -591,7 +593,7 @@ console.log("New Data: ", newData);
               valueRenderer={customValueRenderer}
             />
           </div>
-          {/* <div className="col-md-2 form-group">
+          <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Project Market
             </label>
@@ -602,7 +604,7 @@ console.log("New Data: ", newData);
               labelledBy="Select Project Market"
               valueRenderer={customValueRenderer}
             />
-          </div> */}
+          </div>
 
           {/* <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
@@ -1763,8 +1765,14 @@ const AddModal = (props: any) => {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+              <div className="col-md-8">
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary" style={{marginLeft:"20%"}}>
+                  Reset
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
                   Submit
                 </button>
               </div>
