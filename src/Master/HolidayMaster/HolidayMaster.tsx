@@ -509,7 +509,9 @@ const UpdateModal = (props: any) =>{
                   >
                     <option value="0">Select</option>
                     <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
                     <option value="InActive">InActive</option>
+                    <option value="Pending">Pending</option>
                   </select>
                 </div>
               </div>

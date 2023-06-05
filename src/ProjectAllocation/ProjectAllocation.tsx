@@ -1149,7 +1149,7 @@ useEffect(()=>{
                   // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
                   // onChange={(event) => setPtoDays(event.target.value)}
                 />
-                {/* <div className="error"></div> */}
+    .            {/* <div className="error"></div> */}
               </div>
 
               <div className="col-md-6 form-group" id="AllocateProjectPercentage">
@@ -1213,7 +1213,9 @@ useEffect(()=>{
                   >
                     <option value="0">Select</option>
                     <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
                     <option value="InActive">InActive</option>
+                    <option value="Pending">Pending</option>
                   </select>
                 </div>
               </div>

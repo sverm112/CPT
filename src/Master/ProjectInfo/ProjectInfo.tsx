@@ -482,18 +482,18 @@ style={{ float: "right", marginTop: "-68px"}}
                 <label className="form-label" htmlFor="programManager">
                   Program Manager
                 </label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
-                  required
+                  // required
                   pattern={PatternsAndMessages.nameLike.pattern}
                   type="text"
                   className="form-control"
                   id="programManager"
                   value={programManager}
-                  onBlur = {()=>validateSingleFormGroup(document.getElementById('ProgramManager'), 'input')}
+                  // onBlur = {()=>validateSingleFormGroup(document.getElementById('ProgramManager'), 'input')}
                   onChange={(event: any) => setProgramManager(event.target.value)}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
 
             </div>
@@ -689,18 +689,18 @@ style={{ float: "right", marginTop: "-68px"}}
                 <label className="form-label" htmlFor="programManager">
                   Program Manager
                 </label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
-                  required
+                  // required
                   name="programManager"
                   type="text"
                   className="form-control"
                   id="programManager"
                   value={formValues.programManager}
-                  onBlur = {()=>validateSingleFormGroup(document.getElementById('ProgramManager'), 'input')}
+                  // onBlur = {()=>validateSingleFormGroup(document.getElementById('ProgramManager'), 'input')}
                   onChange={handleChange}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
               <div className="col-md-6 form-group ">
                 <label className="form-label">Status</label>
@@ -714,7 +714,9 @@ style={{ float: "right", marginTop: "-68px"}}
                   >
                     <option value="0">Select</option>
                     <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
                     <option value="InActive">InActive</option>
+                    <option value="Pending">Pending</option>
                   </select>
                 </div>
               </div>

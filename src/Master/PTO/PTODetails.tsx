@@ -433,12 +433,12 @@ const AddModal = (props: any) => {
     let ptoStartDate=null,ptoEndDate=null;
     if(startDate!=null){
       ptoStartDate= new Date(startDate);
-      console.log("Start Date: ",ptoStartDate);
+      // console.log("Start Date: ",ptoStartDate);
       ptoStartDate.setDate(ptoStartDate.getDate() + 1);
     }
     if(endDate!=null){
       ptoEndDate= new Date(endDate);
-      console.log("End Date: ",ptoEndDate);
+      // console.log("End Date: ",ptoEndDate);
       ptoEndDate.setDate(ptoEndDate.getDate() + 1);
     }
     // if(startYear == endYear){
@@ -729,14 +729,14 @@ const UpdateModal = (props: any) => {
     let ptoStartDate=null,ptoEndDate=null;
     if(startDate!=null){
       ptoStartDate= new Date(startDate);
-      console.log("Start Date: ", ptoStartDate);
-      console.log("Actual Start Date: ", startDate);
+      // console.log("Start Date: ", ptoStartDate);
+      // console.log("Actual Start Date: ", startDate);
       ptoStartDate.setDate(ptoStartDate.getDate() );
     }
     if(endDate!=null){
       ptoEndDate= new Date(endDate);
-      console.log("End Date: ", ptoEndDate);
-      console.log("Actual End Date: ", endDate);
+      // console.log("End Date: ", ptoEndDate);
+      // console.log("Actual End Date: ", endDate);
       ptoEndDate.setDate(ptoEndDate.getDate() );
     }
     let payload = {
@@ -960,7 +960,9 @@ const UpdateModal = (props: any) => {
                   >
                     <option value="0">Select</option>
                     <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
                     <option value="InActive">InActive</option>
+                    <option value="Pending">Pending</option>
                   </select>
                 </div>
               </div>

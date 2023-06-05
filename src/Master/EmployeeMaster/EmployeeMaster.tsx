@@ -582,18 +582,18 @@ const AddModal = (props: any) => {
               </div>
               <div className="col-md-6 form-group" id="AddResourceEmailField">
                 <label className="form-label">Email Address</label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
-                  required
+                  // required
                   pattern={PatternsAndMessages.email.pattern}
                   type="text"
                   className="form-control"
                   id="employeeEmailAddress"
                   value={employeeEmailAddress}
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceEmailField'),'input')}
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceEmailField'),'input')}
                   onChange={(event) => setEmployeeEmailAddress(event.target.value)}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
               <div className="col-md-6 form-group" id="AddResourceManagerField">
                 <label className="form-label">Manager</label>
@@ -831,19 +831,19 @@ const UpdateModal = (props: any) => {
               </div>
               <div className="col-md-6 form-group" id="UpdateResourceEmailField">
                 <label className="form-label">Email Address</label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
                   type="text"
-                  required
+                  // required
                   pattern={PatternsAndMessages.email.pattern}
                   name="emailAddress"
                   className="form-control"
                   id="employeeEmailAddress"
                   value={formValues.emailAddress}
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceEmailField'), 'input')}
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceEmailField'), 'input')}
                   onChange={handleChange}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
               <div className="col-md-6 form-group" id="UpdateResourceManagerField">
                 <label className="form-label">Manager</label>
@@ -957,8 +957,10 @@ const UpdateModal = (props: any) => {
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    <option value="1">Active</option>
-                    <option value="2">InActive</option>
+                    <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
+                    <option value="InActive">InActive</option>
+                    <option value="Pending">Pending</option>
                   </select>
                 </div>
               </div>
