@@ -196,7 +196,7 @@ const columnsAndSelectors=[
   {'name':'Resource Market','selector':'resourceMarket','default':'true'},
   // {'name':'Project','selector':'projectName','default':'true'},
   // {'name':'Resource Type1','selector':'resourceType1','default':'false'},
-  // {'name':'Project Market','selector':'projectMarket','default':'true'},
+  {'name':'Project Market','selector':'projectMarket','default':'false'},
   // {'name':'Project Code','selector':'projectCode','default':'false'},
   // {'name':'Expense Type','selector':'expenseType','default':'false'},
   // {'name':'Start Date','selector':'startDate','default':'true'},
@@ -236,6 +236,7 @@ const ProjectAllocation = () => {
   // const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
   const locationSelected = useSelector((store: any) => store.ProjectAllocation.location)
   const [currentProject, setCurrentProject] = useState(null);
+  const [closeExpanded, setCloseExpanded] = useState(true);
   const [currentRow, setCurrentRow] = useState(null);
   const resources = useSelector((state: any) => state.Employee.data);
 
@@ -312,7 +313,6 @@ const ProjectAllocation = () => {
     getHolidayDetails();
   }, []);
 
-  
   const supervisors: any = [];
   resources.map((resource: any) => {
     if (supervisors.indexOf(resource.manager) === -1) {
@@ -475,7 +475,7 @@ console.log("New Data: ", newData);
         expandableRows
         customStyles={customStyles}
         striped={true}
-        expandableRowExpanded={(row: any) => row.projectId === currentProject }
+        expandableRowExpanded={(row: any) => closeExpanded && (row.projectId === currentProject) }
         expandOnRowClicked
         onRowClicked={(row) => setCurrentProject(row)}
         onRowExpandToggled={(bool, row: any) => setCurrentProject(row.projectId)}
@@ -626,8 +626,8 @@ console.log("New Data: ", newData);
             <Table columnsAndSelectors={columnsAndSelectors}    
             expandableRowExpanded={(row: any) => row.resourceId === currentRow }
             expandOnRowClicked
-            onRowClicked={(row:any) => setCurrentRow(row)}
-            onRowExpandToggled={(bool:any, row: any) => setCurrentRow(row.resourceId)}
+            onRowClicked={(row:any) => {setCurrentRow(row)}}
+            onRowExpandToggled={(bool:any, row: any) => {setCurrentRow(row.resourceId);setCloseExpanded(false)}}
             expandableRows expandableRowsComponent={ExpandableEmployee} columns={employeeColumns} data={newData} title={title}/>
           </div>
       </div>
@@ -1769,7 +1769,7 @@ const AddModal = (props: any) => {
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={resetFormFields} className="btn btn-primary" style={{marginLeft:"20%"}}>
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
                   Reset
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
