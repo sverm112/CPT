@@ -10,6 +10,7 @@ import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { GET_ALL_MARKETS, POST_MARKET, UPDATE_MARKET } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
+import { closeNav } from "../../SideBar/SideBarJs";
 
 const columns = [
   {
@@ -132,7 +133,7 @@ const Market = () => {
           visible={true}
         />
       </div> :
-      <div className="col-md-12 bg-mainclass">
+      <div className="col-md-12 bg-mainclass" onClick={closeNav}>
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">Market Details</h1>

@@ -14,6 +14,7 @@ import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { Base_URL, GET_ALL_MARKETS, GET_ALL_PROJECTS, POST_PROJECT, UPDATE_PROJECT } from "../../constants";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { RotatingLines } from "react-loader-spinner";
+import { closeNav } from "../../SideBar/SideBarJs";
 
 const columns = [
   {
@@ -217,7 +218,7 @@ const ProjectInfo = () => {
           visible={true}
         />
       </div> :
-      <div className="col-md-12 bg-mainclass">
+      <div className="col-md-12 bg-mainclass" onClick={closeNav}>
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">Project Details</h1>

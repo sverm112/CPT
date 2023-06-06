@@ -17,6 +17,7 @@ import DatePicker from "react-date-picker";
 import { employeeActions } from "../../Store/Slices/Employee";
 import { GET_ALL_PTOS, GET_ALL_PTO_TYPES, GET_ALL_RESOURCES, POST_PTO, UPDATE_PTO } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
+import { closeNav } from "../../SideBar/SideBarJs";
 
 const columns = [
   {
@@ -270,7 +271,7 @@ const PTO = () => {
           visible={true}
         />
       </div> :
-        <div className="col-md-12 bg-mainclass">
+        <div className="col-md-12 bg-mainclass" onClick={closeNav}>
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">PTO Details</h1>

@@ -15,6 +15,7 @@ import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_SUB_LOCATIONS, POST_HOLIDAY, UPDATE_HOLIDAY } from "../../constants";
 import { propTypes } from "react-bootstrap/esm/Image";
 import { RotatingLines } from "react-loader-spinner";
+import { closeNav } from "../../SideBar/SideBarJs";
 
 //Data Table
 const columns = [
@@ -217,7 +218,7 @@ const HolidayMaster = () => {
           visible={true}
         />
       </div> :
-      <div className="col-md-12 bg-mainclass">
+      <div className="col-md-12 bg-mainclass" onClick={closeNav}>
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">Holiday Details</h1>

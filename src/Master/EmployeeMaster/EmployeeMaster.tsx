@@ -14,6 +14,7 @@ import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, POST_BULK_UPLOAD_EMPLOYEE, POST_RESOURCE, UPDATE_RESOURCE } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
+import { closeNav } from "../../SideBar/SideBarJs";
 
 
 const columns = [
@@ -336,7 +337,7 @@ const EmployeeMaster = () => {
           visible={true}
         />
       </div> :
-      <div className="col-md-12 bg-mainclass">
+      <div className="col-md-12 bg-mainclass" onClick={closeNav}>
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">Employee Details</h1>
