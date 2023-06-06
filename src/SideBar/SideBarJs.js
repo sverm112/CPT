@@ -29,3 +29,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
     linkColor.forEach(l => l.addEventListener('click', colorLink))
 
   });
+
+  export function closeNav() {
+    console.log("Just clicked outside the Sidebar");
+    const toggle = document.getElementById('header-toggle');
+    const nav = document.getElementById('nav-bar');    
+    nav.classList.toggle('show')
+    toggle.classList.toggle('bx-x');
+    }

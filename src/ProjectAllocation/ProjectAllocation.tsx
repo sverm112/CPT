@@ -22,6 +22,7 @@ import { RotatingLines } from "react-loader-spinner";
 import DataTable from "react-data-table-component";
 import customStyles from "../DataTable/customStyles";
 import { ptoActions } from "../Store/Slices/Pto";
+import { closeNav } from "../SideBar/SideBarJs";
 
 const employeeColumns = [
   {
@@ -196,7 +197,7 @@ const columnsAndSelectors=[
   {'name':'Resource Market','selector':'resourceMarket','default':'true'},
   // {'name':'Project','selector':'projectName','default':'true'},
   // {'name':'Resource Type1','selector':'resourceType1','default':'false'},
-  {'name':'Project Market','selector':'projectMarket','default':'false'},
+  // {'name':'Project Market','selector':'projectMarket','default':'false'},
   // {'name':'Project Code','selector':'projectCode','default':'false'},
   // {'name':'Expense Type','selector':'expenseType','default':'false'},
   // {'name':'Start Date','selector':'startDate','default':'true'},
@@ -497,7 +498,7 @@ console.log("New Data: ", newData);
           visible={true}
         />
       </div> : 
-      <div className="col-md-12 bg-mainclass">
+      <div className="col-md-12 bg-mainclass" onClick={closeNav} >
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">Project Allocation</h1>
