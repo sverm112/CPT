@@ -32,8 +32,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
   export function closeNav() {
     console.log("Just clicked outside the Sidebar");
-    const toggle = document.getElementById('header-toggle');
     const nav = document.getElementById('nav-bar');    
-    nav.classList.toggle('show')
-    toggle.classList.toggle('bx-x');
+    nav.className = 'l-navbar';
     }

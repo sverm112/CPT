@@ -478,8 +478,8 @@ console.log("New Data: ", newData);
         striped={true}
         expandableRowExpanded={(row: any) => closeExpanded && (row.projectId === currentProject) }
         expandOnRowClicked
-        onRowClicked={(row) => setCurrentProject(row)}
-        onRowExpandToggled={(bool, row: any) => setCurrentProject(row.projectId)}
+        onRowClicked={(row) => {setCurrentProject(row.projectId); setCloseExpanded(true)}}
+        onRowExpandToggled={(bool, row: any) => {setCurrentProject(row.projectId); setCloseExpanded(true)}}
         expandableRowsComponent={ExpandableAllocationDetails}
         data={resourceData.data.projectsInfo}/>
     </div>;
