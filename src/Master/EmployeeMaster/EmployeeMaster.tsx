@@ -83,7 +83,7 @@ const columns = [
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate.slice(0, 10),
+    selector: (row: { createdDateString: any }) => row.createdDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -97,7 +97,7 @@ const columns = [
   },
   {
     name: "Updated Date",
-    selector: (row: { updatedDate: any }) => row.updatedDate,
+    selector: (row: { updatedDateString: any }) => row.updatedDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -165,7 +165,7 @@ const EmployeeMaster = () => {
     try {
       const response = await fetch(`${GET_ALL_RESOURCES}`);
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive ,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
       dispatch(employeeActions.changeData(dataGet));
       setTimeout(()=>setIsLoading(false), 2000);
     } catch {
@@ -179,7 +179,7 @@ const EmployeeMaster = () => {
   const getMarketDetails = async () => {
     const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
     dispatch(marketActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {

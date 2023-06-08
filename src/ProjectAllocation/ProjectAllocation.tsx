@@ -161,7 +161,7 @@ const allocationDetailsColumn = [
   },
   {
     name: "Created Date",
-    selector: (row:  any ) => row.createdDate,
+    selector: (row:  any ) => row.createdDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -175,7 +175,7 @@ const allocationDetailsColumn = [
   },
   {
     name: "Updated Date",
-    selector: (row:  any ) => row.updatedDate,
+    selector: (row:  any ) => row.updatedDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -300,13 +300,13 @@ const ProjectAllocation = () => {
   const getMarketDetails = async () => {
     const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
     dispatch(marketActions.changeData(dataGet));
   };
   const getHolidayDetails = async () => {
     const response = await fetch(`${GET_ALL_HOLIDAYS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
     dispatch(holidayActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -685,7 +685,7 @@ const UpdateModal = (props: any) => {
   const getEmployeeDetails = async () => {
     const response = await fetch(`${GET_ALL_RESOURCES}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive}));
     dispatch(employeeActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
@@ -696,7 +696,7 @@ const UpdateModal = (props: any) => {
   const getSubLocationDetails = async () => {
     const response = await fetch(`${GET_ALL_SUB_LOCATIONS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive}));
     dispatch(filterActions.changeSubLocations(dataGet));
   }
   useEffect(() => {
@@ -708,7 +708,7 @@ const UpdateModal = (props: any) => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);
     let dataGet = await response.json();
     console.log("Project Details: ",dataGet)
-    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.isActive}));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -904,7 +904,7 @@ useEffect(()=>{
     }
   }
   const handleChange = (e: any) => {
-    console.log("Update")
+    console.log("Update: ",e)
     setFormValues({
       ...formValues,
       [e.target.name]: e.target.value
@@ -1152,7 +1152,7 @@ useEffect(()=>{
                   // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
                   // onChange={(event) => setPtoDays(event.target.value)}
                 />
-    .            {/* <div className="error"></div> */}
+                {/* <div className="error"></div> */}
               </div>
 
               <div className="col-md-6 form-group" id="AllocateProjectPercentage">
@@ -1200,8 +1200,8 @@ useEffect(()=>{
                   id="allocationHours"
                   name="allocationHours"
                   value={formValues.allocationHours}
-                  disabled
-                // onChange={(event) => setAllocationHours(event.target.value)}
+                  // disabled
+                onChange={handleChange}
                 />
               </div>
               <div className="col-md-6 form-group ">
@@ -1288,7 +1288,7 @@ const AddModal = (props: any) => {
   const getEmployeeDetails = async () => {
     const response = await fetch(`${GET_ALL_RESOURCES}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive}));
     dispatch(employeeActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
@@ -1299,7 +1299,7 @@ const AddModal = (props: any) => {
   const getSubLocationDetails = async () => {
     const response = await fetch(`${GET_ALL_SUB_LOCATIONS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive}));
     dispatch(filterActions.changeSubLocations(dataGet));
   }
   useEffect(() => {
@@ -1310,7 +1310,7 @@ const AddModal = (props: any) => {
   const getProjectDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, createdDate: row.createdDate.slice(0, 10),updatedDate: row.updatedDate.slice(0, 10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row, createdDate: row.createdDateString,updatedDate: row.updatedDateString}));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {

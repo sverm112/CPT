@@ -92,7 +92,7 @@ const columns = [
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate,
+    selector: (row: { createdDateString: any }) => row.createdDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -106,7 +106,7 @@ const columns = [
   },
   {
     name: "Updated Date",
-    selector: (row: { updatedDate: any }) => row.updatedDate,
+    selector: (row: { updatedDateString: any }) => row.updatedDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -179,7 +179,7 @@ const PTO = () => {
   }, [toggle]);
 
   const handleRowDoubleClicked = (row: any) => {
-    console.log(row);
+    console.log("Calling Update PTO: ",row);
     setShowModal(true);
     setAction("Update");
     let data = { ...row }
@@ -698,6 +698,7 @@ style={{ float: "right", marginTop: "-68px"}}
 }
 
 const UpdateModal = (props: any) => {
+  console.log("Opening UpdateModal")
   const dispatch = useDispatch();
   const username=useSelector((state:any)=>state.User.username);
   const resourceList = useSelector((state: any) => state.Employee.data);
