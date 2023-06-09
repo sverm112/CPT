@@ -571,6 +571,10 @@ button#export-excel-btn:hover {
   visibility: visible;
 } 
 
+.resetButton{
+  margin-left:20%;
+}
+
 .DownloadEmployeeTemplate {
   position: relative;
   display: inline-block;

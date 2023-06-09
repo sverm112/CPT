@@ -29,3 +29,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     linkColor.forEach(l => l.addEventListener('click', colorLink))
 
   });
+
+  export function closeNav() {
+    console.log("Just clicked outside the Sidebar");
+    const nav = document.getElementById('nav-bar');    
+    nav.className = 'l-navbar';
+    }

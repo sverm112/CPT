@@ -14,6 +14,7 @@ import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { Base_URL, GET_ALL_MARKETS, GET_ALL_PROJECTS, POST_PROJECT, UPDATE_PROJECT } from "../../constants";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { RotatingLines } from "react-loader-spinner";
+import { closeNav } from "../../SideBar/SideBarJs";
 
 const columns = [
   {
@@ -67,7 +68,7 @@ const columns = [
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate,
+    selector: (row: { createdDateString: any }) => row.createdDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -81,7 +82,7 @@ const columns = [
   },
   {
     name: "Updated Date",
-    selector: (row: { updatedDate: any }) => row.updatedDate,
+    selector: (row: { updatedDateString: any }) => row.updatedDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -150,7 +151,7 @@ const ProjectInfo = () => {
   const getProjectDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, createdDate: row.createdDate.slice(0, 10),updatedDate: row.updatedDate.slice(0, 10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row, createdDate: row.createdDateString,updatedDate:row.updatedDateString}));
     dispatch(projectActions.changeData(dataGet));
     setTimeout(()=>setIsLoading(false), 2000);
   };
@@ -161,7 +162,7 @@ const ProjectInfo = () => {
   const getMarketDetails = async () => {
     const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
     console.log(dataGet);
     dispatch(marketActions.changeData(dataGet));
   };
@@ -180,7 +181,7 @@ const ProjectInfo = () => {
       if ((!marketSelected.length) || (marketSelected.length > 0 && marketOptions.includes(project.projectMarket) == true)) {
         if ((!expenseTypeSelected.length) || (expenseTypeSelected.length > 0 && expenseTypeOptions.includes(project.expenseType) == true)) {
 
-          if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(project.isActive))) {
+          if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(project.status))) {
             if ((!projectModelSelected.length) || (projectModelSelected.length > 0 && projectModelOptions.includes(project.projectModel)))
               return true;
           }
@@ -217,7 +218,7 @@ const ProjectInfo = () => {
           visible={true}
         />
       </div> :
-      <div className="col-md-12 bg-mainclass">
+      <div className="col-md-12 bg-mainclass" onClick={closeNav}>
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">Project Details</h1>
@@ -482,24 +483,30 @@ style={{ float: "right", marginTop: "-68px"}}
                 <label className="form-label" htmlFor="programManager">
                   Program Manager
                 </label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
-                  required
+                  // required
                   pattern={PatternsAndMessages.nameLike.pattern}
                   type="text"
                   className="form-control"
                   id="programManager"
                   value={programManager}
-                  onBlur = {()=>validateSingleFormGroup(document.getElementById('ProgramManager'), 'input')}
+                  // onBlur = {()=>validateSingleFormGroup(document.getElementById('ProgramManager'), 'input')}
                   onChange={(event: any) => setProgramManager(event.target.value)}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
 
             </div>
             <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+              <div className="col-md-8">
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
+                  Reset
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
                   Submit
                 </button>
               </div>
@@ -689,18 +696,18 @@ style={{ float: "right", marginTop: "-68px"}}
                 <label className="form-label" htmlFor="programManager">
                   Program Manager
                 </label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
-                  required
+                  // required
                   name="programManager"
                   type="text"
                   className="form-control"
                   id="programManager"
                   value={formValues.programManager}
-                  onBlur = {()=>validateSingleFormGroup(document.getElementById('ProgramManager'), 'input')}
+                  // onBlur = {()=>validateSingleFormGroup(document.getElementById('ProgramManager'), 'input')}
                   onChange={handleChange}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
               <div className="col-md-6 form-group ">
                 <label className="form-label">Status</label>
@@ -714,7 +721,9 @@ style={{ float: "right", marginTop: "-68px"}}
                   >
                     <option value="0">Select</option>
                     <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
                     <option value="InActive">InActive</option>
+                    <option value="Pending">Pending</option>
                   </select>
                 </div>
               </div>

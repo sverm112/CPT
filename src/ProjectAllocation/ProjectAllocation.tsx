@@ -22,6 +22,7 @@ import { RotatingLines } from "react-loader-spinner";
 import DataTable from "react-data-table-component";
 import customStyles from "../DataTable/customStyles";
 import { ptoActions } from "../Store/Slices/Pto";
+import { closeNav } from "../SideBar/SideBarJs";
 
 const employeeColumns = [
   {
@@ -174,7 +175,7 @@ const allocationDetailsColumn = [
   },
   {
     name: "Updated Date",
-    selector: (row:  any ) => row.updatedDate,
+    selector: (row:  any ) => row.updatedDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -196,7 +197,7 @@ const columnsAndSelectors=[
   {'name':'Resource Market','selector':'resourceMarket','default':'true'},
   // {'name':'Project','selector':'projectName','default':'true'},
   // {'name':'Resource Type1','selector':'resourceType1','default':'false'},
-  // {'name':'Project Market','selector':'projectMarket','default':'true'},
+  // {'name':'Project Market','selector':'projectMarket','default':'false'},
   // {'name':'Project Code','selector':'projectCode','default':'false'},
   // {'name':'Expense Type','selector':'expenseType','default':'false'},
   // {'name':'Start Date','selector':'startDate','default':'true'},
@@ -236,6 +237,7 @@ const ProjectAllocation = () => {
   // const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
   const locationSelected = useSelector((store: any) => store.ProjectAllocation.location)
   const [currentProject, setCurrentProject] = useState(null);
+  const [closeExpanded, setCloseExpanded] = useState(true);
   const [currentRow, setCurrentRow] = useState(null);
   const resources = useSelector((state: any) => state.Employee.data);
 
@@ -271,10 +273,10 @@ const ProjectAllocation = () => {
 
   };
 
-  // const changeProjectMarketSelectHandler = (event: any) => {
-  //   dispatch(projectAllocationActions.changeProjectMarket(event));
+  const changeProjectMarketSelectHandler = (event: any) => {
+    dispatch(projectAllocationActions.changeProjectMarket(event));
 
-  // };
+  };
   // const changeExpenseTypeSelectHandler = (event: any) => {
   //   dispatch(projectAllocationActions.changeExpenseType(event));
 
@@ -298,13 +300,13 @@ const ProjectAllocation = () => {
   const getMarketDetails = async () => {
     const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
     dispatch(marketActions.changeData(dataGet));
   };
   const getHolidayDetails = async () => {
     const response = await fetch(`${GET_ALL_HOLIDAYS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
     dispatch(holidayActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -312,7 +314,6 @@ const ProjectAllocation = () => {
     getHolidayDetails();
   }, []);
 
-  
   const supervisors: any = [];
   resources.map((resource: any) => {
     if (supervisors.indexOf(resource.manager) === -1) {
@@ -330,8 +331,10 @@ const ProjectAllocation = () => {
         if ((!roleSelected.length) || (roleSelected.length > 0 && roleOptions.includes(projectAllocation.role) == true)) {
           if ((!resourceSelected.length) || (resourceSelected.length > 0 && resourceOptions.includes(projectAllocation.resourceName) == true)) {
             if ((!managerSelected.length) || (managerSelected.length > 0 && managerOptions.includes(projectAllocation.resourceManager) == true)) {
-              if (locationSelected == "0" || locationSelected == projectAllocation.location)
+              if((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket))){
+                if (locationSelected == "0" || locationSelected == projectAllocation.location)
                 return true;
+              }
             }
           }
         }
@@ -341,6 +344,12 @@ const ProjectAllocation = () => {
   });
 let resourceIds: any[]=[];
 let newData : any[]=[];
+
+const showMoreFilters = () =>{
+  let morefFilters = document.getElementById('MoreFilters');
+  morefFilters?.setAttribute('style', 'display:"visible"')
+}
+
 filteredProjectAllocations.map((projectAllocation:any)=>{
  console.log("Project Allocation: ",projectAllocation);
  if(resourceIds.includes(projectAllocation.resourceId)==true){
@@ -456,6 +465,7 @@ console.log("New Data: ", newData);
       <DataTable 
         customStyles={customStyles} 
         defaultSortFieldId={1}
+        defaultSortAsc={false}
         onRowDoubleClicked={handleRowDoubleClicked}
         striped={true}
         pagination 
@@ -472,10 +482,10 @@ console.log("New Data: ", newData);
         expandableRows
         customStyles={customStyles}
         striped={true}
-        expandableRowExpanded={(row: any) => row.projectId === currentProject }
+        expandableRowExpanded={(row: any) => closeExpanded && (row.projectId === currentProject) }
         expandOnRowClicked
-        onRowClicked={(row) => setCurrentProject(row)}
-        onRowExpandToggled={(bool, row: any) => setCurrentProject(row.projectId)}
+        onRowClicked={(row) => {setCurrentProject(row.projectId); setCloseExpanded(true)}}
+        onRowExpandToggled={(bool, row: any) => {setCurrentProject(row.projectId); setCloseExpanded(true)}}
         expandableRowsComponent={ExpandableAllocationDetails}
         data={resourceData.data.projectsInfo}/>
     </div>;
@@ -494,7 +504,7 @@ console.log("New Data: ", newData);
           visible={true}
         />
       </div> : 
-      <div className="col-md-12 bg-mainclass">
+      <div className="col-md-12 bg-mainclass" onClick={closeNav} >
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">Project Allocation</h1>
@@ -590,6 +600,8 @@ console.log("New Data: ", newData);
               valueRenderer={customValueRenderer}
             />
           </div>
+          {/* <div className="MoreFilters" id="MoreFilters" style={{display:"none"}}> */}
+            
           {/* <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Project Market
@@ -606,25 +618,29 @@ console.log("New Data: ", newData);
           {/* <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Expense Type
-            </label>
-            <MultiSelect
-              options={expenseTypes}
-              value={expenseTypeSelected}
-              onChange={changeExpenseTypeSelectHandler}
+            </label> */}
+            {/* <MultiSelect
+              // options={expenseTypes}
+              // value={expenseTypeSelected}
+              // onChange={changeExpenseTypeSelectHandler}
               labelledBy="Select Expense Type"
               valueRenderer={customValueRenderer}
-            />
-          </div> */}
+            /> */}
+          {/* </div> */}
+          {/* </div> */}
           <div className="col-md-2" style={{ marginTop: "24px" }}>
             <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}>Clear Filters<i className="las la-filter"></i></button>
           </div>
+          {/* <div className="col-md-2" style={{ marginTop: "24px" }}>
+            <button type="button" className="btn btn-primary" onClick={showMoreFilters}>More Filters<i className="las la-filter"></i></button>
+          </div> */}
         </div>
           <div className="TableContentBorder">
             <Table columnsAndSelectors={columnsAndSelectors}    
             expandableRowExpanded={(row: any) => row.resourceId === currentRow }
             expandOnRowClicked
-            onRowClicked={(row:any) => setCurrentRow(row)}
-            onRowExpandToggled={(bool:any, row: any) => setCurrentRow(row.resourceId)}
+            onRowClicked={(row:any) => {setCurrentRow(row)}}
+            onRowExpandToggled={(bool:any, row: any) => {setCurrentRow(row.resourceId);setCloseExpanded(false)}}
             expandableRows expandableRowsComponent={ExpandableEmployee} columns={employeeColumns} data={newData} title={title}/>
           </div>
       </div>
@@ -639,13 +655,15 @@ const UpdateModal = (props: any) => {
   const username=useSelector((state:any)=>state.User.username);
   const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
   const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
-  const [ptoDays, setPtoDays] = useState("0");
+  const [ptoDays, setPtoDays] = useState("0");  
+  const [holidays, setHolidays] = useState(0);
   const [allocationPercentage, setAllocationPercentage] = useState("");
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
   const [projectId, setProjectId] = useState("0");
   const [allocatedPercentage, setAllocatedPercentage] = useState(0);
   const holidayDetails = useSelector((state: any) => state.Holiday.data);
+  const [allocationHrs, setAllocationHrs] = useState("0");
   let allocationHours = 0, allocationHoursPerDay = 0;
   
   console.log("formValues: ", formValues);
@@ -662,7 +680,7 @@ const UpdateModal = (props: any) => {
   }
   const calculateHolidays = (location: any, subLocation: any, startDate: Date, endDate: Date) => {
     let count = 0;
-    let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.isActive == "Active");
+    let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.status == "Active");
     console.log("filtered holidays ," + filteredHolidays.length)
     for (let i = 0; i < filteredHolidays.length; i++) {
       let holidayDate = new Date(filteredHolidays[i].holidayDate)
@@ -681,7 +699,7 @@ const UpdateModal = (props: any) => {
   const getEmployeeDetails = async () => {
     const response = await fetch(`${GET_ALL_RESOURCES}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive}));
     dispatch(employeeActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
@@ -692,7 +710,7 @@ const UpdateModal = (props: any) => {
   const getSubLocationDetails = async () => {
     const response = await fetch(`${GET_ALL_SUB_LOCATIONS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive}));
     dispatch(filterActions.changeSubLocations(dataGet));
   }
   useEffect(() => {
@@ -704,12 +722,12 @@ const UpdateModal = (props: any) => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);
     let dataGet = await response.json();
     console.log("Project Details: ",dataGet)
-    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.status}));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
     getProjectDetails();
-    setResourceId(resourceId);
+    setResourceId(formValues.resourceId);
     setProjectId(formValues.projectId);
   }, []);
   let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
@@ -718,12 +736,12 @@ const UpdateModal = (props: any) => {
   const setResourceDetails = (event: any) => {
     console.log(selectedResourceDetails, event.target.value)
     setResourceId(event.target.value);
-    console.log("Set Resource Details Called: ",resourceId);
+    console.log("Set Resource Details Called: ",formValues.resourceId);
   };
   
   const setProjectDetails = (event: any) => {
     setProjectId(event.target.value);
-    console.log("SetProjectDetails Called: ",projectId);
+    console.log("SetProjectDetails Called: ",formValues.projectId);
   };
 
 
@@ -768,7 +786,9 @@ const UpdateModal = (props: any) => {
     formValues.allocationHours = Math.ceil((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
     console.log("Allocation Hours: ", formValues.allocationHours);
   }
-
+  useEffect(()=>{
+    setAllocationHrs(formValues.allocationHours);
+  },[formValues.allocationPercentage])
   const resetFormFields = () => {
     setAllocationStartDate(null);
     setAllocationEndDate(null);
@@ -780,12 +800,12 @@ const UpdateModal = (props: any) => {
   }
   const getAllocationPercentage = async () => {
     let payload = {
-      fkResourceID: Number(resourceId),
+      fkResourceID: Number(formValues.resourceId),
       startDate: allocationStartDate,
       endDate: allocationEndDate
     };
         try {
-      const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?fkResourceID=${resourceId}&startDate=${allocationStartDate?.toISOString().slice(0, 10)}&endDate=${allocationEndDate?.toISOString().slice(0, 10)}`, {
+      const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?resourceID=${formValues.resourceId}&startDate=${allocationStartDate?.toISOString().slice(0, 10)}&endDate=${allocationEndDate?.toISOString().slice(0, 10)}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -802,12 +822,14 @@ const UpdateModal = (props: any) => {
   useEffect(() => {
     setAllocatedPercentage(0);
     setPtoDays("");
-    if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
+    if (formValues.resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
       {
         getAllocationPercentage();
         getPTODays();
+        let hdays = calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
+        setHolidays(hdays);
     }
-  }, [resourceId, allocationStartDate, allocationEndDate]);
+  }, [formValues.resourceId, allocationStartDate, allocationEndDate]);
 
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
@@ -851,7 +873,8 @@ const UpdateModal = (props: any) => {
             resetFormFields();
             props.closeModal();
             toast.success("Update Allocation Successful")
-          } else toast.error(dataResponse[0].errorMessage);
+          } else toast.error("Some Error occured.")
+          // dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
       }
     } catch {
@@ -861,7 +884,12 @@ const UpdateModal = (props: any) => {
   };
   //console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
 useEffect(()=>{
-  getPTODays();
+  getPTODays();    
+  if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
+  {
+    let hdays = calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
+    setHolidays(hdays);
+}
 });
   const getPTODays = async()=>{
     console.log("Get PTO Days called: "+ formValues.resourceId+ allocationStartDate + allocationEndDate);
@@ -900,7 +928,7 @@ useEffect(()=>{
     }
   }
   const handleChange = (e: any) => {
-    console.log("Update")
+    console.log("Update: ",e)
     setFormValues({
       ...formValues,
       [e.target.name]: e.target.value
@@ -1039,10 +1067,11 @@ useEffect(()=>{
                 <div className="dropdown">
                   <select
                     className="form-control "
-                    required
+                    // required
+                    disabled
                     id="resourceType1Dropdown"
                     name="resourceType1"
-                    value={formValues.resourceType1}
+                    value={ selectedResourceDetails.resourceType}
                     onChange={(event) => {
                       handleChange(event);
                       // setResourceType1(event.target.value);
@@ -1050,7 +1079,7 @@ useEffect(()=>{
                     }}
                   >
                     <option value="0">Select</option>
-                    {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
+                    {roles.map((role: any) => (<option key={selectedResourceDetails.resourceType} value={selectedResourceDetails.resourceType}> {selectedResourceDetails.resourceType}</option> || <option key={role} value={role}>{role}</option>))}
                   </select>
                 <div className="error"></div>
                 </div>
@@ -1133,6 +1162,24 @@ useEffect(()=>{
               </div>
               <div className="col-md-6 form-group" id="AllocateProjectPTODays">
                 <label className="form-label" htmlFor="ptoDays">
+                  Holidays
+                </label>
+                {/* <span className="requiredField">*</span> */}
+                <input
+                  type="text"
+                  disabled
+                  // required
+                  // pattern={PatternsAndMessages.numberOnly.pattern}
+                  className="form-control"
+                  id="ptoDays"
+                  value={holidays}
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
+                  // onChange={(event) => setPtoDays(event.target.value)}
+                />
+                {/* <div className="error"></div> */}
+              </div>
+              <div className="col-md-6 form-group" id="AllocateProjectPTODays">
+                <label className="form-label" htmlFor="ptoDays">
                   PTO Days
                 </label>
                 {/* <span className="requiredField">*</span> */}
@@ -1186,19 +1233,23 @@ useEffect(()=>{
                   disabled
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AllocationHours">
                 <label className="form-label" htmlFor="allocationHours">
                   Allocation(Hours)
                 </label>
+                <span className="requiredField">*</span>
                 <input
                   type="text"
                   className="form-control"
+                  required
                   id="allocationHours"
                   name="allocationHours"
-                  value={formValues.allocationHours}
-                  disabled
-                // onChange={(event) => setAllocationHours(event.target.value)}
+                  value={allocationHrs == "0" ? formValues.allocationHours : allocationHrs}
+                  // disabled
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('AllocationHours'), 'input')}
+                  onChange={(e)=>{handleChange(e);setAllocationHrs(e.target.value)}}
                 />
+                <div className="error"></div>
               </div>
               <div className="col-md-6 form-group ">
                 <label className="form-label">Status</label>
@@ -1212,7 +1263,9 @@ useEffect(()=>{
                   >
                     <option value="0">Select</option>
                     <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
                     <option value="InActive">InActive</option>
+                    <option value="Pending">Pending</option>
                   </select>
                 </div>
               </div>
@@ -1243,7 +1296,9 @@ const AddModal = (props: any) => {
   const username=useSelector((state:any)=>state.User.username);
   const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(null);
   const [ptoDays, setPtoDays] = useState("");
+  const [holidays, setHolidays] = useState(0);
   const [allocationPercentage, setAllocationPercentage] = useState("");
+  const [allocationHrs, setAllocationHrs] = useState("0");
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
   const [projectId, setProjectId] = useState("0");
@@ -1263,7 +1318,7 @@ const AddModal = (props: any) => {
   }
   const calculateHolidays = (location: any, subLocation: any, startDate: Date, endDate: Date) => {
     let count = 0;
-    let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.isActive == "Active");
+    let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.status == "Active");
     console.log("filtered holidays ," + filteredHolidays.length)
     for (let i = 0; i < filteredHolidays.length; i++) {
       let holidayDate = new Date(filteredHolidays[i].holidayDate)
@@ -1272,6 +1327,8 @@ const AddModal = (props: any) => {
         count++;
     }
     console.log("Holiday Count " + count);
+    
+    console.log("Holiday Count After " + count);
     return count;
   }
   //allocationHours= Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
@@ -1282,7 +1339,7 @@ const AddModal = (props: any) => {
   const getEmployeeDetails = async () => {
     const response = await fetch(`${GET_ALL_RESOURCES}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive}));
     dispatch(employeeActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
@@ -1293,7 +1350,7 @@ const AddModal = (props: any) => {
   const getSubLocationDetails = async () => {
     const response = await fetch(`${GET_ALL_SUB_LOCATIONS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+    dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive}));
     dispatch(filterActions.changeSubLocations(dataGet));
   }
   useEffect(() => {
@@ -1304,7 +1361,7 @@ const AddModal = (props: any) => {
   const getProjectDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, createdDate: row.createdDate.slice(0, 10),updatedDate: row.updatedDate.slice(0, 10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row, createdDate: row.createdDateString,updatedDate: row.updatedDateString}));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
@@ -1360,6 +1417,9 @@ const AddModal = (props: any) => {
     allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
   }
 
+  useEffect(()=>{
+    setAllocationHrs(allocationHours.toString());
+  }, [allocationPercentage])
   const resetFormFields = () => {
     setAllocationStartDate(null);
     setAllocationEndDate(null);
@@ -1393,12 +1453,16 @@ const AddModal = (props: any) => {
       }
     }
   }
+
   useEffect(() => {
     setAllocatedPercentage(0);
+
     setPtoDays("");
     if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
       {getAllocationPercentage();
       getPTODays();
+      let hdays = calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
+      setHolidays(hdays);
     }
   }, [resourceId, allocationStartDate, allocationEndDate]);
 
@@ -1420,7 +1484,7 @@ const AddModal = (props: any) => {
       startDate: paStartDate,
       enddDate: paEndDate,
       numberOfPTODays: ptoDays == "" ? 0 : Number(ptoDays),
-      allocationHours: allocationHours,
+      allocationHours: allocationHrs,
       allocationPercentage: Number(allocationPercentage),
       createdBy: username
     };
@@ -1608,22 +1672,23 @@ const AddModal = (props: any) => {
                 <label className="form-label" htmlFor="resourceType1">
                   Resource Type 1
                 </label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <div className="dropdown">
                   <select
                     className="form-control "
-                    required
+                    // required
+                    disabled
                     id="resourceType1Dropdown"
-                    value={resourceType1}
+                    value={selectedResourceDetails.resourceType}
                     // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select')}
                     onChange={(event) => {setResourceType1(event.target.value);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select');
                     }}
                   >
                     <option value="0">Select</option>
-                    {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
+                    {roles.map((role: any) => (<option key={selectedResourceDetails.resourceType} value={selectedResourceDetails.resourceType}> {selectedResourceDetails.resourceType}</option> || <option key={role} value={role}>{role}</option>))}
                   </select>
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
                 </div>
               </div>
 
@@ -1698,6 +1763,24 @@ const AddModal = (props: any) => {
               </div>
               <div className="col-md-6 form-group" id="AllocateProjectPTODays">
                 <label className="form-label" htmlFor="ptoDays">
+                  Holidays
+                </label>
+                {/* <span className="requiredField">*</span> */}
+                <input
+                  type="text"
+                  disabled
+                  // required
+                  // pattern={PatternsAndMessages.numberOnly.pattern}
+                  className="form-control"
+                  id="ptoDays"
+                  value={holidays}
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
+                  // onChange={(event) => setPtoDays(event.target.value)}
+                />
+                {/* <div className="error"></div> */}
+              </div>
+              <div className="col-md-6 form-group" id="AllocateProjectPTODays">
+                <label className="form-label" htmlFor="ptoDays">
                   PTO Days
                 </label>
                 {/* <span className="requiredField">*</span> */}
@@ -1753,15 +1836,21 @@ const AddModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="allocationHours"
-                  value={allocationHours}
-                  disabled
-                // onChange={(event) => setAllocationHours(event.target.value)}
+                  value={allocationHrs}
+                  // disabled
+                onChange={(event) => setAllocationHrs(event.target.value)}
                 />
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+            <div className="row" style={{marginTop:"10px"}}>
+              <div className="col-md-8" >
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
+                  Reset
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
                   Submit
                 </button>
               </div>

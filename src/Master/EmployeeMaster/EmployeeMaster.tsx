@@ -14,6 +14,7 @@ import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, POST_BULK_UPLOAD_EMPLOYEE, POST_RESOURCE, UPDATE_RESOURCE } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
+import { closeNav } from "../../SideBar/SideBarJs";
 
 
 const columns = [
@@ -82,7 +83,7 @@ const columns = [
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate.slice(0, 10),
+    selector: (row: { createdDateString: any }) => row.createdDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -96,7 +97,7 @@ const columns = [
   },
   {
     name: "Updated Date",
-    selector: (row: { updatedDate: any }) => row.updatedDate,
+    selector: (row: { updatedDateString: any }) => row.updatedDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -164,7 +165,7 @@ const EmployeeMaster = () => {
     try {
       const response = await fetch(`${GET_ALL_RESOURCES}`);
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive",createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive ,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
       dispatch(employeeActions.changeData(dataGet));
       setTimeout(()=>setIsLoading(false), 2000);
     } catch {
@@ -178,7 +179,7 @@ const EmployeeMaster = () => {
   const getMarketDetails = async () => {
     const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
+    dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
     dispatch(marketActions.changeData(dataGet));
   };
   const getLocationDetails = async () => {
@@ -301,7 +302,7 @@ const EmployeeMaster = () => {
   const handleRowDoubleClicked = (row: any) => {
     setShowModal(true);
     setAction("Update");
-    let data = { ...row, isActive: row.isActive == "Active" ? "1" : "2" }
+    let data = { ...row, isActive: row.isActive  }
     setUpdateResourceDetails(data);
   };
 
@@ -336,7 +337,7 @@ const EmployeeMaster = () => {
           visible={true}
         />
       </div> :
-      <div className="col-md-12 bg-mainclass">
+      <div className="col-md-12 bg-mainclass" onClick={closeNav}>
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">Employee Details</h1>
@@ -582,18 +583,18 @@ const AddModal = (props: any) => {
               </div>
               <div className="col-md-6 form-group" id="AddResourceEmailField">
                 <label className="form-label">Email Address</label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
-                  required
+                  // required
                   pattern={PatternsAndMessages.email.pattern}
                   type="text"
                   className="form-control"
                   id="employeeEmailAddress"
                   value={employeeEmailAddress}
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceEmailField'),'input')}
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceEmailField'),'input')}
                   onChange={(event) => setEmployeeEmailAddress(event.target.value)}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
               <div className="col-md-6 form-group" id="AddResourceManagerField">
                 <label className="form-label">Manager</label>
@@ -694,8 +695,14 @@ const AddModal = (props: any) => {
 
             </div>
             <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+              <div className="col-md-8">
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
+                  Reset
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
                   Submit
                 </button>
               </div>
@@ -735,7 +742,7 @@ const UpdateModal = (props: any) => {
       subLocation: formValues.subLocation,
       resourceMarket: formValues.resourceMarket,
       emailAddress: formValues.emailAddress,
-      isActive: formValues.isActive == "2" ? "0" : "1",
+      isActive: formValues.isActive,
       updatedBy: username,
     };
     try {
@@ -831,19 +838,19 @@ const UpdateModal = (props: any) => {
               </div>
               <div className="col-md-6 form-group" id="UpdateResourceEmailField">
                 <label className="form-label">Email Address</label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
                   type="text"
-                  required
+                  // required
                   pattern={PatternsAndMessages.email.pattern}
                   name="emailAddress"
                   className="form-control"
                   id="employeeEmailAddress"
                   value={formValues.emailAddress}
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceEmailField'), 'input')}
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceEmailField'), 'input')}
                   onChange={handleChange}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
               <div className="col-md-6 form-group" id="UpdateResourceManagerField">
                 <label className="form-label">Manager</label>
@@ -957,8 +964,10 @@ const UpdateModal = (props: any) => {
                     onChange={handleChange}
                   >
                     <option value="0">Select</option>
-                    <option value="1">Active</option>
-                    <option value="2">InActive</option>
+                    <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
+                    <option value="InActive">InActive</option>
+                    <option value="Pending">Pending</option>
                   </select>
                 </div>
               </div>

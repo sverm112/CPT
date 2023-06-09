@@ -10,6 +10,7 @@ import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { GET_ALL_MARKETS, POST_MARKET, UPDATE_MARKET } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
+import { closeNav } from "../../SideBar/SideBarJs";
 
 const columns = [
   {
@@ -35,7 +36,7 @@ const columns = [
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate,
+    selector: (row: { createdDateString: any }) => row.createdDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -49,7 +50,7 @@ const columns = [
   },
   {
     name: "Updated Date",
-    selector: (row: { updatedDate: any }) => row.updatedDate,
+    selector: (row: { updatedDateString: any }) => row.updatedDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -88,7 +89,7 @@ const Market = () => {
     try {
       const response = await fetch(`${GET_ALL_MARKETS}`);
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDate?.slice(0,10),updatedDate:row.updatedDate?.slice(0,10)}));
+      dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
       dispatch(marketActions.changeData(dataGet));
       setTimeout(()=>setIsLoading(false), 2000);
     }
@@ -132,7 +133,7 @@ const Market = () => {
           visible={true}
         />
       </div> :
-      <div className="col-md-12 bg-mainclass">
+      <div className="col-md-12 bg-mainclass" onClick={closeNav}>
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">Market Details</h1>
@@ -261,8 +262,14 @@ const AddModal = (props : any) => {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+              <div className="col-md-8">
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
+                  Reset
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
                   Submit
                 </button>
               </div>
@@ -387,7 +394,9 @@ const UpdateModal = (props: any) => {
                   >
                     <option value="0">Select</option>
                     <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
                     <option value="InActive">InActive</option>
+                    <option value="Pending">Pending</option>
                   </select>
                 </div>
               </div>

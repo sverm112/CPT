@@ -9,3 +9,7 @@ div#project_allocation_modal {
     border-bottom: none;
     border-right: none;
   }
+
+.resetButton{
+    margin-left:20%;
+  }

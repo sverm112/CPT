@@ -17,6 +17,7 @@ import DatePicker from "react-date-picker";
 import { employeeActions } from "../../Store/Slices/Employee";
 import { GET_ALL_PTOS, GET_ALL_PTO_TYPES, GET_ALL_RESOURCES, POST_PTO, UPDATE_PTO } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
+import { closeNav } from "../../SideBar/SideBarJs";
 
 const columns = [
   {
@@ -91,7 +92,7 @@ const columns = [
   },
   {
     name: "Created Date",
-    selector: (row: { createdDate: any }) => row.createdDate,
+    selector: (row: { createdDateString: any }) => row.createdDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -105,7 +106,7 @@ const columns = [
   },
   {
     name: "Updated Date",
-    selector: (row: { updatedDate: any }) => row.updatedDate,
+    selector: (row: { updatedDateString: any }) => row.updatedDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -178,11 +179,10 @@ const PTO = () => {
   }, [toggle]);
 
   const handleRowDoubleClicked = (row: any) => {
-    console.log(row);
+    console.log("Calling Update PTO: ",row);
+    let data = { ...row }
     setShowModal(true);
     setAction("Update");
-    let data = { ...row }
-    console.log(data);
     setUpdatePTODetails(data);
   };
 
@@ -201,9 +201,9 @@ const PTO = () => {
   {'name': 'Number of Days','selector':'numberOfDays', 'default': 'true' },
   {'name': 'Remarks','selector':'remarks', 'default': 'false' },
   {'name' :'Status','selector':'status','default':'true'},
-  {'name' :'Created Date','selector':'createdDate','default':'true'},
+  {'name' :'Created Date','selector':'createdDateString','default':'true'},
   {'name' :'Created By','selector':'createdBy','default':'true'},
-  {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
+  {'name': 'Updated Date', 'selector' : 'updatedDateString','default':'false'},
   {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},];
   //end constants for export
  let filteredColumns=columns;
@@ -216,7 +216,7 @@ const PTO = () => {
     try {
       const response = await fetch(`${GET_ALL_RESOURCES}`);
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive}));
       dispatch(employeeActions.changeData(dataGet));
     } catch {
       console.log("Error occured During Employee Fetch");
@@ -270,7 +270,7 @@ const PTO = () => {
           visible={true}
         />
       </div> :
-        <div className="col-md-12 bg-mainclass">
+        <div className="col-md-12 bg-mainclass" onClick={closeNav}>
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">PTO Details</h1>
@@ -433,12 +433,12 @@ const AddModal = (props: any) => {
     let ptoStartDate=null,ptoEndDate=null;
     if(startDate!=null){
       ptoStartDate= new Date(startDate);
-      console.log("Start Date: ",ptoStartDate);
+      // console.log("Start Date: ",ptoStartDate);
       ptoStartDate.setDate(ptoStartDate.getDate() + 1);
     }
     if(endDate!=null){
       ptoEndDate= new Date(endDate);
-      console.log("End Date: ",ptoEndDate);
+      // console.log("End Date: ",ptoEndDate);
       ptoEndDate.setDate(ptoEndDate.getDate() + 1);
     }
     // if(startYear == endYear){
@@ -677,8 +677,14 @@ style={{ float: "right", marginTop: "-68px"}}
               </div>
             </div>
             <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+              <div className="col-md-8">
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
+                  Reset
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
                   Submit
                 </button>
               </div>
@@ -691,6 +697,7 @@ style={{ float: "right", marginTop: "-68px"}}
 }
 
 const UpdateModal = (props: any) => {
+  console.log("Opening UpdateModal")
   const dispatch = useDispatch();
   const username=useSelector((state:any)=>state.User.username);
   const resourceList = useSelector((state: any) => state.Employee.data);
@@ -700,13 +707,13 @@ const UpdateModal = (props: any) => {
   const [startDate, setStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
   const [endDate, setEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
-  const calculateNumberOfDays = (startDate: Date, endDate: Date) => {
+  const calculateNumberOfDays = (startDate: any, endDate: any) => {
     let count = 0;
     const curDate = new Date(startDate.getTime());
     while (curDate <= endDate) {
       const dayOfWeek = curDate.getDay();
       if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
-      curDate.setDate(curDate.getDate() );
+      curDate.setDate(curDate.getDate() + 1 );
     }
     return count;
   }
@@ -729,14 +736,14 @@ const UpdateModal = (props: any) => {
     let ptoStartDate=null,ptoEndDate=null;
     if(startDate!=null){
       ptoStartDate= new Date(startDate);
-      console.log("Start Date: ", ptoStartDate);
-      console.log("Actual Start Date: ", startDate);
+      // console.log("Start Date: ", ptoStartDate);
+      // console.log("Actual Start Date: ", startDate);
       ptoStartDate.setDate(ptoStartDate.getDate() );
     }
     if(endDate!=null){
       ptoEndDate= new Date(endDate);
-      console.log("End Date: ", ptoEndDate);
-      console.log("Actual End Date: ", endDate);
+      // console.log("End Date: ", ptoEndDate);
+      // console.log("Actual End Date: ", endDate);
       ptoEndDate.setDate(ptoEndDate.getDate() );
     }
     let payload = {
@@ -960,7 +967,9 @@ const UpdateModal = (props: any) => {
                   >
                     <option value="0">Select</option>
                     <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
                     <option value="InActive">InActive</option>
+                    <option value="Pending">Pending</option>
                   </select>
                 </div>
               </div>

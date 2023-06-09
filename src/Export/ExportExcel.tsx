@@ -15,6 +15,7 @@ const ExportExcel = (attributes: any) => {
     //     headers = [attributes.columns.map((column: any) => column["name"])];
     // }
     const headers = [attributes.selectedColumnsAndSelectors.map((column: any) => column["label"])];
+    // const head = headers.map((x:any)=> <thead style={{background:'gray'}}>{x}</thead>)
     console.log(headers);
     const tablebody = attributes.filteredRecords.map((body: any) => {
         let row = [];
