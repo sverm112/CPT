@@ -1614,22 +1614,23 @@ const AddModal = (props: any) => {
                 <label className="form-label" htmlFor="resourceType1">
                   Resource Type 1
                 </label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <div className="dropdown">
                   <select
                     className="form-control "
-                    required
+                    // required
+                    disabled
                     id="resourceType1Dropdown"
-                    value={resourceType1}
+                    value={selectedResourceDetails.resourceType}
                     // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select')}
                     onChange={(event) => {setResourceType1(event.target.value);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select');
                     }}
                   >
                     <option value="0">Select</option>
-                    {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
+                    {roles.map((role: any) => (<option key={selectedResourceDetails.resourceType} value={selectedResourceDetails.resourceType}> {selectedResourceDetails.resourceType}</option> || <option key={role} value={role}>{role}</option>))}
                   </select>
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
                 </div>
               </div>
 
