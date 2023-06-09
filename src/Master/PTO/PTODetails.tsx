@@ -180,10 +180,9 @@ const PTO = () => {
 
   const handleRowDoubleClicked = (row: any) => {
     console.log("Calling Update PTO: ",row);
+    let data = { ...row }
     setShowModal(true);
     setAction("Update");
-    let data = { ...row }
-    console.log(data);
     setUpdatePTODetails(data);
   };
 
@@ -202,9 +201,9 @@ const PTO = () => {
   {'name': 'Number of Days','selector':'numberOfDays', 'default': 'true' },
   {'name': 'Remarks','selector':'remarks', 'default': 'false' },
   {'name' :'Status','selector':'status','default':'true'},
-  {'name' :'Created Date','selector':'createdDate','default':'true'},
+  {'name' :'Created Date','selector':'createdDateString','default':'true'},
   {'name' :'Created By','selector':'createdBy','default':'true'},
-  {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
+  {'name': 'Updated Date', 'selector' : 'updatedDateString','default':'false'},
   {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},];
   //end constants for export
  let filteredColumns=columns;
@@ -217,7 +216,7 @@ const PTO = () => {
     try {
       const response = await fetch(`${GET_ALL_RESOURCES}`);
       let dataGet = await response.json();
-      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive == 1 ? "Active" : "InActive" }));
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive}));
       dispatch(employeeActions.changeData(dataGet));
     } catch {
       console.log("Error occured During Employee Fetch");
@@ -708,13 +707,13 @@ const UpdateModal = (props: any) => {
   const [startDate, setStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
   const [endDate, setEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
-  const calculateNumberOfDays = (startDate: Date, endDate: Date) => {
+  const calculateNumberOfDays = (startDate: any, endDate: any) => {
     let count = 0;
     const curDate = new Date(startDate.getTime());
     while (curDate <= endDate) {
       const dayOfWeek = curDate.getDay();
       if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
-      curDate.setDate(curDate.getDate() );
+      curDate.setDate(curDate.getDate() + 1 );
     }
     return count;
   }

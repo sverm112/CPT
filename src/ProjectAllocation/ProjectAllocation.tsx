@@ -344,6 +344,12 @@ const ProjectAllocation = () => {
   });
 let resourceIds: any[]=[];
 let newData : any[]=[];
+
+const showMoreFilters = () =>{
+  let morefFilters = document.getElementById('MoreFilters');
+  morefFilters?.setAttribute('style', 'display:"visible"')
+}
+
 filteredProjectAllocations.map((projectAllocation:any)=>{
  console.log("Project Allocation: ",projectAllocation);
  if(resourceIds.includes(projectAllocation.resourceId)==true){
@@ -594,7 +600,8 @@ console.log("New Data: ", newData);
               valueRenderer={customValueRenderer}
             />
           </div>
-          {/* <div className="MoreFilters"></div> */}
+          {/* <div className="MoreFilters" id="MoreFilters" style={{display:"none"}}> */}
+            
           {/* <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Project Market
@@ -611,18 +618,22 @@ console.log("New Data: ", newData);
           {/* <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Expense Type
-            </label>
-            <MultiSelect
-              options={expenseTypes}
-              value={expenseTypeSelected}
-              onChange={changeExpenseTypeSelectHandler}
+            </label> */}
+            {/* <MultiSelect
+              // options={expenseTypes}
+              // value={expenseTypeSelected}
+              // onChange={changeExpenseTypeSelectHandler}
               labelledBy="Select Expense Type"
               valueRenderer={customValueRenderer}
-            />
-          </div> */}
+            /> */}
+          {/* </div> */}
+          {/* </div> */}
           <div className="col-md-2" style={{ marginTop: "24px" }}>
             <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}>Clear Filters<i className="las la-filter"></i></button>
           </div>
+          {/* <div className="col-md-2" style={{ marginTop: "24px" }}>
+            <button type="button" className="btn btn-primary" onClick={showMoreFilters}>More Filters<i className="las la-filter"></i></button>
+          </div> */}
         </div>
           <div className="TableContentBorder">
             <Table columnsAndSelectors={columnsAndSelectors}    

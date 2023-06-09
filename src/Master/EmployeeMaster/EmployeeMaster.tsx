@@ -302,7 +302,7 @@ const EmployeeMaster = () => {
   const handleRowDoubleClicked = (row: any) => {
     setShowModal(true);
     setAction("Update");
-    let data = { ...row, isActive: row.isActive == "Active" ? "1" : "2" }
+    let data = { ...row, isActive: row.isActive  }
     setUpdateResourceDetails(data);
   };
 
@@ -742,7 +742,7 @@ const UpdateModal = (props: any) => {
       subLocation: formValues.subLocation,
       resourceMarket: formValues.resourceMarket,
       emailAddress: formValues.emailAddress,
-      isActive: formValues.isActive == "2" ? "0" : "1",
+      isActive: formValues.isActive,
       updatedBy: username,
     };
     try {

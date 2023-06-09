@@ -1,7 +1,7 @@
 export * as APP_ROUTES from "./routes";
 export const Base_URL = 
- 'https://localhost:44314/';
-// 'http://10.147.172.18:9190/';
+//  'https://localhost:44314/';
+'http://10.147.172.18:9190/';
 
 // Get
 export const GET_ALL_RESOURCES = `${Base_URL}api/v1/Resources/GetAllResources`;
