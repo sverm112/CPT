@@ -651,6 +651,7 @@ const UpdateModal = (props: any) => {
   const [projectId, setProjectId] = useState("0");
   const [allocatedPercentage, setAllocatedPercentage] = useState(0);
   const holidayDetails = useSelector((state: any) => state.Holiday.data);
+  const [allocationHrs, setAllocationHrs] = useState("0");
   let allocationHours = 0, allocationHoursPerDay = 0;
   
   console.log("formValues: ", formValues);
@@ -709,12 +710,12 @@ const UpdateModal = (props: any) => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);
     let dataGet = await response.json();
     console.log("Project Details: ",dataGet)
-    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.isActive}));
+    dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.status}));
     dispatch(projectActions.changeData(dataGet));
   };
   useEffect(() => {
     getProjectDetails();
-    setResourceId(resourceId);
+    setResourceId(formValues.resourceId);
     setProjectId(formValues.projectId);
   }, []);
   let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
@@ -723,12 +724,12 @@ const UpdateModal = (props: any) => {
   const setResourceDetails = (event: any) => {
     console.log(selectedResourceDetails, event.target.value)
     setResourceId(event.target.value);
-    console.log("Set Resource Details Called: ",resourceId);
+    console.log("Set Resource Details Called: ",formValues.resourceId);
   };
   
   const setProjectDetails = (event: any) => {
     setProjectId(event.target.value);
-    console.log("SetProjectDetails Called: ",projectId);
+    console.log("SetProjectDetails Called: ",formValues.projectId);
   };
 
 
@@ -773,7 +774,9 @@ const UpdateModal = (props: any) => {
     formValues.allocationHours = Math.ceil((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
     console.log("Allocation Hours: ", formValues.allocationHours);
   }
-
+  useEffect(()=>{
+    setAllocationHrs(formValues.allocationHours);
+  },[formValues.allocationPercentage])
   const resetFormFields = () => {
     setAllocationStartDate(null);
     setAllocationEndDate(null);
@@ -858,7 +861,8 @@ const UpdateModal = (props: any) => {
             resetFormFields();
             props.closeModal();
             toast.success("Update Allocation Successful")
-          } else toast.error(dataResponse[0].errorMessage);
+          } else toast.error("Some Error occured.")
+          // dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
       }
     } catch {
@@ -1217,19 +1221,23 @@ useEffect(()=>{
                   disabled
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="AllocationHours">
                 <label className="form-label" htmlFor="allocationHours">
                   Allocation(Hours)
                 </label>
+                <span className="requiredField">*</span>
                 <input
                   type="text"
                   className="form-control"
+                  required
                   id="allocationHours"
                   name="allocationHours"
-                  value={formValues.allocationHours}
+                  value={allocationHrs == "0" ? formValues.allocationHours : allocationHrs}
                   // disabled
-                onChange={handleChange}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('AllocationHours'), 'input')}
+                  onChange={(e)=>{handleChange(e);setAllocationHrs(e.target.value)}}
                 />
+                <div className="error"></div>
               </div>
               <div className="col-md-6 form-group ">
                 <label className="form-label">Status</label>
