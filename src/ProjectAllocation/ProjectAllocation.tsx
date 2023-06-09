@@ -643,7 +643,8 @@ const UpdateModal = (props: any) => {
   const username=useSelector((state:any)=>state.User.username);
   const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
   const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
-  const [ptoDays, setPtoDays] = useState("0");
+  const [ptoDays, setPtoDays] = useState("0");  
+  const [holidays, setHolidays] = useState(0);
   const [allocationPercentage, setAllocationPercentage] = useState("");
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
@@ -666,7 +667,7 @@ const UpdateModal = (props: any) => {
   }
   const calculateHolidays = (location: any, subLocation: any, startDate: Date, endDate: Date) => {
     let count = 0;
-    let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.isActive == "Active");
+    let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.status == "Active");
     console.log("filtered holidays ," + filteredHolidays.length)
     for (let i = 0; i < filteredHolidays.length; i++) {
       let holidayDate = new Date(filteredHolidays[i].holidayDate)
@@ -784,12 +785,12 @@ const UpdateModal = (props: any) => {
   }
   const getAllocationPercentage = async () => {
     let payload = {
-      fkResourceID: Number(resourceId),
+      fkResourceID: Number(formValues.resourceId),
       startDate: allocationStartDate,
       endDate: allocationEndDate
     };
         try {
-      const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?fkResourceID=${resourceId}&startDate=${allocationStartDate?.toISOString().slice(0, 10)}&endDate=${allocationEndDate?.toISOString().slice(0, 10)}`, {
+      const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?resourceID=${formValues.resourceId}&startDate=${allocationStartDate?.toISOString().slice(0, 10)}&endDate=${allocationEndDate?.toISOString().slice(0, 10)}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -806,12 +807,14 @@ const UpdateModal = (props: any) => {
   useEffect(() => {
     setAllocatedPercentage(0);
     setPtoDays("");
-    if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
+    if (formValues.resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
       {
         getAllocationPercentage();
         getPTODays();
+        let hdays = calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
+        setHolidays(hdays);
     }
-  }, [resourceId, allocationStartDate, allocationEndDate]);
+  }, [formValues.resourceId, allocationStartDate, allocationEndDate]);
 
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
@@ -865,7 +868,12 @@ const UpdateModal = (props: any) => {
   };
   //console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
 useEffect(()=>{
-  getPTODays();
+  getPTODays();    
+  if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
+  {
+    let hdays = calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
+    setHolidays(hdays);
+}
 });
   const getPTODays = async()=>{
     console.log("Get PTO Days called: "+ formValues.resourceId+ allocationStartDate + allocationEndDate);
@@ -1043,10 +1051,11 @@ useEffect(()=>{
                 <div className="dropdown">
                   <select
                     className="form-control "
-                    required
+                    // required
+                    disabled
                     id="resourceType1Dropdown"
                     name="resourceType1"
-                    value={formValues.resourceType1}
+                    value={ selectedResourceDetails.resourceType}
                     onChange={(event) => {
                       handleChange(event);
                       // setResourceType1(event.target.value);
@@ -1054,7 +1063,7 @@ useEffect(()=>{
                     }}
                   >
                     <option value="0">Select</option>
-                    {roles.map((role: any) => (<option key={role} value={role}>{role}</option>))}
+                    {roles.map((role: any) => (<option key={selectedResourceDetails.resourceType} value={selectedResourceDetails.resourceType}> {selectedResourceDetails.resourceType}</option> || <option key={role} value={role}>{role}</option>))}
                   </select>
                 <div className="error"></div>
                 </div>
@@ -1134,6 +1143,24 @@ useEffect(()=>{
                   yearPlaceholder="yyyy"
                 />
                 <div className="error"></div>
+              </div>
+              <div className="col-md-6 form-group" id="AllocateProjectPTODays">
+                <label className="form-label" htmlFor="ptoDays">
+                  Holidays
+                </label>
+                {/* <span className="requiredField">*</span> */}
+                <input
+                  type="text"
+                  disabled
+                  // required
+                  // pattern={PatternsAndMessages.numberOnly.pattern}
+                  className="form-control"
+                  id="ptoDays"
+                  value={holidays}
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
+                  // onChange={(event) => setPtoDays(event.target.value)}
+                />
+                {/* <div className="error"></div> */}
               </div>
               <div className="col-md-6 form-group" id="AllocateProjectPTODays">
                 <label className="form-label" htmlFor="ptoDays">
@@ -1249,7 +1276,9 @@ const AddModal = (props: any) => {
   const username=useSelector((state:any)=>state.User.username);
   const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(null);
   const [ptoDays, setPtoDays] = useState("");
+  const [holidays, setHolidays] = useState(0);
   const [allocationPercentage, setAllocationPercentage] = useState("");
+  const [allocationHrs, setAllocationHrs] = useState("0");
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
   const [projectId, setProjectId] = useState("0");
@@ -1269,7 +1298,7 @@ const AddModal = (props: any) => {
   }
   const calculateHolidays = (location: any, subLocation: any, startDate: Date, endDate: Date) => {
     let count = 0;
-    let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.isActive == "Active");
+    let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.status == "Active");
     console.log("filtered holidays ," + filteredHolidays.length)
     for (let i = 0; i < filteredHolidays.length; i++) {
       let holidayDate = new Date(filteredHolidays[i].holidayDate)
@@ -1278,6 +1307,8 @@ const AddModal = (props: any) => {
         count++;
     }
     console.log("Holiday Count " + count);
+    
+    console.log("Holiday Count After " + count);
     return count;
   }
   //allocationHours= Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
@@ -1399,12 +1430,16 @@ const AddModal = (props: any) => {
       }
     }
   }
+
   useEffect(() => {
     setAllocatedPercentage(0);
+
     setPtoDays("");
     if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
       {getAllocationPercentage();
       getPTODays();
+      let hdays = calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
+      setHolidays(hdays);
     }
   }, [resourceId, allocationStartDate, allocationEndDate]);
 
@@ -1426,7 +1461,7 @@ const AddModal = (props: any) => {
       startDate: paStartDate,
       enddDate: paEndDate,
       numberOfPTODays: ptoDays == "" ? 0 : Number(ptoDays),
-      allocationHours: allocationHours,
+      allocationHours: allocationHrs,
       allocationPercentage: Number(allocationPercentage),
       createdBy: username
     };
@@ -1705,6 +1740,24 @@ const AddModal = (props: any) => {
               </div>
               <div className="col-md-6 form-group" id="AllocateProjectPTODays">
                 <label className="form-label" htmlFor="ptoDays">
+                  Holidays
+                </label>
+                {/* <span className="requiredField">*</span> */}
+                <input
+                  type="text"
+                  disabled
+                  // required
+                  // pattern={PatternsAndMessages.numberOnly.pattern}
+                  className="form-control"
+                  id="ptoDays"
+                  value={holidays}
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
+                  // onChange={(event) => setPtoDays(event.target.value)}
+                />
+                {/* <div className="error"></div> */}
+              </div>
+              <div className="col-md-6 form-group" id="AllocateProjectPTODays">
+                <label className="form-label" htmlFor="ptoDays">
                   PTO Days
                 </label>
                 {/* <span className="requiredField">*</span> */}
@@ -1760,9 +1813,9 @@ const AddModal = (props: any) => {
                   type="text"
                   className="form-control"
                   id="allocationHours"
-                  value={allocationHours}
-                  disabled
-                // onChange={(event) => setAllocationHours(event.target.value)}
+                  value={allocationHrs}
+                  // disabled
+                onChange={(event) => setAllocationHrs(event.target.value)}
                 />
               </div>
             </div>
