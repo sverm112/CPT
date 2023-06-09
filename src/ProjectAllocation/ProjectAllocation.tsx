@@ -161,7 +161,7 @@ const allocationDetailsColumn = [
   },
   {
     name: "Created Date",
-    selector: (row:  any ) => row.createdDateString,
+    selector: (row:  any ) => row.createdDate,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -594,7 +594,8 @@ console.log("New Data: ", newData);
               valueRenderer={customValueRenderer}
             />
           </div>
-          <div className="col-md-2 form-group">
+          {/* <div className="MoreFilters"></div> */}
+          {/* <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
               Project Market
             </label>
@@ -605,7 +606,7 @@ console.log("New Data: ", newData);
               labelledBy="Select Project Market"
               valueRenderer={customValueRenderer}
             />
-          </div>
+          </div> */}
 
           {/* <div className="col-md-2 form-group">
             <label htmlFor="" className="form-label">
@@ -1405,6 +1406,9 @@ const AddModal = (props: any) => {
     allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
   }
 
+  useEffect(()=>{
+    setAllocationHrs(allocationHours.toString());
+  }, [allocationPercentage])
   const resetFormFields = () => {
     setAllocationStartDate(null);
     setAllocationEndDate(null);
@@ -1827,8 +1831,8 @@ const AddModal = (props: any) => {
                 />
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-8">
+            <div className="row" style={{marginTop:"10px"}}>
+              <div className="col-md-8" >
                 
               </div>
               <div className="col-md-4" >
