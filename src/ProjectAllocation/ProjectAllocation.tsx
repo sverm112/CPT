@@ -1296,7 +1296,7 @@ const AddModal = (props: any) => {
   const username=useSelector((state:any)=>state.User.username);
   const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(null);
   const [ptoDays, setPtoDays] = useState("");
-  const [holidays, setHolidays] = useState(0);
+  const [holidays, setHolidays] = useState("");
   const [allocationPercentage, setAllocationPercentage] = useState("");
   const [allocationHrs, setAllocationHrs] = useState("0");
   const [resourceType1, setResourceType1] = useState("0");
@@ -1428,6 +1428,7 @@ const AddModal = (props: any) => {
     setResourceType1("0");
     setResourceId("0");
     setProjectId("0");
+    setHolidays("");
   }
   const getAllocationPercentage = async () => {
     if(resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
@@ -1462,7 +1463,7 @@ const AddModal = (props: any) => {
       {getAllocationPercentage();
       getPTODays();
       let hdays = calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
-      setHolidays(hdays);
+      setHolidays(hdays.toLocaleString());
     }
   }, [resourceId, allocationStartDate, allocationEndDate]);
 
