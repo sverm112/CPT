@@ -358,7 +358,7 @@ const showMoreFilters = () =>{
     setIsFilterVisible(true);
     let mfButton = document.getElementById('MoreFiltersButton')
     if(mfButton!= null){
-      mfButton.innerHTML = "Hide Filters"
+      mfButton.innerHTML = " Hide Filters "
     }
   }else{
     console.log("More filter status: ", isFilterVisible);
