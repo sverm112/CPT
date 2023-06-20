@@ -322,7 +322,7 @@ const EmployeeMaster = () => {
     {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
     {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
   ]
-  const title = "Employee Details";
+  const title = "Resource Details";
   //end constants for export
 
   return (
@@ -340,10 +340,10 @@ const EmployeeMaster = () => {
       <div className="col-md-12 bg-mainclass" onClick={closeNav}>
         <div>
           <div className="row Page-Heading">
-            <h1 className="Heading-Cls">Employee Details</h1>
+            <h1 className="Heading-Cls">Resource Details</h1>
             <p>
               <span className="Heading-P-Cls">Master</span>
-              <span>Employee Details</span>
+              <span>Resource Details</span>
             </p>
             <div className="btns employee">
               <div style={{display:'flex', width:'25%',float:'right', justifyContent:'space-between', position:'relative'}}>
@@ -535,12 +535,12 @@ const AddModal = (props: any) => {
         variant="primary"
         onClick={props.openModal}
       >
-        <i className="las la-plus"></i> Add Employee
+        <i className="las la-plus"></i> Add Resource
       </Button>
       <Modal show={props.showModal} onHide={props.closeModal}>
         <Modal.Header closeButton onClick={props.closeModal}>
           <Modal.Title>
-            <h6>Add New Employee</h6>
+            <h6>Add New Resource</h6>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -975,9 +975,9 @@ const UpdateModal = (props: any) => {
             </div>
             <div className="row">
               <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
                   Submit
-                </button>
+                  </button>
               </div>
             </div>
           </form>

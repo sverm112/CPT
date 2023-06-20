@@ -46,7 +46,7 @@ const columns = [
     filterable: true,
   },
   {
-    name: "Program Manager",
+    name: "Project Manager",
     selector: (row: { programManager: any }) => row.programManager,
     sortable: true,
     reorder: true,
@@ -101,7 +101,7 @@ const columnsAndSelectors=[
   {'name':'Project Name','selector':'projectName','default':'true'},
   {'name':'Project Model','selector':'projectModel','default':'true'},
   {'name':'Project Market','selector':'projectMarket','default':'true'},
-  {'name':'Program Manager','selector':'programManager','default':'true'},
+  {'name':'Project Manager','selector':'programManager','default':'true'},
   {'name':'Expense Type','selector': 'expenseType', 'default':'true'},
   {'name':'Status','selector':'status','default':'true'},
   {'name':'Created Date','selector':'createdDate','default':'true'},
@@ -481,7 +481,7 @@ style={{ float: "right", marginTop: "-68px"}}
               </div>
               <div className="col-md-6 form-group" id="ProgramManager">
                 <label className="form-label" htmlFor="programManager">
-                  Program Manager
+                  Project Manager
                 </label>
                 {/* <span className="requiredField">*</span> */}
                 <input
@@ -694,7 +694,7 @@ style={{ float: "right", marginTop: "-68px"}}
               </div>
               <div className="col-md-6 form-group" id="ProgramManager">
                 <label className="form-label" htmlFor="programManager">
-                  Program Manager
+                  Project Manager
                 </label>
                 {/* <span className="requiredField">*</span> */}
                 <input

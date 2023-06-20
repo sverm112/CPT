@@ -1271,9 +1271,15 @@ useEffect(()=>{
               </div>
             </div>
             <div className="row">
-              <div className="col-md-12">
+            <div className="col-md-6">
+                
+                </div>
+              <div className="col-md-6">
+              <button type="submit" className="btn btn-primary resetButton">
+                  Delete
+                </button>
                 <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+                  Update Allocation
                 </button>
               </div>
             </div>
@@ -1852,7 +1858,7 @@ const AddModal = (props: any) => {
                   Reset
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+                  Allocate Project
                 </button>
               </div>
             </div>
