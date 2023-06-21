@@ -248,7 +248,8 @@ const ProjectAllocation = () => {
   const resourceList = useSelector((state: any) => state.Employee.data);
   const managerSelected = useSelector((state: any) => state.Employee.manager);
   const managerOptions = managerSelected.map((manager: any) => manager.value);
-      
+  const statusSelected = useSelector((state: any) => state.ProjectAllocation.status);
+  
   const openModal = () => {
     setShowModal(true);
   }
@@ -325,6 +326,7 @@ const ProjectAllocation = () => {
     const resourceTypeOptions = resourceTypeSelected.map((resourceType: any) => resourceType.value);
     const roleOptions = roleSelected.map((role: any) => role.value);
     const resourceOptions = resourceSelected.map((resource: any) => resource.value);
+    const statusOptions = statusSelected.map((status: any) => status.value);
     const projectMarketOptions = projectMarketSelected.map((projectMarket: any) => projectMarket.value);
     if ((!resourceMarketSelected.length) || (resourceMarketSelected.length > 0 && resourceMarketOptions.includes(projectAllocation.resourceMarket) == true)) {
       if ((!resourceTypeSelected.length) || (resourceTypeSelected.length > 0 && resourceTypeOptions.includes(projectAllocation.resourceType) == true)) {
@@ -332,8 +334,10 @@ const ProjectAllocation = () => {
           if ((!resourceSelected.length) || (resourceSelected.length > 0 && resourceOptions.includes(projectAllocation.resourceName) == true)) {
             if ((!managerSelected.length) || (managerSelected.length > 0 && managerOptions.includes(projectAllocation.resourceManager) == true)) {
               if((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket))){
-                if (locationSelected == "0" || locationSelected == projectAllocation.location)
+                if ((!statusSelected.length && projectAllocation.status ==="Active") || (statusSelected.length > 0 && statusOptions.includes(projectAllocation.status))) {
+                  if (locationSelected == "0" || locationSelected == projectAllocation.location)
                 return true;
+                }
               }
             }
           }

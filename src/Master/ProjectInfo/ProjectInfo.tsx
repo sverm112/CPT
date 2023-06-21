@@ -181,7 +181,7 @@ const ProjectInfo = () => {
       if ((!marketSelected.length) || (marketSelected.length > 0 && marketOptions.includes(project.projectMarket) == true)) {
         if ((!expenseTypeSelected.length) || (expenseTypeSelected.length > 0 && expenseTypeOptions.includes(project.expenseType) == true)) {
 
-          if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(project.status))) {
+          if ((!statusSelected.length && project.status === "Active" ) || (statusSelected.length > 0 && statusOptions.includes(project.status))) {
             if ((!projectModelSelected.length) || (projectModelSelected.length > 0 && projectModelOptions.includes(project.projectModel)))
               return true;
           }

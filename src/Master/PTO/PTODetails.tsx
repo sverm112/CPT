@@ -245,7 +245,7 @@ const PTO = () => {
           if((!ptoTypeSelected.length) || (ptoTypeSelected.length > 0 && ptoTypeOptions.includes(pto.ptoType) == true)){
             if((!monthSelected.length) || (monthSelected.length > 0 && monthOptions.includes(pto.month) == true)){
               if((!yearSelected.length) || (yearSelected.length > 0 && yearOptions.includes(pto.year) == true)){
-                if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(pto.status))) {
+                if ((!statusSelected.length  && pto.status === "Active" ) || (statusSelected.length > 0 && statusOptions.includes(pto.status))) {
                   return true;
                 }
               }

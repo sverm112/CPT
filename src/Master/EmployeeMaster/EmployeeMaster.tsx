@@ -267,10 +267,10 @@ const EmployeeMaster = () => {
     }
   };
 
-
   const filteredResources = resources.filter(
     (resource: any) => {
-
+      
+      console.log("isActive before FIlteration: ", resource.isActive);
       const marketOptions = marketSelected.map((market: any) => market.value);
       const resourceTypeOptions = resourceTypeSelected.map((resourceType: any) => resourceType.value);
       const roleOptions = roleSelected.map((role: any) => role.value);
@@ -282,11 +282,10 @@ const EmployeeMaster = () => {
 
           if ((!roleSelected.length) || (roleSelected.length > 0 && roleOptions.includes(resource.role) == true)) {
 
-            if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(resource.isActive))) {
+            if ((!statusSelected.length && resource.isActive ==="Active") || (statusSelected.length > 0 && statusOptions.includes(resource.isActive))) {
               if ((!managerSelected.length) || (managerSelected.length > 0 && managerOptions.includes(resource.manager)))
                 return true;
             }
-
           }
         }
       }
