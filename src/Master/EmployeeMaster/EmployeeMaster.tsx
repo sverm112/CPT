@@ -465,7 +465,8 @@ const AddModal = (props: any) => {
   const marketList = useSelector((state: any) => state.Market.data);
   const locations = useSelector((state: any) => state.Filters.locations);
   const subLocations = useSelector((state: any) => state.Filters.subLocations);
-
+  const resourceList = useSelector((state: any) => state.Employee.data);
+  
   const [employeeName, setEmployeeName] = useState("");
   const [role, setRole] = useState("0");
   const [manager, setManager] = useState("");
@@ -598,7 +599,7 @@ const AddModal = (props: any) => {
               <div className="col-md-6 form-group" id="AddResourceManagerField">
                 <label className="form-label">Manager</label>
                 <span className="requiredField">*</span>
-                <input
+                {/* <input
                   type="text"
                   required
                   pattern={PatternsAndMessages.nameLike.pattern}
@@ -607,8 +608,23 @@ const AddModal = (props: any) => {
                   value={manager}
                   onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceManagerField'), 'input')}
                   onChange={(event) => setManager(event.target.value)}
-                />
-                <div className="error"></div>
+                /> */}
+                <div className="dropdown">
+                  <select
+                    required
+                    className="form-control"
+                    id="manager"
+                    value={manager}
+                    onChange={(event) => {
+                      setManager(event.target.value);
+                      validateSingleFormGroup(document.getElementById('AddResourceManagerField'), 'select');
+                    }}>                  
+                    <option value="0">Select</option>
+                    {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
+                  
+                  </select>
+                  <div className="error"></div>
+                </div>
               </div>
               <div className="col-md-6 form-group" id="AddResourceResourceTypeField">
                 <label className="form-label">Resource Type</label>
@@ -727,7 +743,8 @@ const UpdateModal = (props: any) => {
   const marketList = useSelector((state: any) => state.Market.data);
   const [formValues, setFormValues] = useState(props.initialValues || { location: "0" });
   let location = formValues.location;
-
+  const resourceList = useSelector((state: any) => state.Employee.data);
+  
 
   const handleSave = async (event: any) => {
     event.preventDefault();
@@ -854,7 +871,8 @@ const UpdateModal = (props: any) => {
               <div className="col-md-6 form-group" id="UpdateResourceManagerField">
                 <label className="form-label">Manager</label>
                 <span className="requiredField">*</span>
-                <input
+                <div className="dropdown">
+                {/* <input
                   type="text"
                   required
                   pattern={PatternsAndMessages.nameLike.pattern}
@@ -864,8 +882,24 @@ const UpdateModal = (props: any) => {
                   value={formValues.manager}
                   onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceManagerField'), 'input')}
                   onChange={handleChange}
-                />
+                /> */}
+                <select
+                    required
+                    className="form-control"
+                    id="manager"
+                    name="manager"
+                    value={formValues.manager}
+                    onChange={(event) => {
+                      // setManager(event.target.value);
+                      handleChange(event);
+                      validateSingleFormGroup(document.getElementById('UpdateResourceManagerField'), 'select');
+                    }}>                  
+                    <option value="0">Select</option>
+                    {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceName.toString()}>{resource.resourceName}</option>)}
+                  
+                  </select>
                 <div className="error"></div>
+              </div>
               </div>
               <div className="col-md-6 form-group" id="UpdateResourceResourceTypeField">
                 <label className="form-label">Resource Type</label>
