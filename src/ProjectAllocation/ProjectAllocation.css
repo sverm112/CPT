@@ -11,5 +11,5 @@ div#project_allocation_modal {
   }
 
 .resetButton{
-    margin-left:20%;
+    margin-left:20% !important;
   }

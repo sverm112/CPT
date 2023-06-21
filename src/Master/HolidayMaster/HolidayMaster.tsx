@@ -518,9 +518,15 @@ const UpdateModal = (props: any) =>{
               </div>
             </div>
             <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+              <div className="col-md-8">
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={()=>{}} className="btn btn-primary deleteButton">
+                  Delete
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Update
                 </button>
               </div>
             </div>
@@ -736,11 +742,11 @@ style={{ float: "right", marginTop: "-68px"}}
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton" >
                   Reset
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+                  Add
                 </button>
               </div>
             </div>

@@ -166,7 +166,7 @@ const PTO = () => {
     try {
       const response = await fetch(`${GET_ALL_PTOS}`);
       let dataGet = await response.json();
-      dataGet = dataGet.map((row:any)=>({...row,startDate:(row.startDate?.slice(0,10)).toLocaleDateString('en-ca'), enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
+      dataGet = dataGet.map((row:any)=>({...row,startDate:(row.startDate?.slice(0,10)), enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
       dispatch(ptoActions.changeData(dataGet));
       setTimeout(()=>setIsLoading(false), 2000);
     }
@@ -681,11 +681,11 @@ style={{ float: "right", marginTop: "-68px"}}
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton" >
                   Reset
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+                  Add
                 </button>
               </div>
             </div>
@@ -975,9 +975,15 @@ const UpdateModal = (props: any) => {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+              <div className="col-md-8">
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={()=>{}} className="btn btn-primary deleteButton">
+                  Delete
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Update
                 </button>
               </div>
             </div>
