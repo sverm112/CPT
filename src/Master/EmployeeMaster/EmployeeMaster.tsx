@@ -872,17 +872,6 @@ const UpdateModal = (props: any) => {
                 <label className="form-label">Manager</label>
                 <span className="requiredField">*</span>
                 <div className="dropdown">
-                {/* <input
-                  type="text"
-                  required
-                  pattern={PatternsAndMessages.nameLike.pattern}
-                  name="manager"
-                  className="form-control"
-                  id="manager"
-                  value={formValues.manager}
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceManagerField'), 'input')}
-                  onChange={handleChange}
-                /> */}
                 <select
                     required
                     className="form-control"

@@ -166,7 +166,7 @@ const PTO = () => {
     try {
       const response = await fetch(`${GET_ALL_PTOS}`);
       let dataGet = await response.json();
-      dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate?.slice(0,10) ,enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
+      dataGet = dataGet.map((row:any)=>({...row,startDate:(row.startDate?.slice(0,10)).toLocaleDateString('en-ca'), enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
       dispatch(ptoActions.changeData(dataGet));
       setTimeout(()=>setIsLoading(false), 2000);
     }
@@ -447,8 +447,8 @@ const AddModal = (props: any) => {
         resourceName : selectedResourceDetails.resourceName,
         resourceManager : selectedResourceDetails.resourceManager,
         ptoTypeId : Number(ptoTypeId),
-        startDate : ptoStartDate,
-        enddDate : ptoEndDate,
+        startDate : ptoStartDate?.toLocaleDateString('es-pa'),
+        enddDate : ptoEndDate?.toLocaleDateString('es-pa'),
         month : months[Number(startDate?.getMonth()) % 12 || 0],
         year : startYear,
         numberOfDays : numberOfDays,
@@ -603,7 +603,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOStartDate'),'datePicker')}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
@@ -622,7 +622,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   minDate={startDate !== null ? startDate : new Date('December 31, 2000')}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOEndDate'),'datePicker')}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
@@ -880,7 +880,7 @@ const UpdateModal = (props: any) => {
                   maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOStartDate'),'datePicker')}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
@@ -900,7 +900,7 @@ const UpdateModal = (props: any) => {
                   onChange={setEndDate}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOEndDate'),'datePicker')}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"

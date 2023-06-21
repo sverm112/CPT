@@ -1134,7 +1134,7 @@ useEffect(()=>{
                   onChange={setAllocationStartDate}
                   maxDate={allocationEndDate !== null ? allocationEndDate : new Date('December 31, 2100')}
                   value={allocationStartDate}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
@@ -1157,7 +1157,7 @@ useEffect(()=>{
                   minDate={allocationStartDate !== null ? allocationStartDate : new Date('December 31, 2000')}
                   onChange={setAllocationEndDate}
                   value={allocationEndDate}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
@@ -1743,7 +1743,7 @@ const AddModal = (props: any) => {
                   maxDate={allocationEndDate !== null ? allocationEndDate : new Date('December 31, 2100')}
                   onChange={setAllocationStartDate}
                   value={allocationStartDate}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
@@ -1765,7 +1765,7 @@ const AddModal = (props: any) => {
                   minDate={allocationStartDate !== null ? allocationStartDate : new Date('December 31, 2000')}
                   onChange={setAllocationEndDate}
                   value={allocationEndDate}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"

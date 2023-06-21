@@ -422,7 +422,7 @@ const UpdateModal = (props: any) =>{
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('HolidayDate'),'datePicker')}
                   onChange={setHolidayDate}
                   value={holidayDate}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
