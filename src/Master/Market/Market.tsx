@@ -8,7 +8,7 @@ import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
-import { GET_ALL_MARKETS, POST_MARKET, UPDATE_MARKET } from "../../constants";
+import { DELETE_MARKET, GET_ALL_MARKETS, POST_MARKET, UPDATE_MARKET } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
 
@@ -320,6 +320,23 @@ const UpdateModal = (props: any) => {
   };
 
 
+  const getMarketDetails = async () => {
+    try {
+      const response = await fetch(`${GET_ALL_MARKETS}`);
+      let dataGet = await response.json();
+      dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
+      dispatch(marketActions.changeData(dataGet));
+    }
+    catch {
+      console.log("Error occured");
+    }
+  };
+  const handleDelete = async()=>{
+    // id: formValues.id,
+    const response = await fetch(`${DELETE_MARKET}/${formValues.id}`);
+    getMarketDetails();
+    props.closeModal();
+  }
   const handleChange = (e: any) => {
     console.log("Update")
     setFormValues({
@@ -406,7 +423,7 @@ const UpdateModal = (props: any) => {
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={()=>{}} className="btn btn-primary deleteButton">
+              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
                   Delete
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>

@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { filterActions } from "../../Store/Slices/Filters";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
-import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_SUB_LOCATIONS, POST_HOLIDAY, UPDATE_HOLIDAY } from "../../constants";
+import { DELETE_HOLIDAY, GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_SUB_LOCATIONS, POST_HOLIDAY, UPDATE_HOLIDAY } from "../../constants";
 import { propTypes } from "react-bootstrap/esm/Image";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
@@ -28,7 +28,7 @@ const columns = [
   },
   {
     name: "Holiday Date",
-    selector: (row: { holidayDate: any }) => row.holidayDate,
+    selector: (row: { holidayDateString: any }) => row.holidayDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -365,6 +365,19 @@ const UpdateModal = (props: any) =>{
     }
 
   }
+
+  const getHolidayDetails = async () => {
+    const response = await fetch(`${GET_ALL_HOLIDAYS}`);
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, holidayDate : row.holidayDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10) }));
+    dispatch(holidayActions.changeData(dataGet));
+  };
+  const handleDelete = async()=>{
+    // id: formValues.id,
+    const response = await fetch(`${DELETE_HOLIDAY}/${formValues.id}`);
+    getHolidayDetails();
+    props.closeModal();
+  }
   const handleChange = (e: any) => {
     setFormValues({
       ...formValues,
@@ -522,7 +535,7 @@ const UpdateModal = (props: any) =>{
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={()=>{}} className="btn btn-primary deleteButton">
+              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
                   Delete
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>

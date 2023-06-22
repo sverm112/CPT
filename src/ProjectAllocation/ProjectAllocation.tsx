@@ -16,7 +16,7 @@ import { holidayActions } from "../Store/Slices/Holiday";
 import DownloadBtn from "../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../utils/validations";
 import { PatternsAndMessages } from "../utils/ValidationPatternAndMessage";
-import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_PROJECTS, GET_ALL_PROJECT_ALLOCATIONS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, GET_TOTAL_ALLOCATED_PERCENTAGE, GET_TOTAL_PTO_DAYS, POST_PROJECT_ALLOCATION, UPDATE_PROJECT_ALLOCATION } from "../constants";
+import { DELETE_ALLOCATION, GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_PROJECTS, GET_ALL_PROJECT_ALLOCATIONS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, GET_TOTAL_ALLOCATED_PERCENTAGE, GET_TOTAL_PTO_DAYS, POST_PROJECT_ALLOCATION, UPDATE_PROJECT_ALLOCATION } from "../constants";
 import { PassThrough } from "stream";
 import { RotatingLines } from "react-loader-spinner";
 import DataTable from "react-data-table-component";
@@ -661,7 +661,7 @@ console.log("New Data: ", newData);
             </div>
             <div className="col-md-3 form-group">
               <label htmlFor="" className="form-label">
-                Start Date
+                Allocation Start Date
               </label>
                 <DatePicker
                     className="form-control DateFilter"
@@ -677,7 +677,7 @@ console.log("New Data: ", newData);
             </div>
             <div className="col-md-3 form-group">
               <label htmlFor="" className="form-label">
-                End Date
+              Allocation End Date
               </label>
               <DatePicker
                     className="form-control DateFilter"
@@ -760,6 +760,14 @@ const UpdateModal = (props: any) => {
     console.log("Holiday Count " + count);
     return count;
   }
+  
+  const getProjectAllocationDetails = async () => {
+    const response = await fetch(`${GET_ALL_PROJECT_ALLOCATIONS}`);
+    let dataGet = await response.json();
+    dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate?.slice(0,10) ,enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
+    dispatch(projectAllocationActions.changeData(dataGet));
+    // setTimeout(()=>setIsLoading(false), 2000);
+  };
   //allocationHours= Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
   const dispatch = useDispatch();
   const resourcesList = useSelector((store: any) => store.Employee.data);
@@ -951,6 +959,13 @@ const UpdateModal = (props: any) => {
     }
 
   };
+  
+  const handleDelete = async()=>{
+    // id: formValues.id,
+    const response = await fetch(`${DELETE_ALLOCATION}/${formValues.id}`);
+    getProjectAllocationDetails();
+    props.closeModal();
+  }
   //console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
 useEffect(()=>{
   getPTODays();    
@@ -1344,7 +1359,7 @@ useEffect(()=>{
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={()=>{}} className="btn btn-primary deleteButton">
+              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
                   Delete
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>

@@ -12,7 +12,7 @@ import { filterActions } from "../../Store/Slices/Filters";
 import DownloadBtn from "../../Export/DownloadBtn";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
-import { GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, POST_BULK_UPLOAD_EMPLOYEE, POST_RESOURCE, UPDATE_RESOURCE } from "../../constants";
+import { DELETE_RESOURCE, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, POST_BULK_UPLOAD_EMPLOYEE, POST_RESOURCE, UPDATE_RESOURCE } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
 
@@ -794,7 +794,24 @@ const UpdateModal = (props: any) => {
       [e.target.name]: e.target.value
     });
   };
+  
+  const getEmployeeDetails = async () => {
+    try {
+      const response = await fetch(`${GET_ALL_RESOURCES}`);
+      let dataGet = await response.json();
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive ,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
+      dispatch(employeeActions.changeData(dataGet));
+      } catch {
+      console.log("Error occured");
+    }
+  };
 
+  const handleDelete = async()=>{
+    // id: formValues.id,
+    const response = await fetch(`${DELETE_RESOURCE}/${formValues.resourceId}`);
+    getEmployeeDetails();
+    props.closeModal();
+  }
   return (
     <>
       <Button
@@ -1000,7 +1017,7 @@ const UpdateModal = (props: any) => {
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={()=>{}} className="btn btn-primary deleteButton">
+              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
                   Delete
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>

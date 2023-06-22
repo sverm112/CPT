@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { employeeActions } from "../../Store/Slices/Employee";
 import DownloadBtn from "../../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
-import { Base_URL, GET_ALL_MARKETS, GET_ALL_PROJECTS, POST_PROJECT, UPDATE_PROJECT } from "../../constants";
+import { Base_URL, DELETE_PROJECT, GET_ALL_MARKETS, GET_ALL_PROJECTS, POST_PROJECT, UPDATE_PROJECT } from "../../constants";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
@@ -561,7 +561,19 @@ const UpdateModal = (props: any) => {
     }
   };
 
+  const getProjectDetails = async () => {
+    const response = await fetch(`${GET_ALL_PROJECTS}`);
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, createdDate: row.createdDateString,updatedDate:row.updatedDateString}));
+    dispatch(projectActions.changeData(dataGet));
+  };
 
+  const handleDelete = async()=>{
+    // id: formValues.id,
+    const response = await fetch(`${DELETE_PROJECT}/${formValues.id}`);
+    getProjectDetails();
+    props.closeModal();
+  }
   const handleChange = (e: any) => {
     console.log("Update")
     setFormValues({
@@ -733,7 +745,7 @@ style={{ float: "right", marginTop: "-68px"}}
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={()=>{}} className="btn btn-primary deleteButton">
+              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
                   Delete
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
