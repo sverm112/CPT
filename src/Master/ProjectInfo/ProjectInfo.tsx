@@ -125,8 +125,8 @@ const ProjectInfo = () => {
   const status = useSelector((state: any) => state.Filters.status);
   const projectModels = [
     { label: "Waterfall", value: "Waterfall" },
-    { label: "Kanban", value: "Kanban" },
-    { label: "Scrum", value: "Scrum" },
+    // { label: "Kanban", value: "Kanban" },
+    // { label: "Scrum", value: "Scrum" },
     { label: "Agile", value: "Agile" },
   ]
   const projects = useSelector((store: any) => store.Project.data);
@@ -432,8 +432,8 @@ style={{ float: "right", marginTop: "-68px"}}
                   >
                     <option value="0">Select</option>
                     <option value="Waterfall">Waterfall</option>
-                    <option value="Kanban">Kanban</option>
-                    <option value="Scrum">Scrum</option>
+                    {/* <option value="Kanban">Kanban</option>
+                    <option value="Scrum">Scrum</option> */}
                     <option value="Agile">Agile</option>
                   </select>
                 <div className="error"></div>
@@ -644,8 +644,8 @@ style={{ float: "right", marginTop: "-68px"}}
                   >
                     <option value="0">Select</option>
                     <option value="Waterfall">Waterfall</option>
-                    <option value="Kanban">Kanban</option>
-                    <option value="Scrum">Scrum</option>
+                    {/* <option value="Kanban">Kanban</option>
+                    <option value="Scrum">Scrum</option> */}
                     <option value="Agile">Agile</option>
                   </select>
                   <div className="error"></div>
