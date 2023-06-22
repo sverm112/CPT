@@ -218,10 +218,10 @@ const customValueRenderer = (selected: any, _options: any) => {
 };
 
 const ProjectAllocation = () => {
-  // const expenseTypes = [
-  //   { label: "CAPEX", value: "CAPEX" },
-  //   { label: "OPEX", value: "OPEX" },
-  // ];
+  const expenseTypes = [
+    { label: "CAPEX", value: "CAPEX" },
+    { label: "OPEX", value: "OPEX" },
+  ];
   const dispatch = useDispatch();
   const marketList = useSelector((state: any) => state.Market.data);
   const locations = useSelector((state: any) => state.Filters.locations);
@@ -234,7 +234,7 @@ const ProjectAllocation = () => {
   const roleSelected = useSelector((store: any) => store.ProjectAllocation.role)
   const projectMarketSelected = useSelector((store: any) => store.ProjectAllocation.projectMarket)
   const [isLoading, setIsLoading] = useState(true);
-  // const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
+  const expenseTypeSelected = useSelector((store: any) => store.ProjectAllocation.expenseType)
   const locationSelected = useSelector((store: any) => store.ProjectAllocation.location)
   const [currentProject, setCurrentProject] = useState(null);
   const [closeExpanded, setCloseExpanded] = useState(true);
@@ -278,10 +278,10 @@ const ProjectAllocation = () => {
     dispatch(projectAllocationActions.changeProjectMarket(event));
 
   };
-  // const changeExpenseTypeSelectHandler = (event: any) => {
-  //   dispatch(projectAllocationActions.changeExpenseType(event));
+  const changeExpenseTypeSelectHandler = (event: any) => {
+    dispatch(projectAllocationActions.changeExpenseType(event));
 
-  // };
+  };
   const changeLocationSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeLocation(event.target.value));
 
@@ -328,17 +328,20 @@ const ProjectAllocation = () => {
     const resourceOptions = resourceSelected.map((resource: any) => resource.value);
     const statusOptions = statusSelected.map((status: any) => status.value);
     const projectMarketOptions = projectMarketSelected.map((projectMarket: any) => projectMarket.value);
+    const expenseTypeOptions = expenseTypeSelected.map((expenseType: any) => expenseType.value);
     if ((!resourceMarketSelected.length) || (resourceMarketSelected.length > 0 && resourceMarketOptions.includes(projectAllocation.resourceMarket) == true)) {
       if ((!resourceTypeSelected.length) || (resourceTypeSelected.length > 0 && resourceTypeOptions.includes(projectAllocation.resourceType) == true)) {
         if ((!roleSelected.length) || (roleSelected.length > 0 && roleOptions.includes(projectAllocation.role) == true)) {
           if ((!resourceSelected.length) || (resourceSelected.length > 0 && resourceOptions.includes(projectAllocation.resourceName) == true)) {
             if ((!managerSelected.length) || (managerSelected.length > 0 && managerOptions.includes(projectAllocation.resourceManager) == true)) {
-              if((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket))){
-                if ((!statusSelected.length && projectAllocation.status ==="Active") || (statusSelected.length > 0 && statusOptions.includes(projectAllocation.status))) {
-                  if (locationSelected == "0" || locationSelected == projectAllocation.location)
-                return true;
+              if ((!expenseTypeSelected.length) || (expenseTypeSelected.length > 0 && expenseTypeOptions.includes(projectAllocation.expenseType) == true)) {              
+                    if((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket))){
+                          if ((!statusSelected.length && projectAllocation.status ==="Active") || (statusSelected.length > 0 && statusOptions.includes(projectAllocation.status))) {
+                            if (locationSelected == "0" || locationSelected == projectAllocation.location)
+                          return true;             
+                        }
+                    }
                 }
-              }
             }
           }
         }
@@ -349,9 +352,27 @@ const ProjectAllocation = () => {
 let resourceIds: any[]=[];
 let newData : any[]=[];
 
+const [isFilterVisible, setIsFilterVisible] = useState(false);
+
 const showMoreFilters = () =>{
-  let morefFilters = document.getElementById('MoreFilters');
-  morefFilters?.setAttribute('style', 'display:"visible"')
+  let moreFilters = document.getElementById('MoreFilters');
+  if(!isFilterVisible){
+    console.log("More filter status: ", isFilterVisible);
+    moreFilters?.setAttribute('style', 'display:"visible"')
+    setIsFilterVisible(true);
+    let mfButton = document.getElementById('MoreFiltersButton')
+    if(mfButton!= null){
+      mfButton.innerHTML = " Hide Filters "
+    }
+  }else{
+    console.log("More filter status: ", isFilterVisible);
+    moreFilters?.setAttribute('style', 'display:none')
+    setIsFilterVisible(false);
+    let mfButton = document.getElementById('MoreFiltersButton')
+    if(mfButton!= null){
+      mfButton.textContent = "More Filters"
+    }
+  }
 }
 
 filteredProjectAllocations.map((projectAllocation:any)=>{
@@ -529,115 +550,122 @@ console.log("New Data: ", newData);
             </div>
           </div>
         </div>
+        <div className="row">
+        <div className="col-md-9">
         <div className="row filter-row">
-        <div className="col-md-2 form-group">
+          <div className="col-md-2 form-group">
+                <label htmlFor="" className="form-label">
+                  Resource
+                </label>
+                <MultiSelect
+                  options={
+                    resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
+                  }
+                  value={resourceSelected}
+                  onChange={(event: any) => dispatch(ptoActions.changeResourceName(event))}
+                  labelledBy="Select Resource"
+                  valueRenderer={customValueRenderer}
+                />
+              </div>
+            <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
-                Resource
+                Resource Type
               </label>
               <MultiSelect
-                options={
-                  resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => ({label: resource.resourceName, value: resource.resourceName}))
-                }
-                value={resourceSelected}
-                onChange={(event: any) => dispatch(ptoActions.changeResourceName(event))}
-                labelledBy="Select Resource"
+                options={resourceTypes.map((resourceType: any) => ({ label: resourceType, value: resourceType }))}
+                value={resourceTypeSelected}
+                onChange={changeResourceTypeSelectHandler}
+                labelledBy="Select Resource Type"
                 valueRenderer={customValueRenderer}
               />
             </div>
-          <div className="col-md-2 form-group">
-            <label htmlFor="" className="form-label">
-              Resource Type
-            </label>
-            <MultiSelect
-              options={resourceTypes.map((resourceType: any) => ({ label: resourceType, value: resourceType }))}
-              value={resourceTypeSelected}
-              onChange={changeResourceTypeSelectHandler}
-              labelledBy="Select Resource Type"
-              valueRenderer={customValueRenderer}
-            />
-          </div>
 
-          <div className="col-md-2 form-group">
-            <label htmlFor="" className="form-label">
-              Role
-            </label>
-            <MultiSelect
-              options={roles.map((role: any) => ({ label: role, value: role }))}
-              value={roleSelected}
-              onChange={changeRoleSelectHandler}
-              labelledBy="Select Role"
-              valueRenderer={customValueRenderer}
-            />
-          </div>
-          <div className="col-md-2 form-group">
+            <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
-                Supervisor
+                Role
               </label>
               <MultiSelect
-                options={supervisors.map((manager: any) => ({ label: manager, value: manager }))}
-                value={managerSelected}
-                onChange={changeManagerSelectHandler}
-                labelledBy="Select Supervisor"
+                options={roles.map((role: any) => ({ label: role, value: role }))}
+                value={roleSelected}
+                onChange={changeRoleSelectHandler}
+                labelledBy="Select Role"
                 valueRenderer={customValueRenderer}
               />
             </div>
-          <div className=" col-md-2 form-group">
-            <label htmlFor="locationDropdown" className="form-label">
-              Location
-            </label>
-            <div className="dropdown">
-              <select className="form-control" value={locationSelected} onChange={changeLocationSelectHandler} id="locationDropdown">
-                <option value="0">Select</option>
-                {locations.map((location: any) => (<option key={location.locationId} value={location.locationName}>{location.locationName}</option>))}
-              </select>
+            <div className="col-md-2 form-group">
+                <label htmlFor="" className="form-label">
+                  Supervisor
+                </label>
+                <MultiSelect
+                  options={supervisors.map((manager: any) => ({ label: manager, value: manager }))}
+                  value={managerSelected}
+                  onChange={changeManagerSelectHandler}
+                  labelledBy="Select Supervisor"
+                  valueRenderer={customValueRenderer}
+                />
+              </div>
+            <div className=" col-md-2 form-group">
+              <label htmlFor="locationDropdown" className="form-label">
+                Location
+              </label>
+              <div className="dropdown">
+                <select className="form-control" value={locationSelected} onChange={changeLocationSelectHandler} id="locationDropdown">
+                  <option value="0">Select</option>
+                  {locations.map((location: any) => (<option key={location.locationId} value={location.locationName}>{location.locationName}</option>))}
+                </select>
+              </div>
             </div>
-          </div>
-          <div className="col-md-2 form-group">
-            <label htmlFor="" className="form-label">
-              Resource Market
-            </label>
-            <MultiSelect
-              options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
-              value={resourceMarketSelected}
-              onChange={changeResourceMarketSelectHandler}
-              labelledBy="Select Resource Market"
-              valueRenderer={customValueRenderer}
-            />
-          </div>
-          {/* <div className="MoreFilters" id="MoreFilters" style={{display:"none"}}> */}
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Resource Market
+              </label>
+              <MultiSelect
+                options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
+                value={resourceMarketSelected}
+                onChange={changeResourceMarketSelectHandler}
+                labelledBy="Select Resource Market"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="MoreFilters row filter-row" id="MoreFilters" style={{display:'none'}} >
+              
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Project Market
+              </label>
+              <MultiSelect
+                options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
+                value={projectMarketSelected}
+                onChange={changeProjectMarketSelectHandler}
+                labelledBy="Select Project Market"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Expense Type
+              </label>
+              <MultiSelect
+                options={expenseTypes}
+                value={expenseTypeSelected}
+                onChange={changeExpenseTypeSelectHandler}
+                labelledBy="Select Expense Type"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            </div>
+        </div>
+        </div>
+        <div className="col-md-3 row" style={{marginLeft:'-19%'}}>
+        <div className="col-md-6" style={{ marginTop: "24px" }}>
             
-          {/* <div className="col-md-2 form-group">
-            <label htmlFor="" className="form-label">
-              Project Market
-            </label>
-            <MultiSelect
-              options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
-              value={projectMarketSelected}
-              onChange={changeProjectMarketSelectHandler}
-              labelledBy="Select Project Market"
-              valueRenderer={customValueRenderer}
-            />
-          </div> */}
-
-          {/* <div className="col-md-2 form-group">
-            <label htmlFor="" className="form-label">
-              Expense Type
-            </label> */}
-            {/* <MultiSelect
-              // options={expenseTypes}
-              // value={expenseTypeSelected}
-              // onChange={changeExpenseTypeSelectHandler}
-              labelledBy="Select Expense Type"
-              valueRenderer={customValueRenderer}
-            /> */}
-          {/* </div> */}
-          {/* </div> */}
-          <div className="col-md-2" style={{ marginTop: "24px" }}>
-            <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}>Clear Filters<i className="las la-filter"></i></button>
+            <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}><span>Clear Filters</span><i className="las la-filter"></i></button>
           </div>
-          {/* <div className="col-md-2" style={{ marginTop: "24px" }}>
-            <button type="button" className="btn btn-primary" onClick={showMoreFilters}>More Filters<i className="las la-filter"></i></button>
-          </div> */}
+          <div className="col-md-6" style={{ marginTop: "24px", marginLeft:"-6%" }}>
+            <button type="button" className="btn btn-primary" onClick={showMoreFilters}><span id="MoreFiltersButton">More Filters</span><i className="las la-filter"></i></button>
+          </div>
+        </div>
         </div>
           <div className="TableContentBorder">
             <Table columnsAndSelectors={columnsAndSelectors}    
