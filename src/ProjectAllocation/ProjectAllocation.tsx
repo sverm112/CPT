@@ -1858,7 +1858,7 @@ const AddModal = (props: any) => {
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton" >
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary allocateResetButton" >
                   Reset
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
