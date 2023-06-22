@@ -249,7 +249,9 @@ const ProjectAllocation = () => {
   const managerSelected = useSelector((state: any) => state.Employee.manager);
   const managerOptions = managerSelected.map((manager: any) => manager.value);
   const statusSelected = useSelector((state: any) => state.ProjectAllocation.status);
-  
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
   const openModal = () => {
     setShowModal(true);
   }
@@ -337,8 +339,13 @@ const ProjectAllocation = () => {
               if ((!expenseTypeSelected.length) || (expenseTypeSelected.length > 0 && expenseTypeOptions.includes(projectAllocation.expenseType) == true)) {              
                     if((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket))){
                           if ((!statusSelected.length && projectAllocation.status ==="Active") || (statusSelected.length > 0 && statusOptions.includes(projectAllocation.status))) {
-                            if (locationSelected == "0" || locationSelected == projectAllocation.location)
-                          return true;             
+                            if (locationSelected == "0" || locationSelected == projectAllocation.location){
+                              if((startDate == null) ? true : new Date(projectAllocation.startDate) >= startDate){
+                                if((endDate == null) ? true : new Date(projectAllocation.enddDate) <= endDate){
+                                  return true;         
+                                }
+                              }
+                            }
                         }
                     }
                 }
@@ -353,7 +360,6 @@ let resourceIds: any[]=[];
 let newData : any[]=[];
 
 const [isFilterVisible, setIsFilterVisible] = useState(false);
-
 const showMoreFilters = () =>{
   let moreFilters = document.getElementById('MoreFilters');
   if(!isFilterVisible){
@@ -628,7 +634,6 @@ console.log("New Data: ", newData);
               />
             </div>
             <div className="MoreFilters row filter-row" id="MoreFilters" style={{display:'none'}} >
-              
             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Project Market
@@ -654,13 +659,45 @@ console.log("New Data: ", newData);
                 valueRenderer={customValueRenderer}
               />
             </div>
+            <div className="col-md-3 form-group">
+              <label htmlFor="" className="form-label">
+                Start Date
+              </label>
+                <DatePicker
+                    className="form-control DateFilter"
+                    required
+                    name="StartDate"
+                    onChange={(e: any) => setStartDate(e)}
+                    value={startDate}
+                    format="MM/dd/yyyy"
+                    dayPlaceholder="dd"
+                    monthPlaceholder="mm"
+                    yearPlaceholder="yyyy"
+                  />
+            </div>
+            <div className="col-md-3 form-group">
+              <label htmlFor="" className="form-label">
+                End Date
+              </label>
+              <DatePicker
+                    className="form-control DateFilter"
+                    required
+                    name="EndDate"
+                    onChange={(e: any) => setEndDate(e)}
+                    value={endDate}
+                    format="MM/dd/yyyy"
+                    dayPlaceholder="dd"
+                    monthPlaceholder="mm"
+                    yearPlaceholder="yyyy"
+                  />
+            </div>
             </div>
         </div>
         </div>
         <div className="col-md-3 row" style={{marginLeft:'-19%'}}>
         <div className="col-md-6" style={{ marginTop: "24px" }}>
             
-            <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}><span>Clear Filters</span><i className="las la-filter"></i></button>
+            <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); setEndDate(null); setStartDate(null); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}><span>Clear Filters</span><i className="las la-filter"></i></button>
           </div>
           <div className="col-md-6" style={{ marginTop: "24px", marginLeft:"-6%" }}>
             <button type="button" className="btn btn-primary" onClick={showMoreFilters}><span id="MoreFiltersButton">More Filters</span><i className="las la-filter"></i></button>
