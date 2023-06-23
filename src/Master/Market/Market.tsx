@@ -121,6 +121,11 @@ const Market = () => {
     setUpdateMarketDetails(data);
   };
 
+  const filteredMarkets = markets.filter((market: any) =>{
+    if(market.status==="Active")
+    return true;
+  })
+
   return (
     <div>
       <SideBar></SideBar>
@@ -156,7 +161,7 @@ const Market = () => {
             </div>
           </div>
           <div className="TableContentBorder">
-            <Table  columnsAndSelectors={columnsAndSelectors} isLoading={isLoading} columns={columns} data={markets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
+            <Table  columnsAndSelectors={columnsAndSelectors} isLoading={isLoading} columns={columns} data={filteredMarkets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
           </div>
         </div>
       </div>}
