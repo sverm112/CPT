@@ -342,6 +342,7 @@ const ProjectAllocation = () => {
                             if (locationSelected == "0" || locationSelected == projectAllocation.location){
                               if((startDate == null) ? true : new Date(projectAllocation.startDate) >= startDate){
                                 if((endDate == null) ? true : new Date(projectAllocation.enddDate) <= endDate){
+                                  if(projectAllocation.status==="Active")
                                   return true;         
                                 }
                               }
