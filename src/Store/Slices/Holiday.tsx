@@ -4,7 +4,7 @@ const initialState = {
   market: [],
   location :[],
   subLocation :[],
-  status:[],
+  status: [{label:'Active', value: 'Active'}],
   
   data: [],
   currentPage: "1",

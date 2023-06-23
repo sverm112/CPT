@@ -7,7 +7,7 @@ const initialState = {
   role : [],
   expenseType :[],
   projectMarket:[],
-  status: [],
+  status: [{label:'Active', value: 'Active'}],
   location : '0',
   currentPage: "1",
   pageSize: "10",

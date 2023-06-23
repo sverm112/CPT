@@ -4,7 +4,7 @@ const initialState = {
   projectModel : [],
   market: [],
   expenseType: [],
-  status: [],
+  status: [{label:'Active', value: 'Active'}],
   data: [],
   currentPage: "1",
   pageSize: "10",
