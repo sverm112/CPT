@@ -240,7 +240,7 @@ const ProjectAllocation = () => {
   const [closeExpanded, setCloseExpanded] = useState(true);
   const [currentRow, setCurrentRow] = useState(null);
   const resources = useSelector((state: any) => state.Employee.data);
-
+  const status = useSelector((state: any) => state.Filters.status);
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("Add");
   const [updateProjectDetails, setUpdateProjectDetails] = useState({});
@@ -287,6 +287,10 @@ const ProjectAllocation = () => {
   const changeLocationSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeLocation(event.target.value));
 
+  };
+
+  const changeStatusSelectHandler = (event: any) => {
+    dispatch(projectAllocationActions.changeStatus(event));
   };
 
   const getProjectAllocationDetails = async () => {
@@ -342,7 +346,7 @@ const ProjectAllocation = () => {
                             if (locationSelected == "0" || locationSelected == projectAllocation.location){
                               if((startDate == null) ? true : new Date(projectAllocation.startDate) >= startDate){
                                 if((endDate == null) ? true : new Date(projectAllocation.enddDate) <= endDate){
-                                  if(projectAllocation.status==="Active")
+                                  // if(projectAllocation.status==="Active")
                                   return true;         
                                 }
                               }
@@ -364,7 +368,6 @@ const [isFilterVisible, setIsFilterVisible] = useState(false);
 const showMoreFilters = () =>{
   let moreFilters = document.getElementById('MoreFilters');
   if(!isFilterVisible){
-    console.log("More filter status: ", isFilterVisible);
     moreFilters?.setAttribute('style', 'display:"visible"')
     setIsFilterVisible(true);
     let mfButton = document.getElementById('MoreFiltersButton')
@@ -372,7 +375,6 @@ const showMoreFilters = () =>{
       mfButton.innerHTML = " Hide Filters "
     }
   }else{
-    console.log("More filter status: ", isFilterVisible);
     moreFilters?.setAttribute('style', 'display:none')
     setIsFilterVisible(false);
     let mfButton = document.getElementById('MoreFiltersButton')
@@ -419,11 +421,9 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
        resourceItem.projectsInfo.push(projectInfo);
 
      }else{
-       console.log("Errro cause: ", resourceItem.projectsInfo.find((project: any)=>project.projectId == projectAllocation.projectId));
        resourceItem.projectsInfo.find((project: any)=>project.projectId == projectAllocation.projectId).projectAllocationsInfo.push(projectAllocationInfo);
      }
-     console.log("Resource: ",resourceItem);
- }
+  }
  if(resourceIds.includes(projectAllocation.resourceId)==false){
    resourceIds.push(projectAllocation.resourceId);
    let projectsInfo: any[]=[];
@@ -467,12 +467,9 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
    resourceMarket : projectAllocation.resourceMarket,
    projectsInfo : projectsInfo
  }
-
-   console.log("New Resource Item: ",newResourceItem)
    newData.push(newResourceItem);
  }
 })
-console.log("New Data: ", newData);
 
   //start constants for export
   const title ="Project Allocation Details";
@@ -634,6 +631,18 @@ console.log("New Data: ", newData);
                 valueRenderer={customValueRenderer}
               />
             </div>
+            <div className=" col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Status
+              </label>
+              <MultiSelect
+                options={status.map((status: any) => ({ label: status, value: status }))}
+                value={statusSelected}
+                onChange={changeStatusSelectHandler}
+                labelledBy="Select Status"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
             <div className="MoreFilters row filter-row" id="MoreFilters" style={{display:'none'}} >
             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
@@ -695,7 +704,7 @@ console.log("New Data: ", newData);
             </div>
         </div>
         </div>
-        <div className="col-md-3 row" style={{marginLeft:'-19%'}}>
+        <div className="col-md-3 row" style={{marginLeft:'-10%', float:'right'}}>
         <div className="col-md-6" style={{ marginTop: "24px" }}>
             
             <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); setEndDate(null); setStartDate(null); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}><span>Clear Filters</span><i className="las la-filter"></i></button>
