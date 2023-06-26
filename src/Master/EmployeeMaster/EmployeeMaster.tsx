@@ -370,7 +370,7 @@ const EmployeeMaster = () => {
                 />
                 <div className="BulkUploadEmployeeTooltip">
                   <p>
-                    Add Bulk Employees
+                    Add Bulk Resources
                   </p>
                 </div>
               </div>
@@ -826,7 +826,7 @@ const UpdateModal = (props: any) => {
       <Modal show={props.showModal} onHide={props.closeModal}>
         <Modal.Header closeButton onClick={props.closeModal}>
           <Modal.Title>
-            <h6>Update Employee</h6>
+            <h6>Update Resource</h6>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

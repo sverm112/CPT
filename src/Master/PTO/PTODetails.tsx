@@ -993,7 +993,7 @@ const UpdateModal = (props: any) => {
                 </div>
               </div>
             </div>
-            <div className="row">
+            <div className="row" style={{marginTop:'5px'}}>
               <div className="col-md-8">
                 
               </div>

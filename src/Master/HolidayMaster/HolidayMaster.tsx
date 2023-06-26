@@ -676,7 +676,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('HolidayDate'),'datePicker')}
                   onChange={setDate}
                   value={date}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
