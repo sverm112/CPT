@@ -604,9 +604,9 @@ style={{ float: "right", marginTop: "-68px"}}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOStartDate'),'datePicker')}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -623,9 +623,9 @@ style={{ float: "right", marginTop: "-68px"}}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOEndDate'),'datePicker')}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -900,9 +900,9 @@ const UpdateModal = (props: any) => {
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOStartDate'),'datePicker')}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -920,9 +920,9 @@ const UpdateModal = (props: any) => {
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOEndDate'),'datePicker')}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>

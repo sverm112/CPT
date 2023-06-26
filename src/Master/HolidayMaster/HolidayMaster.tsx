@@ -436,9 +436,9 @@ const UpdateModal = (props: any) =>{
                   onChange={setHolidayDate}
                   value={holidayDate}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -677,9 +677,9 @@ style={{ float: "right", marginTop: "-68px"}}
                   onChange={setDate}
                   value={date}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>

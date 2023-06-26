@@ -674,15 +674,16 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                 Allocation Start Date
               </label>
                 <DatePicker
-                    className="form-control DateFilter"
+                    className="form-control react-date-picker DateFilter"
                     required
+                    showLeadingZeros={false}
                     name="StartDate"
                     onChange={(e: any) => setStartDate(e)}
                     value={startDate}
                     format="MM/dd/yyyy"
-                    dayPlaceholder="dd"
-                    monthPlaceholder="mm"
-                    yearPlaceholder="yyyy"
+                    dayPlaceholder="DD"
+                    monthPlaceholder="MM"
+                    yearPlaceholder="YYYY"
                   />
             </div>
             <div className="col-md-3 form-group">
@@ -696,9 +697,9 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                     onChange={(e: any) => setEndDate(e)}
                     value={endDate}
                     format="MM/dd/yyyy"
-                    dayPlaceholder="dd"
-                    monthPlaceholder="mm"
-                    yearPlaceholder="yyyy"
+                    dayPlaceholder="DD"
+                    monthPlaceholder="MM"
+                    yearPlaceholder="YYYY"
                   />
             </div>
             </div>
@@ -1225,9 +1226,9 @@ useEffect(()=>{
                   maxDate={allocationEndDate !== null ? allocationEndDate : new Date('December 31, 2100')}
                   value={allocationStartDate}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -1248,9 +1249,9 @@ useEffect(()=>{
                   onChange={setAllocationEndDate}
                   value={allocationEndDate}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -1834,9 +1835,9 @@ const AddModal = (props: any) => {
                   onChange={setAllocationStartDate}
                   value={allocationStartDate}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -1856,9 +1857,9 @@ const AddModal = (props: any) => {
                   onChange={setAllocationEndDate}
                   value={allocationEndDate}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
