@@ -15,7 +15,7 @@ import { ptoActions } from "../../Store/Slices/Pto";
 import { filterActions } from "../../Store/Slices/Filters";
 import DatePicker from "react-date-picker";
 import { employeeActions } from "../../Store/Slices/Employee";
-import { GET_ALL_PTOS, GET_ALL_PTO_TYPES, GET_ALL_RESOURCES, POST_PTO, UPDATE_PTO } from "../../constants";
+import { DELETE_PTO, GET_ALL_PTOS, GET_ALL_PTO_TYPES, GET_ALL_RESOURCES, POST_PTO, UPDATE_PTO } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
 
@@ -43,14 +43,14 @@ const columns = [
   },
   {
     name: "Start Date",
-    selector: (row: { startDate: any }) => row.startDate,
+    selector: (row: { startDateString: any }) => row.startDateString,
     sortable: true,
     reorder: true,
     filterable: true,
   },
   {
     name: "End Date",
-    selector: (row: { enddDate: any }) => row.enddDate,
+    selector: (row: { enddDateString: any }) => row.enddDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -166,7 +166,7 @@ const PTO = () => {
     try {
       const response = await fetch(`${GET_ALL_PTOS}`);
       let dataGet = await response.json();
-      dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate?.slice(0,10) ,enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
+      dataGet = dataGet.map((row:any)=>({...row,startDate:(row.startDate?.slice(0,10)), enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
       dispatch(ptoActions.changeData(dataGet));
       setTimeout(()=>setIsLoading(false), 2000);
     }
@@ -245,7 +245,7 @@ const PTO = () => {
           if((!ptoTypeSelected.length) || (ptoTypeSelected.length > 0 && ptoTypeOptions.includes(pto.ptoType) == true)){
             if((!monthSelected.length) || (monthSelected.length > 0 && monthOptions.includes(pto.month) == true)){
               if((!yearSelected.length) || (yearSelected.length > 0 && yearOptions.includes(pto.year) == true)){
-                if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(pto.status))) {
+                if ((!statusSelected.length  && pto.status === "Active" ) || (statusSelected.length > 0 && statusOptions.includes(pto.status))) {
                   return true;
                 }
               }
@@ -447,8 +447,8 @@ const AddModal = (props: any) => {
         resourceName : selectedResourceDetails.resourceName,
         resourceManager : selectedResourceDetails.resourceManager,
         ptoTypeId : Number(ptoTypeId),
-        startDate : ptoStartDate,
-        enddDate : ptoEndDate,
+        startDate : ptoStartDate?.toLocaleDateString('es-pa'),
+        enddDate : ptoEndDate?.toLocaleDateString('es-pa'),
         month : months[Number(startDate?.getMonth()) % 12 || 0],
         year : startYear,
         numberOfDays : numberOfDays,
@@ -603,7 +603,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOStartDate'),'datePicker')}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
@@ -622,7 +622,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   minDate={startDate !== null ? startDate : new Date('December 31, 2000')}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOEndDate'),'datePicker')}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
@@ -681,11 +681,11 @@ style={{ float: "right", marginTop: "-68px"}}
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton" >
                   Reset
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+                  Add
                 </button>
               </div>
             </div>
@@ -786,6 +786,25 @@ const UpdateModal = (props: any) => {
   };
 
 
+  const getPTODetails = async () => {
+    try {
+      const response = await fetch(`${GET_ALL_PTOS}`);
+      let dataGet = await response.json();
+      dataGet = dataGet.map((row:any)=>({...row,startDate:(row.startDate?.slice(0,10)), enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
+      dispatch(ptoActions.changeData(dataGet));
+      }
+    catch {
+      console.log("Error occured");
+    }
+  };
+  
+  const handleDelete = async()=>{
+    // id: formValues.id,
+    const response = await fetch(`${DELETE_PTO}/${formValues.id}`);
+    getPTODetails();
+    props.closeModal();
+  }
+
   const handleChange = (e: any) => {
     console.log("Update")
     setFormValues({
@@ -880,7 +899,7 @@ const UpdateModal = (props: any) => {
                   maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOStartDate'),'datePicker')}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
@@ -900,7 +919,7 @@ const UpdateModal = (props: any) => {
                   onChange={setEndDate}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOEndDate'),'datePicker')}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
@@ -974,10 +993,16 @@ const UpdateModal = (props: any) => {
                 </div>
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+            <div className="row" style={{marginTop:'5px'}}>
+              <div className="col-md-8">
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
+                  Delete
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Update
                 </button>
               </div>
             </div>

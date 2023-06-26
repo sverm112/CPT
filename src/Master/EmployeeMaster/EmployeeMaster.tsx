@@ -12,7 +12,7 @@ import { filterActions } from "../../Store/Slices/Filters";
 import DownloadBtn from "../../Export/DownloadBtn";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
-import { GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, POST_BULK_UPLOAD_EMPLOYEE, POST_RESOURCE, UPDATE_RESOURCE } from "../../constants";
+import { DELETE_RESOURCE, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_RESOURCES, GET_ALL_SUB_LOCATIONS, POST_BULK_UPLOAD_EMPLOYEE, POST_RESOURCE, UPDATE_RESOURCE } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
 
@@ -267,10 +267,10 @@ const EmployeeMaster = () => {
     }
   };
 
-
   const filteredResources = resources.filter(
     (resource: any) => {
-
+      
+      console.log("isActive before FIlteration: ", resource.isActive);
       const marketOptions = marketSelected.map((market: any) => market.value);
       const resourceTypeOptions = resourceTypeSelected.map((resourceType: any) => resourceType.value);
       const roleOptions = roleSelected.map((role: any) => role.value);
@@ -282,11 +282,10 @@ const EmployeeMaster = () => {
 
           if ((!roleSelected.length) || (roleSelected.length > 0 && roleOptions.includes(resource.role) == true)) {
 
-            if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(resource.isActive))) {
+            if ((!statusSelected.length && resource.isActive ==="Active") || (statusSelected.length > 0 && statusOptions.includes(resource.isActive))) {
               if ((!managerSelected.length) || (managerSelected.length > 0 && managerOptions.includes(resource.manager)))
                 return true;
             }
-
           }
         }
       }
@@ -322,7 +321,7 @@ const EmployeeMaster = () => {
     {'name': 'Updated Date', 'selector' : 'updatedDate','default':'false'},
     {'name': 'Updated By', 'selector' : 'updatedBy','default':'false'},
   ]
-  const title = "Employee Details";
+  const title = "Resource Details";
   //end constants for export
 
   return (
@@ -340,10 +339,10 @@ const EmployeeMaster = () => {
       <div className="col-md-12 bg-mainclass" onClick={closeNav}>
         <div>
           <div className="row Page-Heading">
-            <h1 className="Heading-Cls">Employee Details</h1>
+            <h1 className="Heading-Cls">Resource Details</h1>
             <p>
               <span className="Heading-P-Cls">Master</span>
-              <span>Employee Details</span>
+              <span>Resource Details</span>
             </p>
             <div className="btns employee">
               <div style={{display:'flex', width:'25%',float:'right', justifyContent:'space-between', position:'relative'}}>
@@ -371,7 +370,7 @@ const EmployeeMaster = () => {
                 />
                 <div className="BulkUploadEmployeeTooltip">
                   <p>
-                    Add Bulk Employees
+                    Add Bulk Resources
                   </p>
                 </div>
               </div>
@@ -466,7 +465,8 @@ const AddModal = (props: any) => {
   const marketList = useSelector((state: any) => state.Market.data);
   const locations = useSelector((state: any) => state.Filters.locations);
   const subLocations = useSelector((state: any) => state.Filters.subLocations);
-
+  const resourceList = useSelector((state: any) => state.Employee.data);
+  
   const [employeeName, setEmployeeName] = useState("");
   const [role, setRole] = useState("0");
   const [manager, setManager] = useState("");
@@ -535,12 +535,12 @@ const AddModal = (props: any) => {
         variant="primary"
         onClick={props.openModal}
       >
-        <i className="las la-plus"></i> Add Employee
+        <i className="las la-plus"></i> Add Resource
       </Button>
       <Modal show={props.showModal} onHide={props.closeModal}>
         <Modal.Header closeButton onClick={props.closeModal}>
           <Modal.Title>
-            <h6>Add New Employee</h6>
+            <h6>Add New Resource</h6>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -599,7 +599,7 @@ const AddModal = (props: any) => {
               <div className="col-md-6 form-group" id="AddResourceManagerField">
                 <label className="form-label">Manager</label>
                 <span className="requiredField">*</span>
-                <input
+                {/* <input
                   type="text"
                   required
                   pattern={PatternsAndMessages.nameLike.pattern}
@@ -608,8 +608,23 @@ const AddModal = (props: any) => {
                   value={manager}
                   onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceManagerField'), 'input')}
                   onChange={(event) => setManager(event.target.value)}
-                />
-                <div className="error"></div>
+                /> */}
+                <div className="dropdown">
+                  <select
+                    required
+                    className="form-control"
+                    id="manager"
+                    value={manager}
+                    onChange={(event) => {
+                      setManager(event.target.value);
+                      validateSingleFormGroup(document.getElementById('AddResourceManagerField'), 'select');
+                    }}>                  
+                    <option value="0">Select</option>
+                    {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
+                  
+                  </select>
+                  <div className="error"></div>
+                </div>
               </div>
               <div className="col-md-6 form-group" id="AddResourceResourceTypeField">
                 <label className="form-label">Resource Type</label>
@@ -699,11 +714,11 @@ const AddModal = (props: any) => {
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton" >
                   Reset
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+                  Add
                 </button>
               </div>
             </div>
@@ -728,7 +743,8 @@ const UpdateModal = (props: any) => {
   const marketList = useSelector((state: any) => state.Market.data);
   const [formValues, setFormValues] = useState(props.initialValues || { location: "0" });
   let location = formValues.location;
-
+  const resourceList = useSelector((state: any) => state.Employee.data);
+  
 
   const handleSave = async (event: any) => {
     event.preventDefault();
@@ -778,7 +794,24 @@ const UpdateModal = (props: any) => {
       [e.target.name]: e.target.value
     });
   };
+  
+  const getEmployeeDetails = async () => {
+    try {
+      const response = await fetch(`${GET_ALL_RESOURCES}`);
+      let dataGet = await response.json();
+      dataGet = dataGet.map((row: any) => ({ ...row, isActive: row.isActive ,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
+      dispatch(employeeActions.changeData(dataGet));
+      } catch {
+      console.log("Error occured");
+    }
+  };
 
+  const handleDelete = async()=>{
+    // id: formValues.id,
+    const response = await fetch(`${DELETE_RESOURCE}/${formValues.resourceId}`);
+    getEmployeeDetails();
+    props.closeModal();
+  }
   return (
     <>
       <Button
@@ -793,7 +826,7 @@ const UpdateModal = (props: any) => {
       <Modal show={props.showModal} onHide={props.closeModal}>
         <Modal.Header closeButton onClick={props.closeModal}>
           <Modal.Title>
-            <h6>Update Employee</h6>
+            <h6>Update Resource</h6>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -855,18 +888,24 @@ const UpdateModal = (props: any) => {
               <div className="col-md-6 form-group" id="UpdateResourceManagerField">
                 <label className="form-label">Manager</label>
                 <span className="requiredField">*</span>
-                <input
-                  type="text"
-                  required
-                  pattern={PatternsAndMessages.nameLike.pattern}
-                  name="manager"
-                  className="form-control"
-                  id="manager"
-                  value={formValues.manager}
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceManagerField'), 'input')}
-                  onChange={handleChange}
-                />
+                <div className="dropdown">
+                <select
+                    required
+                    className="form-control"
+                    id="manager"
+                    name="manager"
+                    value={formValues.manager}
+                    onChange={(event) => {
+                      // setManager(event.target.value);
+                      handleChange(event);
+                      validateSingleFormGroup(document.getElementById('UpdateResourceManagerField'), 'select');
+                    }}>                  
+                    <option value="0">Select</option>
+                    {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceName.toString()}>{resource.resourceName}</option>)}
+                  
+                  </select>
                 <div className="error"></div>
+              </div>
               </div>
               <div className="col-md-6 form-group" id="UpdateResourceResourceTypeField">
                 <label className="form-label">Resource Type</label>
@@ -974,9 +1013,15 @@ const UpdateModal = (props: any) => {
 
             </div>
             <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+              <div className="col-md-8">
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
+                  Delete
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Update
                 </button>
               </div>
             </div>

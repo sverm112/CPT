@@ -35,3 +35,11 @@ export const UPDATE_PTO = `${Base_URL}api/v1/PTOs/UpdatePTO`;
 export const UPDATE_HOLIDAY = `${Base_URL}api/v1/HolidaysList/UpdateHoliday`;
 export const UPDATE_PROJECT_ALLOCATION = `${Base_URL}api/v1/ProjectAllocations/UpdateProjectAllocation`;
 // export const UPDATE_PTO = `${Base_URL}api/v1/PTOs/UpdatePTO`;
+
+//Delete
+export const DELETE_ALLOCATION = `${Base_URL}api/v1/ProjectAllocations/DeleteProjectAllocation`;
+export const DELETE_PTO = `${Base_URL}api/v1/PTOs/DeletePTO`;
+export const DELETE_RESOURCE = `${Base_URL}api/v1/Resources/DeleteResources`;
+export const DELETE_PROJECT = `${Base_URL}api/v1/Projects/DeleteProject`;
+export const DELETE_HOLIDAY = `${Base_URL}api/v1/HolidaysList/DeleteHoliday`;
+export const DELETE_MARKET = `${Base_URL}api/v1/Markets/DeleteMarket`;

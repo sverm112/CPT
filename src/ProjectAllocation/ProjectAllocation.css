@@ -10,6 +10,18 @@ div#project_allocation_modal {
     border-right: none;
   }
 
-.resetButton{
-    margin-left:20%;
+.allocateResetButton{
+    margin-left:20% !important;
   }
+
+.DateFilter{
+  padding: 0px 0 !important;
+  height: 30px !important;
+}
+.react-date-picker__inputGroup__input:invalid{
+  background: rgba(255, 255, 255, 0) !important;
+}
+
+input.react-date-picker__inputGroup__input{
+  background: rgba(255, 255, 255, 0) !important;
+}

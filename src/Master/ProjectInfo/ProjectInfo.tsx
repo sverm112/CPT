@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { employeeActions } from "../../Store/Slices/Employee";
 import DownloadBtn from "../../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
-import { Base_URL, GET_ALL_MARKETS, GET_ALL_PROJECTS, POST_PROJECT, UPDATE_PROJECT } from "../../constants";
+import { Base_URL, DELETE_PROJECT, GET_ALL_MARKETS, GET_ALL_PROJECTS, POST_PROJECT, UPDATE_PROJECT } from "../../constants";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
@@ -46,7 +46,7 @@ const columns = [
     filterable: true,
   },
   {
-    name: "Program Manager",
+    name: "Project Manager",
     selector: (row: { programManager: any }) => row.programManager,
     sortable: true,
     reorder: true,
@@ -101,7 +101,7 @@ const columnsAndSelectors=[
   {'name':'Project Name','selector':'projectName','default':'true'},
   {'name':'Project Model','selector':'projectModel','default':'true'},
   {'name':'Project Market','selector':'projectMarket','default':'true'},
-  {'name':'Program Manager','selector':'programManager','default':'true'},
+  {'name':'Project Manager','selector':'programManager','default':'true'},
   {'name':'Expense Type','selector': 'expenseType', 'default':'true'},
   {'name':'Status','selector':'status','default':'true'},
   {'name':'Created Date','selector':'createdDate','default':'true'},
@@ -125,8 +125,8 @@ const ProjectInfo = () => {
   const status = useSelector((state: any) => state.Filters.status);
   const projectModels = [
     { label: "Waterfall", value: "Waterfall" },
-    { label: "Kanban", value: "Kanban" },
-    { label: "Scrum", value: "Scrum" },
+    // { label: "Kanban", value: "Kanban" },
+    // { label: "Scrum", value: "Scrum" },
     { label: "Agile", value: "Agile" },
   ]
   const projects = useSelector((store: any) => store.Project.data);
@@ -181,7 +181,7 @@ const ProjectInfo = () => {
       if ((!marketSelected.length) || (marketSelected.length > 0 && marketOptions.includes(project.projectMarket) == true)) {
         if ((!expenseTypeSelected.length) || (expenseTypeSelected.length > 0 && expenseTypeOptions.includes(project.expenseType) == true)) {
 
-          if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(project.status))) {
+          if ((!statusSelected.length && project.status === "Active" ) || (statusSelected.length > 0 && statusOptions.includes(project.status))) {
             if ((!projectModelSelected.length) || (projectModelSelected.length > 0 && projectModelOptions.includes(project.projectModel)))
               return true;
           }
@@ -432,8 +432,8 @@ style={{ float: "right", marginTop: "-68px"}}
                   >
                     <option value="0">Select</option>
                     <option value="Waterfall">Waterfall</option>
-                    <option value="Kanban">Kanban</option>
-                    <option value="Scrum">Scrum</option>
+                    {/* <option value="Kanban">Kanban</option>
+                    <option value="Scrum">Scrum</option> */}
                     <option value="Agile">Agile</option>
                   </select>
                 <div className="error"></div>
@@ -481,7 +481,7 @@ style={{ float: "right", marginTop: "-68px"}}
               </div>
               <div className="col-md-6 form-group" id="ProgramManager">
                 <label className="form-label" htmlFor="programManager">
-                  Program Manager
+                  Project Manager
                 </label>
                 {/* <span className="requiredField">*</span> */}
                 <input
@@ -503,11 +503,11 @@ style={{ float: "right", marginTop: "-68px"}}
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton" >
                   Reset
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+                  Add
                 </button>
               </div>
             </div>
@@ -561,7 +561,19 @@ const UpdateModal = (props: any) => {
     }
   };
 
+  const getProjectDetails = async () => {
+    const response = await fetch(`${GET_ALL_PROJECTS}`);
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, createdDate: row.createdDateString,updatedDate:row.updatedDateString}));
+    dispatch(projectActions.changeData(dataGet));
+  };
 
+  const handleDelete = async()=>{
+    // id: formValues.id,
+    const response = await fetch(`${DELETE_PROJECT}/${formValues.id}`);
+    getProjectDetails();
+    props.closeModal();
+  }
   const handleChange = (e: any) => {
     console.log("Update")
     setFormValues({
@@ -644,8 +656,8 @@ style={{ float: "right", marginTop: "-68px"}}
                   >
                     <option value="0">Select</option>
                     <option value="Waterfall">Waterfall</option>
-                    <option value="Kanban">Kanban</option>
-                    <option value="Scrum">Scrum</option>
+                    {/* <option value="Kanban">Kanban</option>
+                    <option value="Scrum">Scrum</option> */}
                     <option value="Agile">Agile</option>
                   </select>
                   <div className="error"></div>
@@ -694,7 +706,7 @@ style={{ float: "right", marginTop: "-68px"}}
               </div>
               <div className="col-md-6 form-group" id="ProgramManager">
                 <label className="form-label" htmlFor="programManager">
-                  Program Manager
+                  Project Manager
                 </label>
                 {/* <span className="requiredField">*</span> */}
                 <input
@@ -729,9 +741,15 @@ style={{ float: "right", marginTop: "-68px"}}
               </div>
             </div>
             <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+              <div className="col-md-8">
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
+                  Delete
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Update
                 </button>
               </div>
             </div>

@@ -572,9 +572,12 @@ button#export-excel-btn:hover {
 } 
 
 .resetButton{
-  margin-left:20%;
+  margin-left:55px !important;
 }
 
+.deleteButton{
+  margin-left:32px !important;
+}
 .DownloadEmployeeTemplate {
   position: relative;
   display: inline-block;

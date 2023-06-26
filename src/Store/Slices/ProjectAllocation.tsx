@@ -7,6 +7,7 @@ const initialState = {
   role : [],
   expenseType :[],
   projectMarket:[],
+  status: [{label:'Active', value: 'Active'}],
   location : '0',
   currentPage: "1",
   pageSize: "10",
@@ -35,6 +36,9 @@ const projectAllocationSlice = createSlice({
     changeProjectMarket(state,action){
       state.projectMarket=action.payload
     },
+    changeStatus(state, action) {
+      state.status = action.payload;
+    },
     changeLocation(state,action){
       state.location=action.payload
     },
@@ -54,6 +58,7 @@ const projectAllocationSlice = createSlice({
       state.projectMarket=[];
       state.expenseType=[];
       state.location="0";
+      state.status=[];
     }
   },
 });

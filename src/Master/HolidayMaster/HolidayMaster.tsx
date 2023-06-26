@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { filterActions } from "../../Store/Slices/Filters";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
-import { GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_SUB_LOCATIONS, POST_HOLIDAY, UPDATE_HOLIDAY } from "../../constants";
+import { DELETE_HOLIDAY, GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_SUB_LOCATIONS, POST_HOLIDAY, UPDATE_HOLIDAY } from "../../constants";
 import { propTypes } from "react-bootstrap/esm/Image";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
@@ -28,7 +28,7 @@ const columns = [
   },
   {
     name: "Holiday Date",
-    selector: (row: { holidayDate: any }) => row.holidayDate,
+    selector: (row: { holidayDateString: any }) => row.holidayDateString,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -177,7 +177,7 @@ const HolidayMaster = () => {
     if ((!marketSelected.length) || (marketSelected.length > 0 && marketOptions.includes(holiday.marketName) == true)) {
       if ((!locationSelected.length) || (locationSelected.length > 0 && locationOptions.includes(holiday.locationName) == true))
         if ((!subLocationSelected.length) || (subLocationSelected.length > 0 && subLocationOptions.includes(holiday.subLocationName) == true))
-          if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(holiday.status)))
+          if ((!statusSelected.length && holiday.status === "Active" ) || (statusSelected.length > 0 && statusOptions.includes(holiday.status)))
             return true;
     }
     return false;
@@ -365,6 +365,19 @@ const UpdateModal = (props: any) =>{
     }
 
   }
+
+  const getHolidayDetails = async () => {
+    const response = await fetch(`${GET_ALL_HOLIDAYS}`);
+    let dataGet = await response.json();
+    dataGet = dataGet.map((row: any) => ({ ...row, holidayDate : row.holidayDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10) }));
+    dispatch(holidayActions.changeData(dataGet));
+  };
+  const handleDelete = async()=>{
+    // id: formValues.id,
+    const response = await fetch(`${DELETE_HOLIDAY}/${formValues.id}`);
+    getHolidayDetails();
+    props.closeModal();
+  }
   const handleChange = (e: any) => {
     setFormValues({
       ...formValues,
@@ -422,7 +435,7 @@ const UpdateModal = (props: any) =>{
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('HolidayDate'),'datePicker')}
                   onChange={setHolidayDate}
                   value={holidayDate}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
@@ -518,9 +531,15 @@ const UpdateModal = (props: any) =>{
               </div>
             </div>
             <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+              <div className="col-md-8">
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
+                  Delete
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Update
                 </button>
               </div>
             </div>
@@ -657,7 +676,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('HolidayDate'),'datePicker')}
                   onChange={setDate}
                   value={date}
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   dayPlaceholder="dd"
                   monthPlaceholder="mm"
                   yearPlaceholder="yyyy"
@@ -736,11 +755,11 @@ style={{ float: "right", marginTop: "-68px"}}
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton" >
                   Reset
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+                  Add
                 </button>
               </div>
             </div>

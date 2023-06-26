@@ -4,7 +4,7 @@ const initialState = {
   market: [],
   role: [],
   resourceType: [],
-  status: [],
+  status: [{label:'Active', value: 'Active'}],
   manager:[],
   data: [],
   currentPage: "1",

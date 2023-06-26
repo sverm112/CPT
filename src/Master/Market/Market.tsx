@@ -8,7 +8,7 @@ import { marketActions } from "../../Store/Slices/Market";
 import { toast } from "react-toastify";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
-import { GET_ALL_MARKETS, POST_MARKET, UPDATE_MARKET } from "../../constants";
+import { DELETE_MARKET, GET_ALL_MARKETS, POST_MARKET, UPDATE_MARKET } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
 
@@ -121,6 +121,11 @@ const Market = () => {
     setUpdateMarketDetails(data);
   };
 
+  const filteredMarkets = markets.filter((market: any) =>{
+    if(market.status==="Active")
+    return true;
+  })
+
   return (
     <div>
       <SideBar></SideBar>
@@ -156,7 +161,7 @@ const Market = () => {
             </div>
           </div>
           <div className="TableContentBorder">
-            <Table  columnsAndSelectors={columnsAndSelectors} isLoading={isLoading} columns={columns} data={markets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
+            <Table  columnsAndSelectors={columnsAndSelectors} isLoading={isLoading} columns={columns} data={filteredMarkets} onRowDoubleClicked={handleRowDoubleClicked} customValueRenderer={customValueRenderer} title={title}/>
           </div>
         </div>
       </div>}
@@ -266,11 +271,11 @@ const AddModal = (props : any) => {
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton">
+              <button type="reset" onClick={resetFormFields} className="btn btn-primary resetButton" >
                   Reset
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+                  Add
                 </button>
               </div>
             </div>
@@ -320,6 +325,23 @@ const UpdateModal = (props: any) => {
   };
 
 
+  const getMarketDetails = async () => {
+    try {
+      const response = await fetch(`${GET_ALL_MARKETS}`);
+      let dataGet = await response.json();
+      dataGet = dataGet.map((row: any) => ({ ...row,createdDate:row.createdDateString,updatedDate:row.updatedDateString}));
+      dispatch(marketActions.changeData(dataGet));
+    }
+    catch {
+      console.log("Error occured");
+    }
+  };
+  const handleDelete = async()=>{
+    // id: formValues.id,
+    const response = await fetch(`${DELETE_MARKET}/${formValues.id}`);
+    getMarketDetails();
+    props.closeModal();
+  }
   const handleChange = (e: any) => {
     console.log("Update")
     setFormValues({
@@ -402,9 +424,15 @@ const UpdateModal = (props: any) => {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-12">
-                <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
-                  Submit
+              <div className="col-md-8">
+                
+              </div>
+              <div className="col-md-4" >
+              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
+                  Delete
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+                  Update
                 </button>
               </div>
             </div>

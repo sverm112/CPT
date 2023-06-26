@@ -82,7 +82,7 @@ const SideBar = () => {
                                             <Collapsible trigger="Master Entry">
                                                 <ul className="Collapsible-ul">
                                                     <li className="Collapsible-li"><Link to="/Master/MarketDetails" onClick={() => { navigate(APP_ROUTES.MARKET) }}>Market Details </Link> </li>
-                                                    <li className="Collapsible-li"><Link to="/Master/EmployeeDetails" onClick={() => { navigate(APP_ROUTES.EMPLOYEEMASTER) }} >Employee Details</Link></li>
+                                                    <li className="Collapsible-li"><Link to="/Master/EmployeeDetails" onClick={() => { navigate(APP_ROUTES.EMPLOYEEMASTER) }} >Resource Details</Link></li>
                                                     <li className="Collapsible-li"><Link to="/Master/ProjectDetails" onClick={() => { navigate(APP_ROUTES.PROJECTINFO) }}>Project Details</Link></li>
                                                     <li className="Collapsible-li"><Link to="/Master/HolidayDetails" onClick={() => { navigate(APP_ROUTES.HOLIDAYMASTER) }}>Holiday Details</Link></li>
                                                     <li className="Collapsible-li"><Link to="/Master/PTO" onClick={() => { navigate(APP_ROUTES.PAIDTIMEOFF) }}>PTO Details</Link></li>
