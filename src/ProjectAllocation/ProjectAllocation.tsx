@@ -878,6 +878,10 @@ const UpdateModal = (props: any) => {
     setAllocationHrs(formValues.allocationHours);
   },[formValues.allocationPercentage])
   const resetFormFields = () => {
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
     setAllocationStartDate(null);
     setAllocationEndDate(null);
     setPtoDays("");
@@ -1531,6 +1535,10 @@ const AddModal = (props: any) => {
     setAllocationHrs(allocationHours.toString());
   }, [allocationPercentage])
   const resetFormFields = () => {
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
     setAllocationStartDate(null);
     setAllocationEndDate(null);
     setPtoDays("");

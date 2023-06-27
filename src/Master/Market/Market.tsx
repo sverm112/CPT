@@ -198,6 +198,10 @@ const AddModal = (props : any) => {
   const [marketName, setMarketName] = useState("");
   const [marketDomain, setMarketDomain] = useState("");
   const resetFormFields = () => {
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
     setMarketName("");
     setMarketDomain("");
   }

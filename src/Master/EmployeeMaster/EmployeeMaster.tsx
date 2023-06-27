@@ -516,6 +516,10 @@ const AddModal = (props: any) => {
   };
 
   const resetFormFields = () => {
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
     setEmployeeName("");
     setRole("0");
     setManager("");

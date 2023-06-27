@@ -571,6 +571,10 @@ const AddModal = (props: any) => {
   const subLocations = useSelector((state: any) => state.Filters.subLocations);
 
   const resetFormFields = () => {
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
     setOccasion("");
     setLocation("0");
     setSubLocation("0");

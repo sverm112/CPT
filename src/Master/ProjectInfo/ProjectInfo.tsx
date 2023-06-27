@@ -316,6 +316,10 @@ const AddModal = (props: any) => {
   const [programManager, setProgramManager] = useState("");
 
   const resetFormFields = () => {
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
     setProjectCode("");
     setProjectName("");
     setProjectModel("0");

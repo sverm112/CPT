@@ -391,6 +391,10 @@ const AddModal = (props: any) => {
   const [remarks,setRemarks]=useState("");
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
   const resetFormFields = () => {
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
     setResourceId("0");
     setPTOTypeId("0");
     setStartDate(null);
