@@ -1162,19 +1162,19 @@ useEffect(()=>{
                 <div className="dropdown">
                   <select
                     className="form-control "
-                    // required
-                    disabled
+                    required
+                    // disabled
                     id="resourceType1Dropdown"
                     name="resourceType1"
-                    value={ selectedResourceDetails.resourceType}
+                    value={formValues.resourceType1}
                     onChange={(event) => {
                       handleChange(event);
-                      // setResourceType1(event.target.value);
+                      setResourceType1(event.target.value);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select');
                     }}
                   >
                     <option value="0">Select</option>
-                    {roles.map((role: any) => (<option key={selectedResourceDetails.resourceType} value={selectedResourceDetails.resourceType}> {selectedResourceDetails.resourceType}</option> || <option key={role} value={role}>{role}</option>))}
+                    {roles.map((role: any) => (<option key={role} value={role}> {role}</option>))}
                   </select>
                 <div className="error"></div>
                 </div>
@@ -1774,23 +1774,22 @@ const AddModal = (props: any) => {
                 <label className="form-label" htmlFor="resourceType1">
                   Resource Type 1
                 </label>
-                {/* <span className="requiredField">*</span> */}
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     className="form-control "
-                    // required
-                    disabled
+                    required
+                    // disabled
                     id="resourceType1Dropdown"
-                    value={selectedResourceDetails.resourceType}
-                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select')}
+                    value={resourceType1 === "0" ? selectedResourceDetails.role : resourceType1}
                     onChange={(event) => {setResourceType1(event.target.value);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select');
                     }}
                   >
                     <option value="0">Select</option>
-                    {roles.map((role: any) => (<option key={selectedResourceDetails.resourceType} value={selectedResourceDetails.resourceType}> {selectedResourceDetails.resourceType}</option> || <option key={role} value={role}>{role}</option>))}
+                    {roles.map((role: any) => (<option key={role} value={role}> {role}</option>))}
                   </select>
-                {/* <div className="error"></div> */}
+                <div className="error"></div>
                 </div>
               </div>
 
