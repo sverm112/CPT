@@ -710,7 +710,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
             
             <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); setEndDate(null); setStartDate(null); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}><span>Clear Filters</span><i className="las la-filter"></i></button>
           </div>
-          <div className="col-md-6" style={{ marginTop: "24px", marginLeft:"-6%" }}>
+          <div className="col-md-6" style={{ marginTop: "24px", marginLeft:"-8.5%" }}>
             <button type="button" className="btn btn-primary" onClick={showMoreFilters}><span id="MoreFiltersButton">More Filters</span><i className="las la-filter"></i></button>
           </div>
         </div>
