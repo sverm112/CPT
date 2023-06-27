@@ -261,6 +261,9 @@ const ProjectAllocation = () => {
   }
 
   
+  useEffect(()=>{
+    dispatch(projectAllocationActions.changeStatus([{label:'Active', value:'Active'}]));
+  },[])
   const changeManagerSelectHandler = (event: any) => {
     dispatch(employeeActions.changeManager(event));
   };

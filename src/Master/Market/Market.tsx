@@ -89,6 +89,7 @@ const Market = () => {
     setShowModal(false);
     setAction("Add");
   }
+
   const getMarketDetails = async () => {
     try {
       const response = await fetch(`${GET_ALL_MARKETS}`);
@@ -101,6 +102,10 @@ const Market = () => {
       console.log("Error occured");
     }
   };
+  
+  useEffect(()=>{
+    dispatch(marketActions.changeStatus([{label:'Active', value:'Active'}]));
+  },[])
   useEffect(() => {
     getMarketDetails();
   }, [toggle]);

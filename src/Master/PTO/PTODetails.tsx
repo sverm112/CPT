@@ -156,6 +156,9 @@ const PTO = () => {
     setAction("Add");
   }
 
+  useEffect(()=>{
+    dispatch(ptoActions.changeStatus([{label:'Active', value:'Active'}]));
+  },[])
   resources.map((resource: any) => {
     if (managers.indexOf(resource.manager) === -1) {
       managers.push(resource.manager);

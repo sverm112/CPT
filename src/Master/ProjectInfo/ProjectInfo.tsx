@@ -147,6 +147,10 @@ const ProjectInfo = () => {
     setShowModal(false);
     setAction("Add");
   }
+  
+  useEffect(()=>{
+    dispatch(projectActions.changeStatus([{label:'Active', value:'Active'}]));
+  },[])
 
   const getProjectDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);

@@ -125,6 +125,10 @@ const HolidayMaster = () => {
     setAction("Add");
   }
 
+  useEffect(()=>{
+    dispatch(holidayActions.changeStatus([{label:'Active', value:'Active'}]));
+  },[])
+
   const changeLocationSelectHandler = (event: any) => {
     dispatch(holidayActions.changeLocation(event));
   };

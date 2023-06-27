@@ -134,6 +134,7 @@ const EmployeeMaster = () => {
   const managerSelected = useSelector((state: any) => state.Employee.manager);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  
   const [action, setAction] = useState("Add");
   const [updateResourceDetails, setUpdateResourceDetails] = useState({});
   const openModal = () => {
@@ -175,7 +176,9 @@ const EmployeeMaster = () => {
   useEffect(() => {
     getEmployeeDetails();
   }, [toggle]);
-
+useEffect(()=>{
+  dispatch(employeeActions.changeStatus([{label:'Active', value:'Active'}]));
+},[])
   const getMarketDetails = async () => {
     const response = await fetch(`${GET_ALL_MARKETS}`);
     let dataGet = await response.json();
@@ -466,7 +469,7 @@ const AddModal = (props: any) => {
   const locations = useSelector((state: any) => state.Filters.locations);
   const subLocations = useSelector((state: any) => state.Filters.subLocations);
   const resourceList = useSelector((state: any) => state.Employee.data);
-  
+  console.log("Resource List: ", resourceList);
   const [employeeName, setEmployeeName] = useState("");
   const [role, setRole] = useState("0");
   const [manager, setManager] = useState("");
@@ -475,6 +478,9 @@ const AddModal = (props: any) => {
   const [subLocation, setSubLocation] = useState("0");
   const [market, setMarket] = useState("0");
   const [employeeEmailAddress, setEmployeeEmailAddress] = useState("");
+  
+  let resourceManagers = resourceList.filter((resource: any)=> resource.role.search(/Manager/i) != -1 );
+
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
     let payload = {
@@ -603,16 +609,6 @@ const AddModal = (props: any) => {
               <div className="col-md-6 form-group" id="AddResourceManagerField">
                 <label className="form-label">Manager</label>
                 <span className="requiredField">*</span>
-                {/* <input
-                  type="text"
-                  required
-                  pattern={PatternsAndMessages.nameLike.pattern}
-                  className="form-control"
-                  id="manager"
-                  value={manager}
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceManagerField'), 'input')}
-                  onChange={(event) => setManager(event.target.value)}
-                /> */}
                 <div className="dropdown">
                   <select
                     required
@@ -624,7 +620,7 @@ const AddModal = (props: any) => {
                       validateSingleFormGroup(document.getElementById('AddResourceManagerField'), 'select');
                     }}>                  
                     <option value="0">Select</option>
-                    {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
+                    {resourceManagers.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
                   
                   </select>
                   <div className="error"></div>
@@ -748,7 +744,8 @@ const UpdateModal = (props: any) => {
   const [formValues, setFormValues] = useState(props.initialValues || { location: "0" });
   let location = formValues.location;
   const resourceList = useSelector((state: any) => state.Employee.data);
-  
+  let resourceManagers = resourceList.filter((resource: any)=> resource.role.search(/Manager/i) != -1 );
+
 
   const handleSave = async (event: any) => {
     event.preventDefault();
@@ -915,7 +912,8 @@ const UpdateModal = (props: any) => {
                       validateSingleFormGroup(document.getElementById('UpdateResourceManagerField'), 'select');
                     }}>                  
                     <option value="0">Select</option>
-                    {resourceList.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceName.toString()}>{resource.resourceName}</option>)}
+                    {/* <option value={formValues.manager}>{formValues.manager}</option> */}
+                    {resourceManagers.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceName.toString()}>{resource.resourceName}</option>)}
                   
                   </select>
                 <div className="error"></div>
