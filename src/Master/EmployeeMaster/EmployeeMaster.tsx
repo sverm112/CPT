@@ -479,7 +479,7 @@ const AddModal = (props: any) => {
   const [market, setMarket] = useState("0");
   const [employeeEmailAddress, setEmployeeEmailAddress] = useState("");
   
-  let resourceManagers = resourceList.filter((resource: any)=> resource.role.search(/Manager/i) != -1 );
+  let resourceManagers = resourceList.filter((resource: any)=> resource.role.search(/Manager/i) != -1 || resource.role.search(/Director/i) != -1);
 
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
@@ -744,7 +744,7 @@ const UpdateModal = (props: any) => {
   const [formValues, setFormValues] = useState(props.initialValues || { location: "0" });
   let location = formValues.location;
   const resourceList = useSelector((state: any) => state.Employee.data);
-  let resourceManagers = resourceList.filter((resource: any)=> resource.role.search(/Manager/i) != -1 );
+  let resourceManagers = resourceList.filter((resource: any)=> resource.role.search(/Manager/i ) != -1 || resource.role.search(/Director/i) != -1 );
 
 
   const handleSave = async (event: any) => {
