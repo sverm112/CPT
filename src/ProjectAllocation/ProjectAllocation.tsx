@@ -708,12 +708,12 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
             </div>
         </div>
         </div>
-        <div className="col-md-3 row" style={{marginLeft:'-10%', float:'right'}}>
+        <div className="col-md-3 row" style={{marginLeft:'-120px', float:'right',whiteSpace:'nowrap'}}>
         <div className="col-md-6" style={{ marginTop: "24px" }}>
             
             <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); setEndDate(null); setStartDate(null); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}><span>Clear Filters</span><i className="las la-filter"></i></button>
           </div>
-          <div className="col-md-6" style={{ marginTop: "24px", marginLeft:"-8.5%" }}>
+          <div className="col-md-6" style={{ marginTop: "24px", marginLeft:"-25px" }}>
             <button type="button" className="btn btn-primary" onClick={showMoreFilters}><span id="MoreFiltersButton">More Filters</span><i className="las la-filter"></i></button>
           </div>
         </div>
