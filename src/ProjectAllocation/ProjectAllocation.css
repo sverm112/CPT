@@ -14,13 +14,17 @@ div#project_allocation_modal {
     margin-left:20% !important;
   }
 
+  .react-date-picker__inputGroup__leadingZero{
+    margin-top: -1px !important;
+  }
 .DateFilter{
   padding: 0px 0 !important;
   height: 30px !important;
 }
 .react-date-picker__inputGroup__input:invalid{
   background: rgba(255, 255, 255, 0) !important;
-}
+  padding-bottom: 5px;
+  }
 
 input.react-date-picker__inputGroup__input{
   background: rgba(255, 255, 255, 0) !important;

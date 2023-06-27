@@ -156,6 +156,9 @@ const PTO = () => {
     setAction("Add");
   }
 
+  useEffect(()=>{
+    dispatch(ptoActions.changeStatus([{label:'Active', value:'Active'}]));
+  },[])
   resources.map((resource: any) => {
     if (managers.indexOf(resource.manager) === -1) {
       managers.push(resource.manager);
@@ -245,7 +248,7 @@ const PTO = () => {
           if((!ptoTypeSelected.length) || (ptoTypeSelected.length > 0 && ptoTypeOptions.includes(pto.ptoType) == true)){
             if((!monthSelected.length) || (monthSelected.length > 0 && monthOptions.includes(pto.month) == true)){
               if((!yearSelected.length) || (yearSelected.length > 0 && yearOptions.includes(pto.year) == true)){
-                if ((!statusSelected.length  && pto.status === "Active" ) || (statusSelected.length > 0 && statusOptions.includes(pto.status))) {
+                if ((!statusSelected.length ) || (statusSelected.length > 0 && statusOptions.includes(pto.status))) {
                   return true;
                 }
               }
@@ -391,6 +394,10 @@ const AddModal = (props: any) => {
   const [remarks,setRemarks]=useState("");
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
   const resetFormFields = () => {
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
     setResourceId("0");
     setPTOTypeId("0");
     setStartDate(null);
@@ -604,9 +611,9 @@ style={{ float: "right", marginTop: "-68px"}}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOStartDate'),'datePicker')}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -623,9 +630,9 @@ style={{ float: "right", marginTop: "-68px"}}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOEndDate'),'datePicker')}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -797,6 +804,15 @@ const UpdateModal = (props: any) => {
       console.log("Error occured");
     }
   };
+  function deleteConfirmation() {
+    var txt;
+    if (window.confirm(`Deleting current record`)) {
+      txt = "You pressed OK!";
+      handleDelete();
+    } else {
+      txt = "You pressed Cancel!";
+    }
+  }
   
   const handleDelete = async()=>{
     // id: formValues.id,
@@ -900,9 +916,9 @@ const UpdateModal = (props: any) => {
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOStartDate'),'datePicker')}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -920,9 +936,9 @@ const UpdateModal = (props: any) => {
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOEndDate'),'datePicker')}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -998,7 +1014,7 @@ const UpdateModal = (props: any) => {
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
+              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary deleteButton">
                   Delete
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>

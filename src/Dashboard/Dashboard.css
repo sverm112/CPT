@@ -1,0 +1,16 @@
+.wrap-element {
+    position: relative;
+    overflow: hidden;
+    padding-top: 100vh;
+    margin-left: 7.5%;
+    /* margin-top: 0px; */
+  }
+  
+  .wrapped-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 90%;
+    height: 82%;
+    border: 0;
+  }

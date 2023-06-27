@@ -147,6 +147,10 @@ const ProjectInfo = () => {
     setShowModal(false);
     setAction("Add");
   }
+  
+  useEffect(()=>{
+    dispatch(projectActions.changeStatus([{label:'Active', value:'Active'}]));
+  },[])
 
   const getProjectDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);
@@ -181,7 +185,7 @@ const ProjectInfo = () => {
       if ((!marketSelected.length) || (marketSelected.length > 0 && marketOptions.includes(project.projectMarket) == true)) {
         if ((!expenseTypeSelected.length) || (expenseTypeSelected.length > 0 && expenseTypeOptions.includes(project.expenseType) == true)) {
 
-          if ((!statusSelected.length && project.status === "Active" ) || (statusSelected.length > 0 && statusOptions.includes(project.status))) {
+          if ((!statusSelected.length ) || (statusSelected.length > 0 && statusOptions.includes(project.status))) {
             if ((!projectModelSelected.length) || (projectModelSelected.length > 0 && projectModelOptions.includes(project.projectModel)))
               return true;
           }
@@ -316,6 +320,10 @@ const AddModal = (props: any) => {
   const [programManager, setProgramManager] = useState("");
 
   const resetFormFields = () => {
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
     setProjectCode("");
     setProjectName("");
     setProjectModel("0");
@@ -568,6 +576,15 @@ const UpdateModal = (props: any) => {
     dispatch(projectActions.changeData(dataGet));
   };
 
+  function deleteConfirmation() {
+    var txt;
+    if (window.confirm(`Deleting current record`)) {
+      txt = "You pressed OK!";
+      handleDelete();
+    } else {
+      txt = "You pressed Cancel!";
+    }
+  }
   const handleDelete = async()=>{
     // id: formValues.id,
     const response = await fetch(`${DELETE_PROJECT}/${formValues.id}`);
@@ -745,7 +762,7 @@ style={{ float: "right", marginTop: "-68px"}}
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
+              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary deleteButton">
                   Delete
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>

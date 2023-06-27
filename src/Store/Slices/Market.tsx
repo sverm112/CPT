@@ -4,8 +4,8 @@ const initialState = {
   columns: [],
   data: [],
   currentPage: "1",
+  status: [{label:'Active', value: 'Active'}],
   pageSize: "10",
-  
   toggle: false,
 };
 
@@ -22,12 +22,18 @@ const marketSlice = createSlice({
     changeCurrentPage(state, action) {
       state.currentPage = action.payload;
     },
+    changeStatus(state, action) {
+      state.status = action.payload;
+    },
     changePageSize(state, action) {
       state.pageSize = action.payload;
     },
     changeToggle(state) {
       state.toggle = !state.toggle;
     },
+    clearFilters(state){
+      state.status=[];
+    }
   },
 });
 

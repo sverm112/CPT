@@ -261,6 +261,9 @@ const ProjectAllocation = () => {
   }
 
   
+  useEffect(()=>{
+    dispatch(projectAllocationActions.changeStatus([{label:'Active', value:'Active'}]));
+  },[])
   const changeManagerSelectHandler = (event: any) => {
     dispatch(employeeActions.changeManager(event));
   };
@@ -342,7 +345,7 @@ const ProjectAllocation = () => {
             if ((!managerSelected.length) || (managerSelected.length > 0 && managerOptions.includes(projectAllocation.resourceManager) == true)) {
               if ((!expenseTypeSelected.length) || (expenseTypeSelected.length > 0 && expenseTypeOptions.includes(projectAllocation.expenseType) == true)) {              
                     if((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket))){
-                          if ((!statusSelected.length && projectAllocation.status ==="Active") || (statusSelected.length > 0 && statusOptions.includes(projectAllocation.status))) {
+                          if ((!statusSelected.length ) || (statusSelected.length > 0 && statusOptions.includes(projectAllocation.status))) {
                             if (locationSelected == "0" || locationSelected == projectAllocation.location){
                               if((startDate == null) ? true : new Date(projectAllocation.startDate) >= startDate){
                                 if((endDate == null) ? true : new Date(projectAllocation.enddDate) <= endDate){
@@ -674,15 +677,16 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                 Allocation Start Date
               </label>
                 <DatePicker
-                    className="form-control DateFilter"
+                    className="form-control react-date-picker DateFilter"
                     required
+                    showLeadingZeros={false}
                     name="StartDate"
                     onChange={(e: any) => setStartDate(e)}
                     value={startDate}
                     format="MM/dd/yyyy"
-                    dayPlaceholder="dd"
-                    monthPlaceholder="mm"
-                    yearPlaceholder="yyyy"
+                    dayPlaceholder="DD"
+                    monthPlaceholder="MM"
+                    yearPlaceholder="YYYY"
                   />
             </div>
             <div className="col-md-3 form-group">
@@ -696,9 +700,9 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                     onChange={(e: any) => setEndDate(e)}
                     value={endDate}
                     format="MM/dd/yyyy"
-                    dayPlaceholder="dd"
-                    monthPlaceholder="mm"
-                    yearPlaceholder="yyyy"
+                    dayPlaceholder="DD"
+                    monthPlaceholder="MM"
+                    yearPlaceholder="YYYY"
                   />
             </div>
             </div>
@@ -709,7 +713,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
             
             <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); setEndDate(null); setStartDate(null); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}><span>Clear Filters</span><i className="las la-filter"></i></button>
           </div>
-          <div className="col-md-6" style={{ marginTop: "24px", marginLeft:"-6%" }}>
+          <div className="col-md-6" style={{ marginTop: "24px", marginLeft:"-8.5%" }}>
             <button type="button" className="btn btn-primary" onClick={showMoreFilters}><span id="MoreFiltersButton">More Filters</span><i className="las la-filter"></i></button>
           </div>
         </div>
@@ -877,6 +881,10 @@ const UpdateModal = (props: any) => {
     setAllocationHrs(formValues.allocationHours);
   },[formValues.allocationPercentage])
   const resetFormFields = () => {
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
     setAllocationStartDate(null);
     setAllocationEndDate(null);
     setPtoDays("");
@@ -970,6 +978,15 @@ const UpdateModal = (props: any) => {
 
   };
   
+  function deleteConfirmation() {
+    var txt;
+    if (window.confirm(`Deleting current record`)) {
+      txt = "You pressed OK!";
+      handleDelete();
+    } else {
+      txt = "You pressed Cancel!";
+    }
+  }
   const handleDelete = async()=>{
     // id: formValues.id,
     const response = await fetch(`${DELETE_ALLOCATION}/${formValues.id}`);
@@ -1161,19 +1178,19 @@ useEffect(()=>{
                 <div className="dropdown">
                   <select
                     className="form-control "
-                    // required
-                    disabled
+                    required
+                    // disabled
                     id="resourceType1Dropdown"
                     name="resourceType1"
-                    value={ selectedResourceDetails.resourceType}
+                    value={formValues.resourceType1}
                     onChange={(event) => {
                       handleChange(event);
-                      // setResourceType1(event.target.value);
+                      setResourceType1(event.target.value);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select');
                     }}
                   >
                     <option value="0">Select</option>
-                    {roles.map((role: any) => (<option key={selectedResourceDetails.resourceType} value={selectedResourceDetails.resourceType}> {selectedResourceDetails.resourceType}</option> || <option key={role} value={role}>{role}</option>))}
+                    {roles.map((role: any) => (<option key={role} value={role}> {role}</option>))}
                   </select>
                 <div className="error"></div>
                 </div>
@@ -1225,9 +1242,9 @@ useEffect(()=>{
                   maxDate={allocationEndDate !== null ? allocationEndDate : new Date('December 31, 2100')}
                   value={allocationStartDate}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -1248,9 +1265,9 @@ useEffect(()=>{
                   onChange={setAllocationEndDate}
                   value={allocationEndDate}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -1369,7 +1386,7 @@ useEffect(()=>{
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
+              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary deleteButton">
                   Delete
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
@@ -1521,6 +1538,10 @@ const AddModal = (props: any) => {
     setAllocationHrs(allocationHours.toString());
   }, [allocationPercentage])
   const resetFormFields = () => {
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
     setAllocationStartDate(null);
     setAllocationEndDate(null);
     setPtoDays("");
@@ -1773,23 +1794,22 @@ const AddModal = (props: any) => {
                 <label className="form-label" htmlFor="resourceType1">
                   Resource Type 1
                 </label>
-                {/* <span className="requiredField">*</span> */}
+                <span className="requiredField">*</span>
                 <div className="dropdown">
                   <select
                     className="form-control "
-                    // required
-                    disabled
+                    required
+                    // disabled
                     id="resourceType1Dropdown"
-                    value={selectedResourceDetails.resourceType}
-                    // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select')}
+                    value={resourceType1 === "0" ? selectedResourceDetails.role : resourceType1}
                     onChange={(event) => {setResourceType1(event.target.value);
                       validateSingleFormGroup(document.getElementById('AllocateProjectResourceType'), 'select');
                     }}
                   >
                     <option value="0">Select</option>
-                    {roles.map((role: any) => (<option key={selectedResourceDetails.resourceType} value={selectedResourceDetails.resourceType}> {selectedResourceDetails.resourceType}</option> || <option key={role} value={role}>{role}</option>))}
+                    {roles.map((role: any) => (<option key={role} value={role}> {role}</option>))}
                   </select>
-                {/* <div className="error"></div> */}
+                <div className="error"></div>
                 </div>
               </div>
 
@@ -1834,9 +1854,9 @@ const AddModal = (props: any) => {
                   onChange={setAllocationStartDate}
                   value={allocationStartDate}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -1856,9 +1876,9 @@ const AddModal = (props: any) => {
                   onChange={setAllocationEndDate}
                   value={allocationEndDate}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>

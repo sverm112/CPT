@@ -125,6 +125,10 @@ const HolidayMaster = () => {
     setAction("Add");
   }
 
+  useEffect(()=>{
+    dispatch(holidayActions.changeStatus([{label:'Active', value:'Active'}]));
+  },[])
+
   const changeLocationSelectHandler = (event: any) => {
     dispatch(holidayActions.changeLocation(event));
   };
@@ -177,7 +181,7 @@ const HolidayMaster = () => {
     if ((!marketSelected.length) || (marketSelected.length > 0 && marketOptions.includes(holiday.marketName) == true)) {
       if ((!locationSelected.length) || (locationSelected.length > 0 && locationOptions.includes(holiday.locationName) == true))
         if ((!subLocationSelected.length) || (subLocationSelected.length > 0 && subLocationOptions.includes(holiday.subLocationName) == true))
-          if ((!statusSelected.length && holiday.status === "Active" ) || (statusSelected.length > 0 && statusOptions.includes(holiday.status)))
+          if ((!statusSelected.length ) || (statusSelected.length > 0 && statusOptions.includes(holiday.status)))
             return true;
     }
     return false;
@@ -372,6 +376,15 @@ const UpdateModal = (props: any) =>{
     dataGet = dataGet.map((row: any) => ({ ...row, holidayDate : row.holidayDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10) }));
     dispatch(holidayActions.changeData(dataGet));
   };
+  function deleteConfirmation() {
+    var txt;
+    if (window.confirm(`Deleting current record`)) {
+      txt = "You pressed OK!";
+      handleDelete();
+    } else {
+      txt = "You pressed Cancel!";
+    }
+  }
   const handleDelete = async()=>{
     // id: formValues.id,
     const response = await fetch(`${DELETE_HOLIDAY}/${formValues.id}`);
@@ -436,9 +449,9 @@ const UpdateModal = (props: any) =>{
                   onChange={setHolidayDate}
                   value={holidayDate}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
@@ -535,7 +548,7 @@ const UpdateModal = (props: any) =>{
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
+              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary deleteButton">
                   Delete
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
@@ -562,6 +575,10 @@ const AddModal = (props: any) => {
   const subLocations = useSelector((state: any) => state.Filters.subLocations);
 
   const resetFormFields = () => {
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
     setOccasion("");
     setLocation("0");
     setSubLocation("0");
@@ -677,9 +694,9 @@ style={{ float: "right", marginTop: "-68px"}}
                   onChange={setDate}
                   value={date}
                   format="MM/dd/yyyy"
-                  dayPlaceholder="dd"
-                  monthPlaceholder="mm"
-                  yearPlaceholder="yyyy"
+                  dayPlaceholder="DD"
+                  monthPlaceholder="MM"
+                  yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
               </div>
