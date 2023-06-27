@@ -971,6 +971,15 @@ const UpdateModal = (props: any) => {
 
   };
   
+  function deleteConfirmation() {
+    var txt;
+    if (window.confirm(`Deleting current record`)) {
+      txt = "You pressed OK!";
+      handleDelete();
+    } else {
+      txt = "You pressed Cancel!";
+    }
+  }
   const handleDelete = async()=>{
     // id: formValues.id,
     const response = await fetch(`${DELETE_ALLOCATION}/${formValues.id}`);
@@ -1370,7 +1379,7 @@ useEffect(()=>{
                 
               </div>
               <div className="col-md-4" >
-              <button type="reset" onClick={handleDelete} className="btn btn-primary deleteButton">
+              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary deleteButton">
                   Delete
               </button>
               <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
