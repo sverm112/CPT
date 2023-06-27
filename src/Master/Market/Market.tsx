@@ -11,6 +11,7 @@ import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { DELETE_MARKET, GET_ALL_MARKETS, POST_MARKET, UPDATE_MARKET } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
+import { MultiSelect } from "react-multi-select-component";
 
 const columns = [
   {
@@ -78,6 +79,9 @@ const Market = () => {
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("Add");
   const [updateMarketDetails, setUpdateMarketDetails] = useState({});
+  const status = useSelector((state: any) => state.Filters.status);
+  const statusSelected = useSelector((store: any) => store.Market.status);
+  
   const openModal = () => {
     setShowModal(true);
   }
@@ -122,8 +126,10 @@ const Market = () => {
   };
 
   const filteredMarkets = markets.filter((market: any) =>{
-    if(market.status==="Active")
-    return true;
+    const statusOptions = statusSelected.map((status: any) => status.value);
+    if ((!statusSelected.length ) || (statusSelected.length > 0 && statusOptions.includes(market.status))) {
+        return true;
+    }
   })
 
   return (
@@ -158,6 +164,23 @@ const Market = () => {
               /> */}
               {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               {action == "Update" && <UpdateModal initialValues={updateMarketDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+            </div>
+          </div>
+          <div className="row filter-row">
+            <div className=" col-md-2 form-group">
+              <label htmlFor="activeDropdown" className="form-label">
+                Status
+              </label>
+              <MultiSelect
+                options={status.map((status: any) => ({ label: status, value: status }))}
+                value={statusSelected}
+                onChange={(event: any) => dispatch(marketActions.changeStatus(event))}
+                labelledBy="Select Status"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="col-md-2" style={{ marginTop: "24px" }}>
+              <button type="button" className="btn btn-primary" onClick={() => dispatch(marketActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
           <div className="TableContentBorder">

@@ -342,7 +342,7 @@ const ProjectAllocation = () => {
             if ((!managerSelected.length) || (managerSelected.length > 0 && managerOptions.includes(projectAllocation.resourceManager) == true)) {
               if ((!expenseTypeSelected.length) || (expenseTypeSelected.length > 0 && expenseTypeOptions.includes(projectAllocation.expenseType) == true)) {              
                     if((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket))){
-                          if ((!statusSelected.length && projectAllocation.status ==="Active") || (statusSelected.length > 0 && statusOptions.includes(projectAllocation.status))) {
+                          if ((!statusSelected.length ) || (statusSelected.length > 0 && statusOptions.includes(projectAllocation.status))) {
                             if (locationSelected == "0" || locationSelected == projectAllocation.location){
                               if((startDate == null) ? true : new Date(projectAllocation.startDate) >= startDate){
                                 if((endDate == null) ? true : new Date(projectAllocation.enddDate) <= endDate){

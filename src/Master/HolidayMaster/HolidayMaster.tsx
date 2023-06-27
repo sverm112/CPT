@@ -177,7 +177,7 @@ const HolidayMaster = () => {
     if ((!marketSelected.length) || (marketSelected.length > 0 && marketOptions.includes(holiday.marketName) == true)) {
       if ((!locationSelected.length) || (locationSelected.length > 0 && locationOptions.includes(holiday.locationName) == true))
         if ((!subLocationSelected.length) || (subLocationSelected.length > 0 && subLocationOptions.includes(holiday.subLocationName) == true))
-          if ((!statusSelected.length && holiday.status === "Active" ) || (statusSelected.length > 0 && statusOptions.includes(holiday.status)))
+          if ((!statusSelected.length ) || (statusSelected.length > 0 && statusOptions.includes(holiday.status)))
             return true;
     }
     return false;

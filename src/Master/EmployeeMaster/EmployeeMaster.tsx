@@ -282,7 +282,7 @@ const EmployeeMaster = () => {
 
           if ((!roleSelected.length) || (roleSelected.length > 0 && roleOptions.includes(resource.role) == true)) {
 
-            if ((!statusSelected.length && resource.isActive ==="Active") || (statusSelected.length > 0 && statusOptions.includes(resource.isActive))) {
+            if ((!statusSelected.length) || (statusSelected.length > 0 && statusOptions.includes(resource.isActive))) {
               if ((!managerSelected.length) || (managerSelected.length > 0 && managerOptions.includes(resource.manager)))
                 return true;
             }
