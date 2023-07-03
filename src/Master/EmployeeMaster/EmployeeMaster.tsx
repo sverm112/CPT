@@ -228,7 +228,7 @@ useEffect(()=>{
         subLocation: row.SubLocation,
         manager: row.Manager,
       }));
-      payload = payload.map((row: any) => ({ ...row, createdBy: "Admin" }));
+      payload = payload.map((row: any) => ({ ...row, createdBy: username }));
       try {
         const response = await fetch(`${POST_BULK_UPLOAD_EMPLOYEE}`, {
           method: "POST",

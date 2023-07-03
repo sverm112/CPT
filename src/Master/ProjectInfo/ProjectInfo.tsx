@@ -15,6 +15,7 @@ import { Base_URL, DELETE_PROJECT, GET_ALL_MARKETS, GET_ALL_PROJECTS, POST_PROJE
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
+import { read, utils, writeFile } from "xlsx";
 
 const columns = [
   {
@@ -202,14 +203,96 @@ const ProjectInfo = () => {
     console.log(data);
     setUpdateProjectDetails(data);
   };
-
+  
+const onSave = (props: any) => {
+  console.log(props);
+}
+  
+const [path, setPath] = useState("");
+const sendBulkResourcesData = async (payload: any) => {
+  let availableMarkets: any[] =[];
+  let availableMarketIds: any[] =[];
+  marketList.map((market: any)=>{
+    availableMarkets.push( market.marketName);
+    availableMarketIds.push(market.id);
+  })
+  let unavailableMarkets: any[] =[];
+  for(const p of payload){
+    console.log("Market List: ", marketList);
+    if(availableMarkets.indexOf(p.ProjectMarket)=== -1){
+        unavailableMarkets.push(p);
+        }else{
+        console.log("Project Id: ", availableMarketIds[availableMarkets.indexOf(p.ProjectMarket)]);
+        let payload = {
+          projectCode: p.ProjectCode,
+          projectName: p.ProjectName,
+          projectModel: p.ProjectModel,
+          expenseType: p.ExpenseType,
+          marketId: availableMarketIds[availableMarkets.indexOf(p.ProjectMarket)] ,
+          programManager: p.ProjectManager,
+          createdBy: username
+        };
+        try {
+            const response = await fetch(`${POST_PROJECT}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            });
+            const dataResponse = await response.json();
+            if (dataResponse.length) {
+              if (dataResponse[0].statusCode == "201") {
+                console.log(dataResponse[0].statusReason);
+                console.log(dataResponse[0].recordsCreated);
+                toast.success(`Projects Added, failed to add ${unavailableMarkets.length} projects`)
+              } else toast.error(dataResponse[0].errorMessage);
+            } else toast.error("Some Error occured.");
+          
+        } catch {
+          toast.error("Some Error occured.");
+        }
+    }
+  }
+  getProjectDetails();
+};
   //start constants for export
   const title = "Project Details";
   const selectors = ['projectCode', 'projectName', 'projectModel',
     'projectMarket', 'programManager', 'expenseType',
     'isActive', 'createdDate', 'createdBy'];
   //end constants for export
+  const projectColumns = [
+    ["ProjectCode", "ProjectName", "ProjectModel", "ProjectMarket", "ExpenseType", "ProjectManager"],
+  ];
+  const handleDownloadTemplate = async () => {
+    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const wb = utils.book_new();
+    const ws = utils.json_to_sheet([]);
+    utils.sheet_add_aoa(ws, projectColumns);
+    utils.book_append_sheet(wb, ws, "Project Template");
+    writeFile(wb, "Project.xlsx");
+  };
+  
+  const handleUploadResourceFile = async (event: any) => {
+    const files = event.target.files;
 
+    if (files.length) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const wb = read(event.target.result);
+        const sheets = wb.SheetNames;
+        if (sheets.length) {
+          const rows: any = utils.sheet_to_json(wb.Sheets[sheets[0]]);
+          sendBulkResourcesData(rows);
+          setPath("");
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  };
   return (
     <div>
       <SideBar></SideBar>
@@ -243,6 +326,43 @@ const ProjectInfo = () => {
               {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               {action == "Update" && <UpdateModal initialValues={updateProjectDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
 
+            </div>
+            
+            <div className="btns employee">
+              <div style={{display:'flex', width:'25%',float:'right', justifyContent:'space-between', position:'relative'}}>
+              <div className="DownloadEmployeeTemplate" style={{width:'15%',marginRight:'-205px', marginLeft:'90%'}}>
+                <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
+                  <i className="las la-file-download"></i>
+                </button>
+                <div className="DownloadEmployeeTemplateTooltip">
+                  <p>
+                    Download Template
+                  </p>
+                </div>
+              </div>
+              <div className="UploadBulkEmployeeDetails" style={{width:'15%',marginLeft:'10.8%'}}>
+                <button  type="button" className="btn btn-primary upload-button-btn">
+                  <i className="las la-file-upload"></i>
+                </button>
+                <input
+                  type="file"
+                  value=""
+                  id="input-resources-file"
+                  className="btn btn-primary custom-file-input upload-input-btn"
+                  accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                  onChange={handleUploadResourceFile}
+                />
+                <div className="BulkUploadEmployeeTooltip">
+                  <p>
+                    Add Bulk Projects
+                  </p>
+                </div>
+              </div>
+              <div className="AddEmployeeButton" style={{float:'right', width:'45%'}}>
+                {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+                {action == "Update" && <UpdateModal initialValues={()=>{}} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              </div>
+              </div>
             </div>
           </div>
           <div className="row filter-row">
