@@ -219,16 +219,16 @@ const sendBulkResourcesData = async (payload: any) => {
   let unavailableMarkets: any[] =[];
   for(const p of payload){
     console.log("Market List: ", marketList);
-    if(availableMarkets.indexOf(p.ProjectMarket)=== -1){
-        unavailableMarkets.push(p);
-        }else{
-        console.log("Project Id: ", availableMarketIds[availableMarkets.indexOf(p.ProjectMarket)]);
+    if(availableMarkets.indexOf(p.ProjectMarket.trim())=== -1){
+      unavailableMarkets.push(p);
+    }else{
+
         let payload = {
           projectCode: p.ProjectCode,
           projectName: p.ProjectName,
           projectModel: p.ProjectModel,
           expenseType: p.ExpenseType,
-          marketId: availableMarketIds[availableMarkets.indexOf(p.ProjectMarket)] ,
+          marketId: availableMarketIds[availableMarkets.indexOf(p.ProjectMarket.trim())] ,
           programManager: p.ProjectManager,
           createdBy: username
         };
@@ -253,6 +253,16 @@ const sendBulkResourcesData = async (payload: any) => {
           toast.error("Some Error occured.");
         }
     }
+    // if(unavailableMarkets.length){
+    //   if (window.confirm(`Update ${unavailableMarkets.length} records.`)) {
+    //     // txt = "You pressed OK!";
+    //     // handleDelete();
+    //   } else {
+    //     // Send the Post request for bulk upload
+    //   }
+    // }else{
+
+    // }
   }
   getProjectDetails();
 };
@@ -698,7 +708,7 @@ const UpdateModal = (props: any) => {
 
   function deleteConfirmation() {
     var txt;
-    if (window.confirm(`Deleting current record`)) {
+    if (window.confirm(`Do you want delete this record`)) {
       txt = "You pressed OK!";
       handleDelete();
     } else {

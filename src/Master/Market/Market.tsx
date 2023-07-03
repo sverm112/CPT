@@ -358,7 +358,7 @@ const UpdateModal = (props: any) => {
 
   function deleteConfirmation() {
     var txt;
-    if (window.confirm(`Deleting current record`)) {
+    if (window.confirm(`Do you want delete this record`)) {
       txt = "You pressed OK!";
       handleDelete();
     } else {
