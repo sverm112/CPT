@@ -135,8 +135,6 @@ const allocationDetailsColumn = [
     reorder: true,
     filterable: true,
   },
-  // // Allocation Start Date	Allocation End Date	Resource Type 1	PTO Days	Allocation Hours	Allocation Percentage	Status	Created Date	Created By	Updated Date	Updated By
-   
   {
     name: "Allocation(Hours)",
     selector: (row:  any ) => row.allocationHours,
@@ -1172,7 +1170,7 @@ useEffect(()=>{
               </div>
               <div className="col-md-6 form-group" id="AllocateProjectResourceType">
                 <label className="form-label" htmlFor="resourceType1">
-                  Resource Type 1
+                  Project Role
                 </label>
                 <span className="requiredField">*</span>
                 <div className="dropdown">
@@ -1792,7 +1790,7 @@ const AddModal = (props: any) => {
               </div>
               <div className="col-md-6 form-group" id="AllocateProjectResourceType">
                 <label className="form-label" htmlFor="resourceType1">
-                  Resource Type 1
+                  Project Role
                 </label>
                 <span className="requiredField">*</span>
                 <div className="dropdown">
