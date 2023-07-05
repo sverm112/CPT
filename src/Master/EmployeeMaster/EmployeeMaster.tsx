@@ -378,8 +378,8 @@ useEffect(()=>{
                 </div>
               </div>
               <div className="AddEmployeeButton" style={{float:'right', width:'45%'}}>
-                {/* {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
-                {action == "Update" && <UpdateModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />} */}
+                {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+                {action == "Update" && <UpdateModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               </div>
               </div>
             </div>
