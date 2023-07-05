@@ -382,6 +382,12 @@ svg.dropdown-heading-dropdown-arrow.gray {
 
 }
 
+/* @media screen and (max-width: 992px) {
+  .filter-row {
+    background-color: blue;
+  }
+} */
+
 .dropdown:after {
   content: "<";
   font-family: "Manrope", sans-serif;

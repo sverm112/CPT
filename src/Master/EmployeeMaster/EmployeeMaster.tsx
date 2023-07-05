@@ -202,7 +202,7 @@ useEffect(()=>{
   }, []);
 
   const resourceColumns = [
-    ["ResourceName", "ResourceType", "Role", "ResourceMarket", "EmailAddress", "Location", "SubLocation", "Manager"],
+    ["ResourceName","Role", "EmailAddress", "Manager", "ResourceType", "ResourceMarket",  "Location", "SubLocation"],
   ];
   const handleDownloadTemplate = async () => {
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -377,7 +377,7 @@ useEffect(()=>{
                   </p>
                 </div>
               </div>
-              <div className="AddEmployeeButton" style={{float:'right', width:'45%'}}>
+              <div className="AddEmployeeButton" style={{float:'right', width:'45%', whiteSpace:'nowrap'}}>
                 {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
                 {action == "Update" && <UpdateModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               </div>
@@ -810,7 +810,7 @@ const UpdateModal = (props: any) => {
   
   function deleteConfirmation() {
     var txt;
-    if (window.confirm(`Do you want delete this record`)) {
+    if (window.confirm(`Do you want to delete this record?`)) {
       txt = "You pressed OK!";
       handleDelete();
     } else {
