@@ -3,6 +3,9 @@ div#project_allocation_modal {
     height: 910px !important;
 }
 
+.bg-mainclass{
+  min-width: 200px !important;
+}
 .TableContentBorder{
     border: 1px solid rgba(47,79,79, 0.2);
     background-color:#fff;

@@ -9,6 +9,7 @@ a {
   background-color: #f7f7f7;
   padding-left: 80px;
   margin-bottom: 20px;
+  min-width: 200px !important;
 }
 
 .Page-Heading {

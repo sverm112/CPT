@@ -556,7 +556,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
           </div>
         </div>
         <div className="row">
-        <div className="col-md-9">
+        <div className="col-md-10" >
         <div className="row filter-row">
           <div className="col-md-2 form-group">
                 <label htmlFor="" className="form-label">
@@ -572,7 +572,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                   valueRenderer={customValueRenderer}
                 />
               </div>
-            <div className="col-md-2 form-group">
+            <div className="col-md-2 form-group" style={{whiteSpace:'nowrap'}}>
               <label htmlFor="" className="form-label">
                 Resource Type
               </label>
@@ -620,7 +620,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                 </select>
               </div>
             </div>
-            <div className="col-md-2 form-group">
+            <div className="col-md-2 form-group" style={{whiteSpace:'nowrap'}}>
               <label htmlFor="" className="form-label">
                 Resource Market
               </label>
@@ -706,12 +706,12 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
             </div>
         </div>
         </div>
-        <div className="col-md-3 row" style={{marginLeft:'-120px', float:'right',whiteSpace:'nowrap'}}>
-        <div className="col-md-6" style={{ marginTop: "24px" }}>
+        <div className="col-md-2 row justify-content-around" style={{marginLeft:'-11%',width:'27%', }}>
+        <div className="col-md-6" style={{ marginTop: "24px",whiteSpace:'nowrap' }}>
             
             <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); setEndDate(null); setStartDate(null); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}><span>Clear Filters</span><i className="las la-filter"></i></button>
           </div>
-          <div className="col-md-6" style={{ marginTop: "24px", marginLeft:"-25px" }}>
+          <div className="col-md-6" style={{ marginTop: "24px", marginLeft:"-16%",whiteSpace:'nowrap' }}>
             <button type="button" className="btn btn-primary" onClick={showMoreFilters}><span id="MoreFiltersButton">More Filters</span><i className="las la-filter"></i></button>
           </div>
         </div>

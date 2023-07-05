@@ -369,14 +369,14 @@ const sendBulkResourcesData = async (payload: any) => {
                 </div>
               </div>
               <div className="AddEmployeeButton" style={{float:'right', width:'45%'}}>
-                {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
-                {action == "Update" && <UpdateModal initialValues={()=>{}} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+                {/* {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+                {action == "Update" && <UpdateModal initialValues={()=>{}} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />} */}
               </div>
               </div>
             </div>
           </div>
-          <div className="row filter-row">
-            <div className="col-md-2 form-group">
+          <div className="row filter-row" >
+            <div className="col-md-2 form-group" style={{ whiteSpace:'nowrap' }}>
               <label htmlFor="" className="form-label">
                 Project Model
               </label>
@@ -388,7 +388,7 @@ const sendBulkResourcesData = async (payload: any) => {
                 valueRenderer={customValueRenderer}
               />
             </div>
-            <div className="col-md-2 form-group">
+            <div className="col-md-2 form-group" style={{ whiteSpace:'nowrap' }}>
               <label htmlFor="" className="form-label">
                 Project Market
               </label>
@@ -401,7 +401,7 @@ const sendBulkResourcesData = async (payload: any) => {
               />
             </div>
 
-            <div className="col-md-2 form-group">
+            <div className="col-md-2 form-group" style={{ whiteSpace:'nowrap' }}>
               <label htmlFor="" className="form-label">
                 Expense Type
               </label>
@@ -413,7 +413,7 @@ const sendBulkResourcesData = async (payload: any) => {
                 valueRenderer={customValueRenderer}
               />
             </div>
-            <div className=" col-md-2 form-group">
+            <div className=" col-md-2 form-group" style={{ whiteSpace:'nowrap' }}>
               <label htmlFor="activeDropdown" className="form-label">
                 Status
               </label>
