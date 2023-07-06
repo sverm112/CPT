@@ -555,8 +555,8 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
             </div>
           </div>
         </div>
-        <div className="row">
-        <div className="col-md-10" >
+        {/* <div className="row"> */}
+        {/* <div className="col-md-10" > */}
         <div className="row filter-row">
           <div className="col-md-2 form-group">
                 <label htmlFor="" className="form-label">
@@ -584,7 +584,6 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                 valueRenderer={customValueRenderer}
               />
             </div>
-
             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Role
@@ -643,6 +642,10 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                 labelledBy="Select Status"
                 valueRenderer={customValueRenderer}
               />
+            </div>
+            <div className="col-md-3 form-group" style={{marginTop:'24px', marginLeft:'-3px', whiteSpace:'nowrap' }}>
+            <button type="button" className="btn btn-primary PAllocationFilters" onClick={() => {dispatch(projectAllocationActions.clearFilters()); setEndDate(null); setStartDate(null); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}><span>Clear Filters</span><i className="las la-filter"></i></button>
+            <button type="button" className="btn btn-primary PAllocationFilters" onClick={showMoreFilters}><span id="MoreFiltersButton">More Filters</span><i className="las la-filter"></i></button>
             </div>
             <div className="MoreFilters row filter-row" id="MoreFilters" style={{display:'none'}} >
             <div className="col-md-2 form-group">
@@ -705,8 +708,8 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
             </div>
             </div>
         </div>
-        </div>
-        <div className="col-md-2 row justify-content-around" style={{marginLeft:'-11%',width:'27%', }}>
+        {/* </div> */}
+        {/* <div className="col-md-2 row justify-content-around" style={{marginLeft:'-11%',width:'27%', }}>
         <div className="col-md-6" style={{ marginTop: "24px",whiteSpace:'nowrap' }}>
             
             <button type="button" className="btn btn-primary" onClick={() => {dispatch(projectAllocationActions.clearFilters()); setEndDate(null); setStartDate(null); dispatch(employeeActions.clearFilters()); dispatch(ptoActions.clearFilters())}}><span>Clear Filters</span><i className="las la-filter"></i></button>
@@ -714,8 +717,8 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
           <div className="col-md-6" style={{ marginTop: "24px", marginLeft:"-16%",whiteSpace:'nowrap' }}>
             <button type="button" className="btn btn-primary" onClick={showMoreFilters}><span id="MoreFiltersButton">More Filters</span><i className="las la-filter"></i></button>
           </div>
-        </div>
-        </div>
+        </div> */}
+        {/* </div> */}
           <div className="TableContentBorder">
             <Table columnsAndSelectors={columnsAndSelectors}    
             expandableRowExpanded={(row: any) => row.resourceId === currentRow }

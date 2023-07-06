@@ -184,8 +184,8 @@ const Market = () => {
                 valueRenderer={customValueRenderer}
               />
             </div>
-            <div className="col-md-2" style={{ marginTop: "24px" }}>
-              <button type="button" className="btn btn-primary" onClick={() => dispatch(marketActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            <div className="col-md-2 form-group" style={{ marginTop: "24px", marginLeft:'-3px', whiteSpace:'nowrap'  }}>
+              <button type="button" className="btn btn-primary PAllocationFilters" onClick={() => dispatch(marketActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
           <div className="TableContentBorder">

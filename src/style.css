@@ -274,7 +274,7 @@ div.project>input.upload-input-btn {
 }
 
 .filter-row>.col-md-2 {
-  width: 12.666667% !important;
+  width: 10.7% !important;
 }
 
 .rmsc.multi-select {
@@ -526,6 +526,10 @@ button#export-excel-btn:hover {
   transition-delay: 1s;
 }
 
+.PAllocationFilters{
+  margin-left: 3px !important;
+  margin-right: 3px !important;
+}
 #export-dropdowns-content:before {
   content: ' ';
   transform: rotate(131deg);
