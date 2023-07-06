@@ -333,14 +333,14 @@ const sendBulkResourcesData = async (payload: any) => {
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 style={{ marginRight: "150px" }}
               /> */}
-              {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
-              {action == "Update" && <UpdateModal initialValues={updateProjectDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {/* {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action == "Update" && <UpdateModal initialValues={updateProjectDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />} */}
 
             </div>
             
             <div className="btns employee">
-              <div style={{display:'flex', width:'25%',float:'right', justifyContent:'space-between', position:'relative'}}>
-              <div className="DownloadEmployeeTemplate" style={{width:'15%',marginRight:'-205px', marginLeft:'90%'}}>
+              <div style={{display:'flex', width:'19%',marginTop:'-15px',float:'right'}}>
+              <div className="DownloadEmployeeTemplate" >
                 <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
                   <i className="las la-file-download"></i>
                 </button>
@@ -350,7 +350,7 @@ const sendBulkResourcesData = async (payload: any) => {
                   </p>
                 </div>
               </div>
-              <div className="UploadBulkEmployeeDetails" style={{width:'15%',marginLeft:'10.8%'}}>
+              <div className="UploadBulkEmployeeDetails" >
                 <button  type="button" className="btn btn-primary upload-button-btn">
                   <i className="las la-file-upload"></i>
                 </button>
@@ -368,9 +368,9 @@ const sendBulkResourcesData = async (payload: any) => {
                   </p>
                 </div>
               </div>
-              <div className="AddEmployeeButton" style={{float:'right', width:'45%'}}>
-                {/* {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
-                {action == "Update" && <UpdateModal initialValues={()=>{}} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />} */}
+              <div className="AddEmployeeButton" style={{whiteSpace:'nowrap'}}>
+                {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+                {action == "Update" && <UpdateModal initialValues={()=>{}} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               </div>
               </div>
             </div>

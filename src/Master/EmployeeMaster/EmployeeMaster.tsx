@@ -348,8 +348,8 @@ useEffect(()=>{
               <span>Resource Details</span>
             </p>
             <div className="btns employee">
-              <div style={{display:'flex', width:'25%',float:'right', justifyContent:'space-between', position:'relative'}}>
-              <div className="DownloadEmployeeTemplate" style={{width:'15%',marginRight:'-205px', marginLeft:'80%'}}>
+              <div style={{display:'flex', width:'20%',float:'right', marginTop:'-15px'}}>
+              <div className="DownloadEmployeeTemplate" >
                 <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
                   <i className="las la-file-download"></i>
                 </button>
@@ -359,7 +359,7 @@ useEffect(()=>{
                   </p>
                 </div>
               </div>
-              <div className="UploadBulkEmployeeDetails" style={{width:'15%',marginLeft:'7%'}}>
+              <div className="UploadBulkEmployeeDetails" >
                 <button  type="button" className="btn btn-primary upload-button-btn">
                   <i className="las la-file-upload"></i>
                 </button>
@@ -377,7 +377,7 @@ useEffect(()=>{
                   </p>
                 </div>
               </div>
-              <div className="AddEmployeeButton" style={{float:'right', width:'45%', whiteSpace:'nowrap'}}>
+              <div className="AddEmployeeButton" style={{ whiteSpace:'nowrap'}}>
                 {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
                 {action == "Update" && <UpdateModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               </div>
