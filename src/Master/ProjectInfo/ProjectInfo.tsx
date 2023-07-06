@@ -339,7 +339,7 @@ const sendBulkResourcesData = async (payload: any) => {
             </div>
             
             <div className="btns employee">
-              <div style={{display:'flex', width:'19%',marginTop:'-15px',float:'right'}}>
+              <div style={{display:'flex', width:'220px',marginTop:'-15px',float:'right'}}>
               <div className="DownloadEmployeeTemplate" >
                 <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
                   <i className="las la-file-download"></i>

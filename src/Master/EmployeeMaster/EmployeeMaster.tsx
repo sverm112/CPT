@@ -348,7 +348,7 @@ useEffect(()=>{
               <span>Resource Details</span>
             </p>
             <div className="btns employee">
-              <div style={{display:'flex', width:'20%',float:'right', marginTop:'-15px'}}>
+              <div style={{display:'flex', width:'230px',float:'right', marginTop:'-15px'}}>
               <div className="DownloadEmployeeTemplate" >
                 <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
                   <i className="las la-file-download"></i>

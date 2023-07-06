@@ -549,7 +549,7 @@ button#export-excel-btn:hover {
   position: relative;
   display: inline-block;
   left: 0px;
-  margin-left: 3px;
+  margin-left: -1px;
 }
 
 .UploadBulkEmployeeDetails .BulkUploadEmployeeTooltip{
@@ -591,8 +591,8 @@ button#export-excel-btn:hover {
 .AddEmployeeButton{
   position: relative;
   display: inline-block;
-  left: 7px;
-  margin-left: 3px;
+  left: 6px;
+  /* margin-left: 2px; */
 }
 .deleteButton{
   margin-left:32px !important;
