@@ -873,7 +873,7 @@ const UpdateModal = (props: any) => {
   if (formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
     let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
     formValues.allocationHours = Math.ceil((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
-    formValues.allocationPercentage = Math.ceil(100*(Number(formValues.allocationHours) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
+    formValues.allocationPercentage = Math.floor(100*(Number(formValues.allocationHours) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
   }
   const allPercentToHours = (event: any) =>{
     setAllocationPercentage(event.target.value);
@@ -886,7 +886,7 @@ const UpdateModal = (props: any) => {
     setAllocationHrs(event.target.value);
     if(formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null){
       let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
-      setAllocationPercentage(Math.ceil(100*(Number(event.target.value) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay))).toString()) ;
+      setAllocationPercentage(Math.floor(100*(Number(event.target.value) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay))).toString()) ;
     }
     //console.log("Allocation Percentage after hours: ", formValues.allocationPercentage );
   }
@@ -1440,7 +1440,7 @@ const AddModal = (props: any) => {
       if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
       curDate.setDate(curDate.getDate() + 1);
     }
-    //console.log("AllocationDays Count " + count);
+    // console.log("AllocationDays Count " + count);
     return count;
   }
   const calculateHolidays = (location: any, subLocation: any, startDate: Date, endDate: Date) => {
@@ -1546,7 +1546,7 @@ const AddModal = (props: any) => {
     allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
     allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
     //console.log("Allocation Hours during calculation: ", allocationHrs);
-    allocationP = Math.ceil(100*(Number(allocationHrs) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
+    allocationP = Math.floor(100*(Number(allocationHrs) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
     //console.log("Allocation Percentage during calculation: ", allocationP);
   }
 
@@ -1574,7 +1574,7 @@ const AddModal = (props: any) => {
   //console.log("Allocation Percentage: ",allocationPercentage);
   const allHoursToPercent = (event: any) =>{
     setAllocationHrs(event.target.value);
-    allocationP = Math.ceil(100*(Number(event.target.value) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
+    allocationP = Math.floor(100*(Number(event.target.value) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
     setAllocationPercentage(allocationP.toString());
   }
 
