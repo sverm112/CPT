@@ -1620,16 +1620,16 @@ const AddModal = (props: any) => {
     let paStartDate=null,paEndDate=null;
     if(allocationStartDate!=null){
       paStartDate= new Date(allocationStartDate);
-      paStartDate.setDate(allocationStartDate.getDate() + 1);
+      paStartDate.setDate(allocationStartDate.getDate());
     }
     if(allocationEndDate!=null){
       paEndDate= new Date(allocationEndDate);
-      paEndDate.setDate(allocationEndDate.getDate() + 1);
+      paEndDate.setDate(allocationEndDate.getDate());
     }
     let payload = {
       resourceId: resourceId == "0" ? 0 : Number(resourceId),
       projectId: projectId == "0" ? 0 : Number(projectId),
-      resourceType1: resourceType1,
+      resourceType1: resourceType1 == "0" ? selectedResourceDetails.role : resourceType1,
       startDate: paStartDate,
       enddDate: paEndDate,
       numberOfPTODays: ptoDays == "" ? 0 : Number(ptoDays),
@@ -1654,7 +1654,7 @@ const AddModal = (props: any) => {
   
             dispatch(projectAllocationActions.changeToggle());
             resetFormFields();
-            closeModal();
+            props.closeModal();
             toast.success("Project Allocated Successfully")
           } else toast.error(dataResponse[0].errorMessage);
         } else toast.error("Some Error occured.");
