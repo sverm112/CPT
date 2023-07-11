@@ -873,7 +873,7 @@ const UpdateModal = (props: any) => {
   if (formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
     let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
     formValues.allocationHours = Math.ceil((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
-    formValues.allocationPercentage = Math.floor(100*(Number(formValues.allocationHours) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
+    formValues.allocationPercentage = Math.ceil(100*(Number(formValues.allocationHours) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
   }
   const allPercentToHours = (event: any) =>{
     setAllocationPercentage(event.target.value);
@@ -886,7 +886,7 @@ const UpdateModal = (props: any) => {
     setAllocationHrs(event.target.value);
     if(formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null){
       let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
-      setAllocationPercentage(Math.floor(100*(Number(event.target.value) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay))).toString()) ;
+      setAllocationPercentage(Math.ceil(100*(Number(event.target.value) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay))).toString()) ;
     }
     //console.log("Allocation Percentage after hours: ", formValues.allocationPercentage );
   }
@@ -1546,21 +1546,9 @@ const AddModal = (props: any) => {
     allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
     allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
     //console.log("Allocation Hours during calculation: ", allocationHrs);
-    allocationP = Math.floor(100*(Number(allocationHrs) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
+    allocationP = Math.ceil(100*(Number(allocationHrs) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
     //console.log("Allocation Percentage during calculation: ", allocationP);
   }
-
-  // useEffect(()=>{
-  //   if(allocationHours.toString() !== allocationHrs){
-  //     setAllocationHrs(allocationHours.toString());
-  //   }
-  // }, [allocationPercentage])
-
-  // useEffect(()=>{
-  //   if(allocatedPercentage !== allocationP){
-  //     setAllocationPercentage(allocationP.toString());
-  //   }
-  // },[allocationHrs])
 
   const resetFormFields = () => {
     const errorContainer = document.getElementsByClassName('error');
@@ -1586,7 +1574,7 @@ const AddModal = (props: any) => {
   //console.log("Allocation Percentage: ",allocationPercentage);
   const allHoursToPercent = (event: any) =>{
     setAllocationHrs(event.target.value);
-    allocationP = Math.floor(100*(Number(event.target.value) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
+    allocationP = Math.ceil(100*(Number(event.target.value) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
     setAllocationPercentage(allocationP.toString());
   }
 
@@ -1712,6 +1700,25 @@ const AddModal = (props: any) => {
       //   const formGroup2 = document.getElementById('AllocationEndField');
         
       // }
+    }
+  }
+  const validateResourceAndDatesforHours = ()=>{
+    if(!(resourceId && allocationEndDate && allocationStartDate)){
+      const errorContainer = document.getElementsByClassName('HourError');
+      errorContainer[0].textContent='Resource, Allocation Start Date and Allocation End Date must be selected first';
+    }else{
+      const errorContainer = document.getElementsByClassName('PercentageError');
+      errorContainer[0].textContent='';
+    }
+  }
+
+    const validateResourceAndDatesforPercentage = ()=>{
+    if(!(resourceId && allocationEndDate && allocationStartDate)){
+      const errorContainer = document.getElementsByClassName('PercentageError');
+      errorContainer[0].textContent='Resource, Allocation Start Date and Allocation End Date must be selected first';
+    }else{
+      const errorContainer = document.getElementsByClassName('PercentageError');
+      errorContainer[0].textContent='';
     }
   }
   return (
@@ -1971,12 +1978,12 @@ const AddModal = (props: any) => {
                   className="form-control"
                   id="allocationPercentage"
                   value={allocationPercentage}
+                  onFocus={validateResourceAndDatesforPercentage}
                   onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPercentage'), 'input')}
                   onChange={allPercentToHours
-                    // (event: any)=> setAllocationPercentage(event.target.value)
                   }
                 />
-                <div className="error"></div>
+                <div className="error PercentageError"></div>
               </div>
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="allocationHoursPerDay">
@@ -1990,20 +1997,25 @@ const AddModal = (props: any) => {
                   disabled
                 />
               </div>
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group"  id="AllocationHours">
                 <label className="form-label" htmlFor="allocationHours">
                   Allocation(Hours)
                 </label>
+                <span className="requiredField">*</span>
                 <input
                   type="text"
                   className="form-control"
                   id="allocationHours"
+                  required
                   value={allocationHrs}
                   // disabled
-                onChange={ allHoursToPercent
+                  onFocus={validateResourceAndDatesforHours}
+                  onBlur={()=>validateSingleFormGroup(document.getElementById('AllocationHours'), 'input')}
+                  onChange={ allHoursToPercent
                   // (event) => setAllocationHrs(event.target.value)
                 }
                 />
+                <div className="error HourError"></div>
               </div>
             </div>
             <div className="row" style={{marginTop:'5px'}}>
