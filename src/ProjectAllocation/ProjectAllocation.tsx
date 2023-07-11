@@ -386,7 +386,7 @@ const showMoreFilters = () =>{
 }
 
 filteredProjectAllocations.map((projectAllocation:any)=>{
- console.log("Project Allocation: ",projectAllocation);
+ //console.log("Project Allocation: ",projectAllocation);
  if(resourceIds.includes(projectAllocation.resourceId)==true){
      let resourceItem=newData.find((resource:any)=>resource.resourceId==projectAllocation.resourceId)
       
@@ -407,7 +407,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
        resourceId: projectAllocation.resourceId,
        projectId: projectAllocation.projectId,
      }
-     console.log("Project Infos: ", resourceItem.projectsInfo);
+     //console.log("Project Infos: ", resourceItem.projectsInfo);
      if(!resourceItem.projectsInfo.find((pi: any)=>pi.projectId == projectAllocation.projectId)){
        projectAllocationsInfo.push(projectAllocationInfo);
        let projectInfo = {
@@ -486,11 +486,11 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
     setAction("Update");
     let data = { ...row }
     setUpdateProjectDetails(data);
-    console.log("Project Allocation: ", row);
+    //console.log("Project Allocation: ", row);
   };
 
   const ExpandableAllocationDetails = (allocationData: any)=>{
-    console.log("Passed Allocation Data: ", allocationData.data.projectAllocationsInfo);
+    //console.log("Passed Allocation Data: ", allocationData.data.projectAllocationsInfo);
     return <div className="projectAllocationChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid', boxSizing:'content-box', width:'89.4vw',overflow:'hidden'}}>
       <DataTable 
         customStyles={customStyles} 
@@ -504,7 +504,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
     </div>;
   }
   const ExpandableEmployee = ( resourceData: any ) => {
-    // console.log("Passed Project Data: ", resourceData.data.projectsInfo);
+    // //console.log("Passed Project Data: ", resourceData.data.projectsInfo);
     return <div className="projectChild" style={{margin:'10px', border:'rgba(0, 0, 0, 0.12) 1px solid'}}>
       <DataTable 
         columns={projectColumns} 
@@ -735,13 +735,13 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
 
 const UpdateModal = (props: any) => {
   const [formValues, setFormValues] = useState(props.initialValues || { location: "0" });
-  console.log("Update Allocation: ", props);
+  //console.log("Update Allocation: ", props);
   const username=useSelector((state:any)=>state.User.username);
   const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
   const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
   const [ptoDays, setPtoDays] = useState("0");  
   const [holidays, setHolidays] = useState(0);
-  const [allocationPercentage, setAllocationPercentage] = useState("");
+  const [allocationPercentage, setAllocationPercentage] = useState("0");
   const [resourceType1, setResourceType1] = useState("0");
   const [resourceId, setResourceId] = useState("0");
   const [projectId, setProjectId] = useState("0");
@@ -750,7 +750,6 @@ const UpdateModal = (props: any) => {
   const [allocationHrs, setAllocationHrs] = useState("0");
   let allocationHours = 0, allocationHoursPerDay = 0;
   
-  console.log("formValues: ", formValues);
   const calculateAllocationDays = (startDate: Date, endDate: Date) => {
     let count = 0;
     const curDate = new Date(startDate.getTime());
@@ -759,23 +758,22 @@ const UpdateModal = (props: any) => {
       if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
       curDate.setDate(curDate.getDate() + 1);
     }
-    console.log("AllocationDays Count " + count);
+    //console.log("AllocationDays Count " + count);
     return count;
   }
   const calculateHolidays = (location: any, subLocation: any, startDate: Date, endDate: Date) => {
     let count = 0;
     let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.status == "Active");
-    console.log("filtered holidays ," + filteredHolidays.length)
+    //console.log("filtered holidays ," + filteredHolidays.length)
     for (let i = 0; i < filteredHolidays.length; i++) {
       let holidayDate = new Date(filteredHolidays[i].holidayDate)
       let dayOfWeek = holidayDate.getDay();
       if (dayOfWeek !== 0 && dayOfWeek !== 6 && startDate <= holidayDate && endDate >= holidayDate)
         count++;
     }
-    console.log("Holiday Count " + count);
+    //console.log("Holiday Count " + count);
     return count;
   }
-  
   const getProjectAllocationDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECT_ALLOCATIONS}`);
     let dataGet = await response.json();
@@ -783,7 +781,6 @@ const UpdateModal = (props: any) => {
     dispatch(projectAllocationActions.changeData(dataGet));
     // setTimeout(()=>setIsLoading(false), 2000);
   };
-  //allocationHours= Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
   const dispatch = useDispatch();
   const resourcesList = useSelector((store: any) => store.Employee.data);
   const projectsList = useSelector((store: any) => store.Project.data);
@@ -813,7 +810,7 @@ const UpdateModal = (props: any) => {
   const getProjectDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECTS}`);
     let dataGet = await response.json();
-    console.log("Project Details: ",dataGet)
+    //console.log("Project Details: ",dataGet)
     dataGet = dataGet.map((row: any) => ({ ...row, projectMarket: row.marketName, projectId: row.pkProjectID, isActive: row.status}));
     dispatch(projectActions.changeData(dataGet));
   };
@@ -826,24 +823,22 @@ const UpdateModal = (props: any) => {
   let selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
 
   const setResourceDetails = (event: any) => {
-    console.log(selectedResourceDetails, event.target.value)
+    //console.log(selectedResourceDetails, event.target.value)
     setResourceId(event.target.value);
-    console.log("Set Resource Details Called: ",formValues.resourceId);
+    //console.log("Set Resource Details Called: ",formValues.resourceId);
   };
   
   const setProjectDetails = (event: any) => {
     setProjectId(event.target.value);
-    console.log("SetProjectDetails Called: ",formValues.projectId);
+    //console.log("SetProjectDetails Called: ",formValues.projectId);
   };
-
-
 
   if (formValues.resourceId == "0") {
     selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
   }
   else {
     const filteredResource = resourcesList.filter((resource: any) => resource.resourceId == Number(formValues.resourceId));
-    console.log("Resource: ",filteredResource);
+    //console.log("Resource: ",filteredResource);
     selectedResourceDetails.resourceId = filteredResource[0].resourceId
     selectedResourceDetails.resourceType = filteredResource[0].resourceType
     selectedResourceDetails.role = filteredResource[0].role
@@ -858,8 +853,8 @@ const UpdateModal = (props: any) => {
   }
   else {
     let filteredProject = projectsList.filter((project: any) => project.id == Number(formValues.projectId))
-    // console.log("Filtered Project Details: ", filteredProject);
-    console.log("Project List: ", projectsList);
+    // //console.log("Filtered Project Details: ", filteredProject);
+    //console.log("Project List: ", projectsList);
     selectedProjectDetails.projectId = filteredProject[0].id
     selectedProjectDetails.projectMarket = filteredProject[0].projectMarket
     selectedProjectDetails.expenseType = filteredProject[0].expenseType
@@ -874,18 +869,28 @@ const UpdateModal = (props: any) => {
     allocationHoursPerDay = 0;
 
     let allocationP =0;
+    let allocationDays: number;
   if (formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
     let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
     formValues.allocationHours = Math.ceil((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
-    console.log("Allocation Hours: ", formValues.allocationHours);
-    console.log("Allocation Hours during calculation: ", formValues.allocationHours);
-    allocationP = Math.floor(100*(Number(formValues.allocationHours) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
-    console.log("Allocation Percentage during calculation: ", allocationP);
-
+    formValues.allocationPercentage = Math.floor(100*(Number(formValues.allocationHours) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
   }
-  useEffect(()=>{
-    setAllocationHrs(formValues.allocationHours);
-  },[formValues.allocationPercentage])
+  const allPercentToHours = (event: any) =>{
+    setAllocationPercentage(event.target.value);
+    if(formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null){
+      let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
+      setAllocationHrs(Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(event.target.value) / 100).toString());
+    }
+  }
+  const allHoursToPercent = (event: any) =>{
+    setAllocationHrs(event.target.value);
+    if(formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null){
+      let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
+      setAllocationPercentage(Math.floor(100*(Number(event.target.value) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay))).toString()) ;
+    }
+    //console.log("Allocation Percentage after hours: ", formValues.allocationPercentage );
+  }
+
   const resetFormFields = () => {
     const errorContainer = document.getElementsByClassName('error');
     for(let i=0; i < errorContainer.length; i++){
@@ -917,7 +922,7 @@ const UpdateModal = (props: any) => {
           setAllocatedPercentage(Number(dataResponse));
         }
         catch {
-          console.log("Some Error Occured")
+          //console.log("Some Error Occured")
             ;
         }
       }
@@ -969,8 +974,8 @@ const UpdateModal = (props: any) => {
         const dataResponse = await response.json();
         if (dataResponse.length) {
           if (dataResponse[0].statusCode == "201") {
-            console.log(dataResponse[0].statusReason);
-            console.log(dataResponse[0].recordsCreated);
+            //console.log(dataResponse[0].statusReason);
+            //console.log(dataResponse[0].recordsCreated);
             dispatch(projectAllocationActions.changeToggle());
             resetFormFields();
             props.closeModal();
@@ -1000,7 +1005,7 @@ const UpdateModal = (props: any) => {
     getProjectAllocationDetails();
     props.closeModal();
   }
-  //console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
+  ////console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
 useEffect(()=>{
   getPTODays();    
   if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
@@ -1010,7 +1015,7 @@ useEffect(()=>{
 }
 });
   const getPTODays = async()=>{
-    console.log("Get PTO Days called: "+ formValues.resourceId+ allocationStartDate + allocationEndDate);
+    //console.log("Get PTO Days called: "+ formValues.resourceId+ allocationStartDate + allocationEndDate);
     if(formValues.resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
       if(allocationEndDate >= allocationStartDate){
         try{
@@ -1026,9 +1031,9 @@ useEffect(()=>{
           });
           
           const dataResponse = await response.json();
-          // console.log()
+          // //console.log()
           setPtoDays(dataResponse);
-          console.log("Data Response: "+ dataResponse);
+          //console.log("Data Response: "+ dataResponse);
         }catch{
           toast.error("Some Error Occured");
         }
@@ -1046,7 +1051,7 @@ useEffect(()=>{
     }
   }
   const handleChange = (e: any) => {
-    console.log("Update: ",e)
+    //console.log("Update: ",e)
     setFormValues({
       ...formValues,
       [e.target.name]: e.target.value
@@ -1167,7 +1172,7 @@ useEffect(()=>{
                     onChange={(e: any) => {
                       setProjectDetails(e);
                       handleChange(e);
-                      console.log("E Value: ", e.target.value);
+                      //console.log("E Value: ", e.target.value);
                       // setProjectId(e);
                       validateSingleFormGroup(document.getElementById('AllocateProjectField'), 'select');
                     }}>
@@ -1202,7 +1207,6 @@ useEffect(()=>{
                 <div className="error"></div>
                 </div>
               </div>
-
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="project Market">
                   Project Market
@@ -1224,7 +1228,6 @@ useEffect(()=>{
                 </label>
                 <input type="text" name="ppsid" className="form-control" id="ppsid" value={selectedProjectDetails.PPSID} disabled />
               </div>
-
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="capex">
                   Expense Type
@@ -1315,7 +1318,6 @@ useEffect(()=>{
                 />
                 {/* <div className="error"></div> */}
               </div>
-
               <div className="col-md-6 form-group" id="AllocateProjectPercentage">
                 <label className="form-label" htmlFor="allocationHours">
                   Allocation(Percentage)
@@ -1329,10 +1331,11 @@ useEffect(()=>{
                   pattern={PatternsAndMessages.numberOnly.pattern}
                   className="form-control"
                   id="allocationPercentage"
-                  value={formValues.allocationPercentage}
+                  value={allocationPercentage == "0" ? formValues.allocationPercentage : allocationPercentage}
                   onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPercentage'), 'input')}
-                  onChange={
-                    handleChange
+                  onChange={(e)=>{
+                    handleChange(e);
+                    allPercentToHours(e);}
                     // (event) => setAllocationPercentage(event.target.value)
                   }
                 />
@@ -1365,7 +1368,7 @@ useEffect(()=>{
                   value={allocationHrs == "0" ? formValues.allocationHours : allocationHrs}
                   // disabled
                   onBlur={()=>validateSingleFormGroup(document.getElementById('AllocationHours'), 'input')}
-                  onChange={(e)=>{handleChange(e);setAllocationHrs(e.target.value)}}
+                  onChange={(e)=>{handleChange(e);allHoursToPercent(e)}}
                 />
                 <div className="error"></div>
               </div>
@@ -1437,22 +1440,22 @@ const AddModal = (props: any) => {
       if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
       curDate.setDate(curDate.getDate() + 1);
     }
-    console.log("AllocationDays Count " + count);
+    //console.log("AllocationDays Count " + count);
     return count;
   }
   const calculateHolidays = (location: any, subLocation: any, startDate: Date, endDate: Date) => {
     let count = 0;
     let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.status == "Active");
-    console.log("filtered holidays ," + filteredHolidays.length)
+    //console.log("filtered holidays ," + filteredHolidays.length)
     for (let i = 0; i < filteredHolidays.length; i++) {
       let holidayDate = new Date(filteredHolidays[i].holidayDate)
       let dayOfWeek = holidayDate.getDay();
       if (dayOfWeek !== 0 && dayOfWeek !== 6 && startDate <= holidayDate && endDate >= holidayDate)
         count++;
     }
-    console.log("Holiday Count " + count);
+    //console.log("Holiday Count " + count);
     
-    console.log("Holiday Count After " + count);
+    //console.log("Holiday Count After " + count);
     return count;
   }
   //allocationHours= Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
@@ -1495,7 +1498,7 @@ const AddModal = (props: any) => {
   let selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
 
   const setResourceDetails = (event: any) => {
-    // console.log(selectedResourceDetails, event.target.value)
+    // //console.log(selectedResourceDetails, event.target.value)
     setResourceId(event.target.value);
   };
   const setProjectDetails = (event: any) => {
@@ -1542,9 +1545,9 @@ const AddModal = (props: any) => {
   if (resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
     allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
     allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
-    console.log("Allocation Hours during calculation: ", allocationHrs);
+    //console.log("Allocation Hours during calculation: ", allocationHrs);
     allocationP = Math.floor(100*(Number(allocationHrs) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
-    console.log("Allocation Percentage during calculation: ", allocationP);
+    //console.log("Allocation Percentage during calculation: ", allocationP);
   }
 
   // useEffect(()=>{
@@ -1574,19 +1577,13 @@ const AddModal = (props: any) => {
     setHolidays("");
     setAllocationHrs("");
   }
-  const calculateHours = () =>{
-    console.log("Allocation Percentage in calculate hours: ",allocationPercentage);
-  }
   const allPercentToHours = (event: any) =>{
     setAllocationPercentage(event.target.value);
     allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(event.target.value) / 100);
     setAllocationHrs(allocationHours.toString());
-    // console.log("Allocation Percentage: ",allocationPercentage);
-    // calculateHours();
   }
   
-  
-    console.log("Allocation Percentage: ",allocationPercentage);
+  //console.log("Allocation Percentage: ",allocationPercentage);
   const allHoursToPercent = (event: any) =>{
     setAllocationHrs(event.target.value);
     allocationP = Math.floor(100*(Number(event.target.value) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
@@ -1611,7 +1608,7 @@ const AddModal = (props: any) => {
           setAllocatedPercentage(Number(dataResponse));
         }
         catch {
-          console.log("Some Error Occured")
+          //console.log("Some Error Occured")
             ;
         }
       }
@@ -1664,8 +1661,8 @@ const AddModal = (props: any) => {
         const dataResponse = await response.json();
         if (dataResponse.length) {
           if (dataResponse[0].statusCode == "201") {
-            console.log(dataResponse[0].statusReason);
-            console.log(dataResponse[0].recordsCreated);
+            //console.log(dataResponse[0].statusReason);
+            //console.log(dataResponse[0].recordsCreated);
   
             dispatch(projectAllocationActions.changeToggle());
             resetFormFields();
@@ -1679,10 +1676,10 @@ const AddModal = (props: any) => {
     }
 
   };
-  //console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
+  ////console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
 
   const getPTODays = async()=>{
-    console.log("Get PTO Days called: "+ resourceId+ allocationStartDate + allocationEndDate);
+    //console.log("Get PTO Days called: "+ resourceId+ allocationStartDate + allocationEndDate);
     if(resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
       if(allocationEndDate >= allocationStartDate){
         try{
@@ -1698,9 +1695,9 @@ const AddModal = (props: any) => {
           });
           
           const dataResponse = await response.json();
-          // console.log()
+          // //console.log()
           setPtoDays(dataResponse);
-          console.log("Data Response: "+ dataResponse);
+          //console.log("Data Response: "+ dataResponse);
         }catch{
           toast.error("Some Error Occured");
         }
