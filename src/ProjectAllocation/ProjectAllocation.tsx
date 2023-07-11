@@ -873,10 +873,15 @@ const UpdateModal = (props: any) => {
   else
     allocationHoursPerDay = 0;
 
+    let allocationP =0;
   if (formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
     let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
     formValues.allocationHours = Math.ceil((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
     console.log("Allocation Hours: ", formValues.allocationHours);
+    console.log("Allocation Hours during calculation: ", formValues.allocationHours);
+    allocationP = Math.floor(100*(Number(formValues.allocationHours) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
+    console.log("Allocation Percentage during calculation: ", allocationP);
+
   }
   useEffect(()=>{
     setAllocationHrs(formValues.allocationHours);
@@ -893,6 +898,7 @@ const UpdateModal = (props: any) => {
     setResourceType1("0");
     setResourceId("0");
     setProjectId("0");
+    setAllocationHrs("");
   }
   const getAllocationPercentage = async () => {
     let payload = {
@@ -1530,14 +1536,29 @@ const AddModal = (props: any) => {
   else
     allocationHoursPerDay = 0;
 
+  let allocationP= 0;
+  let allocationDays: number;
+
   if (resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
-    let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
+    allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
     allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
+    console.log("Allocation Hours during calculation: ", allocationHrs);
+    allocationP = Math.floor(100*(Number(allocationHrs) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
+    console.log("Allocation Percentage during calculation: ", allocationP);
   }
 
-  useEffect(()=>{
-    setAllocationHrs(allocationHours.toString());
-  }, [allocationPercentage])
+  // useEffect(()=>{
+  //   if(allocationHours.toString() !== allocationHrs){
+  //     setAllocationHrs(allocationHours.toString());
+  //   }
+  // }, [allocationPercentage])
+
+  // useEffect(()=>{
+  //   if(allocatedPercentage !== allocationP){
+  //     setAllocationPercentage(allocationP.toString());
+  //   }
+  // },[allocationHrs])
+
   const resetFormFields = () => {
     const errorContainer = document.getElementsByClassName('error');
     for(let i=0; i < errorContainer.length; i++){
@@ -1551,7 +1572,27 @@ const AddModal = (props: any) => {
     setResourceId("0");
     setProjectId("0");
     setHolidays("");
+    setAllocationHrs("");
   }
+  const calculateHours = () =>{
+    console.log("Allocation Percentage in calculate hours: ",allocationPercentage);
+  }
+  const allPercentToHours = (event: any) =>{
+    setAllocationPercentage(event.target.value);
+    allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(event.target.value) / 100);
+    setAllocationHrs(allocationHours.toString());
+    // console.log("Allocation Percentage: ",allocationPercentage);
+    // calculateHours();
+  }
+  
+  
+    console.log("Allocation Percentage: ",allocationPercentage);
+  const allHoursToPercent = (event: any) =>{
+    setAllocationHrs(event.target.value);
+    allocationP = Math.floor(100*(Number(event.target.value) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
+    setAllocationPercentage(allocationP.toString());
+  }
+
   const getAllocationPercentage = async () => {
     if(resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
       if(allocationEndDate >= allocationStartDate){
@@ -1934,7 +1975,9 @@ const AddModal = (props: any) => {
                   id="allocationPercentage"
                   value={allocationPercentage}
                   onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPercentage'), 'input')}
-                  onChange={(event) => setAllocationPercentage(event.target.value)}
+                  onChange={allPercentToHours
+                    // (event: any)=> setAllocationPercentage(event.target.value)
+                  }
                 />
                 <div className="error"></div>
               </div>
@@ -1960,7 +2003,9 @@ const AddModal = (props: any) => {
                   id="allocationHours"
                   value={allocationHrs}
                   // disabled
-                onChange={(event) => setAllocationHrs(event.target.value)}
+                onChange={ allHoursToPercent
+                  // (event) => setAllocationHrs(event.target.value)
+                }
                 />
               </div>
             </div>
