@@ -9,6 +9,7 @@ a {
   background-color: #f7f7f7;
   padding-left: 80px;
   margin-bottom: 20px;
+  min-width: 200px !important;
 }
 
 .Page-Heading {
@@ -94,7 +95,7 @@ h1.Heading-Cls {
   
   padding: 18px !important;
   width: 250px !important; */
-  margin-right: 175px !important;
+  /* margin-right: 175px !important; */
   float: right !important;
   margin-top: -68px !important;
 }
@@ -273,7 +274,7 @@ div.project>input.upload-input-btn {
 }
 
 .filter-row>.col-md-2 {
-  width: 12.666667% !important;
+  width: 10.7% !important;
 }
 
 .rmsc.multi-select {
@@ -380,6 +381,12 @@ svg.dropdown-heading-dropdown-arrow.gray {
   padding-left: 10px !important;
 
 }
+
+/* @media screen and (max-width: 992px) {
+  .filter-row {
+    background-color: blue;
+  }
+} */
 
 .dropdown:after {
   content: "<";
@@ -519,6 +526,10 @@ button#export-excel-btn:hover {
   transition-delay: 1s;
 }
 
+.PAllocationFilters{
+  margin-left: 3px !important;
+  margin-right: 3px !important;
+}
 #export-dropdowns-content:before {
   content: ' ';
   transform: rotate(131deg);
@@ -537,6 +548,8 @@ button#export-excel-btn:hover {
 .UploadBulkEmployeeDetails{
   position: relative;
   display: inline-block;
+  left: 0px;
+  margin-left: -1px;
 }
 
 .UploadBulkEmployeeDetails .BulkUploadEmployeeTooltip{
@@ -552,7 +565,7 @@ button#export-excel-btn:hover {
   height: 45px;
   top: -32px;
   font-size: smaller;
-  /* left: -23px; */
+  left: 35px;
   margin-left: -30%;
   box-shadow: 0 0px 10px rgb(0 0 0 / 50%);
 }
@@ -575,12 +588,19 @@ button#export-excel-btn:hover {
   margin-left:55px !important;
 }
 
+.AddEmployeeButton{
+  position: relative;
+  display: inline-block;
+  left: 6px;
+  /* margin-left: 2px; */
+}
 .deleteButton{
   margin-left:32px !important;
 }
 .DownloadEmployeeTemplate {
   position: relative;
   display: inline-block;
+  left: 31px;
   /* border-bottom: 1px dotted black; */
 }
 .DownloadEmployeeTemplate .DownloadEmployeeTemplateTooltip{
@@ -595,7 +615,7 @@ button#export-excel-btn:hover {
   position: absolute;
   z-index: 1;
   top: -32px;
-  left: -3px;
+  left: 160px;
   margin-left: -185px;
   font-size: smaller;
   box-shadow: 0 0px 10px rgb(0 0 0 / 50%);

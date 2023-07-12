@@ -202,7 +202,7 @@ useEffect(()=>{
   }, []);
 
   const resourceColumns = [
-    ["ResourceName", "ResourceType", "Role", "ResourceMarket", "EmailAddress", "Location", "SubLocation", "Manager"],
+    ["ResourceName","Role", "EmailAddress", "Manager", "ResourceType", "ResourceMarket",  "Location", "SubLocation"],
   ];
   const handleDownloadTemplate = async () => {
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -228,7 +228,7 @@ useEffect(()=>{
         subLocation: row.SubLocation,
         manager: row.Manager,
       }));
-      payload = payload.map((row: any) => ({ ...row, createdBy: "Admin" }));
+      payload = payload.map((row: any) => ({ ...row, createdBy: username }));
       try {
         const response = await fetch(`${POST_BULK_UPLOAD_EMPLOYEE}`, {
           method: "POST",
@@ -348,8 +348,8 @@ useEffect(()=>{
               <span>Resource Details</span>
             </p>
             <div className="btns employee">
-              <div style={{display:'flex', width:'25%',float:'right', justifyContent:'space-between', position:'relative'}}>
-              <div className="DownloadEmployeeTemplate" style={{width:'15%',marginRight:'-205px', marginLeft:'80%'}}>
+              <div style={{display:'flex', width:'230px',float:'right', marginTop:'-15px'}}>
+              <div className="DownloadEmployeeTemplate" >
                 <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
                   <i className="las la-file-download"></i>
                 </button>
@@ -359,7 +359,7 @@ useEffect(()=>{
                   </p>
                 </div>
               </div>
-              <div className="UploadBulkEmployeeDetails" style={{width:'15%',marginLeft:'7%'}}>
+              <div className="UploadBulkEmployeeDetails" >
                 <button  type="button" className="btn btn-primary upload-button-btn">
                   <i className="las la-file-upload"></i>
                 </button>
@@ -377,7 +377,7 @@ useEffect(()=>{
                   </p>
                 </div>
               </div>
-              <div className="AddEmployeeButton" style={{float:'right', width:'45%'}}>
+              <div className="AddEmployeeButton" style={{ whiteSpace:'nowrap'}}>
                 {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
                 {action == "Update" && <UpdateModal initialValues={updateResourceDetails} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               </div>
@@ -447,8 +447,8 @@ useEffect(()=>{
                 valueRenderer={customValueRenderer}
               />
             </div>
-            <div className="col-md-2" style={{ marginTop: "24px" }}>
-              <button type="button"  className="btn btn-primary" onClick={() => dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
+            <div className="col-md-2 form-group" style={{ marginTop: "24px", marginLeft:'-3px', whiteSpace:'nowrap'  }}>
+              <button type="button"  className="btn btn-primary PAllocationFilters" onClick={() => dispatch(employeeActions.clearFilters())}>Clear Filters<i className="las la-filter"></i></button>
             </div>
           </div>
         <div className="TableContentBorder" >
@@ -810,7 +810,7 @@ const UpdateModal = (props: any) => {
   
   function deleteConfirmation() {
     var txt;
-    if (window.confirm(`Deleting current record`)) {
+    if (window.confirm(`Do you want to delete this record?`)) {
       txt = "You pressed OK!";
       handleDelete();
     } else {

@@ -10,6 +10,10 @@
     --z-fixed: 100
 }
 
+.Collapsible__trigger{
+    padding-left: 3px !important;
+}
+
 *,
 ::before,
 ::after {
