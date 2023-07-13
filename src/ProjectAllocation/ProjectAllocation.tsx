@@ -24,6 +24,29 @@ import customStyles from "../DataTable/customStyles";
 import { ptoActions } from "../Store/Slices/Pto";
 import { closeNav } from "../SideBar/SideBarJs";
 
+
+
+const stringDateSorting = (rowA: any, rowB: any) => {
+  const a = rowA.startDate?.slice(0,10);
+  const b = rowB.startDate?.slice(0,10);
+  console.log("Year: ", a.slice(6,10));
+  console.log("Month: ",a.slice(0,2))
+  if (a.slice(6,10) > b.slice(6,10)) {
+      return 1;
+  }else{
+    if(a.slice(0,2) > b.slice(0,2)){
+      return 1;
+    }else{
+      if(a.slice(2,4) > b.slice(2,4)){
+        return 1;
+      }else{
+        return -1;
+      }
+    }
+  }
+  return 0;
+};
+
 const employeeColumns = [
   {
     name: "Resource",
@@ -111,6 +134,7 @@ const allocationDetailsColumn = [
     name: "Start Date",
     selector: (row:  any ) => row.startDate?.slice(0, 10),
     sortable: true,
+    sortFunction: stringDateSorting,
     reorder: true,
     filterable: true,
   },
