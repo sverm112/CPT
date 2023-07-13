@@ -157,6 +157,7 @@ const PTO = () => {
   }
 
   useEffect(()=>{
+    dispatch(ptoActions.clearFilters());
     dispatch(ptoActions.changeStatus([{label:'Active', value:'Active'}]));
   },[])
   resources.map((resource: any) => {

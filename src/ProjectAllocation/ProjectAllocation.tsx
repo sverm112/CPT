@@ -260,6 +260,9 @@ const ProjectAllocation = () => {
 
   
   useEffect(()=>{
+    dispatch(employeeActions.clearFilters());
+    dispatch(ptoActions.clearFilters());
+    dispatch(projectAllocationActions.clearFilters());
     dispatch(projectAllocationActions.changeStatus([{label:'Active', value:'Active'}]));
   },[])
   const changeManagerSelectHandler = (event: any) => {
@@ -402,7 +405,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
        status: projectAllocation.status,
        createdDate: projectAllocation.createdDateString,
        createdBy: projectAllocation.createdBy,
-       updatedDate: projectAllocation.updatedDateString,
+       updatedDateString: projectAllocation.updatedDateString,
        updatedBy: projectAllocation.updatedBy,
        resourceId: projectAllocation.resourceId,
        projectId: projectAllocation.projectId,
@@ -440,7 +443,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
      status: projectAllocation.status,
      createdDate: projectAllocation.createdDateString,
      createdBy: projectAllocation.createdBy,
-     updatedDate: projectAllocation.updatedDateString,
+     updatedDateString: projectAllocation.updatedDateString,
      updatedBy: projectAllocation.updatedBy,
      resourceId: projectAllocation.resourceId,
      projectId: projectAllocation.projectId,
