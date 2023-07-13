@@ -46,18 +46,6 @@ const stringDateSorting = (rowA: any, rowB: any) => {
   }else{
     return -1;
   }
-  
-  // else{
-  //   if(a.slice(0,2) > b.slice(0,2)){
-  //     return 1;
-  //   }else{
-  //     if(a.slice(2,4) > b.slice(2,4)){
-
-  //     }
-  //   }
-  //   return -1;
-  // }
-
   return 0;
 };
 
@@ -923,10 +911,12 @@ const UpdateModal = (props: any) => {
 
     let allocationP =0;
     let allocationDays: number;
+    let numberOfHolidays=0;
   if (formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
     let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
     formValues.allocationHours = ((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
     formValues.allocationPercentage = Math.floor(100*(Number(formValues.allocationHours) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
+    numberOfHolidays = calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
   }
   const allPercentToHours = (event: any) =>{
     setAllocationPercentage(event.target.value);
@@ -1010,6 +1000,7 @@ const UpdateModal = (props: any) => {
       startDate: paStartDate,
       enddDate: paEndDate,
       numberOfPTODays: ptoDays =="" ? formValues.numberOfPTODays : ptoDays,
+      numberOfHolidays : numberOfHolidays,
       allocationHours: allocationHrs == "0" ? formValues.allocationHours : Number(allocationHrs),
       allocationPercentage: Number(formValues.allocationPercentage),
       status: formValues.status,
@@ -1496,6 +1487,7 @@ const AddModal = (props: any) => {
     // console.log("AllocationDays Count " + count);
     return count;
   }
+  let numberOfHolidays = 0;
   const calculateHolidays = (location: any, subLocation: any, startDate: Date, endDate: Date) => {
     let count = 0;
     let filteredHolidays = holidayDetails.filter((holiday: any) => holiday.locationName == location && holiday.subLocationName == subLocation && holiday.status == "Active");
@@ -1509,6 +1501,7 @@ const AddModal = (props: any) => {
     //console.log("Holiday Count " + count);
     
     //console.log("Holiday Count After " + count);
+    numberOfHolidays = count;
     return count;
   }
   //allocationHours= (((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
@@ -1686,6 +1679,7 @@ const AddModal = (props: any) => {
       startDate: paStartDate,
       enddDate: paEndDate,
       numberOfPTODays: ptoDays == "" ? 0 : Number(ptoDays),
+      numberOfHolidays: numberOfHolidays,
       allocationHours: Number(allocationHrs),
       allocationPercentage: Number(allocationPercentage),
       createdBy: username
