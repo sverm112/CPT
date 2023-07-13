@@ -159,6 +159,16 @@ const allocationDetailsColumn = [
     reorder: true,
     filterable: true,
   },
+
+  
+  {
+    name: "Holidays",
+    selector: (row:  any ) => row.numberOfHolidays,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+
   {
     name: "Allocation(Hours)",
     selector: (row:  any ) => row.allocationHours,
@@ -424,6 +434,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
        enddDate: projectAllocation.enddDateString,
        allocationHours: projectAllocation.allocationHours,
        numberOfPTODays: projectAllocation.numberOfPTODays,
+       numberOfHolidays: projectAllocation.numberOfHolidays,
        resourceType1 : projectAllocation.resourceType1,
        allocationPercentage: projectAllocation.allocationPercentage,
        status: projectAllocation.status,
@@ -462,6 +473,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
      enddDate: projectAllocation.enddDateString,
      allocationHours: projectAllocation.allocationHours,
      numberOfPTODays: projectAllocation.numberOfPTODays,
+      numberOfHolidays: projectAllocation.numberOfHolidays,
      resourceType1 : projectAllocation.resourceType1,
      allocationPercentage: projectAllocation.allocationPercentage,
      status: projectAllocation.status,
