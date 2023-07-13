@@ -122,7 +122,7 @@ const allocationDetailsColumn = [
     filterable: true,
   },
   {
-    name: "Resource Type1",
+    name: "Project Role",
     selector: (row:any ) => row.resourceType1,
     sortable: true,
     reorder: true,
@@ -194,7 +194,7 @@ const columnsAndSelectors=[
   {'name':'Location','selector':'location','default':'true'},
   {'name':'Resource Market','selector':'resourceMarket','default':'true'},
   // {'name':'Project','selector':'projectName','default':'true'},
-  // {'name':'Resource Type1','selector':'resourceType1','default':'false'},
+  // {'name':'Project Role','selector':'resourceType1','default':'false'},
   // {'name':'Project Market','selector':'projectMarket','default':'false'},
   // {'name':'Project Code','selector':'projectCode','default':'false'},
   // {'name':'Expense Type','selector':'expenseType','default':'false'},
@@ -872,14 +872,14 @@ const UpdateModal = (props: any) => {
     let allocationDays: number;
   if (formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
     let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
-    formValues.allocationHours = Math.ceil((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
+    formValues.allocationHours = ((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
     formValues.allocationPercentage = Math.floor(100*(Number(formValues.allocationHours) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
   }
   const allPercentToHours = (event: any) =>{
     setAllocationPercentage(event.target.value);
     if(formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null){
       let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
-      setAllocationHrs(Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(event.target.value) / 100).toString());
+      setAllocationHrs(((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(event.target.value) / 100).toString());
     }
   }
   const allHoursToPercent = (event: any) =>{
@@ -957,7 +957,7 @@ const UpdateModal = (props: any) => {
       startDate: paStartDate,
       enddDate: paEndDate,
       numberOfPTODays: ptoDays =="" ? formValues.numberOfPTODays : ptoDays,
-      allocationHours: formValues.allocationHours,
+      allocationHours: allocationHrs == "0" ? formValues.allocationHours : Number(allocationHrs),
       allocationPercentage: Number(formValues.allocationPercentage),
       status: formValues.status,
       updatedBy: username
@@ -1458,7 +1458,7 @@ const AddModal = (props: any) => {
     //console.log("Holiday Count After " + count);
     return count;
   }
-  //allocationHours= Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
+  //allocationHours= (((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
   const dispatch = useDispatch();
   const resourcesList = useSelector((store: any) => store.Employee.data);
   const projectsList = useSelector((store: any) => store.Project.data);
@@ -1544,7 +1544,7 @@ const AddModal = (props: any) => {
 
   if (resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
     allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
-    allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
+    allocationHours = ((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
     //console.log("Allocation Hours during calculation: ", allocationHrs);
     allocationP = Math.floor(100*(Number(allocationHrs) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
     //console.log("Allocation Percentage during calculation: ", allocationP);
@@ -1567,7 +1567,7 @@ const AddModal = (props: any) => {
   }
   const allPercentToHours = (event: any) =>{
     setAllocationPercentage(event.target.value);
-    allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(event.target.value) / 100);
+    allocationHours = ((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(event.target.value) / 100);
     setAllocationHrs(allocationHours.toString());
   }
   
@@ -1583,9 +1583,9 @@ const AddModal = (props: any) => {
       if(allocationEndDate >= allocationStartDate){
         try {
           let paStartDate = new Date(allocationStartDate);
-              paStartDate.setDate(paStartDate.getDate() + 1);
+              paStartDate.setDate(paStartDate.getDate() );
               let paEndDate = new Date(allocationEndDate);
-              paEndDate.setDate(paEndDate.getDate()+1);
+              paEndDate.setDate(paEndDate.getDate());
           const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?resourceId=${resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
             method: "GET",
             headers: {
@@ -1633,7 +1633,7 @@ const AddModal = (props: any) => {
       startDate: paStartDate,
       enddDate: paEndDate,
       numberOfPTODays: ptoDays == "" ? 0 : Number(ptoDays),
-      allocationHours: allocationHrs,
+      allocationHours: Number(allocationHrs),
       allocationPercentage: Number(allocationPercentage),
       createdBy: username
     };
