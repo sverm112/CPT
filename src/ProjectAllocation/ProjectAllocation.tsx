@@ -29,21 +29,35 @@ import { closeNav } from "../SideBar/SideBarJs";
 const stringDateSorting = (rowA: any, rowB: any) => {
   const a = rowA.startDate?.slice(0,10);
   const b = rowB.startDate?.slice(0,10);
-  console.log("Year: ", a.slice(6,10));
-  console.log("Month: ",a.slice(0,2))
   if (a.slice(6,10) > b.slice(6,10)) {
       return 1;
-  }else{
+  }else if(a.slice(6,10) === b.slice(6,10)){
     if(a.slice(0,2) > b.slice(0,2)){
       return 1;
-    }else{
+    }else if(a.slice(0,2) === b.slice(0,2)){
       if(a.slice(2,4) > b.slice(2,4)){
         return 1;
       }else{
         return -1;
       }
+    }else{
+      return -1;
     }
+  }else{
+    return -1;
   }
+  
+  // else{
+  //   if(a.slice(0,2) > b.slice(0,2)){
+  //     return 1;
+  //   }else{
+  //     if(a.slice(2,4) > b.slice(2,4)){
+
+  //     }
+  //   }
+  //   return -1;
+  // }
+
   return 0;
 };
 
