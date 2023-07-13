@@ -177,6 +177,7 @@ const EmployeeMaster = () => {
     getEmployeeDetails();
   }, [toggle]);
 useEffect(()=>{
+  dispatch(employeeActions.clearFilters());
   dispatch(employeeActions.changeStatus([{label:'Active', value:'Active'}]));
 },[])
   const getMarketDetails = async () => {

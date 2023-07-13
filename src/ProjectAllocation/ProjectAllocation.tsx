@@ -24,6 +24,29 @@ import customStyles from "../DataTable/customStyles";
 import { ptoActions } from "../Store/Slices/Pto";
 import { closeNav } from "../SideBar/SideBarJs";
 
+
+
+const stringDateSorting = (rowA: any, rowB: any) => {
+  const a = rowA.startDate?.slice(0,10);
+  const b = rowB.startDate?.slice(0,10);
+  console.log("Year: ", a.slice(6,10));
+  console.log("Month: ",a.slice(0,2))
+  if (a.slice(6,10) > b.slice(6,10)) {
+      return 1;
+  }else{
+    if(a.slice(0,2) > b.slice(0,2)){
+      return 1;
+    }else{
+      if(a.slice(2,4) > b.slice(2,4)){
+        return 1;
+      }else{
+        return -1;
+      }
+    }
+  }
+  return 0;
+};
+
 const employeeColumns = [
   {
     name: "Resource",
@@ -111,6 +134,7 @@ const allocationDetailsColumn = [
     name: "Start Date",
     selector: (row:  any ) => row.startDate?.slice(0, 10),
     sortable: true,
+    sortFunction: stringDateSorting,
     reorder: true,
     filterable: true,
   },
@@ -122,7 +146,7 @@ const allocationDetailsColumn = [
     filterable: true,
   },
   {
-    name: "Resource Type1",
+    name: "Project Role",
     selector: (row:any ) => row.resourceType1,
     sortable: true,
     reorder: true,
@@ -135,6 +159,16 @@ const allocationDetailsColumn = [
     reorder: true,
     filterable: true,
   },
+
+  
+  {
+    name: "Holidays",
+    selector: (row:  any ) => row.numberOfHolidays,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+
   {
     name: "Allocation(Hours)",
     selector: (row:  any ) => row.allocationHours,
@@ -194,7 +228,7 @@ const columnsAndSelectors=[
   {'name':'Location','selector':'location','default':'true'},
   {'name':'Resource Market','selector':'resourceMarket','default':'true'},
   // {'name':'Project','selector':'projectName','default':'true'},
-  // {'name':'Resource Type1','selector':'resourceType1','default':'false'},
+  // {'name':'Project Role','selector':'resourceType1','default':'false'},
   // {'name':'Project Market','selector':'projectMarket','default':'false'},
   // {'name':'Project Code','selector':'projectCode','default':'false'},
   // {'name':'Expense Type','selector':'expenseType','default':'false'},
@@ -260,6 +294,9 @@ const ProjectAllocation = () => {
 
   
   useEffect(()=>{
+    dispatch(employeeActions.clearFilters());
+    dispatch(ptoActions.clearFilters());
+    dispatch(projectAllocationActions.clearFilters());
     dispatch(projectAllocationActions.changeStatus([{label:'Active', value:'Active'}]));
   },[])
   const changeManagerSelectHandler = (event: any) => {
@@ -397,12 +434,13 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
        enddDate: projectAllocation.enddDateString,
        allocationHours: projectAllocation.allocationHours,
        numberOfPTODays: projectAllocation.numberOfPTODays,
+       numberOfHolidays: projectAllocation.numberOfHolidays,
        resourceType1 : projectAllocation.resourceType1,
        allocationPercentage: projectAllocation.allocationPercentage,
        status: projectAllocation.status,
        createdDate: projectAllocation.createdDateString,
        createdBy: projectAllocation.createdBy,
-       updatedDate: projectAllocation.updatedDateString,
+       updatedDateString: projectAllocation.updatedDateString,
        updatedBy: projectAllocation.updatedBy,
        resourceId: projectAllocation.resourceId,
        projectId: projectAllocation.projectId,
@@ -435,12 +473,13 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
      enddDate: projectAllocation.enddDateString,
      allocationHours: projectAllocation.allocationHours,
      numberOfPTODays: projectAllocation.numberOfPTODays,
+      numberOfHolidays: projectAllocation.numberOfHolidays,
      resourceType1 : projectAllocation.resourceType1,
      allocationPercentage: projectAllocation.allocationPercentage,
      status: projectAllocation.status,
      createdDate: projectAllocation.createdDateString,
      createdBy: projectAllocation.createdBy,
-     updatedDate: projectAllocation.updatedDateString,
+     updatedDateString: projectAllocation.updatedDateString,
      updatedBy: projectAllocation.updatedBy,
      resourceId: projectAllocation.resourceId,
      projectId: projectAllocation.projectId,
@@ -872,14 +911,14 @@ const UpdateModal = (props: any) => {
     let allocationDays: number;
   if (formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
     let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
-    formValues.allocationHours = Math.ceil((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
+    formValues.allocationHours = ((allocationDays - Number(ptoDays =="" ? formValues.numberOfPTODays : ptoDays)) * allocationHoursPerDay * Number(formValues.allocationPercentage) / 100);
     formValues.allocationPercentage = Math.floor(100*(Number(formValues.allocationHours) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
   }
   const allPercentToHours = (event: any) =>{
     setAllocationPercentage(event.target.value);
     if(formValues.resourceId != "0" && allocationEndDate != null && allocationStartDate != null){
       let allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
-      setAllocationHrs(Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(event.target.value) / 100).toString());
+      setAllocationHrs(((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(event.target.value) / 100).toString());
     }
   }
   const allHoursToPercent = (event: any) =>{
@@ -957,7 +996,7 @@ const UpdateModal = (props: any) => {
       startDate: paStartDate,
       enddDate: paEndDate,
       numberOfPTODays: ptoDays =="" ? formValues.numberOfPTODays : ptoDays,
-      allocationHours: formValues.allocationHours,
+      allocationHours: allocationHrs == "0" ? formValues.allocationHours : Number(allocationHrs),
       allocationPercentage: Number(formValues.allocationPercentage),
       status: formValues.status,
       updatedBy: username
@@ -1458,7 +1497,7 @@ const AddModal = (props: any) => {
     //console.log("Holiday Count After " + count);
     return count;
   }
-  //allocationHours= Math.ceil(Math.ceil((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
+  //allocationHours= (((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000*3600*24)-Number(ptoDays))*(8.5*Number(allocationPercentage))/100);
   const dispatch = useDispatch();
   const resourcesList = useSelector((store: any) => store.Employee.data);
   const projectsList = useSelector((store: any) => store.Project.data);
@@ -1544,7 +1583,7 @@ const AddModal = (props: any) => {
 
   if (resourceId != "0" && allocationEndDate != null && allocationStartDate != null) {
     allocationDays = calculateAllocationDays(allocationStartDate, allocationEndDate) - calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
-    allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
+    allocationHours = ((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(allocationPercentage) / 100);
     //console.log("Allocation Hours during calculation: ", allocationHrs);
     allocationP = Math.floor(100*(Number(allocationHrs) / ((allocationDays - Number(ptoDays)) * allocationHoursPerDay)));
     //console.log("Allocation Percentage during calculation: ", allocationP);
@@ -1567,7 +1606,7 @@ const AddModal = (props: any) => {
   }
   const allPercentToHours = (event: any) =>{
     setAllocationPercentage(event.target.value);
-    allocationHours = Math.ceil((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(event.target.value) / 100);
+    allocationHours = ((allocationDays - Number(ptoDays)) * allocationHoursPerDay * Number(event.target.value) / 100);
     setAllocationHrs(allocationHours.toString());
   }
   
@@ -1583,9 +1622,9 @@ const AddModal = (props: any) => {
       if(allocationEndDate >= allocationStartDate){
         try {
           let paStartDate = new Date(allocationStartDate);
-              paStartDate.setDate(paStartDate.getDate() + 1);
+              paStartDate.setDate(paStartDate.getDate() );
               let paEndDate = new Date(allocationEndDate);
-              paEndDate.setDate(paEndDate.getDate()+1);
+              paEndDate.setDate(paEndDate.getDate());
           const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?resourceId=${resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
             method: "GET",
             headers: {
@@ -1633,7 +1672,7 @@ const AddModal = (props: any) => {
       startDate: paStartDate,
       enddDate: paEndDate,
       numberOfPTODays: ptoDays == "" ? 0 : Number(ptoDays),
-      allocationHours: allocationHrs,
+      allocationHours: Number(allocationHrs),
       allocationPercentage: Number(allocationPercentage),
       createdBy: username
     };

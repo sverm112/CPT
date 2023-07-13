@@ -369,8 +369,10 @@ const sendBulkResourcesData = async (payload: any) => {
                 </div>
               </div>
               <div className="AddEmployeeButton" style={{whiteSpace:'nowrap'}}>
-                {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
-                {action == "Update" && <UpdateModal initialValues={()=>{}} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+                {/* {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+                {action == "Update" && <UpdateModal initialValues={()=>{}} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />} */}
+                              {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
+              {action == "Update" && <UpdateModal initialValues={updateProjectDetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               </div>
               </div>
             </div>
@@ -661,6 +663,7 @@ const UpdateModal = (props: any) => {
   const username=useSelector((state:any)=>state.User.username);
   const marketList = useSelector((state: any) => state.Market.data);
   const [formValues, setFormValues] = useState(props.initialValues || {});
+  console.log("Form Values: ", props);
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
     let payload = {
