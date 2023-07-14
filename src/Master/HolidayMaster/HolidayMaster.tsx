@@ -126,6 +126,7 @@ const HolidayMaster = () => {
   }
 
   useEffect(()=>{
+    dispatch(holidayActions.clearFilters());
     dispatch(holidayActions.changeStatus([{label:'Active', value:'Active'}]));
   },[])
 
