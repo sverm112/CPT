@@ -1336,7 +1336,7 @@ useEffect(()=>{
                   // required
                   // pattern={PatternsAndMessages.numberOnly.pattern}
                   className="form-control"
-                  id="ptoDays"
+                  id="numberOfHolidays"
                   value={holidays}
                   // onBlur={()=>validateSingleFormGroup(document.getElementById('AllocateProjectPTODays'), 'input')}
                   // onChange={(event) => setPtoDays(event.target.value)}
