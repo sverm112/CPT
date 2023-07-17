@@ -340,17 +340,17 @@ const sendBulkResourcesData = async (payload: any) => {
             
             <div className="btns employee">
               <div style={{display:'flex', width:'220px',marginTop:'-15px',float:'right'}}>
-              <div className="DownloadEmployeeTemplate" >
+              <div className="DownloadEmployeeTemplate" style={{display:'none'}} >
                 <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
                   <i className="las la-file-download"></i>
                 </button>
-                <div className="DownloadEmployeeTemplateTooltip">
+                <div className="DownloadEmployeeTemplateTooltip" >
                   <p>
                     Download Template
                   </p>
                 </div>
               </div>
-              <div className="UploadBulkEmployeeDetails" >
+              <div className="UploadBulkEmployeeDetails" style={{display:'none'}} >
                 <button  type="button" className="btn btn-primary upload-button-btn">
                   <i className="las la-file-upload"></i>
                 </button>
@@ -368,7 +368,7 @@ const sendBulkResourcesData = async (payload: any) => {
                   </p>
                 </div>
               </div>
-              <div className="AddEmployeeButton" style={{whiteSpace:'nowrap'}}>
+              <div className="AddEmployeeButton" style={{whiteSpace:'nowrap', marginLeft:'45%'}}>
                 {/* {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
                 {action == "Update" && <UpdateModal initialValues={()=>{}} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />} */}
                               {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
@@ -528,7 +528,7 @@ style={{ float: "right", marginTop: "-68px"}}
                 <span className="requiredField">*</span>
                 <input
                   required
-                  pattern={PatternsAndMessages.numberOnly.pattern}
+                  pattern={PatternsAndMessages.alphanumeric.pattern}
                   type="text"
                   className="form-control"
                   id="projectCode"
@@ -761,6 +761,7 @@ style={{ float: "right", marginTop: "-68px"}}
                   required
                   type="text"
                   name="projectCode"
+                  pattern={PatternsAndMessages.alphanumeric.pattern}
                   className="form-control"
                   id="projectCode"
                   value={formValues.projectCode}
