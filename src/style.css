@@ -277,6 +277,15 @@ div.project>input.upload-input-btn {
   width: 10.7% !important;
 }
 
+
+.MoreFilters>.col-md-2 {
+  width: 11.075% !important;
+}
+
+.MoreFilters>.col-md-3 {
+  width: 15% !important;
+}
+
 .rmsc.multi-select {
   font-size: 14px;
 }
