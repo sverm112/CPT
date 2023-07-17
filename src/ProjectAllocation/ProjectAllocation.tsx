@@ -282,6 +282,8 @@ const ProjectAllocation = () => {
   const resourceList = useSelector((state: any) => state.Employee.data);
   const managerSelected = useSelector((state: any) => state.Employee.manager);
   const managerOptions = managerSelected.map((manager: any) => manager.value);
+  const projectNameSelected = useSelector((state: any) => state.ProjectAllocation.projectName);
+  const projectList = useSelector((state: any)=> state.Project.data)
   const statusSelected = useSelector((state: any) => state.ProjectAllocation.status);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -328,7 +330,9 @@ const ProjectAllocation = () => {
     dispatch(projectAllocationActions.changeLocation(event.target.value));
 
   };
-
+  const changeProjectNameSelectHandler = (event: any) =>{
+    dispatch(projectAllocationActions.changeProjectName(event));
+  }
   const changeStatusSelectHandler = (event: any) => {
     dispatch(projectAllocationActions.changeStatus(event));
   };
@@ -373,6 +377,7 @@ const ProjectAllocation = () => {
     const roleOptions = roleSelected.map((role: any) => role.value);
     const resourceOptions = resourceSelected.map((resource: any) => resource.value);
     const statusOptions = statusSelected.map((status: any) => status.value);
+    const projectNameOptions = projectNameSelected.map((project: any)=>project.value);
     const projectMarketOptions = projectMarketSelected.map((projectMarket: any) => projectMarket.value);
     const expenseTypeOptions = expenseTypeSelected.map((expenseType: any) => expenseType.value);
     if ((!resourceMarketSelected.length) || (resourceMarketSelected.length > 0 && resourceMarketOptions.includes(projectAllocation.resourceMarket) == true)) {
@@ -386,7 +391,7 @@ const ProjectAllocation = () => {
                             if (locationSelected == "0" || locationSelected == projectAllocation.location){
                               if((startDate == null) ? true : new Date(projectAllocation.startDate) >= startDate){
                                 if((endDate == null) ? true : new Date(projectAllocation.enddDate) <= endDate){
-                                  // if(projectAllocation.status==="Active")
+                                  if((!projectNameSelected.length) || (projectNameSelected.length > 0 && projectNameOptions.includes(projectAllocation.projectName)))
                                   return true;         
                                 }
                               }
@@ -689,6 +694,18 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
             <button type="button" className="btn btn-primary PAllocationFilters" onClick={showMoreFilters}><span id="MoreFiltersButton">More Filters</span><i className="las la-filter"></i></button>
             </div>
             <div className="MoreFilters row filter-row" id="MoreFilters" style={{display:'none'}} >
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Project
+              </label>
+              <MultiSelect
+                options={(projectList.map((project: any) => ({ label: project.projectName, value: project.projectName })))}
+                value={projectNameSelected}
+                onChange={changeProjectNameSelectHandler}
+                labelledBy="Select Project"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Project Market
