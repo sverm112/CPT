@@ -621,7 +621,7 @@ const AddModal = (props: any) => {
                       validateSingleFormGroup(document.getElementById('AddResourceManagerField'), 'select');
                     }}>                  
                     <option value="0">Select</option>
-                    {resourceManagers.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceId.toString()}>{resource.resourceName}</option>)}
+                    {resourceManagers.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceName.toString()}>{resource.resourceName}</option>)}
                   
                   </select>
                   <div className="error"></div>
