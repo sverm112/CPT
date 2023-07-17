@@ -273,7 +273,7 @@ const sendBulkResourcesData = async (payload: any) => {
     'isActive', 'createdDate', 'createdBy'];
   //end constants for export
   const projectColumns = [
-    ["ProjectCode", "ProjectName", "ProjectModel", "ProjectMarket", "ExpenseType", "ProjectManager"],
+    ["Project Code", "Project Name", "Project Model", "Project Market", "Expense Type", "Project Manager"],
   ];
   const handleDownloadTemplate = async () => {
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
