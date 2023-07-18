@@ -43,9 +43,11 @@ const ExportPdf = (attributes: any) => {
 
     return (
         <>
+            <div className="exportPDF" style={{marginLeft:'-4px'}}>
             <button id="export-pdf-btn" onClick={downloadData}>
                 <i className="lar la-file-pdf"></i> Export <b>PDF</b>
             </button>
+            </div>
         </>
     )
 }

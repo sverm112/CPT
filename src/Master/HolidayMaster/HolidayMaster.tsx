@@ -426,7 +426,7 @@ const UpdateModal = (props: any) =>{
 
                 <input
                   required
-                  pattern={PatternsAndMessages.singleWordName.pattern}
+                  pattern={PatternsAndMessages.nameLike.pattern}
                   type="text"
                   className="form-control"
                   id="holidayOccasion"
@@ -598,7 +598,7 @@ const AddModal = (props: any) => {
     let holidayStartDate=null;
     if(date!=null){
       holidayStartDate= new Date(date);
-      holidayStartDate.setDate(holidayStartDate.getDate() + 1);
+      holidayStartDate.setDate(holidayStartDate.getDate());
       holidayStartDate = holidayStartDate.toLocaleString().slice(0, 10);
     }
     let payload = {

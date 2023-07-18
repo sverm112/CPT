@@ -442,12 +442,12 @@ const AddModal = (props: any) => {
     if(startDate!=null){
       ptoStartDate= new Date(startDate);
       // console.log("Start Date: ",ptoStartDate);
-      ptoStartDate.setDate(ptoStartDate.getDate() + 1);
+      ptoStartDate.setDate(ptoStartDate.getDate());
     }
     if(endDate!=null){
       ptoEndDate= new Date(endDate);
       // console.log("End Date: ",ptoEndDate);
-      ptoEndDate.setDate(ptoEndDate.getDate() + 1);
+      ptoEndDate.setDate(ptoEndDate.getDate());
     }
     // if(startYear == endYear){
       payload = [{

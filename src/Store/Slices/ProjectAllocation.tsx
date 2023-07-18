@@ -7,6 +7,7 @@ const initialState = {
   role : [],
   expenseType :[],
   projectMarket:[],
+  projectName:[],
   status: [{label:'Active', value: 'Active'}],
   location : '0',
   currentPage: "1",
@@ -29,6 +30,9 @@ const projectAllocationSlice = createSlice({
     },
     changeRole(state,action){
       state.role=action.payload
+    },
+    changeProjectName(state,action){
+      state.projectName=action.payload
     },
     changeExpenseType(state,action){
       state.expenseType=action.payload
@@ -59,6 +63,7 @@ const projectAllocationSlice = createSlice({
       state.expenseType=[];
       state.location="0";
       state.status=[];
+      state.projectName=[];
     }
   },
 });

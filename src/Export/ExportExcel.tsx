@@ -34,9 +34,11 @@ const ExportExcel = (attributes: any) => {
 
     return (
         <>
-            <button id="export-excel-btn" style={{ marginTop: "4px" }} onClick={exportToExcel}>
-                <i className="lar la-file-excel"></i> Export <b>Excel</b>
-            </button>
+            <div className="exportExcel" style={{marginLeft:'-0px'}}>
+                <button id="export-excel-btn" style={{ marginTop: "4px" }} onClick={exportToExcel}>
+                    <i className="lar la-file-excel"></i> Export <b>Excel</b>
+                </button>
+            </div>
         </>
     )
 }
