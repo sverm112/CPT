@@ -1081,9 +1081,9 @@ useEffect(()=>{
       if(allocationEndDate >= allocationStartDate){
         try{
           let paStartDate = new Date(allocationStartDate);
-          paStartDate.setDate(paStartDate.getDate() + 1);
+          paStartDate.setDate(paStartDate.getDate());
           let paEndDate = new Date(allocationEndDate);
-          paEndDate.setDate(paEndDate.getDate()+1);
+          paEndDate.setDate(paEndDate.getDate());
           const response = await fetch(`${GET_TOTAL_PTO_DAYS}?resourceId=${formValues.resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
             method: "GET",
             headers: {
@@ -1736,9 +1736,9 @@ const AddModal = (props: any) => {
       if(allocationEndDate >= allocationStartDate){
         try{
           let paStartDate = new Date(allocationStartDate);
-          paStartDate.setDate(paStartDate.getDate() + 1);
+          paStartDate.setDate(paStartDate.getDate());
           let paEndDate = new Date(allocationEndDate);
-          paEndDate.setDate(paEndDate.getDate()+1);
+          paEndDate.setDate(paEndDate.getDate());
           const response = await fetch(`${GET_TOTAL_PTO_DAYS}?resourceId=${resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
             method: "GET",
             headers: {

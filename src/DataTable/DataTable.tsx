@@ -93,6 +93,8 @@ const Table = (props: any) => {
       onRowExpandToggled = {props.onRowExpandToggled}
       expandableRows = {props.expandableRows}
       expandableRowsComponent = {props.expandableRowsComponent}
+      defaultSortAsc={props.defaultSortAsc}
+      defaultSortFieldId={props.defaultSortFieldId}
       data={filteredItems}
       pagination
       subHeader

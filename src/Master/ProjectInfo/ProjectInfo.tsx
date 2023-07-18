@@ -432,7 +432,7 @@ const sendBulkResourcesData = async (payload: any) => {
             </div>
           </div>
           <div className="TableContentBorder">
-            <Table columnsAndSelectors={columnsAndSelectors} columns={columns} isLoading={isLoading} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
+            <Table columnsAndSelectors={columnsAndSelectors} defaultSortAsc={true} defaultSortFieldId={2} columns={columns} isLoading={isLoading} data={filteredProjects} onRowDoubleClicked={handleRowDoubleClicked} title={title}/>
           </div>
         </div>
       </div>}
