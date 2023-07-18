@@ -7,9 +7,9 @@ const HolidayListReport = () => {
   return (
     <div>
       <SideBar></SideBar>
-      <div className="  col-md-12 bg-mainclass" onClick={closeNav}>
+      <div className="  col-md-12 bg-mainclass wrap-element" onClick={closeNav}>
         {/* <img src={allocationByResource} alt="allocation by resource"></img> */}
-        <iframe title="Holiday List and PTO Tracker" width="1140" height="541.25" src="http://colo-sqlrptqa/reports/powerbi/CPT/Holiday%20list?rs:embed=true"></iframe>
+        <iframe title="Holiday List and PTO Tracker" className="wrapped-iframe" src="http://colo-sqlrptqa/reports/powerbi/CPT/Holiday%20list?rs:embed=true"></iframe>
       </div>
     </div>
   );
