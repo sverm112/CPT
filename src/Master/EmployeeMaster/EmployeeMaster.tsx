@@ -203,7 +203,7 @@ useEffect(()=>{
   }, []);
 
   const resourceColumns = [
-    ["Resource Name","Role", "Email Address", "Manager", "Resource Type", "Resource Market",  "Location", "Sub Location"],
+    ["ResourceName","Role", "EmailAddress", "Manager", "ResourceType", "ResourceMarket",  "Location", "SubLocation"],
   ];
   const handleDownloadTemplate = async () => {
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -220,13 +220,13 @@ useEffect(()=>{
     if (payload.length) {
       console.log("Payload: ",payload);
       payload = payload.map((row: any) => ({
-        resourceName: row.ResourceName,
-        resourceType: row.ResourceType,
+        resourceName: row["Resource Name"],
+        resourceType: row["Resource Type"],
         role: row.Role,
-        resourceMarket: row.ResourceMarket,
-        emailAddress: row.EmailAddress,
+        resourceMarket: row["Resource Market"],
+        emailAddress: row["Email Address"],
         location: row.Location,
-        subLocation: row.SubLocation,
+        subLocation: row["Sub Location"],
         manager: row.Manager,
       }));
       payload = payload.map((row: any) => ({ ...row, createdBy: username }));
