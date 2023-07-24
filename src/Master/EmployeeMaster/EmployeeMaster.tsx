@@ -203,7 +203,7 @@ useEffect(()=>{
   }, []);
 
   const resourceColumns = [
-    ["Resource Name","Role", "Email Address", "Manager", "Resource Type", "Resource Market",  "Location", "Sub Location"],
+    ["ResourceName","Role", "EmailAddress", "Manager", "ResourceType", "ResourceMarket",  "Location", "SubLocation"],
   ];
   const handleDownloadTemplate = async () => {
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
