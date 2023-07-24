@@ -150,6 +150,7 @@ const ProjectInfo = () => {
   }
   
   useEffect(()=>{
+    dispatch(projectActions.clearFilters());
     dispatch(projectActions.changeStatus([{label:'Active', value:'Active'}]));
   },[])
 
