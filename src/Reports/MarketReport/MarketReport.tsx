@@ -1,6 +1,7 @@
 import SideBar from "../../SideBar/SideBar";
 import allocationByMarket from "../../asset/images/allocation-by-market.png";
 import { closeNav } from "../../SideBar/SideBarJs";
+import "../../../src/style.css";
 const MarketReport = () => {
   return (
     <div>

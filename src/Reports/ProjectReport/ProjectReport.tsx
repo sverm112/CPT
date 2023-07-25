@@ -1,6 +1,7 @@
 import SideBar from "../../SideBar/SideBar";
 import allocationByProject from "../../asset/images/allocation-by-project.png";
 import { closeNav } from "../../SideBar/SideBarJs";
+import "../../../src/style.css";
 const ProjectReport = () => {
   return (
     <div>
