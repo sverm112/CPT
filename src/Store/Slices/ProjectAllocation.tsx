@@ -13,6 +13,8 @@ const initialState = {
   currentPage: "1",
   pageSize: "10",
   toggle: false,
+  startDate:[],
+  endDate:[],
 };
 
 const projectAllocationSlice = createSlice({
@@ -46,6 +48,12 @@ const projectAllocationSlice = createSlice({
     changeLocation(state,action){
       state.location=action.payload
     },
+    changeStartDate(state, action){
+      state.startDate = action.payload;
+    },
+    changeEndDate(state, action){
+      state.endDate = action.payload;
+    },
     changeCurrentPage(state, action) {
       state.currentPage = action.payload;
     },
@@ -64,6 +72,8 @@ const projectAllocationSlice = createSlice({
       state.location="0";
       state.status=[];
       state.projectName=[];
+      state.startDate=[];
+      state.endDate=[];
     }
   },
 });

@@ -3,7 +3,7 @@ import SideBar from "../../SideBar/SideBar";
 import "./ResourceReport.css";
 import resourceavailablity from "../../asset/images/resource-availablity.png";
 import { closeNav } from "../../SideBar/SideBarJs";
-
+import "../../../src/style.css";
 const ResourceReport = () => {
     return (
         <div>

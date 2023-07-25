@@ -3,6 +3,7 @@ import DataTable from "react-data-table-component";
 import SideBar from "../../SideBar/SideBar";
 import allocationByResource from "../../asset/images/allocation-by-resource.png";
 import { closeNav } from "../../SideBar/SideBarJs";
+import "../../../src/style.css";
 const HolidayListReport = () => {
   return (
     <div>
