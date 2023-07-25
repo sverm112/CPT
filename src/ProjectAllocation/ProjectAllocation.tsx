@@ -330,6 +330,12 @@ const ProjectAllocation = () => {
     dispatch(projectAllocationActions.changeLocation(event.target.value));
 
   };
+  const changeStartDateHandler = (event: any) => {
+    dispatch(projectAllocationActions.changeStartDate(event));
+  };
+  const changeEndDateHandler = (event: any) => {
+    dispatch(projectAllocationActions.changeEndDate(event));
+  };
   const changeProjectNameSelectHandler = (event: any) =>{
     dispatch(projectAllocationActions.changeProjectName(event));
   }
@@ -389,10 +395,10 @@ const ProjectAllocation = () => {
                     if((!projectMarketSelected.length) || (projectMarketSelected.length > 0 && projectMarketOptions.includes(projectAllocation.projectMarket))){
                           if ((!statusSelected.length ) || (statusSelected.length > 0 && statusOptions.includes(projectAllocation.status))) {
                             if (locationSelected == "0" || locationSelected == projectAllocation.location){
-                              if((startDate == null) ? true : new Date(projectAllocation.startDate) >= startDate){
-                                if((endDate == null) ? true : new Date(projectAllocation.enddDate) <= endDate){
+                              if((startDate == null) ? true : (new Date(projectAllocation.enddDate) >= startDate)){
+                                if((endDate == null) ? true : (new Date(projectAllocation.startDate) <= endDate)){
                                   if((!projectNameSelected.length) || (projectNameSelected.length > 0 && projectNameOptions.includes(projectAllocation.projectName)))
-                                  return true;         
+                                  return true;       
                                 }
                               }
                             }
@@ -740,7 +746,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                     required
                     showLeadingZeros={false}
                     name="StartDate"
-                    onChange={(e: any) => setStartDate(e)}
+                    onChange={(e: any) => {setStartDate(e);changeStartDateHandler(e);}}
                     value={startDate}
                     format="MM/dd/yyyy"
                     dayPlaceholder="DD"
@@ -756,7 +762,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                     className="form-control DateFilter"
                     required
                     name="EndDate"
-                    onChange={(e: any) => setEndDate(e)}
+                    onChange={(e: any) => {setEndDate(e);changeEndDateHandler(e);}}
                     value={endDate}
                     format="MM/dd/yyyy"
                     dayPlaceholder="DD"
