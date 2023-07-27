@@ -630,7 +630,7 @@ button#export-excel-btn:hover {
   left: 6px;
   /* margin-left: 2px; */
 }
-.deleteButton{
+.updateButton{
   margin-left:32px !important;
 }
 .DownloadEmployeeTemplate {

@@ -273,8 +273,6 @@ useEffect(()=>{
 
   const filteredResources = resources.filter(
     (resource: any) => {
-      
-      console.log("isActive before FIlteration: ", resource.isActive);
       const marketOptions = marketSelected.map((market: any) => market.value);
       const resourceTypeOptions = resourceTypeSelected.map((resourceType: any) => resourceType.value);
       const roleOptions = roleSelected.map((role: any) => role.value);
@@ -1030,10 +1028,10 @@ const UpdateModal = (props: any) => {
                 
               </div>
               <div className="col-md-4" >
-              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary deleteButton">
+              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary " style={{ float: "right" }}>
                   Delete
               </button>
-              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+              <button type="submit" className="btn btn-primary updateButton">
                   Update
                 </button>
               </div>
