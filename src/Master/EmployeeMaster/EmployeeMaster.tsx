@@ -311,7 +311,7 @@ useEffect(()=>{
   const columnsAndSelectors=[
     {'name': 'Resource' , 'selector': 'resourceName','default':'true'},
     {'name': 'Role' , 'selector': 'role','default':'true'},
-    {'name': 'Email Address', 'selector': 'emailAddress','default':'true' },
+    {'name': 'Email Address', 'selector': 'emailAddress','default':'false' },
     {'name': 'Manager', 'selector': 'manager','default':'true'},
     {'name': 'Resource Type', 'selector': 'resourceType','default':'true'},
     {'name': 'Market', 'selector': 'resourceMarket','default':'true'},
@@ -592,9 +592,9 @@ const AddModal = (props: any) => {
               </div>
               <div className="col-md-6 form-group" id="AddResourceEmailField">
                 <label className="form-label">Email Address</label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
-                  required
+                  // required
                   pattern={PatternsAndMessages.email.pattern}
                   type="text"
                   className="form-control"
@@ -603,7 +603,7 @@ const AddModal = (props: any) => {
                   onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceEmailField'),'input')}
                   onChange={(event) => setEmployeeEmailAddress(event.target.value)}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
               <div className="col-md-6 form-group" id="AddResourceManagerField">
                 <label className="form-label">Manager</label>
@@ -881,10 +881,10 @@ const UpdateModal = (props: any) => {
               </div>
               <div className="col-md-6 form-group" id="UpdateResourceEmailField">
                 <label className="form-label">Email Address</label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
                   type="text"
-                  required
+                  // required
                   pattern={PatternsAndMessages.email.pattern}
                   name="emailAddress"
                   className="form-control"
@@ -893,7 +893,7 @@ const UpdateModal = (props: any) => {
                   onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceEmailField'), 'input')}
                   onChange={handleChange}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
               <div className="col-md-6 form-group" id="UpdateResourceManagerField">
                 <label className="form-label">Manager</label>
