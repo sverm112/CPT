@@ -740,6 +740,7 @@ const UpdateModal = (props: any) => {
   const [formValues, setFormValues] = useState(props.initialValues || {});
   const [startDate, setStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
   const [endDate, setEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
+  const [numberOfPTODays, setNumberOfPTODays] = useState(formValues.numberOfDays);
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
   const calculateNumberOfDays = (startDate: any, endDate: any) => {
     let count = 0;
@@ -751,10 +752,34 @@ const UpdateModal = (props: any) => {
     }
     return count;
   }
-  if(startDate!=null && endDate!=null){
-    numberOfDays=calculateNumberOfDays(startDate,endDate);
-
+  const hadnleDaysCalculation = (startDate: any, endDate:any)=>{
+    if(startDate!=null && endDate!=null){
+      numberOfDays=calculateNumberOfDays(startDate,endDate);
+    }
+    setNumberOfPTODays(numberOfDays);
+    setStartDate(startDate);
+    setEndDate(endDate);
+    const errorContainer = document.getElementsByClassName('NumberOfPTODays');
+        for(let i=0; i < errorContainer.length; i++){
+          errorContainer[i].textContent='';
+        }
   }
+//   useEffect(()=>{
+//     console.log("Calling UseEffect: ",numberOfDays)
+//     if(numberOfDays!==0){
+//       // if(numberOfPTODays !== numberOfDays){
+//         setNumberOfPTODays(numberOfDays);
+//         const errorContainer = document.getElementsByClassName('NumberOfPTODays');
+//         for(let i=0; i < errorContainer.length; i++){
+//           errorContainer[i].textContent='';
+//         }
+//       // }
+//     }
+// }, [startDate,endDate])
+
+  // const setPTOs=()=>{
+
+  // }
   if(formValues.resourceId!="0"){
     const filteredResource = resourceList.filter((resource: any) => resource.resourceId == Number(formValues.resourceId));
     selectedResourceDetails.resourceId = filteredResource[0].resourceId
@@ -787,9 +812,9 @@ const UpdateModal = (props: any) => {
       ptoTypeId : Number(formValues.ptoTypeId),
       startDate : ptoStartDate,
       enddDate : ptoEndDate,
-      month : months[Number(startDate?.getMonth()) % 12 || 0],
+      month : 1 + Number(startDate?.getMonth()) % 12 || 0,
       year: startYear,
-      numberOfDays : formValues.numberOfDays,
+      numberOfDays : numberOfPTODays,
       remarks : formValues.remarks,
       status: formValues.status,
       updatedBy: username,
@@ -939,7 +964,7 @@ const UpdateModal = (props: any) => {
                   className="form-control"
                   required
                   name="startDate"
-                  onChange={setStartDate}
+                  onChange={(e: any)=>{hadnleDaysCalculation(e, endDate)}}
                   maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOStartDate'),'datePicker')}
@@ -960,7 +985,7 @@ const UpdateModal = (props: any) => {
                   required
                   name="endDate"
                   minDate={startDate !== null ? startDate : new Date('December 31, 2000')}
-                  onChange={setEndDate}
+                  onChange={(e: any)=>{hadnleDaysCalculation(startDate, e)}}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('UpdatePTOEndDate'),'datePicker')}
                   format="MM/dd/yyyy"
@@ -991,20 +1016,22 @@ const UpdateModal = (props: any) => {
                   <div className="error"></div>
                 </div>
               </div> */}
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="NumberOfPTODays">
                 <label className="form-label" htmlFor="ptoDays">
                   No. Of Days
                 </label>
+                <span className="requiredField">*</span>
                 <input
                   type="text"
                   required
                   className="form-control"
                   id="ptoDays"
                   name="numberOfDays"
-                  value={formValues.numberOfDays}
-                  onChange={(e)=>{numberOfDays=0;handleChange(e);}}
+                  value={numberOfPTODays}
+                  onChange={(e)=>{setNumberOfPTODays(e.target.value);handleChange(e);validateSingleFormGroup(document.getElementById('NumberOfPTODays'),'input')}}
                   // disabled
                 />
+                <div className="error NumberOfPTODays"></div>
               </div>
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
