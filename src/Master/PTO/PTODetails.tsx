@@ -393,6 +393,7 @@ const AddModal = (props: any) => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [month, setMonth] = useState("0");
   const [remarks,setRemarks]=useState("");
+  const [numberOfPTODays, setNumberOfPTODays] = useState(0);
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
   const resetFormFields = () => {
     const errorContainer = document.getElementsByClassName('error');
@@ -405,6 +406,7 @@ const AddModal = (props: any) => {
     setEndDate(null);
     setMonth("0");
     setRemarks("");
+    setNumberOfPTODays(0);
   }
   const calculateNumberOfDays = (startDate: Date, endDate: Date) => {
     let count = 0;
@@ -414,10 +416,27 @@ const AddModal = (props: any) => {
       if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
       curDate.setDate(curDate.getDate() + 1);
     }
+    // setNumberOfPTODays(count);
     return count;
   }
-  if(startDate!=null && endDate!=null){
-    numberOfDays=calculateNumberOfDays(startDate,endDate);
+  
+useEffect(()=>{
+    if(startDate!=null && endDate!=null){
+      numberOfDays=calculateNumberOfDays(startDate,endDate);
+    }
+    if(numberOfPTODays !== numberOfDays){
+      setNumberOfPTODays(numberOfDays);
+      const errorContainer = document.getElementsByClassName('NumberOfPTODays');
+      for(let i=0; i < errorContainer.length; i++){
+        errorContainer[i].textContent='';
+      }
+    }
+}, [startDate,endDate])
+
+  const setPTODays=(e: any)=>{
+    if(e.target.value !== numberOfDays){
+      setNumberOfPTODays(e.target.value);
+    }
   }
   if(resourceId!="0"){
     const filteredResource = resourceList.filter((resource: any) => resource.resourceId == Number(resourceId));
@@ -457,9 +476,9 @@ const AddModal = (props: any) => {
         ptoTypeId : Number(ptoTypeId),
         startDate : ptoStartDate?.toLocaleDateString('es-pa'),
         enddDate : ptoEndDate?.toLocaleDateString('es-pa'),
-        month : months[Number(startDate?.getMonth()) % 12 || 0],
+        month : 1 + Number(startDate?.getMonth()) % 12 || 0,
         year : startYear,
-        numberOfDays : numberOfDays,
+        numberOfDays : numberOfPTODays,
         remarks : remarks,
         createdBy: username
       }];
@@ -528,7 +547,7 @@ const AddModal = (props: any) => {
     <>
       <Button
         className="btn btn-primary"
-style={{ float: "right", marginTop: "-68px"}}
+        style={{ float: "right", marginTop: "-68px"}}
         
         variant="primary"
         onClick={props.openModal}
@@ -657,17 +676,24 @@ style={{ float: "right", marginTop: "-68px"}}
                 <div className="error"></div>
                 </div>
               </div> */}
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" id="NumberOfPTODays">
                 <label className="form-label" htmlFor="ptoDays">
                   No. Of Days
                 </label>
+                <span className="requiredField">*</span>
                 <input
                   type="text"
+                  required
                   className="form-control"
+                  name="numberOfPTODays"
                   id="ptoDays"
-                  value={numberOfDays}
-                  disabled
+                  value={numberOfPTODays}
+                  onChange={(e:any)=>{setPTODays(e);
+                  validateSingleFormGroup(document.getElementById('NumberOfPTODays'),'input')}
+                }
+                  // disabled
                 />
+                <div className="error NumberOfPTODays"></div>
               </div>
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
@@ -727,6 +753,7 @@ const UpdateModal = (props: any) => {
   }
   if(startDate!=null && endDate!=null){
     numberOfDays=calculateNumberOfDays(startDate,endDate);
+
   }
   if(formValues.resourceId!="0"){
     const filteredResource = resourceList.filter((resource: any) => resource.resourceId == Number(formValues.resourceId));
@@ -762,7 +789,7 @@ const UpdateModal = (props: any) => {
       enddDate : ptoEndDate,
       month : months[Number(startDate?.getMonth()) % 12 || 0],
       year: startYear,
-      numberOfDays : numberOfDays,
+      numberOfDays : formValues.numberOfDays,
       remarks : formValues.remarks,
       status: formValues.status,
       updatedBy: username,
@@ -970,10 +997,13 @@ const UpdateModal = (props: any) => {
                 </label>
                 <input
                   type="text"
+                  required
                   className="form-control"
                   id="ptoDays"
-                  value={numberOfDays}
-                  disabled
+                  name="numberOfDays"
+                  value={formValues.numberOfDays}
+                  onChange={(e)=>{numberOfDays=0;handleChange(e);}}
+                  // disabled
                 />
               </div>
               <div className="col-md-6 form-group">
