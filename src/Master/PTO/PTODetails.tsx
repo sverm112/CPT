@@ -428,6 +428,10 @@ useEffect(()=>{
     setMonth(startDate.getMonth()+1);
     setYear(startDate.getFullYear());
     }
+    if(startDate!=null){
+        setMonth(startDate.getMonth()+1);
+        setYear(startDate.getFullYear());
+    }
     if(numberOfPTODays !== numberOfDays){
       setNumberOfPTODays(numberOfDays);
       const errorContainer = document.getElementsByClassName('NumberOfPTODays');
