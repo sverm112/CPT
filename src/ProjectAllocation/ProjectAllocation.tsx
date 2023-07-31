@@ -925,7 +925,7 @@ const UpdateModal = (props: any) => {
     selectedProjectDetails.PPSID = filteredProject[0].projectCode
   }
 
-  if (selectedResourceDetails.resourceType == "OGS")
+  if (selectedResourceDetails.resourceType == "OGA")
     allocationHoursPerDay = 8.5;
   else if (selectedResourceDetails.resourceType == "FTE" || selectedResourceDetails.resourceType == "GTM")
     allocationHoursPerDay = 8;
@@ -1601,7 +1601,7 @@ const AddModal = (props: any) => {
     selectedProjectDetails.PPSID = filteredProject[0].projectCode
   }
 
-  if (selectedResourceDetails.resourceType == "OGS")
+  if (selectedResourceDetails.resourceType == "OGA")
     allocationHoursPerDay = 8.5;
   else if (selectedResourceDetails.resourceType == "FTE" || selectedResourceDetails.resourceType == "GTM")
     allocationHoursPerDay = 8;

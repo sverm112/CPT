@@ -333,7 +333,7 @@ const PTO = () => {
                 Month
               </label>
               <MultiSelect
-                options={months.map((month: any) => ({label:month, value: month }))}
+                options={months.map((month: any) => ({label:month.name, value: month.id }))}
                 value={monthSelected}
                 onChange={(event: any) => dispatch(ptoActions.changeMonth(event))}
                 labelledBy="Select Month"
@@ -345,7 +345,7 @@ const PTO = () => {
                 Year
               </label>
               <MultiSelect
-                options={years.map((month: any) => ({label:month, value: month }))}
+                options={years.map((year: any) => ({label:year, value: year }))}
                 value={yearSelected}
                 onChange={(event: any) => dispatch(ptoActions.changeYears(event))}
                 labelledBy="Select Month"
@@ -731,16 +731,18 @@ useEffect(()=>{
 }
 
 const UpdateModal = (props: any) => {
-  console.log("Opening UpdateModal")
   const dispatch = useDispatch();
   const username=useSelector((state:any)=>state.User.username);
   const resourceList = useSelector((state: any) => state.Employee.data);
   const months=useSelector((state:any)=>state.Filters.months);
+  const years=useSelector((state:any)=>state.Filters.years);
   const ptoTypes=useSelector((state:any)=>state.Filters.ptoTypes);
   const [formValues, setFormValues] = useState(props.initialValues || {});
   const [startDate, setStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
   const [endDate, setEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
   const [numberOfPTODays, setNumberOfPTODays] = useState(formValues.numberOfDays);
+  const [month, setMonth]=useState(formValues.month);
+  const [year, setYear] = useState(formValues.year);
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
   const calculateNumberOfDays = (startDate: any, endDate: any) => {
     let count = 0;
@@ -759,6 +761,9 @@ const UpdateModal = (props: any) => {
     setNumberOfPTODays(numberOfDays);
     setStartDate(startDate);
     setEndDate(endDate);
+    setMonth(startDate.getMonth()+1);
+    console.log("Year: ", startDate.getFullYear());
+    setYear(startDate.getFullYear());
     const errorContainer = document.getElementsByClassName('NumberOfPTODays');
         for(let i=0; i < errorContainer.length; i++){
           errorContainer[i].textContent='';
@@ -812,8 +817,8 @@ const UpdateModal = (props: any) => {
       ptoTypeId : Number(formValues.ptoTypeId),
       startDate : ptoStartDate,
       enddDate : ptoEndDate,
-      month : 1 + Number(startDate?.getMonth()) % 12 || 0,
-      year: startYear,
+      month : month,
+      year: year,
       numberOfDays : numberOfPTODays,
       remarks : formValues.remarks,
       status: formValues.status,
@@ -995,27 +1000,6 @@ const UpdateModal = (props: any) => {
                 />
                 <div className="error"></div>
               </div>
-              {/* <div className="col-md-6 form-group" id="PtoMonth">
-                <label className="form-label" htmlFor="month">
-                  Month 
-                </label>
-                <span className="requiredField">*</span>
-                <div className="dropdown">
-                  <select
-                    required
-                    className="form-control"
-                    name="month"
-                    id="monthDropdown"
-                    onBlur={()=>validateSingleFormGroup(document.getElementById('PtoMonth'),'select')}
-                    value={formValues.month}
-                    onChange={handleChange}
-                  >
-                    <option value="0">Select</option>
-                    {months.map((month: any) => (<option key={month} value={month}>{month}</option>))}
-                  </select>
-                  <div className="error"></div>
-                </div>
-              </div> */}
               <div className="col-md-6 form-group" id="NumberOfPTODays">
                 <label className="form-label" htmlFor="ptoDays">
                   No. Of Days
@@ -1032,6 +1016,46 @@ const UpdateModal = (props: any) => {
                   // disabled
                 />
                 <div className="error NumberOfPTODays"></div>
+              </div>
+              <div className="col-md-6 form-group" id="PtoMonth">
+                <label className="form-label" htmlFor="month">
+                  Month 
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select
+                    required
+                    className="form-control"
+                    name="month"
+                    id="monthDropdown"
+                    onChange={(e: any)=>{setMonth(e.target.value);validateSingleFormGroup(document.getElementById('PtoMonth'),'select')}}
+                    value={month}
+                  >
+                    <option value="0">Select</option>
+                    {months.map((month: any) => (<option key={month.id} value={month.id}>{month.name}</option>))}
+                  </select>
+                  <div className="error"></div>
+                </div>
+              </div>
+              <div className="col-md-6 form-group" id="PtoYear">
+                <label className="form-label" htmlFor="year">
+                  Year 
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select
+                    required
+                    className="form-control"
+                    name="year"
+                    id="yearDropdown"
+                    onChange={(e: any)=>{setYear(e.target.value);validateSingleFormGroup(document.getElementById('PtoYear'),'select')}}
+                    value={year}
+                  >
+                    <option value="0">Select</option>
+                    {years.map((year: any) => (<option key={year} value={year}>{year}</option>))}
+                  </select>
+                  <div className="error"></div>
+                </div>
               </div>
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
