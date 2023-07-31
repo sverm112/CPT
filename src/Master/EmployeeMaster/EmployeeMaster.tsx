@@ -273,8 +273,6 @@ useEffect(()=>{
 
   const filteredResources = resources.filter(
     (resource: any) => {
-      
-      console.log("isActive before FIlteration: ", resource.isActive);
       const marketOptions = marketSelected.map((market: any) => market.value);
       const resourceTypeOptions = resourceTypeSelected.map((resourceType: any) => resourceType.value);
       const roleOptions = roleSelected.map((role: any) => role.value);
@@ -313,7 +311,7 @@ useEffect(()=>{
   const columnsAndSelectors=[
     {'name': 'Resource' , 'selector': 'resourceName','default':'true'},
     {'name': 'Role' , 'selector': 'role','default':'true'},
-    {'name': 'Email Address', 'selector': 'emailAddress','default':'true' },
+    {'name': 'Email Address', 'selector': 'emailAddress','default':'false' },
     {'name': 'Manager', 'selector': 'manager','default':'true'},
     {'name': 'Resource Type', 'selector': 'resourceType','default':'true'},
     {'name': 'Market', 'selector': 'resourceMarket','default':'true'},
@@ -594,9 +592,9 @@ const AddModal = (props: any) => {
               </div>
               <div className="col-md-6 form-group" id="AddResourceEmailField">
                 <label className="form-label">Email Address</label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
-                  required
+                  // required
                   pattern={PatternsAndMessages.email.pattern}
                   type="text"
                   className="form-control"
@@ -605,27 +603,29 @@ const AddModal = (props: any) => {
                   onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceEmailField'),'input')}
                   onChange={(event) => setEmployeeEmailAddress(event.target.value)}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
               <div className="col-md-6 form-group" id="AddResourceManagerField">
                 <label className="form-label">Manager</label>
                 <span className="requiredField">*</span>
-                <div className="dropdown">
-                  <select
+                <div className="">
+                  <input
                     required
+                    list="managerRecommendation"
                     className="form-control"
+                    pattern={PatternsAndMessages.nameLike.pattern}
                     id="manager"
                     value={manager}
                     onChange={(event) => {
                       setManager(event.target.value);
-                      validateSingleFormGroup(document.getElementById('AddResourceManagerField'), 'select');
-                    }}>                  
-                    <option value="0">Select</option>
-                    {resourceManagers.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceName.toString()}>{resource.resourceName}</option>)}
-                  
-                  </select>
-                  <div className="error"></div>
+                      validateSingleFormGroup(document.getElementById('AddResourceManagerField'), 'input');
+                    }}
+                  />
+                      <datalist id="managerRecommendation" className="managerRecommendation" style={{width:'100% !important',position:'absolute',right:'1000px'}}>
+                        {resourceManagers.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceName.toString()}>{resource.resourceName}</option>)}
+                      </datalist>
                 </div>
+                  <div className="error"></div>      
               </div>
               <div className="col-md-6 form-group" id="AddResourceResourceTypeField">
                 <label className="form-label">Resource Type</label>
@@ -883,10 +883,10 @@ const UpdateModal = (props: any) => {
               </div>
               <div className="col-md-6 form-group" id="UpdateResourceEmailField">
                 <label className="form-label">Email Address</label>
-                <span className="requiredField">*</span>
+                {/* <span className="requiredField">*</span> */}
                 <input
                   type="text"
-                  required
+                  // required
                   pattern={PatternsAndMessages.email.pattern}
                   name="emailAddress"
                   className="form-control"
@@ -895,30 +895,31 @@ const UpdateModal = (props: any) => {
                   onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceEmailField'), 'input')}
                   onChange={handleChange}
                 />
-                <div className="error"></div>
+                {/* <div className="error"></div> */}
               </div>
               <div className="col-md-6 form-group" id="UpdateResourceManagerField">
                 <label className="form-label">Manager</label>
                 <span className="requiredField">*</span>
-                <div className="dropdown">
-                <select
+                <div className="">
+                <input
                     required
                     className="form-control"
+                    list="updateManagerRecommendation"
                     id="manager"
+                    pattern={PatternsAndMessages.nameLike.pattern}
                     name="manager"
                     value={formValues.manager}
                     onChange={(event) => {
                       // setManager(event.target.value);
                       handleChange(event);
-                      validateSingleFormGroup(document.getElementById('UpdateResourceManagerField'), 'select');
-                    }}>                  
-                    <option value="0">Select</option>
-                    {/* <option value={formValues.manager}>{formValues.manager}</option> */}
-                    {resourceManagers.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceName.toString()}>{resource.resourceName}</option>)}
-                  
-                  </select>
-                <div className="error"></div>
-              </div>
+                      validateSingleFormGroup(document.getElementById('UpdateResourceManagerField'), 'input');
+                    }}
+                    />
+                    <datalist id="updateManagerRecommendation" className="managerRecommendation" style={{marginLeft:"-100px !important"}}>
+                      {resourceManagers.filter((resource: any) => resource.isActive == "Active").map((resource: any) => <option key={resource.resourceId} value={resource.resourceName.toString()}>{resource.resourceName}</option>)}
+                    </datalist>
+                </div>
+              <div className="error"></div>
               </div>
               <div className="col-md-6 form-group" id="UpdateResourceResourceTypeField">
                 <label className="form-label">Resource Type</label>
@@ -1030,10 +1031,10 @@ const UpdateModal = (props: any) => {
                 
               </div>
               <div className="col-md-4" >
-              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary deleteButton">
+              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary " style={{ float: "right" }}>
                   Delete
               </button>
-              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+              <button type="submit" className="btn btn-primary updateButton">
                   Update
                 </button>
               </div>

@@ -925,7 +925,7 @@ const UpdateModal = (props: any) => {
     selectedProjectDetails.PPSID = filteredProject[0].projectCode
   }
 
-  if (selectedResourceDetails.resourceType == "OGS")
+  if (selectedResourceDetails.resourceType == "OGA")
     allocationHoursPerDay = 8.5;
   else if (selectedResourceDetails.resourceType == "FTE" || selectedResourceDetails.resourceType == "GTM")
     allocationHoursPerDay = 8;
@@ -1463,10 +1463,10 @@ useEffect(()=>{
                 
               </div>
               <div className="col-md-4" >
-              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary deleteButton">
+              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary" style={{ float: "right" }}>
                   Delete
               </button>
-              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+              <button type="submit" className="btn btn-primary updateButton">
                   Update
                 </button>
               </div>
@@ -1601,7 +1601,7 @@ const AddModal = (props: any) => {
     selectedProjectDetails.PPSID = filteredProject[0].projectCode
   }
 
-  if (selectedResourceDetails.resourceType == "OGS")
+  if (selectedResourceDetails.resourceType == "OGA")
     allocationHoursPerDay = 8.5;
   else if (selectedResourceDetails.resourceType == "FTE" || selectedResourceDetails.resourceType == "GTM")
     allocationHoursPerDay = 8;

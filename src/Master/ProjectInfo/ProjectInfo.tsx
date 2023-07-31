@@ -897,10 +897,10 @@ style={{ float: "right", marginTop: "-68px"}}
                 
               </div>
               <div className="col-md-4" >
-              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary deleteButton">
+              <button  type="button" onClick={deleteConfirmation} className="btn btn-primary" style={{ float: "right" }}>
                   Delete
               </button>
-              <button type="submit" className="btn btn-primary" style={{ float: "right" }}>
+              <button type="submit" className="btn btn-primary updateButton" >
                   Update
                 </button>
               </div>
