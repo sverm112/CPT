@@ -386,14 +386,16 @@ const AddModal = (props: any) => {
 
   const resourceList = useSelector((state: any) => state.Employee.data);
   const months=useSelector((state:any)=>state.Filters.months);
+  const years=useSelector((state:any)=>state.Filters.years);
   const ptoTypes=useSelector((state:any)=>state.Filters.ptoTypes);
   const [resourceId, setResourceId] = useState("0");
   const [ptoTypeId, setPTOTypeId] = useState("0");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [month, setMonth] = useState("0");
   const [remarks,setRemarks]=useState("");
   const [numberOfPTODays, setNumberOfPTODays] = useState(0);
+  const [month, setMonth]=useState(0);
+  const [year, setYear] = useState(0);
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
   const resetFormFields = () => {
     const errorContainer = document.getElementsByClassName('error');
@@ -404,7 +406,7 @@ const AddModal = (props: any) => {
     setPTOTypeId("0");
     setStartDate(null);
     setEndDate(null);
-    setMonth("0");
+    setMonth(0);
     setRemarks("");
     setNumberOfPTODays(0);
   }
@@ -423,6 +425,8 @@ const AddModal = (props: any) => {
 useEffect(()=>{
     if(startDate!=null && endDate!=null){
       numberOfDays=calculateNumberOfDays(startDate,endDate);
+    setMonth(startDate.getMonth()+1);
+    setYear(startDate.getFullYear());
     }
     if(numberOfPTODays !== numberOfDays){
       setNumberOfPTODays(numberOfDays);
@@ -431,6 +435,7 @@ useEffect(()=>{
         errorContainer[i].textContent='';
       }
     }
+
 }, [startDate,endDate])
 
   const setPTODays=(e: any)=>{
@@ -695,6 +700,47 @@ useEffect(()=>{
                 />
                 <div className="error NumberOfPTODays"></div>
               </div>
+              
+              <div className="col-md-6 form-group" id="PtoMonth">
+                <label className="form-label" htmlFor="month">
+                  Month 
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select
+                    required
+                    className="form-control"
+                    name="month"
+                    id="monthDropdown"
+                    onChange={(e: any)=>{setMonth(e.target.value);validateSingleFormGroup(document.getElementById('PtoMonth'),'select')}}
+                    value={month}
+                  >
+                    <option value="0">Select</option>
+                    {months.map((month: any) => (<option key={month.id} value={month.id}>{month.name}</option>))}
+                  </select>
+                  <div className="error"></div>
+                </div>
+              </div>
+              <div className="col-md-6 form-group" id="PtoYear">
+                <label className="form-label" htmlFor="year">
+                  Year 
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select
+                    required
+                    className="form-control"
+                    name="year"
+                    id="yearDropdown"
+                    onChange={(e: any)=>{setYear(e.target.value);validateSingleFormGroup(document.getElementById('PtoYear'),'select')}}
+                    value={year}
+                  >
+                    <option value="0">Select</option>
+                    {years.map((year: any) => (<option key={year} value={year}>{year}</option>))}
+                  </select>
+                  <div className="error"></div>
+                </div>
+              </div>
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
@@ -762,7 +808,6 @@ const UpdateModal = (props: any) => {
     setStartDate(startDate);
     setEndDate(endDate);
     setMonth(startDate.getMonth()+1);
-    console.log("Year: ", startDate.getFullYear());
     setYear(startDate.getFullYear());
     const errorContainer = document.getElementsByClassName('NumberOfPTODays');
         for(let i=0; i < errorContainer.length; i++){
