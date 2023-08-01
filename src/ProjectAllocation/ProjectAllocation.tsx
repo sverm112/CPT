@@ -346,7 +346,7 @@ const ProjectAllocation = () => {
   const getProjectAllocationDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECT_ALLOCATIONS}`);
     let dataGet = await response.json();
-    dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate?.slice(0,10) ,enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
+    dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDateString ,enddDate:row.enddDateString,updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
     dispatch(projectAllocationActions.changeData(dataGet));
     setTimeout(()=>setIsLoading(false), 2000);
   };
@@ -841,7 +841,7 @@ const UpdateModal = (props: any) => {
   const getProjectAllocationDetails = async () => {
     const response = await fetch(`${GET_ALL_PROJECT_ALLOCATIONS}`);
     let dataGet = await response.json();
-    dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDate?.slice(0,10) ,enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
+    dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDateString ,enddDate:row.enddDateString,updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
     dispatch(projectAllocationActions.changeData(dataGet));
     // setTimeout(()=>setIsLoading(false), 2000);
   };

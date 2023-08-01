@@ -42,7 +42,7 @@ const SideBar = () => {
                 <div className="header_toggle">
                     <i className="fas fa-bars text-white" onClick={handleClick}></i>
                 </div>
-                <div style={{ color: "#fff", whiteSpace: "nowrap", fontSize:'20px',marginLeft:'200px' }}>Capacity Planning Tool</div>
+                <div style={{ color: "#fff", whiteSpace: "nowrap", marginLeft:'200px', fontSize:'23px' }}>Capacity Planning Tool</div>
                 <div>
                     <div className="dropdowns" style={{ float: "right" }}>
                         <input type="checkbox" id="box" style={{display:"none"}}/>

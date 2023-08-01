@@ -142,7 +142,7 @@ const HolidayMaster = () => {
   const getHolidayDetails = async () => {
     const response = await fetch(`${GET_ALL_HOLIDAYS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, holidayDate : row.holidayDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10) }));
+    dataGet = dataGet.map((row: any) => ({ ...row, holidayDate : row.holidayDateString,updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10) }));
     dispatch(holidayActions.changeData(dataGet));
     setTimeout(()=>setIsLoading(false), 2000);
   };
@@ -374,7 +374,7 @@ const UpdateModal = (props: any) =>{
   const getHolidayDetails = async () => {
     const response = await fetch(`${GET_ALL_HOLIDAYS}`);
     let dataGet = await response.json();
-    dataGet = dataGet.map((row: any) => ({ ...row, holidayDate : row.holidayDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10) }));
+    dataGet = dataGet.map((row: any) => ({ ...row, holidayDate : row.holidayDateString,updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10) }));
     dispatch(holidayActions.changeData(dataGet));
   };
   function deleteConfirmation() {

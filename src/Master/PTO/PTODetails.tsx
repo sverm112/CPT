@@ -170,7 +170,7 @@ const PTO = () => {
     try {
       const response = await fetch(`${GET_ALL_PTOS}`);
       let dataGet = await response.json();
-      dataGet = dataGet.map((row:any)=>({...row,startDate:(row.startDate?.slice(0,10)), enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
+      dataGet = dataGet.map((row:any)=>({...row,startDate:(row.startDateString), enddDate:row.enddDateString,updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
       dispatch(ptoActions.changeData(dataGet));
       setTimeout(()=>setIsLoading(false), 2000);
     }
@@ -788,6 +788,7 @@ const UpdateModal = (props: any) => {
   const years=useSelector((state:any)=>state.Filters.years);
   const ptoTypes=useSelector((state:any)=>state.Filters.ptoTypes);
   const [formValues, setFormValues] = useState(props.initialValues || {});
+  console.log("Start Date: ", props.initialValues.startDate);
   const [startDate, setStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
   const [endDate, setEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
   const [numberOfPTODays, setNumberOfPTODays] = useState(formValues.numberOfDays);
@@ -850,14 +851,10 @@ const UpdateModal = (props: any) => {
     let ptoStartDate=null,ptoEndDate=null;
     if(startDate!=null){
       ptoStartDate= new Date(startDate);
-      // console.log("Start Date: ", ptoStartDate);
-      // console.log("Actual Start Date: ", startDate);
       ptoStartDate.setDate(ptoStartDate.getDate() );
     }
     if(endDate!=null){
       ptoEndDate= new Date(endDate);
-      // console.log("End Date: ", ptoEndDate);
-      // console.log("Actual End Date: ", endDate);
       ptoEndDate.setDate(ptoEndDate.getDate() );
     }
     let payload = {
@@ -904,7 +901,7 @@ const UpdateModal = (props: any) => {
     try {
       const response = await fetch(`${GET_ALL_PTOS}`);
       let dataGet = await response.json();
-      dataGet = dataGet.map((row:any)=>({...row,startDate:(row.startDate?.slice(0,10)), enddDate:row.enddDate?.slice(0,10),updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
+      dataGet = dataGet.map((row:any)=>({...row,startDate:(row.startDateString), enddDate:row.enddDateString,updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
       dispatch(ptoActions.changeData(dataGet));
       }
     catch {

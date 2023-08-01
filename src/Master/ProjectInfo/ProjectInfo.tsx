@@ -664,7 +664,6 @@ const UpdateModal = (props: any) => {
   const username=useSelector((state:any)=>state.User.username);
   const marketList = useSelector((state: any) => state.Market.data);
   const [formValues, setFormValues] = useState(props.initialValues || {});
-  console.log("Form Values: ", props);
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
     let payload = {
