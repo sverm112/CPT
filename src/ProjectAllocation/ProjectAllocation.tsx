@@ -1652,9 +1652,9 @@ const AddModal = (props: any) => {
       if(allocationEndDate >= allocationStartDate){
         try {
           let paStartDate = new Date(allocationStartDate);
-              paStartDate.setDate(paStartDate.getDate() );
+              paStartDate.setDate(paStartDate.getDate() +1);
               let paEndDate = new Date(allocationEndDate);
-              paEndDate.setDate(paEndDate.getDate());
+              paEndDate.setDate(paEndDate.getDate()+1);
           const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?resourceId=${resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
             method: "GET",
             headers: {
