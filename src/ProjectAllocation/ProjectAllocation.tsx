@@ -676,7 +676,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                 Resource Market
               </label>
               <MultiSelect
-                options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
+                options={(marketList.filter((market:any) => market.status === "Active" ).map((market: any) => ({ label: market.marketName, value: market.marketName })))}
                 value={resourceMarketSelected}
                 onChange={changeResourceMarketSelectHandler}
                 labelledBy="Select Resource Market"
