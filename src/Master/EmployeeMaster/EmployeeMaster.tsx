@@ -54,6 +54,20 @@ const columns = [
     filterable: true,
   },
   {
+    name: "Part Time",
+    selector: (row: { partTime: any }) => row.partTime === true ? "Yes" : "No",
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
+    name: "Capacity Per Day",
+    selector: (row: { capacityPerDay: any }) => row.capacityPerDay,
+    sortable: true,
+    reorder: true,
+    filterable: true,
+  },
+  {
     name: "Market",
     selector: (row: { resourceMarket: any }) => row.resourceMarket == "0" ? "" : row.resourceMarket,
     sortable: true,
@@ -76,7 +90,7 @@ const columns = [
   },
   {
     name: "Status",
-    selector: (row: { isActive: any }) => row.isActive,
+    selector: (row: { isActive: any }) => row.isActive =="false"?"Active":"InActive",
     sortable: true,
     reorder: true,
     filterable: true,
@@ -314,6 +328,8 @@ useEffect(()=>{
     {'name': 'Email Address', 'selector': 'emailAddress','default':'false' },
     {'name': 'Manager', 'selector': 'manager','default':'true'},
     {'name': 'Resource Type', 'selector': 'resourceType','default':'true'},
+    {'name': 'Part Time', 'selector' : 'partTime','default':'false'},
+    {'name': 'Capacity Per Day', 'selector' : 'capacityPerDay','default':'false'},
     {'name': 'Market', 'selector': 'resourceMarket','default':'true'},
     {'name': 'Location', 'selector': 'location','default':'true'},
     {'name': 'Sub Location', 'selector':'subLocation','default':'true' },
@@ -477,7 +493,9 @@ const AddModal = (props: any) => {
   const [subLocation, setSubLocation] = useState("0");
   const [market, setMarket] = useState("0");
   const [employeeEmailAddress, setEmployeeEmailAddress] = useState("");
-  
+  const [isPartTime, setIsPartTime] = useState(false);
+  const [capacityPerDay, setCapacityPerDay] = useState(0);
+  const [disableCheckBox, setDisableCheckBox] = useState(true);
   let resourceManagers = resourceList.filter((resource: any)=> resource.role.search(/Manager/i) != -1 || resource.role.search(/Director/i) != -1);
 
   const formSubmitHandler = async (event: any) => {
@@ -487,6 +505,8 @@ const AddModal = (props: any) => {
       role: role,
       manager: manager,
       resourceType: resourceType,
+      partTime: isPartTime,
+      capacityPerDay:capacityPerDay,
       location: location,
       subLocation: subLocation,
       resourceMarket: market,
@@ -533,8 +553,36 @@ const AddModal = (props: any) => {
     setSubLocation("0");
     setMarket("0");
     setEmployeeEmailAddress("");
+    setIsPartTime(false);
   };
 
+  function handleChange(event: any) {
+    let partTimeCheck = document.getElementById('PartTimeField') as HTMLInputElement;
+    if(partTimeCheck?.checked == true){
+      // console.log("Part time: ", event);
+      setIsPartTime(true);
+      if(resourceType === "GTM" || resourceType ==="FTE"){
+        setCapacityPerDay(4);
+      }else{
+        setCapacityPerDay(4.25);
+      }
+    }else{
+      setIsPartTime(false);
+      if(resourceType === "GTM" || resourceType ==="FTE"){
+        setCapacityPerDay(8);
+      }else{
+        setCapacityPerDay(8.5);
+      }
+      // console.log("Not a part time: ", event);
+    }
+  }
+function manageCheckBox(e: any){
+  if(e.target.value==="OGA" || e.target.value==="GTM" || e.target.value==="FTE"){
+    setDisableCheckBox(false);
+  }else{
+    setDisableCheckBox(true);
+  }
+}
   return (
     <>
       <Button
@@ -637,7 +685,8 @@ const AddModal = (props: any) => {
                     className="form-control"
                     value={resourceType}
                     // onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceResourceTypeField'),'select')}
-                    onChange={(event) => {setResourceType(event.target.value);
+                    onChange={(event) => {setResourceType(event.target.value);manageCheckBox(event);
+                      console.log(event.target.value);
                       validateSingleFormGroup(document.getElementById('AddResourceResourceTypeField'),'select');
                     }}
                   >
@@ -645,6 +694,13 @@ const AddModal = (props: any) => {
                     {resourceTypes.map((resourceType: any) => (<option key={resourceType} value={resourceType}>{resourceType}</option>))}
                   </select>
                 <div className="error"></div>
+                </div>
+              </div>
+              
+              <div className="col-md-6 form-group" id="">
+                <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input type="checkbox" onChange={handleChange} id="PartTimeField" disabled={disableCheckBox} name="PartTimeField" checked={isPartTime} value="partTime"/>
+                  <label className="form-label" style={{marginLeft:'5px'}}>Part Time</label>
                 </div>
               </div>
               <div className="col-md-6 form-group" id="AddResourceMarketField">
