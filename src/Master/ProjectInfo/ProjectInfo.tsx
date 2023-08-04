@@ -396,7 +396,7 @@ const sendBulkResourcesData = async (payload: any) => {
                 Project Market
               </label>
               <MultiSelect
-                options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
+                options={(marketList.filter((market:any) => market.status === "Active" ).map((market: any) => ({ label: market.marketName, value: market.marketName })))}
                 value={marketSelected}
                 onChange={(event: any) => dispatch(projectActions.changeMarket(event))}
                 labelledBy="Select Market"

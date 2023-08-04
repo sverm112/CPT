@@ -676,7 +676,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                 Resource Market
               </label>
               <MultiSelect
-                options={(marketList.map((market: any) => ({ label: market.marketName, value: market.marketName })))}
+                options={(marketList.filter((market:any) => market.status === "Active" ).map((market: any) => ({ label: market.marketName, value: market.marketName })))}
                 value={resourceMarketSelected}
                 onChange={changeResourceMarketSelectHandler}
                 labelledBy="Select Resource Market"
@@ -883,7 +883,7 @@ const UpdateModal = (props: any) => {
     setResourceId(formValues.resourceId);
     setProjectId(formValues.projectId);
   }, []);
-  let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
+  let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "", allocationPerDay:0 };
   let selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
 
   const setResourceDetails = (event: any) => {
@@ -898,7 +898,7 @@ const UpdateModal = (props: any) => {
   };
 
   if (formValues.resourceId == "0") {
-    selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
+    selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "", allocationPerDay:0 };
   }
   else {
     const filteredResource = resourcesList.filter((resource: any) => resource.resourceId == Number(formValues.resourceId));
@@ -910,6 +910,7 @@ const UpdateModal = (props: any) => {
     selectedResourceDetails.location = filteredResource[0].location
     selectedResourceDetails.subLocation = filteredResource[0].subLocation
     selectedResourceDetails.resourceMarket = filteredResource[0].resourceMarket
+    selectedResourceDetails.allocationPerDay = filteredResource[0].capacityPerDay
   }
 
   if (formValues.projectId == "0") {
@@ -925,12 +926,13 @@ const UpdateModal = (props: any) => {
     selectedProjectDetails.PPSID = filteredProject[0].projectCode
   }
 
-  if (selectedResourceDetails.resourceType == "OGA")
-    allocationHoursPerDay = 8.5;
-  else if (selectedResourceDetails.resourceType == "FTE" || selectedResourceDetails.resourceType == "GTM")
-    allocationHoursPerDay = 8;
-  else
-    allocationHoursPerDay = 0;
+  // if (selectedResourceDetails.resourceType == "OGA")
+  //   allocationHoursPerDay = 8.5;
+  // else if (selectedResourceDetails.resourceType == "FTE" || selectedResourceDetails.resourceType == "GTM")
+  //   allocationHoursPerDay = 8;
+  // else
+  //   allocationHoursPerDay = 0;
+  allocationHoursPerDay = selectedResourceDetails.allocationPerDay;
 
     let allocationP =0;
     let allocationDays: number;
@@ -1563,7 +1565,7 @@ const AddModal = (props: any) => {
   useEffect(() => {
     getProjectDetails();
   }, []);
-  let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
+  let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "", allocationPerDay: 0 };
   let selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
 
   const setResourceDetails = (event: any) => {
@@ -1577,7 +1579,7 @@ const AddModal = (props: any) => {
 
 
   if (resourceId == "0") {
-    selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "" };
+    selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "", allocationPerDay: 0 };
   }
   else {
     const filteredResource = resourcesList.filter((resource: any) => resource.resourceId == Number(resourceId));
@@ -1588,6 +1590,7 @@ const AddModal = (props: any) => {
     selectedResourceDetails.location = filteredResource[0].location
     selectedResourceDetails.subLocation = filteredResource[0].subLocation
     selectedResourceDetails.resourceMarket = filteredResource[0].resourceMarket
+    selectedResourceDetails.allocationPerDay = filteredResource[0].capacityPerDay
   }
 
   if (projectId == "0") {
@@ -1601,12 +1604,13 @@ const AddModal = (props: any) => {
     selectedProjectDetails.PPSID = filteredProject[0].projectCode
   }
 
-  if (selectedResourceDetails.resourceType == "OGA")
-    allocationHoursPerDay = 8.5;
-  else if (selectedResourceDetails.resourceType == "FTE" || selectedResourceDetails.resourceType == "GTM")
-    allocationHoursPerDay = 8;
-  else
-    allocationHoursPerDay = 0;
+  // if (selectedResourceDetails.resourceType == "OGA")
+  //   allocationHoursPerDay = 8.5;
+  // else if (selectedResourceDetails.resourceType == "FTE" || selectedResourceDetails.resourceType == "GTM")
+  //   allocationHoursPerDay = 8;
+  // else
+  //   allocationHoursPerDay = 0;
+  allocationHoursPerDay = selectedResourceDetails.allocationPerDay
 
   let allocationP= 0;
   let allocationDays: number;
