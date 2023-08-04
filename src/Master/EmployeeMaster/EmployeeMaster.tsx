@@ -554,6 +554,7 @@ const AddModal = (props: any) => {
     setMarket("0");
     setEmployeeEmailAddress("");
     setIsPartTime(false);
+    setDisableCheckBox(true);
   };
 
   function handleChange(event: any) {
@@ -801,6 +802,10 @@ const UpdateModal = (props: any) => {
   const [formValues, setFormValues] = useState(props.initialValues || { location: "0" });
   let location = formValues.location;
   const resourceList = useSelector((state: any) => state.Employee.data);
+  const [isPartTime, setIsPartTime] = useState(false);
+  const [capacityPerDay, setCapacityPerDay] = useState(0);
+  const [disableCheckBox, setDisableCheckBox] = useState(true);
+  
   let resourceManagers = resourceList.filter((resource: any)=> resource.role.search(/Manager/i ) != -1 || resource.role.search(/Director/i) != -1 );
 
 
