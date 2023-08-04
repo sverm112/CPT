@@ -686,8 +686,8 @@ function manageCheckBox(e: any){
                     className="form-control"
                     value={resourceType}
                     // onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceResourceTypeField'),'select')}
-                    onChange={(event) => {setResourceType(event.target.value);manageCheckBox(event);
-                      console.log(event.target.value);
+                    onChange={(event) => {setResourceType(event.target.value);
+                      manageCheckBox(event);
                       validateSingleFormGroup(document.getElementById('AddResourceResourceTypeField'),'select');
                     }}
                   >
@@ -802,9 +802,9 @@ const UpdateModal = (props: any) => {
   const [formValues, setFormValues] = useState(props.initialValues || { location: "0" });
   let location = formValues.location;
   const resourceList = useSelector((state: any) => state.Employee.data);
-  const [isPartTime, setIsPartTime] = useState(false);
-  const [capacityPerDay, setCapacityPerDay] = useState(0);
-  const [disableCheckBox, setDisableCheckBox] = useState(true);
+  const [isPartTime, setIsPartTime] = useState(formValues.partTime);
+  const [capacityPerDay, setCapacityPerDay] = useState(formValues.capacityPerDay);
+  const [disableCheckBox, setDisableCheckBox] = useState(false);
   
   let resourceManagers = resourceList.filter((resource: any)=> resource.role.search(/Manager/i ) != -1 || resource.role.search(/Director/i) != -1 );
 
@@ -817,6 +817,8 @@ const UpdateModal = (props: any) => {
       role: formValues.role,
       manager: formValues.manager,
       resourceType: formValues.resourceType,
+      capacityPerDay: capacityPerDay,
+      partTime: isPartTime,
       location: formValues.location,
       subLocation: formValues.subLocation,
       resourceMarket: formValues.resourceMarket,
@@ -856,6 +858,24 @@ const UpdateModal = (props: any) => {
       ...formValues,
       [e.target.name]: e.target.value
     });
+    let partTimeCheck = document.getElementById('PartTimeField') as HTMLInputElement;
+    if(partTimeCheck?.checked == true){
+      // console.log("Part time: ", event);
+      setIsPartTime(true);
+      if(formValues.resourceType === "GTM" || formValues.resourceType ==="FTE"){
+        setCapacityPerDay(4);
+      }else{
+        setCapacityPerDay(4.25);
+      }
+    }else{
+      setIsPartTime(false);
+      if(formValues.resourceType === "GTM" || formValues.resourceType ==="FTE"){
+        setCapacityPerDay(8);
+      }else{
+        setCapacityPerDay(8.5);
+      }
+      // console.log("Not a part time: ", event);
+    }
   };
   
   const getEmployeeDetails = async () => {
@@ -869,6 +889,13 @@ const UpdateModal = (props: any) => {
     }
   };
 
+  function manageCheckBox(e: any){
+    if(e.target.value==="OGA" || e.target.value==="GTM" || e.target.value==="FTE"){
+      setDisableCheckBox(false);
+    }else{
+      setDisableCheckBox(true);
+    }
+  }
   
   function deleteConfirmation() {
     var txt;
@@ -994,6 +1021,7 @@ const UpdateModal = (props: any) => {
                     value={formValues.resourceType}
                     // onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceResourceTypeField'), 'select')}
                     onChange={(e: any)=>{handleChange(e);
+                      manageCheckBox(e);
                       validateSingleFormGroup(document.getElementById('UpdateResourceResourceTypeField'), 'select');
                     }}
                   >
@@ -1001,6 +1029,12 @@ const UpdateModal = (props: any) => {
                     {resourceTypes.map((resourceType: any) => (<option key={resourceType} value={resourceType}>{resourceType}</option>))}
                   </select>
                 <div className="error"></div>
+                </div>
+              </div>
+              <div className="col-md-6 form-group" id="">
+                <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input type="checkbox" onChange={handleChange} id="PartTimeField" disabled={disableCheckBox} name="PartTimeField" checked={isPartTime} value="partTime"/>
+                  <label className="form-label" style={{marginLeft:'5px'}}>Part Time</label>
                 </div>
               </div>
               <div className="col-md-6 form-group" id="UpdateResourceMarketField">
