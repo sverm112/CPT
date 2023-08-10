@@ -23,6 +23,7 @@ export const POST_RESOURCE = `${Base_URL}api/v1/Resources/PostResources`;
 export const POST_HOLIDAY = `${Base_URL}api/v1/HolidaysList/PostHoliday`;
 export const POST_MARKET = `${Base_URL}api/v1/Markets/PostMarket`;
 export const POST_PROJECT = `${Base_URL}api/v1/Projects/PostProject`;
+export const POST_BULK_UPLOAD_PROJECTS = `${Base_URL}api/v1/Projects/BulkUploadProjects`;
 export const POST_PTO = `${Base_URL}api/v1/PTOs/PostPTO`;
 export const POST_PROJECT_ALLOCATION = `${Base_URL}api/v1/ProjectAllocations/PostProjectAllocation`;
 // export const POST_PTO = `${Base_URL}api/v1/PTOs/PostPTO`;
