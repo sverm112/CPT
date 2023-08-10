@@ -220,7 +220,7 @@ const sendBulkProjectsData = async (payload: any) => {
   })
   let unavailableMarkets: any[] =[];
   for(const p of payload){
-    if(availableMarkets.indexOf((p["Project Market"]).trim())=== -1){
+    if(availableMarkets.indexOf((p["Project Market"])?.trim())=== -1){
       unavailableMarkets.push(p);
     }else{
 
@@ -229,8 +229,8 @@ const sendBulkProjectsData = async (payload: any) => {
           projectName: p["Project Name"],
           projectModel: p["Project Model"],
           expenseType: p["Expense Type"],
-          marketId: availableMarketIds[availableMarkets.indexOf(p["Project Market"].trim())] ,
-          programManager: p["Project Manager"],
+          marketId: availableMarketIds[availableMarkets.indexOf(p["Project Market"]?.trim())] ,
+          programManager: p["Project Manager"] == null ? "":p["Project Manager"],
           createdBy: username
         };
       projects.push(project);  
@@ -260,7 +260,11 @@ const sendBulkProjectsData = async (payload: any) => {
       if (dataResponse[0].statusCode == "201") {
         console.log(dataResponse[0].statusReason);
         console.log(dataResponse[0].recordsCreated);
-        toast.success(`Projects Added, failed to add ${unavailableMarkets.length} projects`)
+        if(unavailableMarkets.length){
+          // toast.success(`Projects Added, failed to add ${unavailableMarkets.length} projects with invalid market`)
+        }else{
+          toast.success(`Projects Added Successfully`)
+        }
       } else toast.error(dataResponse[0].errorMessage);
     } else toast.error("Some Error occured.");
   
