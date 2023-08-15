@@ -396,6 +396,10 @@ const AddModal = (props: any) => {
   const [numberOfPTODays, setNumberOfPTODays] = useState(0);
   const [month, setMonth]=useState(0);
   const [year, setYear] = useState(0);
+  const [startDateHalfDayCheckbox, setStartDateHalfDayCheckbox] = useState(true);
+  const [endDateHalfDayCheckbox, setEndDateHalfDayCheckbox] = useState(true);
+  const [isStartHalfDay, setIsStartHalfDay] = useState(false);
+  const [isEndHalfDay, setIsEndHalfDay] = useState(false);
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
   const resetFormFields = () => {
     const errorContainer = document.getElementsByClassName('error');
@@ -439,6 +443,27 @@ useEffect(()=>{
         errorContainer[i].textContent='';
       }
     }
+    if(isEndHalfDay && isStartHalfDay){
+      setNumberOfPTODays(numberOfDays-1);
+    }
+    else if(isEndHalfDay){
+      setNumberOfPTODays(numberOfDays-0.5);
+    }
+    else if(isStartHalfDay){
+      setNumberOfPTODays(numberOfDays-0.5);
+    }else{
+      setNumberOfPTODays(numberOfDays);
+    }
+    if(startDate === null){
+      setStartDateHalfDayCheckbox(true);
+      setIsStartHalfDay(false);
+      setNumberOfPTODays(0);
+    }
+    if(endDate === null){
+      setEndDateHalfDayCheckbox(true);
+      setIsEndHalfDay(false);
+      setNumberOfPTODays(0);
+    }
 
 }, [startDate,endDate])
 
@@ -457,6 +482,36 @@ useEffect(()=>{
     console.log(selectedResourceDetails, event.target.value)
     setResourceId(event.target.value);
   };
+  const handleHalfDayPTO = () =>{
+    setNumberOfPTODays(numberOfPTODays-0.5);
+  }
+  const handleFullDayPTO = () =>{
+    setNumberOfPTODays(numberOfPTODays+0.5);
+  }
+
+  function handleStartChange(event: any) {
+    let startHalfDay = document.getElementById('HalfStartDate') as HTMLInputElement;
+    if(startHalfDay?.checked == true){
+      setIsStartHalfDay(true);
+      handleHalfDayPTO();
+    }else{
+      setIsStartHalfDay(false);
+      handleFullDayPTO();
+    }
+  }
+
+  
+  function handleEndChange(event: any) {
+    let endHalfDay = document.getElementById('HalfEndDate') as HTMLInputElement;
+    if(endHalfDay?.checked == true){
+      setIsEndHalfDay(true);
+      handleHalfDayPTO();
+    }else{
+      setIsEndHalfDay(false);
+      handleFullDayPTO();
+    }
+  }
+
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
     const startYear = startDate?.getFullYear();
@@ -626,7 +681,7 @@ useEffect(()=>{
                   <div className="error"></div>
                 </div>
               </div>
-
+              <div className="col-md-6"></div>
               <div className="col-md-6 form-group" id="PTOStartDate">
                 <label className="form-label" htmlFor="ptoStartDate" style={{ zIndex: "9" }}>
                  PTO Start Date
@@ -635,7 +690,7 @@ useEffect(()=>{
                 <DatePicker
                   className="form-control"
                   required
-                  onChange={setStartDate}
+                  onChange={(e:any)=>{setStartDate(e);setStartDateHalfDayCheckbox(false)}}
                   maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOStartDate'),'datePicker')}
@@ -646,6 +701,12 @@ useEffect(()=>{
                 />
                 <div className="error"></div>
               </div>
+              <div className="col-md-6 form-group">
+              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input type="checkbox" onChange={handleStartChange} id="HalfStartDate" disabled={startDateHalfDayCheckbox} name="StartHalfDate" checked={isStartHalfDay} value="startHalfDay"/>
+                  <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
+                </div>
+              </div>
               <div className="col-md-6 form-group" id="PTOEndDate">
                 <label className="form-label" htmlFor="ptoEndDate" style={{ zIndex: "9" }}>
                   PTO End Date
@@ -654,7 +715,7 @@ useEffect(()=>{
                 <DatePicker
                   className="form-control"
                   required
-                  onChange={setEndDate}
+                  onChange= { (e:any) =>{setEndDate(e); setEndDateHalfDayCheckbox(false)}}
                   minDate={startDate !== null ? startDate : new Date('December 31, 2000')}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOEndDate'),'datePicker')}
@@ -665,6 +726,13 @@ useEffect(()=>{
                 />
                 <div className="error"></div>
               </div>
+              <div className="col-md-6 form-group">
+              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input type="checkbox" onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
+                  <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
+                </div>
+              </div>
+
               {/* <div className="col-md-6 form-group" id="PtoMonth">
                 <label className="form-label" htmlFor="month">
                   Month 
@@ -760,7 +828,7 @@ useEffect(()=>{
                 />
               </div>
             </div>
-            <div className="row">
+            <div className="row" style={{marginBottom:'50px'}}>
               <div className="col-md-8">
                 
               </div>
