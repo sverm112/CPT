@@ -18,6 +18,7 @@ import { employeeActions } from "../../Store/Slices/Employee";
 import { DELETE_PTO, GET_ALL_PTOS, GET_ALL_PTO_TYPES, GET_ALL_RESOURCES, POST_PTO, UPDATE_PTO } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
+import { start } from "repl";
 
 const columns = [
   {
@@ -658,30 +659,6 @@ useEffect(()=>{
                   disabled
                 />
               </div>
-              <div className="col-md-6 form-group" id="PTOTypeDropdown">
-                <label className="form-label" htmlFor="ptoType">
-                  PTO Type 
-                </label>
-                <span className="requiredField">*</span>
-                <div className="dropdown">
-                  <select
-                    required
-                    className="form-control "
-                    id="ptoTypeDropdown"
-                    value={ptoTypeId}
-                    // onBlur={()=>validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select')}
-                    onChange={(event) => {
-                      setPTOTypeId(event.target.value);
-                      validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select');
-                    }}
-                  >
-                    <option value="0">Select</option>
-                    {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
-                  </select>
-                  <div className="error"></div>
-                </div>
-              </div>
-              <div className="col-md-6"></div>
               <div className="col-md-6 form-group" id="PTOStartDate">
                 <label className="form-label" htmlFor="ptoStartDate" style={{ zIndex: "9" }}>
                  PTO Start Date
@@ -813,6 +790,29 @@ useEffect(()=>{
                   <div className="error"></div>
                 </div>
               </div>
+              <div className="col-md-6 form-group" id="PTOTypeDropdown">
+                <label className="form-label" htmlFor="ptoType">
+                  PTO Type 
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select
+                    required
+                    className="form-control "
+                    id="ptoTypeDropdown"
+                    value={ptoTypeId}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select')}
+                    onChange={(event) => {
+                      setPTOTypeId(event.target.value);
+                      validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select');
+                    }}
+                  >
+                    <option value="0">Select</option>
+                    {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
+                  </select>
+                  <div className="error"></div>
+                </div>
+              </div>
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="remarks">
                   Remarks
@@ -862,6 +862,11 @@ const UpdateModal = (props: any) => {
   const [numberOfPTODays, setNumberOfPTODays] = useState(formValues.numberOfDays);
   const [month, setMonth]=useState(formValues.month);
   const [year, setYear] = useState(formValues.year);
+  const [startDateHalfDayCheckbox, setStartDateHalfDayCheckbox] = useState(true);
+  const [endDateHalfDayCheckbox, setEndDateHalfDayCheckbox] = useState(true);
+  const [isStartHalfDay, setIsStartHalfDay] = useState(false);
+  const [isEndHalfDay, setIsEndHalfDay] = useState(false);
+  
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
   const calculateNumberOfDays = (startDate: any, endDate: any) => {
     let count = 0;
@@ -873,15 +878,59 @@ const UpdateModal = (props: any) => {
     }
     return count;
   }
+  useEffect(()=>{
+  let totalDaySpan = calculateNumberOfDays(startDate, endDate);
+    if(numberOfPTODays === (totalDaySpan-1)){
+      setIsStartHalfDay(true);
+      setIsEndHalfDay(true);
+    }else if(numberOfPTODays === (totalDaySpan-0.5)){
+      setIsStartHalfDay(true);
+    }else if(numberOfPTODays === (totalDaySpan-0.5)){
+      setIsEndHalfDay(true);
+    }else{
+      setIsStartHalfDay(false);
+      setIsEndHalfDay(false);
+    }
+    if(startDate !== null){
+      setStartDateHalfDayCheckbox(false);
+    }
+    if(endDate !== null){
+      setEndDateHalfDayCheckbox(false);
+    }
+  },[])
   const hadnleDaysCalculation = (startDate: any, endDate:any)=>{
+    if(startDate === null){
+      setStartDateHalfDayCheckbox(true);
+      setIsStartHalfDay(false);
+    }
+    if(endDate === null){
+      setEndDateHalfDayCheckbox(true);
+      setIsEndHalfDay(false);
+    }
     if(startDate!=null && endDate!=null){
       numberOfDays=calculateNumberOfDays(startDate,endDate);
+      setEndDateHalfDayCheckbox(false);
+      setStartDateHalfDayCheckbox(false);
+      if(isEndHalfDay && isStartHalfDay){
+        setNumberOfPTODays(numberOfDays-1);
+      }
+      else if(isEndHalfDay){
+        setNumberOfPTODays(numberOfDays-0.5);
+      }
+      else if(isStartHalfDay){
+        setNumberOfPTODays(numberOfDays-0.5);
+      }else{
+        setNumberOfPTODays(numberOfDays);
+      }
+    }else{
+      setNumberOfPTODays(0);
     }
-    setNumberOfPTODays(numberOfDays);
+    if(startDate!==null){
+      setMonth(startDate.getMonth()+1);
+      setYear(startDate.getFullYear());
+    }
     setStartDate(startDate);
     setEndDate(endDate);
-    setMonth(startDate.getMonth()+1);
-    setYear(startDate.getFullYear());
     const errorContainer = document.getElementsByClassName('NumberOfPTODays');
         for(let i=0; i < errorContainer.length; i++){
           errorContainer[i].textContent='';
@@ -1001,6 +1050,35 @@ const UpdateModal = (props: any) => {
     });
   };
 
+  
+  const handleHalfDayPTO = () =>{
+    setNumberOfPTODays(numberOfPTODays-0.5);
+  }
+  const handleFullDayPTO = () =>{
+    setNumberOfPTODays(numberOfPTODays+0.5);
+  }
+  function handleStartChange(event: any) {
+    let startHalfDay = document.getElementById('HalfStartDate') as HTMLInputElement;
+    if(startHalfDay?.checked == true){
+      setIsStartHalfDay(true);
+      handleHalfDayPTO();
+    }else{
+      setIsStartHalfDay(false);
+      handleFullDayPTO();
+    }
+  }
+  
+  function handleEndChange(event: any) {
+    let endHalfDay = document.getElementById('HalfEndDate') as HTMLInputElement;
+    if(endHalfDay?.checked == true){
+      setIsEndHalfDay(true);
+      handleHalfDayPTO();
+    }else{
+      setIsEndHalfDay(false);
+      handleFullDayPTO();
+    }
+  }
+
   return (
     <>
       <Button
@@ -1051,28 +1129,6 @@ const UpdateModal = (props: any) => {
                   disabled
                 />
               </div>
-              <div className="col-md-6 form-group" id="PtoType">
-                <label className="form-label" htmlFor="ptoType">
-                  PTO Type 
-                </label>
-                <span className="requiredField">*</span>
-                <div className="dropdown">
-                  <select
-                    className="form-control"
-                    name="ptoTypeId"
-                    required
-                    id="ptoTypeDropdown"
-                    value={formValues.ptoTypeId}
-                    onChange={(e: any)=>{handleChange(e);
-                      validateSingleFormGroup(document.getElementById('PtoType'),'select');
-                    }}
-                  >
-                    <option value="0">Select</option>
-                    {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
-                  </select>
-                  <div className="error"></div>
-                </div>
-              </div>
 
               <div className="col-md-6 form-group" id="UpdatePTOStartDate">
                 <label className="form-label" htmlFor="ptoStartDate" style={{ zIndex: "9" }}>
@@ -1094,6 +1150,12 @@ const UpdateModal = (props: any) => {
                 />
                 <div className="error"></div>
               </div>
+              <div className="col-md-6 form-group">
+              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input type="checkbox" onChange={handleStartChange} id="HalfStartDate" disabled={startDateHalfDayCheckbox} name="StartHalfDate" checked={isStartHalfDay} value="startHalfDay"/>
+                  <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
+                </div>
+              </div>
               <div className="col-md-6 form-group" id="UpdatePTOEndDate">
                 <label className="form-label" htmlFor="ptoEndDate" style={{ zIndex: "9" }}>
                   PTO End Date
@@ -1113,6 +1175,12 @@ const UpdateModal = (props: any) => {
                   yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
+              </div>
+              <div className="col-md-6 form-group">
+              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input type="checkbox" onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
+                  <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
+                </div>
               </div>
               <div className="col-md-6 form-group" id="NumberOfPTODays">
                 <label className="form-label" htmlFor="ptoDays">
@@ -1167,6 +1235,28 @@ const UpdateModal = (props: any) => {
                   >
                     <option value="0">Select</option>
                     {years.map((year: any) => (<option key={year} value={year}>{year}</option>))}
+                  </select>
+                  <div className="error"></div>
+                </div>
+              </div>
+              <div className="col-md-6 form-group" id="PtoType">
+                <label className="form-label" htmlFor="ptoType">
+                  PTO Type 
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select
+                    className="form-control"
+                    name="ptoTypeId"
+                    required
+                    id="ptoTypeDropdown"
+                    value={formValues.ptoTypeId}
+                    onChange={(e: any)=>{handleChange(e);
+                      validateSingleFormGroup(document.getElementById('PtoType'),'select');
+                    }}
+                  >
+                    <option value="0">Select</option>
+                    {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
                   </select>
                   <div className="error"></div>
                 </div>
