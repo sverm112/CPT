@@ -3,7 +3,10 @@
 a {
   text-decoration: none !important;
 }
+.Capcity-Planning-Tool{
 
+  color: #002677 !important;
+}
 .wrap-element {
     position: relative;
     overflow: hidden;
@@ -23,7 +26,7 @@ a {
 
 .bg-mainclass {
   margin-top: 90px;
-  background-color: #f7f7f7;
+  /* background-color: #FFFFFF; */
   padding-left: 80px;
   margin-bottom: 20px;
   min-width: 200px !important;
@@ -35,9 +38,15 @@ a {
 }
 
 h1.Heading-Cls {
-  font-family: inherit;
-  font-size: 22px;
-  font-weight: 400;
+  font-family:"OptumSans-Bold", "Optum Sans Bold", "Optum Sans", sans-serif; 
+   /* font-family: inherit;  */
+  /* font-size: 22px; */
+  /* font-weight: 400; */
+  font-weight: 650;
+  font-style: normal;
+  font-size: 40px;
+  color: #002677;
+
 }
 
 .Heading-P-Cls {
@@ -451,7 +460,7 @@ label.form-label {
 
 
 .TableContentBorder{
-  border: 1px solid rgba(47,79,79, 0.2);
+  /* border: 1px solid rgba(47,79,79, 0.2); */
   background-color:#fff;
   border-bottom: none;
   border-right: none;
@@ -733,3 +742,7 @@ button#export-excel-btn:hover {
   width: 170px;
 }
 
+body{
+
+  background: #FFFFFF !important;
+}

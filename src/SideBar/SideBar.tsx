@@ -9,6 +9,8 @@ import "./SideBarJs";
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from '../Store/Slices/User';
 
+import vector_u79 from "../asset/images/vector_u79.png";
+
 const func2 = (element: string) => {
     // var elementcls = document.getElementsByClassName("nav-link");
     // if (elementcls != null)
@@ -38,24 +40,67 @@ const SideBar = () => {
     }
     return (
         <div id="body-pd">
-            <header className="header" id="header" style={{ position: "fixed", top: "40px", height: "50px" }}>
-                <div className="header_toggle">
-                    <i className="fas fa-bars text-white" onClick={handleClick}></i>
+            <header className="header" id="header" style={{ position: "fixed", top: "0px", height: "70px", zIndex: 9}}>
+                <div className="header_toggle" style={{marginLeft: "-10px"}}>
+                    <i className="fas fa-bars text-white" onClick={handleClick} style={{boxSizing: "border-box",  borderWidth: "1px", borderStyle: "solid", borderColor: "rgba(0, 38, 119, 1)"}}></i>
                 </div>
-                <div style={{ color: "#fff", whiteSpace: "nowrap", marginLeft:'200px', fontSize:'23px' }}>Capacity Planning Tool</div>
+                
+                {/* <div style={{ color: "#fff", whiteSpace: "nowrap", marginLeft:'200px', fontSize:'23px' }}>Capacity Planning Tool</div> */}
+
+               
+               
+                <div id="u74" className="ax_default" style={{zIndex: "1002"}} onClick={() => { navigate(APP_ROUTES.HELP) }}>
+        <div id="u74_state0" className="panel_state" data-label="State 1">
+          <div id="u74_state0_content" className="panel_state_content">
+
+            {/* <!-- Frame 2 (Group) --> */}
+            <div id="u75" className="ax_default" data-label="Frame 2" data-left="0" data-top="0" data-width="99" data-height="40" layer-opacity="1">
+
+              {/* <!-- Frame 2 BG (Rectangle) --> */}
+              <div id="u76" className="ax_default shape1" data-label="Frame 2 BG" >
+                <div id="u76_div" className=""></div>
+                <div id="u76_text" className="text " style={{display:"none", visibility: "hidden"}}>
+                  <p></p>
+                </div>
+              </div>
+
+              {/* <!-- Unnamed (Rectangle) --> */}
+              <div id="u77" className="ax_default shape1">
+                <div id="u77_div" className=""></div>
+                <div id="u77_text" className="text ">
+                  <p><span style={{letterSpacing:"0.04px"}}>H</span><span style={{letterSpacing:"0.04px"}}>elp</span></p>
+                </div>
+              </div>
+
+              {/* <!-- info_filled (Group) --> */}
+              <div id="u78" className="ax_default" data-label="info_filled" data-left="8" data-top="13" data-width="15" data-height="15" layer-opacity="1">
+
+                {/* <!-- Vector (Shape) --> */}
+                <div id="u79" className="ax_default shape1" data-label="Vector">
+                  <img id="u79_img" className="img " src={vector_u79}/>
+                  <div id="u79_text" className="text " style={{display:"none", visibility: "hidden"}}>
+                    <p></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
                 <div>
                     <div className="dropdowns" style={{ float: "right" }}>
                         <input type="checkbox" id="box" style={{display:"none"}}/>
                         <label htmlFor ="box" style={{marginBottom: "0px"}}>
                             <div className="dropbtns">
-                                <span style={{ padding: "10px 10px 10px 10px", lineHeight: "40px" }}>{username}</span>
+                                <span style={{ padding: "10px 10px 10px 10px", lineHeight: "40px", color:"black" }}>{username}</span>
                                 <div className="header_img" style={{ float: "right" }}>
                                     <img src={nouserimage} alt="" />
                                 </div>
                             </div>
                         </label>
-                        <div className="dropdowns-content">
-                            <a className="logoutbtn" href="" onClick={handleLogout}>Logout</a>
+                        <div className="dropdowns-content" >
+                            <a className="logoutbtn" href="" onClick={handleLogout}>Sign out</a>
                         </div>
                     </div>
                 </div>
