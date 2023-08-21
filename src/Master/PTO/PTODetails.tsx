@@ -414,6 +414,9 @@ const AddModal = (props: any) => {
     setMonth(0);
     setRemarks("");
     setNumberOfPTODays(0);
+    setIsEndHalfDay(false);
+    setEndDateHalfDayCheckbox(true);
+    setYear(0);
   }
   const calculateNumberOfDays = (startDate: Date, endDate: Date) => {
     let count = 0;
@@ -455,12 +458,23 @@ useEffect(()=>{
     }else{
       setNumberOfPTODays(numberOfDays);
     }
+    if(endDate!=null && startDate!=null){
+      let sDate = startDate.getDate();
+      let eDate = endDate.getDate();
+      if(eDate === sDate){
+        setEndDateHalfDayCheckbox(false);
+        setIsEndHalfDay(false);
+      }else{
+        setEndDateHalfDayCheckbox(true);
+        setIsEndHalfDay(false);
+    }
+    }
 }, [startDate,endDate])
 
 const handleStartDateChange = (e: any) =>{
   if(endDate!=null && startDate!=null){
-    let sDate = endDate.getDate();
-    let eDate = e.getDate();
+    let eDate = endDate.getDate();
+    let sDate = e.getDate();
     if(eDate === sDate){
       setEndDateHalfDayCheckbox(false);
       setIsEndHalfDay(false);
@@ -897,46 +911,36 @@ const UpdateModal = (props: any) => {
   }
   useEffect(()=>{
   let totalDaySpan = calculateNumberOfDays(startDate, endDate);
-    if(numberOfPTODays === (totalDaySpan-1)){
-      setIsStartHalfDay(true);
-      setIsEndHalfDay(true);
-    }else if(numberOfPTODays === (totalDaySpan-0.5)){
-      setIsStartHalfDay(true);
-    }else if(numberOfPTODays === (totalDaySpan-0.5)){
-      setIsEndHalfDay(true);
-    }else{
-      setIsStartHalfDay(false);
+    if(totalDaySpan>=2){
       setIsEndHalfDay(false);
+      setEndDateHalfDayCheckbox(true);
+    }else{
+      if(numberOfPTODays === (totalDaySpan-0.5)){
+        setIsEndHalfDay(true);
+        setEndDateHalfDayCheckbox(false);
+      }
     }
-    if(startDate !== null){
-      setStartDateHalfDayCheckbox(false);
-    }
-    if(endDate !== null){
-      setEndDateHalfDayCheckbox(false);
+    if(startDate!=null && endDate !=null){
+      let sDate = startDate.getDate();
+      let eDate = endDate.getDate();
+      if(sDate===eDate){
+        setEndDateHalfDayCheckbox(false);
+      }else{
+        setEndDateHalfDayCheckbox(true);
+      }
     }
   },[])
   const hadnleDaysCalculation = (startDate: any, endDate:any)=>{
-    if(startDate === null){
-      setStartDateHalfDayCheckbox(true);
-      setIsStartHalfDay(false);
-    }
-    if(endDate === null){
-      setEndDateHalfDayCheckbox(true);
-      setIsEndHalfDay(false);
-    }
     if(startDate!=null && endDate!=null){
       numberOfDays=calculateNumberOfDays(startDate,endDate);
-      setEndDateHalfDayCheckbox(false);
-      setStartDateHalfDayCheckbox(false);
-      if(isEndHalfDay && isStartHalfDay){
-        setNumberOfPTODays(numberOfDays-1);
-      }
-      else if(isEndHalfDay){
-        setNumberOfPTODays(numberOfDays-0.5);
-      }
-      else if(isStartHalfDay){
-        setNumberOfPTODays(numberOfDays-0.5);
+      let sDate = startDate.getDate();
+      let eDate = endDate.getDate();
+      if(sDate===eDate){
+        setEndDateHalfDayCheckbox(false);
+        setNumberOfPTODays(numberOfDays);
       }else{
+        setIsEndHalfDay(false);
+        setEndDateHalfDayCheckbox(true);
         setNumberOfPTODays(numberOfDays);
       }
     }else{
@@ -953,22 +957,6 @@ const UpdateModal = (props: any) => {
           errorContainer[i].textContent='';
         }
   }
-//   useEffect(()=>{
-//     console.log("Calling UseEffect: ",numberOfDays)
-//     if(numberOfDays!==0){
-//       // if(numberOfPTODays !== numberOfDays){
-//         setNumberOfPTODays(numberOfDays);
-//         const errorContainer = document.getElementsByClassName('NumberOfPTODays');
-//         for(let i=0; i < errorContainer.length; i++){
-//           errorContainer[i].textContent='';
-//         }
-//       // }
-//     }
-// }, [startDate,endDate])
-
-  // const setPTOs=()=>{
-
-  // }
   if(formValues.resourceId!="0"){
     const filteredResource = resourceList.filter((resource: any) => resource.resourceId == Number(formValues.resourceId));
     selectedResourceDetails.resourceId = filteredResource[0].resourceId
@@ -1167,9 +1155,16 @@ const UpdateModal = (props: any) => {
                 />
                 <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              {/* <div className="col-md-6 form-group">
               <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
                   <input type="checkbox" onChange={handleStartChange} id="HalfStartDate" disabled={startDateHalfDayCheckbox} name="StartHalfDate" checked={isStartHalfDay} value="startHalfDay"/>
+                  <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
+                </div>
+              </div> */}
+              
+              <div className="col-md-6 form-group">
+              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input type="checkbox" onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
                   <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
                 </div>
               </div>
@@ -1192,12 +1187,6 @@ const UpdateModal = (props: any) => {
                   yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
-              </div>
-              <div className="col-md-6 form-group">
-              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
-                  <input type="checkbox" onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
-                  <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
-                </div>
               </div>
               <div className="col-md-6 form-group" id="NumberOfPTODays">
                 <label className="form-label" htmlFor="ptoDays">
