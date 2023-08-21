@@ -430,8 +430,8 @@ const AddModal = (props: any) => {
 useEffect(()=>{
     if(startDate!=null && endDate!=null){
       numberOfDays=calculateNumberOfDays(startDate,endDate);
-    setMonth(startDate.getMonth()+1);
-    setYear(startDate.getFullYear());
+      setMonth(startDate.getMonth()+1);
+      setYear(startDate.getFullYear());
     }
     if(startDate!=null){
         setMonth(startDate.getMonth()+1);
@@ -455,18 +455,34 @@ useEffect(()=>{
     }else{
       setNumberOfPTODays(numberOfDays);
     }
-    if(startDate === null){
-      setStartDateHalfDayCheckbox(true);
-      setIsStartHalfDay(false);
-      setNumberOfPTODays(0);
-    }
-    if(endDate === null){
+}, [startDate,endDate])
+
+const handleStartDateChange = (e: any) =>{
+  if(endDate!=null && startDate!=null){
+    let sDate = endDate.getDate();
+    let eDate = e.getDate();
+    if(eDate === sDate){
+      setEndDateHalfDayCheckbox(false);
+      setIsEndHalfDay(false);
+    }else{
       setEndDateHalfDayCheckbox(true);
       setIsEndHalfDay(false);
-      setNumberOfPTODays(0);
-    }
-
-}, [startDate,endDate])
+  }
+  }
+}
+const handleEndDateChange = (e: any) =>{
+  if(endDate!=null && startDate!=null){
+    let sDate = startDate.getDate();
+    let eDate = e.getDate();
+  if(eDate === sDate){
+    setEndDateHalfDayCheckbox(false);
+    setIsEndHalfDay(false);
+  }else{
+    setEndDateHalfDayCheckbox(true);
+    setIsEndHalfDay(false);
+}
+}
+}
 
   const setPTODays=(e: any)=>{
     if(e.target.value !== numberOfDays){
@@ -667,7 +683,7 @@ useEffect(()=>{
                 <DatePicker
                   className="form-control"
                   required
-                  onChange={(e:any)=>{setStartDate(e);setStartDateHalfDayCheckbox(false)}}
+                  onChange={(e:any)=>{setStartDate(e);handleStartDateChange(e)}}
                   maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOStartDate'),'datePicker')}
@@ -678,9 +694,16 @@ useEffect(()=>{
                 />
                 <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group">
+              {/* <div className="col-md-6 form-group">
               <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
                   <input type="checkbox" onChange={handleStartChange} id="HalfStartDate" disabled={startDateHalfDayCheckbox} name="StartHalfDate" checked={isStartHalfDay} value="startHalfDay"/>
+                  <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
+                </div>
+              </div> */}
+              
+              <div className="col-md-6 form-group">
+              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input type="checkbox" onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
                   <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
                 </div>
               </div>
@@ -692,7 +715,7 @@ useEffect(()=>{
                 <DatePicker
                   className="form-control"
                   required
-                  onChange= { (e:any) =>{setEndDate(e); setEndDateHalfDayCheckbox(false)}}
+                  onChange= { (e:any) =>{setEndDate(e);handleEndDateChange(e)}}
                   minDate={startDate !== null ? startDate : new Date('December 31, 2000')}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOEndDate'),'datePicker')}
@@ -702,12 +725,6 @@ useEffect(()=>{
                   yearPlaceholder="YYYY"
                 />
                 <div className="error"></div>
-              </div>
-              <div className="col-md-6 form-group">
-              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
-                  <input type="checkbox" onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
-                  <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
-                </div>
               </div>
 
               {/* <div className="col-md-6 form-group" id="PtoMonth">
