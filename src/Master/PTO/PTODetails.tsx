@@ -530,7 +530,18 @@ const handleEndDateChange = (e: any) =>{
       handleFullDayPTO();
     }
   }
-
+ const showAlert = (e: any) =>{
+  let alertElement = document.getElementById("#HalfDayAlert");
+  alertElement?.classList.remove("alertHidden");
+  alertElement?.classList.add("alertVisible");
+  console.log("Handle Alert: ", alertElement);
+ }
+ const hideAlert = (e: any) =>{
+  let alertElement = document.getElementById("#HalfDayAlert");
+  alertElement?.classList.add("alertHidden");
+  alertElement?.classList.remove("alertVisible");
+  console.log("Handle Alert: ", alertElement);
+ }
   
   function handleEndChange(event: any) {
     let endHalfDay = document.getElementById('HalfEndDate') as HTMLInputElement;
@@ -715,10 +726,27 @@ const handleEndDateChange = (e: any) =>{
                 </div>
               </div> */}
               
-              <div className="col-md-6 form-group">
+              <div className="col-md-6 form-group" onMouseOut={hideAlert} onMouseEnter={showAlert} >
               <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
-                  <input type="checkbox" onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
-                  <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
+                  <input  onMouseOut={hideAlert} onMouseEnter={showAlert} type="checkbox"  onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
+                  <label  onMouseOut={hideAlert} onMouseEnter={showAlert} className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
+                  <div id="#HalfDayAlert" className="alertHidden alertVisible ">
+                        <div className="warningText" style={{margin:'5px'}}>
+                          <div className="tip" style={{  
+                            position:'absolute',
+                            marginLeft:'-15px',
+                            marginTop:'20px',
+                            width: '0',
+                            height: '0',
+                            borderTop: '10px solid transparent',
+                            borderBottom: '10px solid transparent', 
+                            borderRight:'10px solid #fff',
+                            // boxShadow:'0 0 5px 5px rgba(0, 0, 0, 0.1)' 
+                            }}>
+                          </div>
+                          <i >For any partial pto days both start and end date should be same</i>
+                        </div>
+                  </div>
                 </div>
               </div>
               <div className="col-md-6 form-group" id="PTOEndDate">
@@ -1084,6 +1112,19 @@ const UpdateModal = (props: any) => {
     }
   }
 
+  const showAlert = (e: any) =>{
+    let alertElement = document.getElementById("#HalfDayAlert");
+    alertElement?.classList.remove("alertHidden");
+    alertElement?.classList.add("alertVisible");
+    console.log("Handle Alert: ", alertElement);
+   }
+   const hideAlert = (e: any) =>{
+    let alertElement = document.getElementById("#HalfDayAlert");
+    alertElement?.classList.add("alertHidden");
+    alertElement?.classList.remove("alertVisible");
+    console.log("Handle Alert: ", alertElement);
+   }
+
   return (
     <>
       <Button
@@ -1162,10 +1203,27 @@ const UpdateModal = (props: any) => {
                 </div>
               </div> */}
               
-              <div className="col-md-6 form-group">
-              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
-                  <input type="checkbox" onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
-                  <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
+              <div className="col-md-6 form-group" onMouseOut={hideAlert} onMouseEnter={showAlert}>
+                <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input type="checkbox" onChange={handleEndChange} onMouseOut={hideAlert} onMouseEnter={showAlert} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
+                  <label className="form-label" style={{marginLeft:'5px'}} onMouseOut={hideAlert} onMouseEnter={showAlert}>Half Day</label>
+                  <div id="#HalfDayAlert" className="alertHidden alertVisible ">
+                        <div className="warningText" style={{margin:'5px'}}>
+                          <div className="tip" style={{  
+                            position:'absolute',
+                            marginLeft:'-15px',
+                            marginTop:'20px',
+                            width: '0',
+                            height: '0',
+                            borderTop: '10px solid transparent',
+                            borderBottom: '10px solid transparent', 
+                            borderRight:'10px solid #fff',
+                            // boxShadow:'0 0 5px 5px rgba(0, 0, 0, 0.1)' 
+                            }}>
+                          </div>
+                          <i >For any partial pto days both start and end date should be same</i>
+                        </div>
+                  </div>
                 </div>
               </div>
               <div className="col-md-6 form-group" id="UpdatePTOEndDate">
