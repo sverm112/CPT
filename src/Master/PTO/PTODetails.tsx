@@ -743,8 +743,8 @@ const handleEndDateChange = (e: any) =>{
                             borderRight:'10px solid #fff',
                             // boxShadow:'0 0 5px 5px rgba(0, 0, 0, 0.1)' 
                             }}>
-                          </div>
-                          <i >For any partial pto days both start and end date should be same</i>
+                          </div><span style={{color:'red'}}>*</span>
+                          <i>Note: PTO Start Date and PTO End Date should be same.</i>
                         </div>
                   </div>
                 </div>
@@ -1220,8 +1220,8 @@ const UpdateModal = (props: any) => {
                             borderRight:'10px solid #fff',
                             // boxShadow:'0 0 5px 5px rgba(0, 0, 0, 0.1)' 
                             }}>
-                          </div>
-                          <i >For any partial pto days both start and end date should be same</i>
+                          </div><span style={{color:'red'}}>*</span>
+                          <i>Note: PTO Start Date and PTO End Date should be same.</i>
                         </div>
                   </div>
                 </div>
