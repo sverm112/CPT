@@ -8,6 +8,7 @@ export const ALLOCATION_BY_PROJECT_REPORT = "http://colo-sqlrptqa/Reports/powerb
 export const ALLOCATION_BY_RESOURCE_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Allocation%20By%20Resource_Dev?rs:embed=true"
 export const HOLIDAY_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Holiday%20list_Dev?rs:embed=true"
 
+
 //Production
 // export const Base_URL = 'http://10.147.172.18:9190/';
 // export const DASHBOARD_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Dashboard?rs:embed=true" 
