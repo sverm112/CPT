@@ -41,7 +41,7 @@ const SideBar = () => {
     return (
         <div id="body-pd">
             <header className="header" id="header" style={{ position: "fixed", top: "0px", height: "70px", zIndex: 9}}>
-                <div className="header_toggle" style={{marginLeft: "-10px"}}>
+                <div className="header_toggle" style={{marginLeft: "0px"}}>
                     <i className="fas fa-bars text-white" onClick={handleClick} style={{boxSizing: "border-box",  borderWidth: "1px", borderStyle: "solid", borderColor: "rgba(0, 38, 119, 1)"}}></i>
                 </div>
                 
@@ -112,7 +112,7 @@ const SideBar = () => {
                         <div className="nav_list">
                             <Link  to="/Dashboard"  className="nav_link" id="Home" onClick={() => { navigate(APP_ROUTES.DASHBOARD) }}>
                                 <i className="fa fa-home" aria-hidden="true"></i>
-                                <span className="nav_name">Home</span>
+                                <span className="nav_name">Dashboard</span>
                             </Link>
                            {userType=="Admin" &&  <a className="nav_link" id="MasterEntry" onClick={() => func2("MasterEntry")}>
                                 <span className="nav_name">

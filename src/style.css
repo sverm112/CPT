@@ -27,14 +27,14 @@ a {
 .bg-mainclass {
   margin-top: 90px;
   /* background-color: #FFFFFF; */
-  padding-left: 80px;
+  padding-left: 50px;
   margin-bottom: 20px;
   min-width: 200px !important;
 }
 
 .Page-Heading {
   margin-left: 5px;
-  padding-top: 20px;
+  padding-top: 0px;
 }
 
 h1.Heading-Cls {
@@ -44,7 +44,7 @@ h1.Heading-Cls {
   /* font-weight: 400; */
   font-weight: 650;
   font-style: normal;
-  font-size: 40px;
+  font-size: 34px;
   color: #002677;
 
 }
@@ -369,7 +369,9 @@ div.project>input.upload-input-btn {
 } */
 
 .btn {
-  background-color: #0078d7 !important
+  background-color: #002677 !important
+  /* background-color: #0078D7 !important */
+
 }
 
 button.btn.btn-primary {
@@ -473,7 +475,7 @@ label.form-label {
   padding: 0px 9px 0px 9px !important;
   border-top-left-radius: 0px !important;
   border-bottom-left-radius: 0px !important;
-  background-color: #0078d7;
+  background-color: #002677;
 }
 
 .search-btn::-webkit-input-placeholder {
@@ -482,6 +484,7 @@ label.form-label {
 }
 
 .fade.modal.show {
+  top: -35px;
   height: 100% !important;
 }
 
@@ -727,7 +730,7 @@ button#export-excel-btn:hover {
 
 /* .HoverMultiSelect > */
 .DownloadAndDropdown > * > .rmsc > .dropdown-container > .dropdown-heading{
-  background-color: #0078d7;
+  background-color: #002677;
   color: #fff;
   width: 90px;
   border-radius: 5px;
