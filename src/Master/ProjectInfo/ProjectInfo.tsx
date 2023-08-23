@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { employeeActions } from "../../Store/Slices/Employee";
 import DownloadBtn from "../../Export/DownloadBtn";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
-import { Base_URL, DELETE_PROJECT, GET_ALL_MARKETS, GET_ALL_PROJECTS, POST_PROJECT, UPDATE_PROJECT } from "../../constants";
+import { Base_URL, DELETE_PROJECT, GET_ALL_MARKETS, GET_ALL_PROJECTS, POST_BULK_UPLOAD_PROJECTS, POST_PROJECT, UPDATE_PROJECT } from "../../constants";
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
@@ -210,7 +210,8 @@ const onSave = (props: any) => {
 }
   
 const [path, setPath] = useState("");
-const sendBulkResourcesData = async (payload: any) => {
+const sendBulkProjectsData = async (payload: any) => {
+  let projects:any[]=[];
   let availableMarkets: any[] =[];
   let availableMarketIds: any[] =[];
   marketList.map((market: any)=>{
@@ -219,40 +220,20 @@ const sendBulkResourcesData = async (payload: any) => {
   })
   let unavailableMarkets: any[] =[];
   for(const p of payload){
-    console.log("Market List: ", marketList);
-    if(availableMarkets.indexOf(p.ProjectMarket.trim())=== -1){
+    if(availableMarkets.indexOf((p["Project Market"])?.trim())=== -1){
       unavailableMarkets.push(p);
     }else{
 
-        let payload = {
-          projectCode: p.ProjectCode,
-          projectName: p.ProjectName,
-          projectModel: p.ProjectModel,
-          expenseType: p.ExpenseType,
-          marketId: availableMarketIds[availableMarkets.indexOf(p.ProjectMarket.trim())] ,
-          programManager: p.ProjectManager,
+        let project = {
+          projectCode: p["Project Code"],
+          projectName: p["Project Name"],
+          projectModel: p["Project Model"],
+          expenseType: p["Expense Type"],
+          marketId: availableMarketIds[availableMarkets.indexOf(p["Project Market"]?.trim())] ,
+          programManager: p["Project Manager"] == null ? "":p["Project Manager"],
           createdBy: username
         };
-        try {
-            const response = await fetch(`${POST_PROJECT}`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(payload),
-            });
-            const dataResponse = await response.json();
-            if (dataResponse.length) {
-              if (dataResponse[0].statusCode == "201") {
-                console.log(dataResponse[0].statusReason);
-                console.log(dataResponse[0].recordsCreated);
-                toast.success(`Projects Added, failed to add ${unavailableMarkets.length} projects`)
-              } else toast.error(dataResponse[0].errorMessage);
-            } else toast.error("Some Error occured.");
-          
-        } catch {
-          toast.error("Some Error occured.");
-        }
+      projects.push(project);  
     }
     // if(unavailableMarkets.length){
     //   if (window.confirm(`Update ${unavailableMarkets.length} records.`)) {
@@ -265,6 +246,31 @@ const sendBulkResourcesData = async (payload: any) => {
 
     // }
   }
+
+  try {
+    const response = await fetch(`${POST_BULK_UPLOAD_PROJECTS}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(projects),
+    });
+    const dataResponse = await response.json();
+    if (dataResponse.length) {
+      if (dataResponse[0].statusCode == "201") {
+        console.log(dataResponse[0].statusReason);
+        console.log(dataResponse[0].recordsCreated);
+        if(unavailableMarkets.length){
+          // toast.success(`Projects Added, failed to add ${unavailableMarkets.length} projects with invalid market`)
+        }else{
+          toast.success(`Projects Added Successfully`)
+        }
+      } else toast.error(dataResponse[0].errorMessage);
+    } else toast.error("Some Error occured.");
+  
+} catch {
+  toast.error("Some Error occured.");
+}
   getProjectDetails();
 };
   //start constants for export
@@ -286,7 +292,8 @@ const sendBulkResourcesData = async (payload: any) => {
     writeFile(wb, "Project.xlsx");
   };
   
-  const handleUploadResourceFile = async (event: any) => {
+  const handleUploadProjectFile = async (event: any) => {
+    console.log("Calling Handle Upload: ", event);
     const files = event.target.files;
 
     if (files.length) {
@@ -297,7 +304,7 @@ const sendBulkResourcesData = async (payload: any) => {
         const sheets = wb.SheetNames;
         if (sheets.length) {
           const rows: any = utils.sheet_to_json(wb.Sheets[sheets[0]]);
-          sendBulkResourcesData(rows);
+          sendBulkProjectsData(rows);
           setPath("");
         }
       };
@@ -341,7 +348,7 @@ const sendBulkResourcesData = async (payload: any) => {
             
             <div className="btns employee">
               <div style={{display:'flex', width:'220px',marginTop:'-15px',float:'right'}}>
-              <div className="DownloadEmployeeTemplate" style={{display:'none'}} >
+              <div className="DownloadEmployeeTemplate"  >
                 <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
                   <i className="las la-file-download"></i>
                 </button>
@@ -351,7 +358,7 @@ const sendBulkResourcesData = async (payload: any) => {
                   </p>
                 </div>
               </div>
-              <div className="UploadBulkEmployeeDetails" style={{display:'none'}} >
+              <div className="UploadBulkEmployeeDetails"  >
                 <button  type="button" className="btn btn-primary upload-button-btn">
                   <i className="las la-file-upload"></i>
                 </button>
@@ -361,7 +368,7 @@ const sendBulkResourcesData = async (payload: any) => {
                   id="input-resources-file"
                   className="btn btn-primary custom-file-input upload-input-btn"
                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
-                  onChange={handleUploadResourceFile}
+                  onChange={handleUploadProjectFile}
                 />
                 <div className="BulkUploadEmployeeTooltip">
                   <p>
@@ -369,7 +376,7 @@ const sendBulkResourcesData = async (payload: any) => {
                   </p>
                 </div>
               </div>
-              <div className="AddEmployeeButton" style={{whiteSpace:'nowrap', marginLeft:'45%'}}>
+              <div className="AddEmployeeButton" style={{whiteSpace:'nowrap'}}>
                 {/* {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
                 {action == "Update" && <UpdateModal initialValues={()=>{}} onSave={onSave} showModal={showModal} openModal={openModal} closeModal={closeModal} />} */}
                               {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}

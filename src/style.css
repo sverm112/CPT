@@ -560,6 +560,20 @@ button#export-excel-btn:hover {
   height: 33px;
 }
 
+.alertHidden{
+  display: none;
+}
+
+.alertVisible{
+  font-size:small !important;
+  position:absolute !important; 
+  width:50% !important;
+  margin-left:85px !important; 
+  margin-top:-50px !important;
+  border-radius:5px !important; 
+  box-shadow:0 0 5px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
 #export-dropdowns-content {
   display: none;
   width: auto;
