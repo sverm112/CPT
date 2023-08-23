@@ -281,7 +281,7 @@ const PTO = () => {
             <h1 className="Heading-Cls">PTO Details</h1>
             <p>
               <span className="Heading-P-Cls">Master</span>
-              <span>PTO</span>
+              <span>PTO Details</span>
             </p>
             <div className="btns market">
               {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}

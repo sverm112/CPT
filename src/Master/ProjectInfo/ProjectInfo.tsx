@@ -329,7 +329,7 @@ const sendBulkProjectsData = async (payload: any) => {
             <h1 className="Heading-Cls">Project Details</h1>
             <p>
               <span className="Heading-P-Cls">Master</span>
-              <span>Project Info</span>
+              <span>Project Details</span>
             </p>
             <div className="btns project">
               {/* <button type="button" className="btn btn-primary upload-button-btn" style={{ marginRight: "150px" }}>
