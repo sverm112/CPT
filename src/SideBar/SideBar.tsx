@@ -168,10 +168,10 @@ const SideBar = () => {
                                 <i className="las la-info-circle" aria-hidden="true"></i>
                                 <span className="nav_name">About Us</span>
                             </a> */}
-                            <Link  to="/Help" className="nav_link" onClick={() => { navigate(APP_ROUTES.HELP) }}>
+                            {/* <Link  to="/Help" className="nav_link" onClick={() => { navigate(APP_ROUTES.HELP) }}>
                                 <i className="las la-question-circle" aria-hidden="true"></i>
                                 <span className="nav_name">Help</span>
-                            </Link>
+                            </Link> */}
                         </div>
                     </div>
                 </nav>
