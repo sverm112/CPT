@@ -27,6 +27,7 @@ import PTO from "./Master/PTO/PTODetails";
 const App = () => {
     const dispatch=useDispatch();
     const userType=useSelector((state:any)=>state.User.userType);
+    let userloggedIn = false;
     useEffect(()=>{
         let username=sessionStorage.getItem("username");
         let userType=sessionStorage.getItem("userType");
@@ -41,11 +42,16 @@ const App = () => {
             else if(username=="Ashish Khare")
             dispatch(userActions.setUser({username:"Ashish Khare",userType:"Admin"}))
         }
+        console.log("User Logged in: ", userloggedIn);
     },[]);
+    if(userType === "Admin" || userType === "User"){
+        userloggedIn = true;
+    }
     return (
         <div>
             <ToastContainer autoClose={1000}/>
-            <Navbar></Navbar>
+         {/* {userloggedIn && <Navbar></Navbar> } */}
+         <Navbar></Navbar> 
             <HashRouter>
                 <Routes>
                     <Route path={APP_ROUTES.LOGINPAGE} element={<LoginPage />} />

@@ -215,6 +215,9 @@
 //     },
 // };
 
+import { orange } from "@material-ui/core/colors";
+import { hover } from "@testing-library/user-event/dist/hover";
+
 
 
 
@@ -239,10 +242,11 @@ const customStyles = {
 	},
     headRow: {
                 style: {
-                    backgroundColor: '#5A5A5A !important',
-                    color: '#ffffff !important',
+                    backgroundColor: 'white !important',
+                    color: 'black !important',
                     minHeight: '35px',
                     borderBottomWidth: '1px',
+                    borderBottomColor: 'orange',
                     //borderBottomColor: theme.divider.default,
                     borderBottomStyle: 'solid',
                 },
@@ -261,15 +265,18 @@ const customStyles = {
             backgroundColor: '#ffffff !important',
         },
     },
-    headCells: {
+    headCells: { 
         style: {
             fontSize : '13px !important',
             paddingLeft: '2px', // override the cell padding for head cells
             paddingRight: '2px',
+
         },
     },
     cells: {
         style: {
+            
+            backgroundColor: 'white !important',
             fontSize : '13px !important',
             paddingLeft: '2px', // override the cell padding for data cells
             paddingRight: '2px',
