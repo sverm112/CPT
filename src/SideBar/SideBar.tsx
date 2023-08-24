@@ -49,7 +49,7 @@ const SideBar = () => {
 
                
                
-                <div id="u74" className="ax_default" style={{zIndex: "1002"}} onClick={() => { navigate(APP_ROUTES.HELP) }}>
+                <div id="u74" className="ax_default"  style={{zIndex: "1002", cursor:"pointer"}} onClick={() => { navigate(APP_ROUTES.HELP) }}>
         <div id="u74_state0" className="panel_state" data-label="State 1">
           <div id="u74_state0_content" className="panel_state_content">
 
