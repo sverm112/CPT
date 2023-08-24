@@ -5,6 +5,7 @@
     margin: -15px; 
     margin-left: -15px;
     top: 75px;
+    overflow-x: hidden !important;
 }
 
 .page-content > .col-md-6 {

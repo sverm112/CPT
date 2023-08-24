@@ -362,7 +362,7 @@ useEffect(()=>{
               <span className="Heading-P-Cls">Master</span>
               <span>Resource Details</span>
             </p>
-            <div className="btns employee">
+            <div className="btns employee" style={{marginLeft:"15px"}}>
               <div style={{display:'flex', width:'230px',float:'right', marginTop:'-15px'}}>
               <div className="DownloadEmployeeTemplate" >
                 <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>

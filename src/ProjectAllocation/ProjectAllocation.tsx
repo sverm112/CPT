@@ -590,7 +590,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
         <div>
           <div className="row Page-Heading">
             <h1 className="Heading-Cls">Project Allocation</h1>
-            <div className="btns project-allocation">
+            <div className="btns project-allocation" style={{marginLeft:"9px"}}>
               {/* <button type="button" className="btn btn-primary upload-button-btn" style={{ marginRight: "200px" }}>
                 <i className="las la-file-upload"></i>
               </button>

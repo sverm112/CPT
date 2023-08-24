@@ -231,7 +231,7 @@ const HolidayMaster = () => {
               <span className="Heading-P-Cls">Master</span>
               <span>Holiday Details</span>
             </p>
-            <div className="btns holiday">
+            <div className="btns holiday" style={{marginLeft:"8px"}}>
              
               {/* <AddModal /> */}
               {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}

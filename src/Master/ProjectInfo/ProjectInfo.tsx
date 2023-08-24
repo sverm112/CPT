@@ -346,7 +346,7 @@ const sendBulkProjectsData = async (payload: any) => {
 
             </div>
             
-            <div className="btns employee">
+            <div className="btns employee" style={{marginLeft:"12px"}}>
               <div style={{display:'flex', width:'220px',marginTop:'-15px',float:'right'}}>
               <div className="DownloadEmployeeTemplate"  >
                 <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
