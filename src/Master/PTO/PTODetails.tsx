@@ -283,7 +283,7 @@ const PTO = () => {
               <span className="Heading-P-Cls">Master</span>
               <span>PTO Details</span>
             </p>
-            <div className="btns market">
+            <div className="btns market" style={{marginLeft:"8px"}}>
               {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               {action == "Update" && <UpdateModal initialValues={updatePTODetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
 

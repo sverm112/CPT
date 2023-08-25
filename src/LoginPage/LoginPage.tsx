@@ -81,7 +81,7 @@ const LoginPage = () => {
                       <img src="https://drive.google.com/u/0/uc?id=16U__U5dJdaTfNGobB_OpwAJ73vM50rPV&export=download" alt="" />Return home</a>
                   </div> */}
 
-<div style={{ /*borderRight: "1px solid #fa600d91"*/ paddingRight: "0px", paddingLeft: "15px",   width: "128px",    height: "33px", marginLeft:"25px" }}><img src={optumLogo} alt="" /></div>
+<div style={{ /*borderRight: "1px solid #fa600d91"*/ paddingRight: "0px", paddingLeft: "15px",   width: "100px",    height: "28px", marginLeft:"25px" }}><img src={optumLogo} alt="" /></div>
                         <div className = "Capcity-Planning-Tool" style={{ display: "block", paddingLeft: "14.5px", color:"#002677 !important", marginLeft:"25px"  }}>Capacity Planning Tool</div>
                   <div className="contact" style={{    top: "-68px", position: "relative"}}>
 

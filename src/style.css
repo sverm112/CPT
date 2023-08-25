@@ -30,6 +30,10 @@ a {
   padding-left: 50px;
   margin-bottom: 20px;
   min-width: 200px !important;
+  /* overflow-x: hidden !important;
+   */
+
+   width: 96.8% !important;
 }
 
 .Page-Heading {
