@@ -700,6 +700,30 @@ const handleEndDateChange = (e: any) =>{
                   disabled
                 />
               </div>
+              
+              <div className="col-md-6 form-group" id="PTOTypeDropdown">
+                <label className="form-label" htmlFor="ptoType">
+                  PTO Type 
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select
+                    required
+                    className="form-control "
+                    id="ptoTypeDropdown"
+                    value={ptoTypeId}
+                    // onBlur={()=>validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select')}
+                    onChange={(event) => {
+                      setPTOTypeId(event.target.value);
+                      validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select');
+                    }}
+                  >
+                    <option value="0">Select</option>
+                    {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
+                  </select>
+                  <div className="error"></div>
+                </div>
+              </div>
               <div className="col-md-6 form-group" id="PTOStartDate">
                 <label className="form-label" htmlFor="ptoStartDate" style={{ zIndex: "9" }}>
                  PTO Start Date
@@ -726,7 +750,7 @@ const handleEndDateChange = (e: any) =>{
                 </div>
               </div> */}
               
-              <div className="col-md-6 form-group" onMouseOut={hideAlert} onMouseEnter={showAlert} >
+              {/* <div className="col-md-6 form-group" onMouseOut={hideAlert} onMouseEnter={showAlert} >
               <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
                   <input  onMouseOut={hideAlert} onMouseEnter={showAlert} type="checkbox"  onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
                   <label  onMouseOut={hideAlert} onMouseEnter={showAlert} className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
@@ -748,7 +772,7 @@ const handleEndDateChange = (e: any) =>{
                         </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-6 form-group" id="PTOEndDate">
                 <label className="form-label" htmlFor="ptoEndDate" style={{ zIndex: "9" }}>
                   PTO End Date
@@ -845,29 +869,6 @@ const handleEndDateChange = (e: any) =>{
                   >
                     <option value="0">Select</option>
                     {years.map((year: any) => (<option key={year} value={year}>{year}</option>))}
-                  </select>
-                  <div className="error"></div>
-                </div>
-              </div>
-              <div className="col-md-6 form-group" id="PTOTypeDropdown">
-                <label className="form-label" htmlFor="ptoType">
-                  PTO Type 
-                </label>
-                <span className="requiredField">*</span>
-                <div className="dropdown">
-                  <select
-                    required
-                    className="form-control "
-                    id="ptoTypeDropdown"
-                    value={ptoTypeId}
-                    // onBlur={()=>validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select')}
-                    onChange={(event) => {
-                      setPTOTypeId(event.target.value);
-                      validateSingleFormGroup(document.getElementById('PTOTypeDropdown'),'select');
-                    }}
-                  >
-                    <option value="0">Select</option>
-                    {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
                   </select>
                   <div className="error"></div>
                 </div>
@@ -1176,6 +1177,28 @@ const UpdateModal = (props: any) => {
                 />
               </div>
 
+              <div className="col-md-6 form-group" id="PtoType">
+                <label className="form-label" htmlFor="ptoType">
+                  PTO Type 
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select
+                    className="form-control"
+                    name="ptoTypeId"
+                    required
+                    id="ptoTypeDropdown"
+                    value={formValues.ptoTypeId}
+                    onChange={(e: any)=>{handleChange(e);
+                      validateSingleFormGroup(document.getElementById('PtoType'),'select');
+                    }}
+                  >
+                    <option value="0">Select</option>
+                    {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
+                  </select>
+                  <div className="error"></div>
+                </div>
+              </div>
               <div className="col-md-6 form-group" id="UpdatePTOStartDate">
                 <label className="form-label" htmlFor="ptoStartDate" style={{ zIndex: "9" }}>
                  PTO Start Date
@@ -1203,7 +1226,7 @@ const UpdateModal = (props: any) => {
                 </div>
               </div> */}
               
-              <div className="col-md-6 form-group" onMouseOut={hideAlert} onMouseEnter={showAlert}>
+              {/* <div className="col-md-6 form-group" onMouseOut={hideAlert} onMouseEnter={showAlert}>
                 <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
                   <input type="checkbox" onChange={handleEndChange} onMouseOut={hideAlert} onMouseEnter={showAlert} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
                   <label className="form-label" style={{marginLeft:'5px'}} onMouseOut={hideAlert} onMouseEnter={showAlert}>Half Day</label>
@@ -1225,7 +1248,7 @@ const UpdateModal = (props: any) => {
                         </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-6 form-group" id="UpdatePTOEndDate">
                 <label className="form-label" htmlFor="ptoEndDate" style={{ zIndex: "9" }}>
                   PTO End Date
@@ -1299,28 +1322,6 @@ const UpdateModal = (props: any) => {
                   >
                     <option value="0">Select</option>
                     {years.map((year: any) => (<option key={year} value={year}>{year}</option>))}
-                  </select>
-                  <div className="error"></div>
-                </div>
-              </div>
-              <div className="col-md-6 form-group" id="PtoType">
-                <label className="form-label" htmlFor="ptoType">
-                  PTO Type 
-                </label>
-                <span className="requiredField">*</span>
-                <div className="dropdown">
-                  <select
-                    className="form-control"
-                    name="ptoTypeId"
-                    required
-                    id="ptoTypeDropdown"
-                    value={formValues.ptoTypeId}
-                    onChange={(e: any)=>{handleChange(e);
-                      validateSingleFormGroup(document.getElementById('PtoType'),'select');
-                    }}
-                  >
-                    <option value="0">Select</option>
-                    {ptoTypes.map((ptoType: any) => (<option key={ptoType.id} value={ptoType.id.toString()}>{ptoType.ptoType}</option>))}
                   </select>
                   <div className="error"></div>
                 </div>
