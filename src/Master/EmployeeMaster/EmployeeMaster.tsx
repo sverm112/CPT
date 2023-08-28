@@ -90,7 +90,7 @@ const columns = [
   },
   {
     name: "Status",
-    selector: (row: { isActive: any }) => row.isActive =="false"?"Active":"InActive",
+    selector: (row: { isActive: any }) => row.isActive,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -580,8 +580,10 @@ const AddModal = (props: any) => {
 function manageCheckBox(e: any){
   if(e.target.value==="OGA" || e.target.value==="GTM" || e.target.value==="FTE"){
     setDisableCheckBox(false);
+    handleChange(e);
   }else{
     setDisableCheckBox(true);
+    handleChange(e);
   }
 }
   return (

@@ -18,6 +18,7 @@ import { employeeActions } from "../../Store/Slices/Employee";
 import { DELETE_PTO, GET_ALL_PTOS, GET_ALL_PTO_TYPES, GET_ALL_RESOURCES, POST_PTO, UPDATE_PTO } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
+import { start } from "repl";
 
 const columns = [
   {
@@ -396,6 +397,10 @@ const AddModal = (props: any) => {
   const [numberOfPTODays, setNumberOfPTODays] = useState(0);
   const [month, setMonth]=useState(0);
   const [year, setYear] = useState(0);
+  const [startDateHalfDayCheckbox, setStartDateHalfDayCheckbox] = useState(true);
+  const [endDateHalfDayCheckbox, setEndDateHalfDayCheckbox] = useState(true);
+  const [isStartHalfDay, setIsStartHalfDay] = useState(false);
+  const [isEndHalfDay, setIsEndHalfDay] = useState(false);
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
   const resetFormFields = () => {
     const errorContainer = document.getElementsByClassName('error');
@@ -409,6 +414,9 @@ const AddModal = (props: any) => {
     setMonth(0);
     setRemarks("");
     setNumberOfPTODays(0);
+    setIsEndHalfDay(false);
+    setEndDateHalfDayCheckbox(true);
+    setYear(0);
   }
   const calculateNumberOfDays = (startDate: Date, endDate: Date) => {
     let count = 0;
@@ -425,8 +433,8 @@ const AddModal = (props: any) => {
 useEffect(()=>{
     if(startDate!=null && endDate!=null){
       numberOfDays=calculateNumberOfDays(startDate,endDate);
-    setMonth(startDate.getMonth()+1);
-    setYear(startDate.getFullYear());
+      setMonth(startDate.getMonth()+1);
+      setYear(startDate.getFullYear());
     }
     if(startDate!=null){
         setMonth(startDate.getMonth()+1);
@@ -439,8 +447,56 @@ useEffect(()=>{
         errorContainer[i].textContent='';
       }
     }
-
+    if(isEndHalfDay && isStartHalfDay){
+      setNumberOfPTODays(numberOfDays-1);
+    }
+    else if(isEndHalfDay){
+      setNumberOfPTODays(numberOfDays-0.5);
+    }
+    else if(isStartHalfDay){
+      setNumberOfPTODays(numberOfDays-0.5);
+    }else{
+      setNumberOfPTODays(numberOfDays);
+    }
+    if(endDate!=null && startDate!=null){
+      let sDate = startDate.getDate();
+      let eDate = endDate.getDate();
+      if(eDate === sDate){
+        setEndDateHalfDayCheckbox(false);
+        setIsEndHalfDay(false);
+      }else{
+        setEndDateHalfDayCheckbox(true);
+        setIsEndHalfDay(false);
+    }
+    }
 }, [startDate,endDate])
+
+const handleStartDateChange = (e: any) =>{
+  if(endDate!=null && startDate!=null){
+    let eDate = endDate.getDate();
+    let sDate = e.getDate();
+    if(eDate === sDate){
+      setEndDateHalfDayCheckbox(false);
+      setIsEndHalfDay(false);
+    }else{
+      setEndDateHalfDayCheckbox(true);
+      setIsEndHalfDay(false);
+  }
+  }
+}
+const handleEndDateChange = (e: any) =>{
+  if(endDate!=null && startDate!=null){
+    let sDate = startDate.getDate();
+    let eDate = e.getDate();
+  if(eDate === sDate){
+    setEndDateHalfDayCheckbox(false);
+    setIsEndHalfDay(false);
+  }else{
+    setEndDateHalfDayCheckbox(true);
+    setIsEndHalfDay(false);
+}
+}
+}
 
   const setPTODays=(e: any)=>{
     if(e.target.value !== numberOfDays){
@@ -457,6 +513,47 @@ useEffect(()=>{
     console.log(selectedResourceDetails, event.target.value)
     setResourceId(event.target.value);
   };
+  const handleHalfDayPTO = () =>{
+    setNumberOfPTODays(numberOfPTODays-0.5);
+  }
+  const handleFullDayPTO = () =>{
+    setNumberOfPTODays(numberOfPTODays+0.5);
+  }
+
+  function handleStartChange(event: any) {
+    let startHalfDay = document.getElementById('HalfStartDate') as HTMLInputElement;
+    if(startHalfDay?.checked == true){
+      setIsStartHalfDay(true);
+      handleHalfDayPTO();
+    }else{
+      setIsStartHalfDay(false);
+      handleFullDayPTO();
+    }
+  }
+ const showAlert = (e: any) =>{
+  let alertElement = document.getElementById("#HalfDayAlert");
+  alertElement?.classList.remove("alertHidden");
+  alertElement?.classList.add("alertVisible");
+  console.log("Handle Alert: ", alertElement);
+ }
+ const hideAlert = (e: any) =>{
+  let alertElement = document.getElementById("#HalfDayAlert");
+  alertElement?.classList.add("alertHidden");
+  alertElement?.classList.remove("alertVisible");
+  console.log("Handle Alert: ", alertElement);
+ }
+  
+  function handleEndChange(event: any) {
+    let endHalfDay = document.getElementById('HalfEndDate') as HTMLInputElement;
+    if(endHalfDay?.checked == true){
+      setIsEndHalfDay(true);
+      handleHalfDayPTO();
+    }else{
+      setIsEndHalfDay(false);
+      handleFullDayPTO();
+    }
+  }
+
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
     const startYear = startDate?.getFullYear();
@@ -603,6 +700,7 @@ useEffect(()=>{
                   disabled
                 />
               </div>
+              
               <div className="col-md-6 form-group" id="PTOTypeDropdown">
                 <label className="form-label" htmlFor="ptoType">
                   PTO Type 
@@ -626,7 +724,6 @@ useEffect(()=>{
                   <div className="error"></div>
                 </div>
               </div>
-
               <div className="col-md-6 form-group" id="PTOStartDate">
                 <label className="form-label" htmlFor="ptoStartDate" style={{ zIndex: "9" }}>
                  PTO Start Date
@@ -635,7 +732,7 @@ useEffect(()=>{
                 <DatePicker
                   className="form-control"
                   required
-                  onChange={setStartDate}
+                  onChange={(e:any)=>{setStartDate(e);handleStartDateChange(e)}}
                   maxDate={endDate !== null ? endDate : new Date('December 31, 2100')}
                   value={startDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOStartDate'),'datePicker')}
@@ -646,6 +743,36 @@ useEffect(()=>{
                 />
                 <div className="error"></div>
               </div>
+              {/* <div className="col-md-6 form-group">
+              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input type="checkbox" onChange={handleStartChange} id="HalfStartDate" disabled={startDateHalfDayCheckbox} name="StartHalfDate" checked={isStartHalfDay} value="startHalfDay"/>
+                  <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
+                </div>
+              </div> */}
+              
+              {/* <div className="col-md-6 form-group" onMouseOut={hideAlert} onMouseEnter={showAlert} >
+              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input  onMouseOut={hideAlert} onMouseEnter={showAlert} type="checkbox"  onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
+                  <label  onMouseOut={hideAlert} onMouseEnter={showAlert} className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
+                  <div id="#HalfDayAlert" className="alertHidden alertVisible ">
+                        <div className="warningText" style={{margin:'5px'}}>
+                          <div className="tip" style={{  
+                            position:'absolute',
+                            marginLeft:'-15px',
+                            marginTop:'20px',
+                            width: '0',
+                            height: '0',
+                            borderTop: '10px solid transparent',
+                            borderBottom: '10px solid transparent', 
+                            borderRight:'10px solid #fff',
+                            // boxShadow:'0 0 5px 5px rgba(0, 0, 0, 0.1)' 
+                            }}>
+                          </div><span style={{color:'red'}}>*</span>
+                          <i>Note: PTO Start Date and PTO End Date should be same.</i>
+                        </div>
+                  </div>
+                </div>
+              </div> */}
               <div className="col-md-6 form-group" id="PTOEndDate">
                 <label className="form-label" htmlFor="ptoEndDate" style={{ zIndex: "9" }}>
                   PTO End Date
@@ -654,7 +781,7 @@ useEffect(()=>{
                 <DatePicker
                   className="form-control"
                   required
-                  onChange={setEndDate}
+                  onChange= { (e:any) =>{setEndDate(e);handleEndDateChange(e)}}
                   minDate={startDate !== null ? startDate : new Date('December 31, 2000')}
                   value={endDate}
                   onCalendarClose = {()=>validateSingleFormGroup(document.getElementById('PTOEndDate'),'datePicker')}
@@ -665,6 +792,7 @@ useEffect(()=>{
                 />
                 <div className="error"></div>
               </div>
+
               {/* <div className="col-md-6 form-group" id="PtoMonth">
                 <label className="form-label" htmlFor="month">
                   Month 
@@ -760,7 +888,7 @@ useEffect(()=>{
                 />
               </div>
             </div>
-            <div className="row">
+            <div className="row" style={{marginBottom:'50px'}}>
               <div className="col-md-8">
                 
               </div>
@@ -794,6 +922,11 @@ const UpdateModal = (props: any) => {
   const [numberOfPTODays, setNumberOfPTODays] = useState(formValues.numberOfDays);
   const [month, setMonth]=useState(formValues.month);
   const [year, setYear] = useState(formValues.year);
+  const [startDateHalfDayCheckbox, setStartDateHalfDayCheckbox] = useState(true);
+  const [endDateHalfDayCheckbox, setEndDateHalfDayCheckbox] = useState(true);
+  const [isStartHalfDay, setIsStartHalfDay] = useState(false);
+  const [isEndHalfDay, setIsEndHalfDay] = useState(false);
+  
   let numberOfDays=0,selectedResourceDetails={resourceId:0,resourceName:"",resourceManager:""};
   const calculateNumberOfDays = (startDate: any, endDate: any) => {
     let count = 0;
@@ -805,36 +938,54 @@ const UpdateModal = (props: any) => {
     }
     return count;
   }
+  useEffect(()=>{
+  let totalDaySpan = calculateNumberOfDays(startDate, endDate);
+    if(totalDaySpan>=2){
+      setIsEndHalfDay(false);
+      setEndDateHalfDayCheckbox(true);
+    }else{
+      if(numberOfPTODays === (totalDaySpan-0.5)){
+        setIsEndHalfDay(true);
+        setEndDateHalfDayCheckbox(false);
+      }
+    }
+    if(startDate!=null && endDate !=null){
+      let sDate = startDate.getDate();
+      let eDate = endDate.getDate();
+      if(sDate===eDate){
+        setEndDateHalfDayCheckbox(false);
+      }else{
+        setEndDateHalfDayCheckbox(true);
+      }
+    }
+  },[])
   const hadnleDaysCalculation = (startDate: any, endDate:any)=>{
     if(startDate!=null && endDate!=null){
       numberOfDays=calculateNumberOfDays(startDate,endDate);
+      let sDate = startDate.getDate();
+      let eDate = endDate.getDate();
+      if(sDate===eDate){
+        setEndDateHalfDayCheckbox(false);
+        setNumberOfPTODays(numberOfDays);
+      }else{
+        setIsEndHalfDay(false);
+        setEndDateHalfDayCheckbox(true);
+        setNumberOfPTODays(numberOfDays);
+      }
+    }else{
+      setNumberOfPTODays(0);
     }
-    setNumberOfPTODays(numberOfDays);
+    if(startDate!==null){
+      setMonth(startDate.getMonth()+1);
+      setYear(startDate.getFullYear());
+    }
     setStartDate(startDate);
     setEndDate(endDate);
-    setMonth(startDate.getMonth()+1);
-    setYear(startDate.getFullYear());
     const errorContainer = document.getElementsByClassName('NumberOfPTODays');
         for(let i=0; i < errorContainer.length; i++){
           errorContainer[i].textContent='';
         }
   }
-//   useEffect(()=>{
-//     console.log("Calling UseEffect: ",numberOfDays)
-//     if(numberOfDays!==0){
-//       // if(numberOfPTODays !== numberOfDays){
-//         setNumberOfPTODays(numberOfDays);
-//         const errorContainer = document.getElementsByClassName('NumberOfPTODays');
-//         for(let i=0; i < errorContainer.length; i++){
-//           errorContainer[i].textContent='';
-//         }
-//       // }
-//     }
-// }, [startDate,endDate])
-
-  // const setPTOs=()=>{
-
-  // }
   if(formValues.resourceId!="0"){
     const filteredResource = resourceList.filter((resource: any) => resource.resourceId == Number(formValues.resourceId));
     selectedResourceDetails.resourceId = filteredResource[0].resourceId
@@ -933,6 +1084,48 @@ const UpdateModal = (props: any) => {
     });
   };
 
+  
+  const handleHalfDayPTO = () =>{
+    setNumberOfPTODays(numberOfPTODays-0.5);
+  }
+  const handleFullDayPTO = () =>{
+    setNumberOfPTODays(numberOfPTODays+0.5);
+  }
+  function handleStartChange(event: any) {
+    let startHalfDay = document.getElementById('HalfStartDate') as HTMLInputElement;
+    if(startHalfDay?.checked == true){
+      setIsStartHalfDay(true);
+      handleHalfDayPTO();
+    }else{
+      setIsStartHalfDay(false);
+      handleFullDayPTO();
+    }
+  }
+  
+  function handleEndChange(event: any) {
+    let endHalfDay = document.getElementById('HalfEndDate') as HTMLInputElement;
+    if(endHalfDay?.checked == true){
+      setIsEndHalfDay(true);
+      handleHalfDayPTO();
+    }else{
+      setIsEndHalfDay(false);
+      handleFullDayPTO();
+    }
+  }
+
+  const showAlert = (e: any) =>{
+    let alertElement = document.getElementById("#HalfDayAlert");
+    alertElement?.classList.remove("alertHidden");
+    alertElement?.classList.add("alertVisible");
+    console.log("Handle Alert: ", alertElement);
+   }
+   const hideAlert = (e: any) =>{
+    let alertElement = document.getElementById("#HalfDayAlert");
+    alertElement?.classList.add("alertHidden");
+    alertElement?.classList.remove("alertVisible");
+    console.log("Handle Alert: ", alertElement);
+   }
+
   return (
     <>
       <Button
@@ -983,6 +1176,7 @@ const UpdateModal = (props: any) => {
                   disabled
                 />
               </div>
+
               <div className="col-md-6 form-group" id="PtoType">
                 <label className="form-label" htmlFor="ptoType">
                   PTO Type 
@@ -1005,7 +1199,6 @@ const UpdateModal = (props: any) => {
                   <div className="error"></div>
                 </div>
               </div>
-
               <div className="col-md-6 form-group" id="UpdatePTOStartDate">
                 <label className="form-label" htmlFor="ptoStartDate" style={{ zIndex: "9" }}>
                  PTO Start Date
@@ -1026,6 +1219,36 @@ const UpdateModal = (props: any) => {
                 />
                 <div className="error"></div>
               </div>
+              {/* <div className="col-md-6 form-group">
+              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input type="checkbox" onChange={handleStartChange} id="HalfStartDate" disabled={startDateHalfDayCheckbox} name="StartHalfDate" checked={isStartHalfDay} value="startHalfDay"/>
+                  <label className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
+                </div>
+              </div> */}
+              
+              {/* <div className="col-md-6 form-group" onMouseOut={hideAlert} onMouseEnter={showAlert}>
+                <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input type="checkbox" onChange={handleEndChange} onMouseOut={hideAlert} onMouseEnter={showAlert} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
+                  <label className="form-label" style={{marginLeft:'5px'}} onMouseOut={hideAlert} onMouseEnter={showAlert}>Half Day</label>
+                  <div id="#HalfDayAlert" className="alertHidden alertVisible ">
+                        <div className="warningText" style={{margin:'5px'}}>
+                          <div className="tip" style={{  
+                            position:'absolute',
+                            marginLeft:'-15px',
+                            marginTop:'20px',
+                            width: '0',
+                            height: '0',
+                            borderTop: '10px solid transparent',
+                            borderBottom: '10px solid transparent', 
+                            borderRight:'10px solid #fff',
+                            // boxShadow:'0 0 5px 5px rgba(0, 0, 0, 0.1)' 
+                            }}>
+                          </div><span style={{color:'red'}}>*</span>
+                          <i>Note: PTO Start Date and PTO End Date should be same.</i>
+                        </div>
+                  </div>
+                </div>
+              </div> */}
               <div className="col-md-6 form-group" id="UpdatePTOEndDate">
                 <label className="form-label" htmlFor="ptoEndDate" style={{ zIndex: "9" }}>
                   PTO End Date

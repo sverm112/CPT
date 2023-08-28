@@ -1,7 +1,20 @@
 export * as APP_ROUTES from "./routes";
-export const Base_URL = 
-//  'https://localhost:44314/';
-'http://10.147.172.18:9190/';
+//Non Prod
+
+// export const Base_URL = 'http://10.147.172.18:9192/';
+// export const DASHBOARD_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Dashboard_Dev?rs:embed=true" 
+// export const ALLOCATION_BY_MARKET_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Allocation%20By%20Market_Dev?rs:embed=true"
+// export const ALLOCATION_BY_PROJECT_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Allocation%20By%20Project_Dev?rs:embed=true"
+// export const ALLOCATION_BY_RESOURCE_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Allocation%20By%20Resource_Dev?rs:embed=true"
+// export const HOLIDAY_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Holiday%20list_Dev?rs:embed=true"
+
+//Production
+export const Base_URL = 'http://10.147.172.18:9190/';
+export const DASHBOARD_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Dashboard?rs:embed=true" 
+export const ALLOCATION_BY_MARKET_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Allocation%20By%20Market?rs:embed=true"
+export const ALLOCATION_BY_PROJECT_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Allocation%20By%20Project?rs:embed=true"
+export const ALLOCATION_BY_RESOURCE_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Allocation%20By%20Resource?rs:embed=true"
+export const HOLIDAY_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Holiday%20list?rs:embed=true"
 
 // Get
 export const GET_ALL_RESOURCES = `${Base_URL}api/v1/Resources/GetAllResources`;
@@ -23,6 +36,7 @@ export const POST_RESOURCE = `${Base_URL}api/v1/Resources/PostResources`;
 export const POST_HOLIDAY = `${Base_URL}api/v1/HolidaysList/PostHoliday`;
 export const POST_MARKET = `${Base_URL}api/v1/Markets/PostMarket`;
 export const POST_PROJECT = `${Base_URL}api/v1/Projects/PostProject`;
+export const POST_BULK_UPLOAD_PROJECTS = `${Base_URL}api/v1/Projects/BulkUploadProjects`;
 export const POST_PTO = `${Base_URL}api/v1/PTOs/PostPTO`;
 export const POST_PROJECT_ALLOCATION = `${Base_URL}api/v1/ProjectAllocations/PostProjectAllocation`;
 // export const POST_PTO = `${Base_URL}api/v1/PTOs/PostPTO`;
