@@ -47,6 +47,18 @@ const LoginPage = () => {
             sessionStorage.setItem("username","Ashish Khare");
             sessionStorage.setItem("userType","Admin")
             navigate(APP_ROUTES.DASHBOARD)
+        }else if(username=="vsuri" && password=="Vipul@123")
+        {
+            dispatch(userActions.setUser({username:"Vipul Suri",userType:"Admin"}))
+            sessionStorage.setItem("username","Vipul Suri");
+            sessionStorage.setItem("userType","Admin")
+            navigate(APP_ROUTES.DASHBOARD)
+        }else if(username=="pratti" && password=="Puneet@123")
+        {
+            dispatch(userActions.setUser({username:"Puneet Ratti",userType:"Admin"}))
+            sessionStorage.setItem("username","Puneet Ratti");
+            sessionStorage.setItem("userType","Admin")
+            navigate(APP_ROUTES.DASHBOARD)
         }
         else
         toast.info("Invalid Username or Password");
