@@ -1,6 +1,6 @@
 
 div#project_allocation_modal {
-    height: 910px !important;
+    height: 935px !important;
 }
 
 .bg-mainclass{
@@ -31,4 +31,12 @@ div#project_allocation_modal {
 
 input.react-date-picker__inputGroup__input{
   background: rgba(255, 255, 255, 0) !important;
+}
+
+.inactiveDateFields{
+  display: none !important;
+}
+
+.activeDateFileds{
+  display: visible;
 }

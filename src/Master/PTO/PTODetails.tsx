@@ -533,13 +533,13 @@ const handleEndDateChange = (e: any) =>{
  const showAlert = (e: any) =>{
   let alertElement = document.getElementById("#HalfDayAlert");
   alertElement?.classList.remove("alertHidden");
-  alertElement?.classList.add("alertVisible");
+  alertElement?.classList.add("paAlertVisible");
   console.log("Handle Alert: ", alertElement);
  }
  const hideAlert = (e: any) =>{
   let alertElement = document.getElementById("#HalfDayAlert");
   alertElement?.classList.add("alertHidden");
-  alertElement?.classList.remove("alertVisible");
+  alertElement?.classList.remove("paAlertVisible");
   console.log("Handle Alert: ", alertElement);
  }
   
@@ -730,7 +730,7 @@ const handleEndDateChange = (e: any) =>{
               <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
                   <input  onMouseOut={hideAlert} onMouseEnter={showAlert} type="checkbox"  onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
                   <label  onMouseOut={hideAlert} onMouseEnter={showAlert} className="form-label" style={{marginLeft:'5px'}}>Half Day</label>
-                  <div id="#HalfDayAlert" className="alertHidden alertVisible ">
+                  <div id="#HalfDayAlert" className="alertHidden paAlertVisible ">
                         <div className="warningText" style={{margin:'5px'}}>
                           <div className="tip" style={{  
                             position:'absolute',
@@ -1115,13 +1115,13 @@ const UpdateModal = (props: any) => {
   const showAlert = (e: any) =>{
     let alertElement = document.getElementById("#HalfDayAlert");
     alertElement?.classList.remove("alertHidden");
-    alertElement?.classList.add("alertVisible");
+    alertElement?.classList.add("paAlertVisible");
     console.log("Handle Alert: ", alertElement);
    }
    const hideAlert = (e: any) =>{
     let alertElement = document.getElementById("#HalfDayAlert");
     alertElement?.classList.add("alertHidden");
-    alertElement?.classList.remove("alertVisible");
+    alertElement?.classList.remove("paAlertVisible");
     console.log("Handle Alert: ", alertElement);
    }
 
@@ -1207,7 +1207,7 @@ const UpdateModal = (props: any) => {
                 <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
                   <input type="checkbox" onChange={handleEndChange} onMouseOut={hideAlert} onMouseEnter={showAlert} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
                   <label className="form-label" style={{marginLeft:'5px'}} onMouseOut={hideAlert} onMouseEnter={showAlert}>Half Day</label>
-                  <div id="#HalfDayAlert" className="alertHidden alertVisible ">
+                  <div id="#HalfDayAlert" className="alertHidden paAlertVisible ">
                         <div className="warningText" style={{margin:'5px'}}>
                           <div className="tip" style={{  
                             position:'absolute',

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import nouserimage from "../asset/images/noimage-User.jpg";
 import "./SideBar.css";
 import "../style.css";
 import Collapsible from 'react-collapsible';
 import { Link, useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "../constants";
+import { APP_ROUTES, DASHBOARD_REPORT } from "../constants";
 import "./SideBarJs";
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from '../Store/Slices/User';
@@ -38,6 +38,14 @@ const SideBar = () => {
         dispatch(userActions.setUser({username:"",userType:""}))
         navigate(APP_ROUTES.LOGINPAGE)
     }
+    useEffect(()=>{
+        if(username ===""){
+            if(window.location.href !== "http://localhost:3002/#/"){
+                window.alert("Session expired, Login Required")
+            }
+            navigate(APP_ROUTES.LOGINPAGE)
+        }
+    });
     return (
         <div id="body-pd">
             <header className="header" id="header" style={{ position: "fixed", top: "0px", height: "70px", zIndex: 9}}>
@@ -110,10 +118,11 @@ const SideBar = () => {
                 <nav className="nav">
                     <div>
                         <div className="nav_list">
-                            <Link  to="/Dashboard"  className="nav_link" id="Home" onClick={() => { navigate(APP_ROUTES.DASHBOARD) }}>
+                            <Link  to="/Dashboard"  className="nav_link" id="Home" onClick={() => { window.open(`${DASHBOARD_REPORT}`, '_blank');navigate(APP_ROUTES.DASHBOARD, {state:'loggedIn'}) }}>
                                 <i className="fa fa-home" aria-hidden="true"></i>
                                 <span className="nav_name">Dashboard</span>
                             </Link>
+
                            {userType=="Admin" &&  <a className="nav_link" id="MasterEntry" onClick={() => func2("MasterEntry")}>
                                 <span className="nav_name">
                                     <div className="row">
@@ -137,10 +146,12 @@ const SideBar = () => {
                                     </div>
                                 </span>
                             </a>}
+
                             {userType=="Admin" && <Link to="/ProjectAllocation" className="nav_link" id="ProjectAllocation" onClick={() => { navigate(APP_ROUTES.PROJECTALLOCATION) }}>
                                 <i className="las la-user-circle" aria-hidden="true"></i>
                                 <span className="nav_name">Project Allocation</span>
                             </Link>}
+
                             <a className="nav_link" id="ReportsList">
                                 <span className="nav_name">
                                     
@@ -164,6 +175,7 @@ const SideBar = () => {
                                     </div>
                                 </span>
                             </a>
+
                             {/* <a href="" className="nav_link" onClick={() => { navigate(APP_ROUTES.ABOUTUS) }}>
                                 <i className="las la-info-circle" aria-hidden="true"></i>
                                 <span className="nav_name">About Us</span>

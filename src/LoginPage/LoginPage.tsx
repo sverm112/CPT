@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import MainPage from "../MainPage/MainPage";
 import "./LoginPage.css";
 import { useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "../constants";
+import { APP_ROUTES, GET_A_USER } from "../constants";
 import ToastNotification from "../Toasts/Toast";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -20,52 +20,96 @@ const LoginPage = () => {
 
     const onLoginButtonSubmitHandler=(event : any)=>{
         event.preventDefault();
-        if(username=="tuser" && password=="TestUser@123")
-        {
-        dispatch(userActions.setUser({username:"Test User",userType:"User"}));
-        sessionStorage.setItem("username","Test User");
-        sessionStorage.setItem("userType","User")
-        navigate(APP_ROUTES.DASHBOARD)
-        }
-        else if(username=="tadmin" && password=="TestAdmin@123")
-        {
-            dispatch(userActions.setUser({username:"Test Admin",userType:"Admin"}))
-            sessionStorage.setItem("username","Test Admin");
-            sessionStorage.setItem("userType","Admin")
-            navigate(APP_ROUTES.DASHBOARD)
-        }
-        else if(username=="leslie" && password=="Leslie@123")
-        {
-            dispatch(userActions.setUser({username:"Leslie Kiheri",userType:"Admin"}))
-            sessionStorage.setItem("username","Leslie Kiheri");
-            sessionStorage.setItem("userType","Admin")
-            navigate(APP_ROUTES.DASHBOARD)
-        }
-        else if(username=="ashish" && password=="Ashish@123")
-        {
-            dispatch(userActions.setUser({username:"Ashish Khare",userType:"Admin"}))
-            sessionStorage.setItem("username","Ashish Khare");
-            sessionStorage.setItem("userType","Admin")
-            navigate(APP_ROUTES.DASHBOARD)
-        }else if(username=="vsuri" && password=="Vipul@123")
-        {
-            dispatch(userActions.setUser({username:"Vipul Suri",userType:"Admin"}))
-            sessionStorage.setItem("username","Vipul Suri");
-            sessionStorage.setItem("userType","Admin")
-            navigate(APP_ROUTES.DASHBOARD)
-        }else if(username=="pratti" && password=="Puneet@123")
-        {
-            dispatch(userActions.setUser({username:"Puneet Ratti",userType:"Admin"}))
-            sessionStorage.setItem("username","Puneet Ratti");
-            sessionStorage.setItem("userType","Admin")
-            navigate(APP_ROUTES.DASHBOARD)
-        }
-        else
-        toast.info("Invalid Username or Password");
+        const loginUser = async () => {
+            let payload = {
+                username : username
+              };
+            try {
+              const response = await fetch(`${GET_A_USER}?username=${username}`,
+              {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+              });
+              let dataGet = await response.json();
+              dataGet = dataGet.map((row: any) => ({ ...row}));
+              if(username== dataGet[0].username && password== dataGet[0].userPassword)
+                {
+                let userType = dataGet[0].userType;
+                dispatch(userActions.setUser({username: dataGet[0].userFullName,userType: userType}));
+                sessionStorage.setItem("username",dataGet[0].userFullName);
+                sessionStorage.setItem("userType", userType)
+                navigate(APP_ROUTES.DASHBOARD)
+                }else{
+                    toast.info("Invalid Username or Password");
+                    setUsername("");
+                    setPassword("");
+                }
+            }
+            catch {
+              console.log("Error occured");
+            }
+          };
+          loginUser();
+        // if(username=="tuser" && password=="TestUser@123")
+        // {
+        // dispatch(userActions.setUser({username:"Test User",userType:"User"}));
+        // sessionStorage.setItem("username","Test User");
+        // sessionStorage.setItem("userType","User")
+        // navigate(APP_ROUTES.DASHBOARD)
+        // }
+        // else if(username=="tadmin" && password=="TestAdmin@123")
+        // {
+        //     dispatch(userActions.setUser({username:"Test Admin",userType:"Admin"}))
+        //     sessionStorage.setItem("username","Test Admin");
+        //     sessionStorage.setItem("userType","Admin")
+        //     navigate(APP_ROUTES.DASHBOARD)
+        // }
+        // else if(username=="leslie" && password=="Leslie@123")
+        // {
+        //     dispatch(userActions.setUser({username:"Leslie Kiheri",userType:"Admin"}))
+        //     sessionStorage.setItem("username","Leslie Kiheri");
+        //     sessionStorage.setItem("userType","Admin")
+        //     navigate(APP_ROUTES.DASHBOARD)
+        // }
+        // else if(username=="ashish" && password=="Ashish@123")
+        // {
+        //     dispatch(userActions.setUser({username:"Ashish Khare",userType:"Admin"}))
+        //     sessionStorage.setItem("username","Ashish Khare");
+        //     sessionStorage.setItem("userType","Admin")
+        //     navigate(APP_ROUTES.DASHBOARD)
+        // }else if(username=="vsuri" && password=="Vipul@123")
+        // {
+        //     dispatch(userActions.setUser({username:"Vipul Suri",userType:"Admin"}))
+        //     sessionStorage.setItem("username","Vipul Suri");
+        //     sessionStorage.setItem("userType","Admin")
+        //     navigate(APP_ROUTES.DASHBOARD)
+        // }
+
+        // username
+        // password
+        // userType
+        // full name
+        // else if(username=="pratti" && password=="Puneet@123")
+        // {
+        //     dispatch(userActions.setUser({username:"Puneet Ratti",userType:"Admin"}))
+        //     sessionStorage.setItem("username","Puneet Ratti");
+        //     sessionStorage.setItem("userType","Admin")
+        //     navigate(APP_ROUTES.DASHBOARD)
+        // }else if(username=="ryadav" && password=="Rohit@123")
+        // {
+        //     dispatch(userActions.setUser({username:"Rohit Yadav",userType:"Admin"}))
+        //     sessionStorage.setItem("username","Rohit Yadav");
+        //     sessionStorage.setItem("userType","Admin")
+        //     navigate(APP_ROUTES.DASHBOARD)
+        // }
+        // else
+        // toast.info("Invalid Username or Password");
 
 
-        setUsername("");
-        setPassword("");
+        // setUsername("");
+        // setPassword("");
     }
     function handleForgotPassword(){
 
