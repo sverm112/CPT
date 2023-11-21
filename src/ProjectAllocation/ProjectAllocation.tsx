@@ -1592,8 +1592,15 @@ const AddModal = (props: any) => {
   };
   const setProjectDetails = (event: any) => {
     setProjectId(event.target.value);
-    // setMonth((x.getMonth())+1);
-    // setYear((new Date().getFullYear()));
+    let x = new Date();
+    setMonth((x.getMonth())+1);
+    setYear((new Date().getFullYear()));
+    let startDate = new Date(new Date().getFullYear()+1, month-2, 1)
+    // console.log("Start date: ", startDate);
+    setAllocationStartDate(startDate);
+    let endDate = new Date(new Date().getFullYear()+1, month-1, 0)
+    // console.log("Last date: ", endDate);
+    setAllocationEndDate(endDate);
   };
 
   if (resourceId == "0") {
@@ -1634,7 +1641,7 @@ const AddModal = (props: any) => {
     //console.log("Allocation Percentage during calculation: ", allocationP);
   }
 
-  const resetFormFields = () => {
+  const allocationResetFormFields = () => {
     let x = resourceId;
     const errorContainer = document.getElementsByClassName('error');
     for(let i=0; i < errorContainer.length; i++){
@@ -1650,8 +1657,42 @@ const AddModal = (props: any) => {
     setResourceId(resourceId);
     // console.log("Resource Id after reset: ", resourceId)
     setProjectId("0");
+    setIsEndHalfDay(false);
     setHolidays("");
     setAllocationHrs("");
+    let startDateElement = document.getElementById("AllocationStartField");
+    let endDateElement = document.getElementById("AllocationEndField");
+    endDateElement?.classList.remove("activeDateFields");
+    startDateElement?.classList.remove("activeDateFields");
+    endDateElement?.classList.add("inactiveDateFields");
+    startDateElement?.classList.add("inactiveDateFields");
+  }
+
+  const resetFormFields = () => {
+    let x = resourceId;
+    const errorContainer = document.getElementsByClassName('error');
+    for(let i=0; i < errorContainer.length; i++){
+      errorContainer[i].textContent='';
+    }
+    setAllocationStartDate(null);
+    setAllocationEndDate(null);
+    setYear(0);
+    setMonth(0);
+    setPtoDays("");
+    setAllocationPercentage("");
+    // setResourceType1("0");
+    setResourceId('0');
+    // console.log("Resource Id after reset: ", resourceId)
+    setProjectId("0");
+    setIsEndHalfDay(false);
+    setHolidays("");
+    setAllocationHrs("");
+    let startDateElement = document.getElementById("AllocationStartField");
+    let endDateElement = document.getElementById("AllocationEndField");
+    endDateElement?.classList.remove("activeDateFields");
+    startDateElement?.classList.remove("activeDateFields");
+    endDateElement?.classList.add("inactiveDateFields");
+    startDateElement?.classList.add("inactiveDateFields");
   }
   const allPercentToHours = (event: any) =>{
     setAllocationPercentage(event.target.value);
@@ -1747,11 +1788,8 @@ const AddModal = (props: any) => {
         const dataResponse = await response.json();
         if (dataResponse.length) {
           if (dataResponse[0].statusCode == "201") {
-            //console.log(dataResponse[0].statusReason);
-            //console.log(dataResponse[0].recordsCreated);
-  
             dispatch(projectAllocationActions.changeToggle());
-            resetFormFields();
+            allocationResetFormFields();
             // props.closeModal();
             toast.success("Project Allocated Successfully")
           } else toast.error(dataResponse[0].errorMessage);
@@ -1762,7 +1800,6 @@ const AddModal = (props: any) => {
     }
 
   };
-//console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
 
   const getPTODays = async()=>{
     //console.log("Get PTO Days called: "+ resourceId+ allocationStartDate + allocationEndDate);
@@ -1800,7 +1837,7 @@ const AddModal = (props: any) => {
       // }
     }
   }
-  function handleEndChange(event: any) {
+  function handleEndChange() {
     let endHalfDay = document.getElementById('HalfEndDate') as HTMLInputElement;
     let startDateElement = document.getElementById("AllocationStartField");
     let endDateElement = document.getElementById("AllocationEndField");
@@ -1815,7 +1852,9 @@ const AddModal = (props: any) => {
     }else{
       setIsEndHalfDay(false);
       setDateRange(true);
-      endDateElement?.classList.remove("activeDateFields");
+    let startDateElement = document.getElementById("AllocationStartField");
+    let endDateElement = document.getElementById("AllocationEndField");
+    endDateElement?.classList.remove("activeDateFields");
       startDateElement?.classList.remove("activeDateFields");
       endDateElement?.classList.add("inactiveDateFields");
       startDateElement?.classList.add("inactiveDateFields");
@@ -1840,11 +1879,6 @@ const AddModal = (props: any) => {
       errorContainer[0].textContent='';
     }
   }
-  // useEffect(()=>{
-  //   if(allocationStartDate !== null && allocationEndDate !== null){
-  //     calculateAllocationDays(allocationStartDate, allocationEndDate);
-  //   }
-  // },[projectId])
   const setAllocationRangeForMonth = (e: any)=>{
     let startDate = new Date(year? year: 0, e.target.value-1, 1)
     // console.log("Start date: ", startDate);
