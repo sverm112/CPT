@@ -23,6 +23,7 @@ import DataTable from "react-data-table-component";
 import customStyles from "../DataTable/customStyles";
 import { ptoActions } from "../Store/Slices/Pto";
 import { closeNav } from "../SideBar/SideBarJs";
+import moment from "moment";
 
 
 
@@ -1909,7 +1910,9 @@ const AddModal = (props: any) => {
       projectId: projectId == "0" ? 0 : Number(projectId),
       resourceType1: resourceType1 == "0" ? selectedResourceDetails.role : resourceType1,
       startDate: paStartDate,
+      // moment(allocationStartDate, 'YYYY-MM-DD').toDate(),
       enddDate: paEndDate,
+      // moment(allocationEndDate, 'YYYY-MM-DD').toDate(),
       numberOfPTODays: ptoDays == "" ? 0 : Number(ptoDays),
       numberOfHolidays: numberOfHolidays,
       allocationHours: Number(allocationHrs),
