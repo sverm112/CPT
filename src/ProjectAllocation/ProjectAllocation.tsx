@@ -803,7 +803,11 @@ const UpdateModal = (props: any) => {
   const username=useSelector((state:any)=>state.User.username);
   const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(new Date(props.initialValues.startDate));
   const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(new Date(props.initialValues.enddDate));
-  const [ptoDays, setPtoDays] = useState("0");  
+  const [month, setMonth]=useState(Number(allocationStartDate?.getMonth()) + 1);
+  const months=useSelector((state:any)=>state.Filters.months);
+  const [year, setYear] = useState(allocationStartDate?.getFullYear());
+  const years=useSelector((state:any)=>state.Filters.years);
+ const [ptoDays, setPtoDays] = useState("0");  
   const [holidays, setHolidays] = useState(0);
   const [allocationPercentage, setAllocationPercentage] = useState("0");
   const [resourceType1, setResourceType1] = useState("0");
@@ -813,7 +817,10 @@ const UpdateModal = (props: any) => {
   const holidayDetails = useSelector((state: any) => state.Holiday.data);
   const [allocationHrs, setAllocationHrs] = useState("0");
   let allocationHours = 0, allocationHoursPerDay = 0;
-  
+  const [endDateHalfDayCheckbox, setEndDateHalfDayCheckbox] = useState(false);
+  const [isEndHalfDay, setIsEndHalfDay] = useState(false);
+  const [dateRange, setDateRange] = useState(true);
+
   const calculateAllocationDays = (startDate: Date, endDate: Date) => {
     let count = 0;
     const curDate = new Date(startDate.getTime());
@@ -926,12 +933,6 @@ const UpdateModal = (props: any) => {
     selectedProjectDetails.PPSID = filteredProject[0].projectCode
   }
 
-  // if (selectedResourceDetails.resourceType == "OGA")
-  //   allocationHoursPerDay = 8.5;
-  // else if (selectedResourceDetails.resourceType == "FTE" || selectedResourceDetails.resourceType == "GTM")
-  //   allocationHoursPerDay = 8;
-  // else
-  //   allocationHoursPerDay = 0;
   allocationHoursPerDay = selectedResourceDetails.allocationPerDay;
 
     let allocationP =0;
@@ -1074,6 +1075,43 @@ const UpdateModal = (props: any) => {
     getProjectAllocationDetails();
     props.closeModal();
   }
+
+  const showAlert = (e: any) =>{
+    let alertElement = document.getElementById("#HalfDayAlert");
+    alertElement?.classList.remove("alertHidden");
+    alertElement?.classList.add("paAlertVisible");
+    console.log("Handle Alert: ", alertElement);
+   }
+   const hideAlert = (e: any) =>{
+    let alertElement = document.getElementById("#HalfDayAlert");
+    alertElement?.classList.add("alertHidden");
+    alertElement?.classList.remove("paAlertVisible");
+    console.log("Handle Alert: ", alertElement);
+   }
+   function handleEndChange() {
+    let endHalfDay = document.getElementById('HalfEndDate') as HTMLInputElement;
+    let startDateElement = document.getElementById("AllocationStartField");
+    let endDateElement = document.getElementById("AllocationEndField");
+    
+    if(endHalfDay?.checked == true){
+      setIsEndHalfDay(true);
+      setDateRange(false);
+      endDateElement?.classList.remove("inactiveDateFields");
+      startDateElement?.classList.remove("inactiveDateFields");
+      endDateElement?.classList.add("activeDateFields");
+      startDateElement?.classList.add("activeDateFields");
+    }else{
+      setIsEndHalfDay(false);
+      setDateRange(true);
+    let startDateElement = document.getElementById("AllocationStartField");
+    let endDateElement = document.getElementById("AllocationEndField");
+    endDateElement?.classList.remove("activeDateFields");
+      startDateElement?.classList.remove("activeDateFields");
+      endDateElement?.classList.add("inactiveDateFields");
+      startDateElement?.classList.add("inactiveDateFields");
+    }
+  }
+
   ////console.log((allocationEndDate.getTime()-allocationStartDate.getTime())/(1000 * 3600 * 24));
 useEffect(()=>{
   getPTODays();    
@@ -1126,6 +1164,26 @@ useEffect(()=>{
       [e.target.name]: e.target.value
     });
   };
+
+  const setAllocationRangeForMonth = (e: any)=>{
+    let startDate = new Date(year? year: 0, e.target.value-1, 1)
+    // console.log("Start date: ", startDate);
+    setAllocationStartDate(startDate);
+    let endDate = new Date(year? year: 0, e.target.value, 0)
+    // console.log("Last date: ", endDate);
+    setAllocationEndDate(endDate);
+    // calculateAllocationDays(startDate, endDate);
+  }
+
+  const setAllocationRangeForYear = (e: any)=>{
+    let startDate = new Date(e.target.value, month? month-1 : 0 , 1)
+    // console.log("Year Start date: ", startDate);
+    setAllocationStartDate(startDate);
+    let endDate = new Date(e.target.value, month? month : 0, 0)
+    // console.log("Year Last date: ", endDate);
+    setAllocationEndDate(endDate);
+    // calculateAllocationDays(startDate, endDate);
+  }
   return (
     <>
       <Button
@@ -1297,13 +1355,85 @@ useEffect(()=>{
                 </label>
                 <input type="text" name="ppsid" className="form-control" id="ppsid" value={selectedProjectDetails.PPSID} disabled />
               </div>
+
+              <div className="col-md-6 form-group" id="PtoMonth">
+                <label className="form-label" htmlFor="month">
+                  Month 
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select
+                    required
+                    className="form-control"
+                    name="month"
+                    id="monthDropdown"
+                    onChange={(e: any)=>{setMonth(e.target.value);
+                      setAllocationRangeForMonth(e);
+                      validateSingleFormGroup(document.getElementById('PtoMonth'),'select')}}
+                    value={month? month: 0}
+                  >
+                    <option value="0">Select</option>
+                    {months.map((month: any) => (<option key={month.id} value={month.id}>{month.name}</option>))}
+                  </select>
+                  <div className="error"></div>
+                </div>
+              </div>
+              
               <div className="col-md-6 form-group">
                 <label className="form-label" htmlFor="capex">
                   Expense Type
                 </label>
                 <input type="text" name="expenseType" className="form-control" id="capex" value={selectedProjectDetails.expenseType} disabled />
               </div>
-              <div className="col-md-6 form-group" id="AllocationStartField">
+
+              <div className="col-md-6 form-group" id="PtoYear">
+                <label className="form-label" htmlFor="year">
+                  Year 
+                </label>
+                <span className="requiredField">*</span>
+                <div className="dropdown">
+                  <select
+                    required
+                    className="form-control"
+                    name="year"
+                    id="yearDropdown"
+                    onChange={(e: any)=>{setYear(e.target.value);
+                      setAllocationRangeForYear(e);
+                      validateSingleFormGroup(document.getElementById('PtoYear'),'select')}}
+                    value={year?year: 0}
+                  >
+                    <option value="0">Select</option>
+                    {years.map((year: any) => (<option key={year} value={year}>{year}</option>))}
+                  </select>
+                  <div className="error"></div>
+                </div>
+              </div>
+              
+              <div className="col-md-6 form-group" onMouseOut={hideAlert} onMouseEnter={showAlert} >
+              <div className="" style={{alignItems:'center', marginTop:'12.5%'}}>
+                  <input  onMouseOut={hideAlert} onMouseEnter={showAlert} type="checkbox"  onChange={handleEndChange} id="HalfEndDate" disabled={endDateHalfDayCheckbox} name="EndHalfDay" checked={isEndHalfDay} value="endHalfDay"/>
+                  <label  onMouseOut={hideAlert} onMouseEnter={showAlert} className="form-label" style={{marginLeft:'5px'}}>Date Range</label>
+                  {/* <div id="#HalfDayAlert" className="alertHidden paAlertVisible ">
+                        <div className="warningText" style={{margin:'5px 5px 5px 15px' }}>
+                          <div className="tip" style={{  
+                            position:'absolute',
+                            marginLeft:'-23px',
+                            marginTop:'20px',
+                            width: '0',
+                            height: '0',
+                            borderTop: '10px solid transparent',
+                            borderBottom: '10px solid transparent', 
+                            borderRight:'10px solid #fff',
+                            // boxShadow:'0 0 5px 5px rgba(0, 0, 0, 0.1)' 
+                            }}>
+                          </div><span style={{color:'red'}}>*</span>
+                          <i>Note: PTO Start Date and PTO End Date should be same.</i>
+                        </div>
+                  </div> */}
+                </div>
+              </div>
+
+              <div className="col-md-6 form-group inactiveDateFields" id="AllocationStartField">
                 <label className="form-label" htmlFor="allocationStartDate" style={{ zIndex: "9" }}>
                   Allocation Start Date
                 </label>
@@ -1317,7 +1447,11 @@ useEffect(()=>{
                     
                   }}
                   // maxDate={formValues.enddDate !== null ? formValues.enddDate : new Date('December 31, 2100')}
-                  onChange={setAllocationStartDate}
+                  onChange={(e: any)=>{
+                    setAllocationStartDate(e);
+                    setYear(e.getFullYear());
+                    setMonth(e.getMonth()+1);
+                  }}
                   maxDate={allocationEndDate !== null ? allocationEndDate : new Date('December 31, 2100')}
                   value={allocationStartDate}
                   format="MM/dd/yyyy"
@@ -1327,7 +1461,7 @@ useEffect(()=>{
                 />
                 <div className="error"></div>
               </div>
-              <div className="col-md-6 form-group" id="AllocationEndField">
+              <div className="col-md-6 form-group inactiveDateFields" id="AllocationEndField">
                 <label className="form-label" htmlFor="allocationEndDate" style={{ zIndex: "9" }}>
                   Allocation End Date
                 </label>
@@ -1341,7 +1475,12 @@ useEffect(()=>{
                     
                   }}
                   minDate={allocationStartDate !== null ? allocationStartDate : new Date('December 31, 2000')}
-                  onChange={setAllocationEndDate}
+                  onChange={
+                    (e: any)=>{
+                      setAllocationEndDate(e);
+                      setYear(e.getFullYear());
+                      setMonth(e.getMonth()+1);
+                    }}
                   value={allocationEndDate}
                   format="MM/dd/yyyy"
                   dayPlaceholder="DD"
@@ -1716,6 +1855,7 @@ const AddModal = (props: any) => {
     alertElement?.classList.remove("paAlertVisible");
     console.log("Handle Alert: ", alertElement);
    }
+   
   const getAllocationPercentage = async () => {
     if(resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
       if(allocationEndDate >= allocationStartDate){
@@ -1881,20 +2021,16 @@ const AddModal = (props: any) => {
   }
   const setAllocationRangeForMonth = (e: any)=>{
     let startDate = new Date(year? year: 0, e.target.value-1, 1)
-    // console.log("Start date: ", startDate);
     setAllocationStartDate(startDate);
     let endDate = new Date(year? year: 0, e.target.value, 0)
-    // console.log("Last date: ", endDate);
     setAllocationEndDate(endDate);
     // calculateAllocationDays(startDate, endDate);
   }
 
   const setAllocationRangeForYear = (e: any)=>{
     let startDate = new Date(e.target.value, month? month-1 : 0 , 1)
-    // console.log("Year Start date: ", startDate);
     setAllocationStartDate(startDate);
     let endDate = new Date(e.target.value, month? month : 0, 0)
-    // console.log("Year Last date: ", endDate);
     setAllocationEndDate(endDate);
     // calculateAllocationDays(startDate, endDate);
   }
@@ -2148,7 +2284,11 @@ const AddModal = (props: any) => {
 
                   // }}
                   maxDate={allocationEndDate !== null ? allocationEndDate : new Date('December 31, 2100')}
-                  onChange={setAllocationStartDate}
+                  onChange={(e: any)=>{
+                    setAllocationStartDate(e);
+                    setYear(e.getFullYear());
+                    setMonth(e.getMonth()+1);
+                  }}
                   value={allocationStartDate}
                   format="MM/dd/yyyy"
                   dayPlaceholder="DD"
@@ -2171,7 +2311,11 @@ const AddModal = (props: any) => {
                     
                   // }}
                   minDate={allocationStartDate !== null ? allocationStartDate : new Date('December 31, 2000')}
-                  onChange={setAllocationEndDate}
+                  onChange={(e: any)=>{
+                      setAllocationEndDate(e);
+                      setYear(e.getFullYear());
+                      setMonth(e.getMonth()+1);
+                    }}
                   value={allocationEndDate}
                   format="MM/dd/yyyy"
                   dayPlaceholder="DD"
