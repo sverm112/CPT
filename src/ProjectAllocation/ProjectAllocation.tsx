@@ -982,7 +982,7 @@ const UpdateModal = (props: any) => {
       endDate: allocationEndDate
     };
         try {
-      const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?resourceID=${formValues.resourceId}&startDate=${allocationStartDate?.toISOString().slice(0, 10)}&endDate=${allocationEndDate?.toISOString().slice(0, 10)}`, {
+      const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?resourceID=${formValues.resourceId}&startDate=${allocationStartDate?.toLocaleDateString()}&endDate=${allocationEndDate?.toLocaleDateString()}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -1024,8 +1024,8 @@ const UpdateModal = (props: any) => {
       resourceId: formValues.resourceId == "0" ? 0 : Number(formValues.resourceId),
       projectId: formValues.projectId == "0" ? 0 : Number(formValues.projectId),
       resourceType1: formValues.resourceType1,
-      startDate: paStartDate,
-      enddDate: paEndDate,
+      startDate: paStartDate?.toLocaleDateString(),
+      enddDate: paEndDate?.toLocaleDateString(),
       numberOfPTODays: ptoDays =="" ? formValues.numberOfPTODays : ptoDays,
       numberOfHolidays : numberOfHolidays,
       allocationHours: allocationHrs == "0" ? formValues.allocationHours : Number(allocationHrs),
@@ -1600,7 +1600,7 @@ useEffect(()=>{
                 </div>
               </div>
             </div>
-            <div className="row" style={{marginTop:'5px'}}>
+            <div className="row" style={{marginTop:'-6px'}}>
               <div className="col-md-8">
                 
               </div>
@@ -1632,9 +1632,9 @@ const AddModal = (props: any) => {
   const [projectId, setProjectId] = useState("0");
   // projectId === "0" ? 0 : (x.getMonth())+1 || 
   const [month, setMonth]=useState(0);
-  const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(new Date(x.getUTCFullYear(), (x.getMonth())+1 , 1));
+  const [allocationStartDate, setAllocationStartDate] = useState<Date | null>(null);
   const username=useSelector((state:any)=>state.User.username);
-  const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(new Date(x.getUTCFullYear(), (x.getMonth())+1 , 0));
+  const [allocationEndDate, setAllocationEndDate] = useState<Date | null>(null);
   const months=useSelector((state:any)=>state.Filters.months);
   const years=useSelector((state:any)=>state.Filters.years);
   const [ptoDays, setPtoDays] = useState("");
@@ -1648,7 +1648,7 @@ const AddModal = (props: any) => {
   const [endDateHalfDayCheckbox, setEndDateHalfDayCheckbox] = useState(false);
   const [isEndHalfDay, setIsEndHalfDay] = useState(false);
   const [numberOfPTODays, setNumberOfPTODays] = useState(0);
-  const [dateRange, setDateRange] = useState(true);
+  const [dateRange, setDateRange] = useState(false);
 
   const [allocatedPercentage, setAllocatedPercentage] = useState(0);
   const holidayDetails = useSelector((state: any) => state.Holiday.data);
@@ -1723,6 +1723,17 @@ const AddModal = (props: any) => {
   useEffect(() => {
     getProjectDetails();
   }, []);
+
+  useEffect(()=>{
+    if(isEndHalfDay){
+      let startDateElement = document.getElementById("AllocationStartField");
+      let endDateElement = document.getElementById("AllocationEndField");
+      endDateElement?.classList.remove("inactiveDateFields");
+      startDateElement?.classList.remove("inactiveDateFields");
+      endDateElement?.classList.add("activeDateFields");
+      startDateElement?.classList.add("activeDateFields");
+    }
+  });
   let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "", allocationPerDay: 0 };
   let selectedProjectDetails = { projectId: 0, projectMarket: "", expenseType: "", PPSID: "" }
 
@@ -1861,11 +1872,11 @@ const AddModal = (props: any) => {
     if(resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
       if(allocationEndDate >= allocationStartDate){
         try {
-          let paStartDate = new Date(allocationStartDate);
-              paStartDate.setDate(paStartDate.getDate() +1);
-              let paEndDate = new Date(allocationEndDate);
-              paEndDate.setDate(paEndDate.getDate()+1);
-          const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?resourceId=${resourceId}&startDate=${paStartDate?.toISOString().slice(0, 10)}&endDate=${paEndDate?.toISOString().slice(0, 10)}`, {
+          let paStartDate = allocationStartDate.toLocaleDateString();
+              // paStartDate.setDate(paStartDate.getDate() +1);
+              let paEndDate = allocationEndDate.toLocaleDateString();
+              // paEndDate.setDate(paEndDate.getDate()+1);
+          const response = await fetch(`${GET_TOTAL_ALLOCATED_PERCENTAGE}?resourceId=${resourceId}&startDate=${allocationStartDate.toLocaleDateString()}&endDate=${allocationEndDate.toLocaleDateString()}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -1909,9 +1920,9 @@ const AddModal = (props: any) => {
       resourceId: resourceId == "0" ? 0 : Number(resourceId),
       projectId: projectId == "0" ? 0 : Number(projectId),
       resourceType1: resourceType1 == "0" ? selectedResourceDetails.role : resourceType1,
-      startDate: paStartDate,
+      startDate: paStartDate?.toLocaleDateString(),
       // moment(allocationStartDate, 'YYYY-MM-DD').toDate(),
-      enddDate: paEndDate,
+      enddDate: paEndDate?.toLocaleDateString(),
       // moment(allocationEndDate, 'YYYY-MM-DD').toDate(),
       numberOfPTODays: ptoDays == "" ? 0 : Number(ptoDays),
       numberOfHolidays: numberOfHolidays,
@@ -1980,6 +1991,7 @@ const AddModal = (props: any) => {
       // }
     }
   }
+ 
   function handleEndChange() {
     let endHalfDay = document.getElementById('HalfEndDate') as HTMLInputElement;
     let startDateElement = document.getElementById("AllocationStartField");
@@ -1995,14 +2007,15 @@ const AddModal = (props: any) => {
     }else{
       setIsEndHalfDay(false);
       setDateRange(true);
-    let startDateElement = document.getElementById("AllocationStartField");
-    let endDateElement = document.getElementById("AllocationEndField");
-    endDateElement?.classList.remove("activeDateFields");
+      let startDateElement = document.getElementById("AllocationStartField");
+      let endDateElement = document.getElementById("AllocationEndField");
+      endDateElement?.classList.remove("activeDateFields");
       startDateElement?.classList.remove("activeDateFields");
       endDateElement?.classList.add("inactiveDateFields");
       startDateElement?.classList.add("inactiveDateFields");
     }
   }
+
   const validateResourceAndDatesforHours = ()=>{
     if(!(resourceId && allocationEndDate && allocationStartDate)){
       const errorContainer = document.getElementsByClassName('HourError');
@@ -2022,6 +2035,7 @@ const AddModal = (props: any) => {
       errorContainer[0].textContent='';
     }
   }
+
   const setAllocationRangeForMonth = (e: any)=>{
     let startDate = new Date(year? year: 0, e.target.value-1, 1)
     setAllocationStartDate(startDate);
@@ -2289,6 +2303,7 @@ const AddModal = (props: any) => {
                   maxDate={allocationEndDate !== null ? allocationEndDate : new Date('December 31, 2100')}
                   onChange={(e: any)=>{
                     setAllocationStartDate(e);
+                    console.log("Start selected and the Date is: ", e.toLocaleDateString());
                     setYear(e.getFullYear());
                     setMonth(e.getMonth()+1);
                   }}
