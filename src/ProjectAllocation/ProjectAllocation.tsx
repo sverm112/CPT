@@ -1732,6 +1732,13 @@ const AddModal = (props: any) => {
       startDateElement?.classList.remove("inactiveDateFields");
       endDateElement?.classList.add("activeDateFields");
       startDateElement?.classList.add("activeDateFields");
+    }else{
+      let startDateElement = document.getElementById("AllocationStartField");
+      let endDateElement = document.getElementById("AllocationEndField");
+      endDateElement?.classList.remove("activeDateFields");
+      startDateElement?.classList.remove("activeDateFields");
+      endDateElement?.classList.add("inactiveDateFields");
+      startDateElement?.classList.add("inactiveDateFields");
     }
   });
   let selectedResourceDetails = { resourceId: 0, resourceType: "", role: "", supervisor: "", location: "", resourceMarket: "", subLocation: "", allocationPerDay: 0 };
