@@ -1753,10 +1753,10 @@ const AddModal = (props: any) => {
     let x = new Date();
     setMonth((x.getMonth())+1);
     setYear((new Date().getFullYear()));
-    let startDate = new Date(new Date().getFullYear()+1, month-2, 1)
+    let startDate = new Date(x.getFullYear(), (x.getMonth())+1, 0)
     // console.log("Start date: ", startDate);
     setAllocationStartDate(startDate);
-    let endDate = new Date(new Date().getFullYear()+1, month-1, 0)
+    let endDate = new Date(x.getFullYear(), (x.getMonth()), 1)
     // console.log("Last date: ", endDate);
     setAllocationEndDate(endDate);
   };
@@ -1901,7 +1901,15 @@ const AddModal = (props: any) => {
   }
 
   useEffect(() => {
-    setAllocatedPercentage(0);
+    let x = new Date();
+    let startDate = new Date(x.getFullYear(), (x.getMonth())+1, 0)
+    setAllocationStartDate(startDate);
+    let endDate = new Date(x.getFullYear(), (x.getMonth()), 1)
+    setAllocationEndDate(endDate);
+  }, [projectId]);
+  
+  useEffect(() => {
+    setAllocatedPercentage(0);    
     setPtoDays("");
     if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
       {
@@ -1911,6 +1919,8 @@ const AddModal = (props: any) => {
         setHolidays(hdays.toLocaleString());
     }
   }, [resourceId, allocationStartDate, allocationEndDate, projectId]);
+
+
 
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();

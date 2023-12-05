@@ -54,7 +54,7 @@ const App = () => {
          <Navbar></Navbar> 
             <HashRouter>
                 <Routes>
-                    <Route path={APP_ROUTES.LOGINPAGE} element={<LoginPage />} />
+                    {!userloggedIn && <Route path={APP_ROUTES.LOGINPAGE} element={<LoginPage />} />}
                     {/* <Route path={APP_ROUTES.MAINPAGE} element={<MainPage />} /> */}
                     <Route path={APP_ROUTES.ABOUTUS} element={<AboutUs />} />
                     <Route path={APP_ROUTES.ALLOCATIONMARKETRPOT} element={<MarketReport />} />
