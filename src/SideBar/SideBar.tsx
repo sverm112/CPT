@@ -35,18 +35,10 @@ const SideBar = () => {
     const handleLogout =()=>{
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("userType");
+        sessionStorage.clear();
         dispatch(userActions.setUser({username:"",userType:""}))
         navigate(APP_ROUTES.LOGINPAGE)
     }
-    // useEffect(()=>{
-        
-    //     if(username ===""){
-    //         if(window.location.href !== "http://localhost:3002/#/"){
-    //             window.alert("Session expired, Login Required")
-    //         }
-    //         navigate(APP_ROUTES.LOGINPAGE)
-    //     }
-    // });
     return (
         <div id="body-pd">
             <header className="header" id="header" style={{ position: "fixed", top: "0px", height: "70px", zIndex: 9}}>
