@@ -27,6 +27,7 @@ import PTO from "./Master/PTO/PTODetails";
 const App = () => {
     const dispatch=useDispatch();
     const userType=useSelector((state:any)=>state.User.userType);
+    console.log("User type: " , userType)
     let userloggedIn = false;
     useEffect(()=>{
         let username=sessionStorage.getItem("username");

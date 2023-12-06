@@ -33,10 +33,10 @@ const SideBar = () => {
     const username= useSelector((state:any)=>state.User.username);
     const userType= useSelector((state:any)=>state.User.userType);
     const handleLogout =()=>{
+        dispatch(userActions.setUser({username:"",userType:""}))
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("userType");
         sessionStorage.clear();
-        dispatch(userActions.setUser({username:"",userType:""}))
         navigate(APP_ROUTES.LOGINPAGE)
     }
     return (
