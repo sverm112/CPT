@@ -54,21 +54,22 @@ const App = () => {
          <Navbar></Navbar> 
             <HashRouter>
                 <Routes>
-                    {!userloggedIn && <Route path={APP_ROUTES.LOGINPAGE} element={<LoginPage />} />}
+                    <Route path={APP_ROUTES.LOGINPAGE} element={<LoginPage />} />
+                    <Route path={APP_ROUTES.HOLIDAYMASTER} element={!userloggedIn ? <LoginPage /> : <HolidayMaster />} />
                     {/* <Route path={APP_ROUTES.MAINPAGE} element={<MainPage />} /> */}
-                    <Route path={APP_ROUTES.ABOUTUS} element={<AboutUs />} />
-                    <Route path={APP_ROUTES.ALLOCATIONMARKETRPOT} element={<MarketReport />} />
-                    <Route path={APP_ROUTES.ALLOCATIONRESOURCERPOT} element={<ResourceReport />} />
-                    <Route path={APP_ROUTES.ALLOCATIONPROJECTRPOT} element={<ProjectReport />} />
-                    <Route path={APP_ROUTES.HOLIDAYLISTRPOT} element={<HolidayListReport />} />
-                    <Route path={APP_ROUTES.HOLIDAYMASTER} element={<HolidayMaster />} />
-                    <Route path={APP_ROUTES.EMPLOYEEMASTER} element={<EmployeeMaster />} />
-                    <Route path={APP_ROUTES.PROJECTINFO} element={<ProjectInfo />} />
-                    <Route path={APP_ROUTES.MARKET} element={<Market/>} />
-                    <Route path={APP_ROUTES.PAIDTIMEOFF} element={<PTO/>} />
-                    <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
-                    <Route path={APP_ROUTES.HELP} element={<Help />} />
-                    <Route path={APP_ROUTES.PROJECTALLOCATION} element={<ProjectAllocation />} />
+                    <Route path={APP_ROUTES.ABOUTUS} element={!userloggedIn ? <LoginPage /> : <AboutUs />} />
+                    <Route path={APP_ROUTES.ALLOCATIONMARKETRPOT} element={!userloggedIn ? <LoginPage /> : <MarketReport />} />
+                    <Route path={APP_ROUTES.ALLOCATIONRESOURCERPOT} element={!userloggedIn ? <LoginPage /> : <ResourceReport />} />
+                    <Route path={APP_ROUTES.ALLOCATIONPROJECTRPOT} element={!userloggedIn ? <LoginPage /> : <ProjectReport />} />
+                    <Route path={APP_ROUTES.HOLIDAYLISTRPOT}  element={!userloggedIn ? <LoginPage /> : <HolidayListReport />} />
+                    {/* <Route path={APP_ROUTES.HOLIDAYMASTER} element={<HolidayMaster />} element={!userloggedIn ? <LoginPage /> : <MarketReport />} /> */}
+                    <Route path={APP_ROUTES.EMPLOYEEMASTER} element={!userloggedIn ? <LoginPage /> : <EmployeeMaster />} />
+                    <Route path={APP_ROUTES.PROJECTINFO} element={!userloggedIn ? <LoginPage /> : <ProjectInfo />} />
+                    <Route path={APP_ROUTES.MARKET} element={!userloggedIn ? <LoginPage /> : <Market />} />
+                    <Route path={APP_ROUTES.PAIDTIMEOFF} element={!userloggedIn ? <LoginPage /> : <PTO />} />
+                    <Route path={APP_ROUTES.DASHBOARD} element={!userloggedIn ? <LoginPage /> : <Dashboard />} />
+                    <Route path={APP_ROUTES.HELP} element={!userloggedIn ? <LoginPage /> : <Help />} />
+                    <Route path={APP_ROUTES.PROJECTALLOCATION} element={!userloggedIn ? <LoginPage /> : <ProjectAllocation />} />
                 </Routes>
             </HashRouter>
 
