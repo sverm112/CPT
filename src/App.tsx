@@ -27,21 +27,20 @@ import PTO from "./Master/PTO/PTODetails";
 const App = () => {
     const dispatch=useDispatch();
     const userType=useSelector((state:any)=>state.User.userType);
-    console.log("User type: " , userType)
     let userloggedIn = false;
     useEffect(()=>{
-        let username=sessionStorage.getItem("username");
-        let userType=sessionStorage.getItem("userType");
+        let username=localStorage.getItem("username");
+        let userType=localStorage.getItem("userType");
         if(username!=null && userType!=null)
         {
-            if(username=="Test User")
-             dispatch(userActions.setUser({username:"Test User",userType:"User"}))
-            else if(username=="Test Admin")
-            dispatch(userActions.setUser({username:"Test Admin",userType:"Admin"}))
-            else if(username=="Leslie Kiheri")
-            dispatch(userActions.setUser({username:"Leslie Kiheri",userType:"Admin"}))
-            else if(username=="Ashish Khare")
-            dispatch(userActions.setUser({username:"Ashish Khare",userType:"Admin"}))
+            // if(username=="Test User")
+             dispatch(userActions.setUser({username: username,userType: userType}))
+        //     else if(username=="Test Admin")
+        //     dispatch(userActions.setUser({username:"Test Admin",userType:"Admin"}))
+        //     else if(username=="Leslie Kiheri")
+        //     dispatch(userActions.setUser({username:"Leslie Kiheri",userType:"Admin"}))
+        //     else if(username=="Ashish Khare")
+        //     dispatch(userActions.setUser({username:"Ashish Khare",userType:"Admin"}))
         }
         console.log("User Logged in: ", userloggedIn);
     },[]);

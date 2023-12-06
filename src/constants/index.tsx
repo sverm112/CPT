@@ -16,6 +16,7 @@ export const HOLIDAY_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Holiday%
 
 //Production
 // export const Base_URL = protocol === 'https' ? 'https://cpt-api-dev.hcp.com/448/' : 'http://10.147.172.18:9190/';
+// export const Base_URL = 'http://10.147.172.18:9190/';
 // export const DASHBOARD_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Dashboard?rs:embed=true" 
 // export const ALLOCATION_BY_MARKET_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Allocation%20By%20Market?rs:embed=true"
 // export const ALLOCATION_BY_PROJECT_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Allocation%20By%20Project?rs:embed=true"
