@@ -155,9 +155,9 @@ const Market = () => {
             <h1 className="Heading-Cls">Market Details</h1>
             <p>
               <span className="Heading-P-Cls">Master</span>
-              <span>Market</span>
+              <span>Market Details</span>
             </p>
-            <div className="btns market">
+            <div className="btns market" style={{marginLeft:"4px"}}>
               {/* <button type="button" className="btn btn-primary upload-button-btn" >
                 <i className="las la-file-upload"></i>
               </button> */}

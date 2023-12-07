@@ -231,7 +231,7 @@ const HolidayMaster = () => {
               <span className="Heading-P-Cls">Master</span>
               <span>Holiday Details</span>
             </p>
-            <div className="btns holiday">
+            <div className="btns holiday" style={{marginLeft:"8px"}}>
              
               {/* <AddModal /> */}
               {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
@@ -333,7 +333,7 @@ const UpdateModal = (props: any) =>{
     if(holidayDate!=null){
       holidayStartDate= new Date(holidayDate);
       holidayStartDate.setDate(holidayStartDate.getDate());
-      holidayStartDate = holidayStartDate.toLocaleString().slice(0, 10);
+      holidayStartDate = holidayStartDate.toLocaleDateString();
     }
     let payload = {
       id: formValues.id,
@@ -599,7 +599,7 @@ const AddModal = (props: any) => {
     if(date!=null){
       holidayStartDate= new Date(date);
       holidayStartDate.setDate(holidayStartDate.getDate());
-      holidayStartDate = holidayStartDate.toLocaleString().slice(0, 10);
+      holidayStartDate = holidayStartDate.toLocaleDateString();
     }
     let payload = {
       occasionName: occasion,

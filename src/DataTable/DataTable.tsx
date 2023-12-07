@@ -100,7 +100,7 @@ const Table = (props: any) => {
       subHeader
       subHeaderComponent={subHeaderComponent}
       customStyles={customStyles}
-      striped={true}
+      striped={false}
       // expandableRowsComponent={props.expandableRowsComponent}
       persistTableHead={true}
       onRowDoubleClicked={props.onRowDoubleClicked}

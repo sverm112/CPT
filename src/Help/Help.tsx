@@ -23,12 +23,12 @@ const Help = () => {
     return (
         <>
             <SideBar></SideBar>
-            <div className="col-md-12 bg-mainclass">
-                <div className="main-class">
-                    <div className="row Page-Heading">
+            <div className="col-md-12">
+                <div className="main-class"      style={{marginLeft: "-45px !important"}}>
+                    {/* <div className="row Page-Heading">
                         <h1 className="Heading-Cls" >Help</h1>
 
-                    </div>
+                    </div> */}
                     <div className="row page-content">
                         <div className="col-md-6">
                             <h1>We Are Here To Help!</h1>
