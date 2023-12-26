@@ -673,6 +673,7 @@ const UpdateModal = (props: any) => {
   const [formValues, setFormValues] = useState(props.initialValues || {});
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
+    console.log("Program Manager in Form:", formValues.programManager);
     let payload = {
       id: formValues.id,
       projectCode: formValues.projectCode,
@@ -680,7 +681,7 @@ const UpdateModal = (props: any) => {
       projectModel: formValues.projectModel,
       expenseType: formValues.expenseType,
       marketId: formValues.marketId ,
-      programManager: formValues.programManager,
+      programManager: formValues.programManager !== null ? formValues.programManager : "",
       status: formValues.status,
       updatedBy: username,
     };
