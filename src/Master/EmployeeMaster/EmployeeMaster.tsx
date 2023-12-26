@@ -651,8 +651,10 @@ function manageCheckBox(e: any){
                   className="form-control"
                   id="employeeEmailAddress"
                   value={employeeEmailAddress}
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceEmailField'),'input')}
-                  onChange={(event) => setEmployeeEmailAddress(event.target.value)}
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceEmailField'),'input')}
+                  onChange={(event) => {setEmployeeEmailAddress(event.target.value);
+                    // validateSingleFormGroup(document.getElementById('AddResourceEmailField'),'input')
+                  }}
                 />
                 {/* <div className="error"></div> */}
               </div>
@@ -985,7 +987,7 @@ const UpdateModal = (props: any) => {
                   className="form-control"
                   id="employeeEmailAddress"
                   value={formValues.emailAddress}
-                  onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceEmailField'), 'input')}
+                  // onBlur={()=>validateSingleFormGroup(document.getElementById('UpdateResourceEmailField'), 'input')}
                   onChange={handleChange}
                 />
                 {/* <div className="error"></div> */}
