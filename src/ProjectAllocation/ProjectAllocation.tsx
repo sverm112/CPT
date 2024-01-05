@@ -1628,7 +1628,7 @@ const AddModal = (props: any) => {
   function closeModal() {
     return invokeModal(false);
   }
-  let x = new Date();
+  // let x = new Date();
   const [projectId, setProjectId] = useState("0");
   // projectId === "0" ? 0 : (x.getMonth())+1 || 
   const [month, setMonth]=useState(0);
@@ -1750,15 +1750,21 @@ const AddModal = (props: any) => {
   };
   const setProjectDetails = (event: any) => {
     setProjectId(event.target.value);
-    let x = new Date();
-    setMonth((x.getMonth())+1);
-    setYear((new Date().getFullYear()));
-    let startDate = new Date(x.getFullYear(), (x.getMonth())+1, 0)
+    let dateForProj = new Date();
+    setMonth((dateForProj.getMonth())+1);
+    let yearForProject = new Date();
+    setYear(yearForProject.getFullYear());
+    let startDateForProj = new Date();
+    let startDate = new Date(startDateForProj.getFullYear(), (startDateForProj.getMonth()), 1)
     // console.log("Start date: ", startDate);
     setAllocationStartDate(startDate);
-    let endDate = new Date(x.getFullYear(), (x.getMonth()), 1)
+    console.log("Start Date: " + allocationStartDate +"---------------" +startDate);
+    let endDateForProj = new Date();
+    let endDate = new Date(endDateForProj.getFullYear(), (endDateForProj.getMonth())+1, 0)
     // console.log("Last date: ", endDate);
     setAllocationEndDate(endDate);
+    console.log("End Date: "+ allocationEndDate +"---------------" +endDate);
+    // getAllocationPercentage();
   };
 
   if (resourceId == "0") {
@@ -1876,6 +1882,9 @@ const AddModal = (props: any) => {
    }
    
   const getAllocationPercentage = async () => {
+    console.log("Start: Called Get Allocation Percentage", allocationStartDate);
+    
+    console.log("End: Called Get Allocation Percentage", allocationEndDate)
     if(resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null){
       if(allocationEndDate >= allocationStartDate){
         try {
@@ -1900,25 +1909,47 @@ const AddModal = (props: any) => {
     }
   }
 
-  useEffect(() => {
-    let x = new Date();
-    let startDate = new Date(x.getFullYear(), (x.getMonth())+1, 0)
-    setAllocationStartDate(startDate);
-    let endDate = new Date(x.getFullYear(), (x.getMonth()), 1)
-    setAllocationEndDate(endDate);
-  }, [projectId]);
+  // useEffect(() => {
+  //   let x = new Date();
+  //   let startDate = new Date(x.getFullYear(), (x.getMonth())+1, 0)
+  //   setAllocationStartDate(startDate);
+  //   let endDate = new Date(x.getFullYear(), (x.getMonth()), 1)
+  //   setAllocationEndDate(endDate);
+  // }, [{projectId}]);
+
+  // async function setDate(){
+  //   let tempDate = new Date();
+  //   let startDate = new Date(tempDate.getFullYear(), (tempDate.getMonth())+1, 0)
+  //   setAllocationStartDate(startDate);
+  //   let endDate = new Date(tempDate.getFullYear(), (tempDate.getMonth()), 1)
+  //   setAllocationEndDate(endDate);
+  // }
   
+  // async function setVariables(){
+  //   await setDate();
+    
+  //   if(allocationStartDate !== null && allocationEndDate !== null){
+  //     getAllocationPercentage();
+  //     getPTODays();
+  //     let hdays = calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
+  //     setHolidays(hdays.toLocaleString());
+  //   }
+  // }
+
   useEffect(() => {
     setAllocatedPercentage(0);    
     setPtoDays("");
-    if (resourceId != "0" && allocationStartDate != null && allocationEndDate != null)
+    
+    if (resourceId != "0" && allocationStartDate !== null && allocationEndDate !== null)
       {
+        // setVariables();
+        console.log("Called Use Effect");
         getAllocationPercentage();
         getPTODays();
         let hdays = calculateHolidays(selectedResourceDetails.location, selectedResourceDetails.subLocation, allocationStartDate, allocationEndDate);
         setHolidays(hdays.toLocaleString());
     }
-  }, [resourceId, allocationStartDate, allocationEndDate, projectId]);
+  }, [resourceId, allocationStartDate, allocationEndDate]);
 
 
 
@@ -2054,7 +2085,7 @@ const AddModal = (props: any) => {
   }
 
   const setAllocationRangeForMonth = (e: any)=>{
-    let startDate = new Date(year? year: 0, e.target.value-1, 1)
+    let startDate = new Date(year? year: new Date().getFullYear(), e.target.value-1, 1)
     setAllocationStartDate(startDate);
     let endDate = new Date(year? year: 0, e.target.value, 0)
     setAllocationEndDate(endDate);
