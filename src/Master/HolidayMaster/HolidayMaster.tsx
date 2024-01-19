@@ -8,8 +8,10 @@ import Table from "../../DataTable/DataTable";
 import { holidayActions } from "../../Store/Slices/Holiday";
 import { useDispatch, useSelector } from "react-redux";
 import { marketActions } from "../../Store/Slices/Market";
+import { locationSublocationActions } from "../../Store/Slices/LocationSublocation";
 import { toast } from "react-toastify";
 import { filterActions } from "../../Store/Slices/Filters";
+import { modalFilterActions } from '../../Store/Slices/ModalFilters';
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
 import { DELETE_HOLIDAY, GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_SUB_LOCATIONS, POST_HOLIDAY, UPDATE_HOLIDAY } from "../../constants";
@@ -144,6 +146,7 @@ const HolidayMaster = () => {
     let dataGet = await response.json();
     dataGet = dataGet.map((row: any) => ({ ...row, holidayDate : row.holidayDateString,updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10) }));
     dispatch(holidayActions.changeData(dataGet));
+    dispatch(locationSublocationActions.changeData(dataGet));
     setTimeout(()=>setIsLoading(false), 2000);
   };
   useEffect(() => {
@@ -161,12 +164,16 @@ const HolidayMaster = () => {
   const getLocationDetails = async () => {
     const response = await fetch(`${GET_ALL_LOCATIONS}`);
     const dataGet = await response.json();
+    // dispatch(locationSublocationActions.changeLocation(dataGet));
     dispatch(filterActions.changeLocations(dataGet));
+    // dispatch(modalFilterActions.changeLocations(dataGet));
   }
   const getSubLocationDetails = async () => {
     const response = await fetch(`${GET_ALL_SUB_LOCATIONS}`);
     const dataGet = await response.json();
+    // dispatch(locationSublocationActions.changeSubLocation(dataGet));
     dispatch(filterActions.changeSubLocations(dataGet));
+    // dispatch(modalFilterActions.changeSubLocations(dataGet));
   }
   useEffect(() => {
     getMarketDetails();
@@ -572,8 +579,30 @@ const AddModal = (props: any) => {
   const [subLocation, setSubLocation] = useState("0");
   const [market, setMarket] = useState("0");
   const [date, setDate] = useState<Date | null>(null);
-  const locations = useSelector((state: any) => state.Filters.locations);
-  const subLocations = useSelector((state: any) => state.Filters.subLocations);
+  const locations = useSelector((state: any) => state.ModalFilters.locations);
+  const subLocations = useSelector((state: any) => state.ModalFilters.subLocations);
+  const locationSelected = useSelector((store: any) => store.LocationSublocation.location);
+  const subLocationSelected =  useSelector((store: any) => store.LocationSublocation.subLocation);
+ 
+  const getLocationDetails = async () => {
+    const response = await fetch(`${GET_ALL_LOCATIONS}`);
+    const dataGet = await response.json();
+    console.log("Data for Location: ", dataGet)
+    dispatch(locationSublocationActions.changeLocation(dataGet));
+    dispatch(modalFilterActions.changeLocations(dataGet));
+  }
+  const getSubLocationDetails = async () => {
+    const response = await fetch(`${GET_ALL_SUB_LOCATIONS}`);
+    const dataGet = await response.json();
+    dispatch(locationSublocationActions.changeSubLocation(dataGet));
+    dispatch(modalFilterActions.changeSubLocations(dataGet));
+  }
+
+  // useEffect(() => {
+  //   getLocationDetails();
+  //   getSubLocationDetails();
+  //   dispatch(locationSublocationActions.clearFilters());
+  // }, []);
 
   const resetFormFields = () => {
     const errorContainer = document.getElementsByClassName('error');
@@ -644,7 +673,17 @@ const AddModal = (props: any) => {
   };
   useEffect(() => {
     getMarketDetails();
+    getLocationDetails();
+    getSubLocationDetails();
+    dispatch(locationSublocationActions.clearFilters());
   }, []);
+
+  const changeLocationSelectHandler = (event: any) => {
+    dispatch(locationSublocationActions.changeLocation(event));
+  };
+  const changeSubLocationSelectHandler = (event: any) => {
+    dispatch(locationSublocationActions.changeSubLocation(event));
+  };
   return (
     <>
       <Button
@@ -723,50 +762,34 @@ style={{ float: "right", marginTop: "-68px"}}
                   <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group" id="HolidayLocation">
-                <label className="form-label" htmlFor="holidayCountry">
-                  Location
-                </label>
-                <span className="requiredField">*</span>
-                <div className="dropdown">
-                  <select
-                    required
-                    className="form-control"
-                    id="holidayCountry"
-                    value={location}
-                    // onBlur = {()=>validateSingleFormGroup(document.getElementById('HolidayLocation'), 'select')}
-                    onChange={(event: any) => {setLocation(event.target.value);
-                      validateSingleFormGroup(document.getElementById('HolidayLocation'), 'select');
-                    }}
-                  >
-                    <option value="0">Select</option>
-                    {locations.map((location: any) => (<option key={location.locationId} value={location.locationId.toString()}> {location.locationName}</option>))}
-                  </select>
-                  <div className="error"></div>
-                </div>
-              </div>
-              <div className="col-md-6 form-group" id="isOffShore">
-                <label className="form-label" htmlFor="holidaySubLocation">
-                  Sub Location
-                </label>
-                <span className="requiredField">*</span>
-                <div className="dropdown">
-                  <select
-                    required
-                    className="form-control"
-                    id="holidaySubLocation"
-                    value={subLocation}
-                    // onBlur = {()=>validateSingleFormGroup(document.getElementById('isOffShore'), 'select')}
-                    onChange={(event: any) => {setSubLocation(event.target.value);
-                      validateSingleFormGroup(document.getElementById('isOffShore'), 'select');
-                    }}
-                  >
-                    <option value="0">Select</option>
-                    {location == "0" ? [] : (subLocations.filter((subLocation: any) => Number(location) == subLocation.locationId).map((subLocation: any) => (<option key={subLocation.subLocationId} value={subLocation.subLocationId.toString()}>{subLocation.subLocationName}</option>)))}
-                  </select>
-                  <div className="error"></div>
-                </div>
-              </div>
+              
+              <div className="col-md-6 form-group">
+              <label htmlFor="" className="form-label">
+                Location
+              </label>
+              <MultiSelect
+                options={locations.map((location: any) => ({ label: location.locationName, value: location.locationName }))}
+                value={locationSelected}
+                onChange={changeLocationSelectHandler}
+                labelledBy="Select Location"
+                valueRenderer={customValueRenderer}
+              />
+              
+            </div>
+            <div className="col-md-6 form-group">
+              <label htmlFor="" className="form-label">
+                Sub Location
+              </label>
+              <MultiSelect
+                options={locationSelected.length == 0 ? (subLocations.map((subLocation: any) => ({ label: subLocation.subLocationName, value: subLocation.subLocationName, locationName: subLocation.locationName }))) : ((subLocations.map((subLocation: any) => ({ label: subLocation.subLocationName, value: subLocation.subLocationName, locationName: subLocation.locationName }))).filter((subLocation: any) => locationSelected.map((location: any) => location.value).includes(subLocation.locationName)))}
+                value={subLocationSelected}
+                onChange={changeSubLocationSelectHandler}
+                labelledBy="Select Sub Location"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+                  {/* <div className="error"></div> */}
+                
             </div>
             <div className="row">
               <div className="col-md-8">
