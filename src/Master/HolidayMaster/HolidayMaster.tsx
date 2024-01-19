@@ -575,8 +575,6 @@ const AddModal = (props: any) => {
   const dispatch = useDispatch();
   const username=useSelector((state:any)=>state.User.username);
   const [occasion, setOccasion] = useState("");
-  const [location, setLocation] = useState("0");
-  const [subLocation, setSubLocation] = useState("0");
   const [market, setMarket] = useState("0");
   const [date, setDate] = useState<Date | null>(null);
   const locations = useSelector((state: any) => state.ModalFilters.locations);
@@ -587,22 +585,13 @@ const AddModal = (props: any) => {
   const getLocationDetails = async () => {
     const response = await fetch(`${GET_ALL_LOCATIONS}`);
     const dataGet = await response.json();
-    console.log("Data for Location: ", dataGet)
-    dispatch(locationSublocationActions.changeLocation(dataGet));
     dispatch(modalFilterActions.changeLocations(dataGet));
   }
   const getSubLocationDetails = async () => {
     const response = await fetch(`${GET_ALL_SUB_LOCATIONS}`);
     const dataGet = await response.json();
-    dispatch(locationSublocationActions.changeSubLocation(dataGet));
     dispatch(modalFilterActions.changeSubLocations(dataGet));
   }
-
-  // useEffect(() => {
-  //   getLocationDetails();
-  //   getSubLocationDetails();
-  //   dispatch(locationSublocationActions.clearFilters());
-  // }, []);
 
   const resetFormFields = () => {
     const errorContainer = document.getElementsByClassName('error');
@@ -610,8 +599,7 @@ const AddModal = (props: any) => {
       errorContainer[i].textContent='';
     }
     setOccasion("");
-    setLocation("0");
-    setSubLocation("0");
+    dispatch(locationSublocationActions.clearFilters());
     setMarket("0");
     setDate(null);
   }
@@ -632,8 +620,8 @@ const AddModal = (props: any) => {
     }
     let payload = {
       occasionName: occasion,
-      locationId: location,
-      subLocationId: subLocation,
+      locationId: locationSelected,
+      subLocationId: subLocationSelected,
       marketId: market,
       holidayDate: holidayStartDate,
       createdBy: username
@@ -680,15 +668,16 @@ const AddModal = (props: any) => {
 
   const changeLocationSelectHandler = (event: any) => {
     dispatch(locationSublocationActions.changeLocation(event));
-  };
+    };
   const changeSubLocationSelectHandler = (event: any) => {
     dispatch(locationSublocationActions.changeSubLocation(event));
   };
+  
   return (
     <>
       <Button
         className="btn btn-primary"
-style={{ float: "right", marginTop: "-68px"}}
+        style={{ float: "right", marginTop: "-68px"}}
         
         variant="primary"
         onClick={props.openModal}
@@ -768,7 +757,7 @@ style={{ float: "right", marginTop: "-68px"}}
                 Location
               </label>
               <MultiSelect
-                options={locations.map((location: any) => ({ label: location.locationName, value: location.locationName }))}
+                options={locations.map((location: any) => ({ label: location.locationName, value: location.locationId }))}
                 value={locationSelected}
                 onChange={changeLocationSelectHandler}
                 labelledBy="Select Location"
@@ -781,7 +770,26 @@ style={{ float: "right", marginTop: "-68px"}}
                 Sub Location
               </label>
               <MultiSelect
-                options={locationSelected.length == 0 ? (subLocations.map((subLocation: any) => ({ label: subLocation.subLocationName, value: subLocation.subLocationName, locationName: subLocation.locationName }))) : ((subLocations.map((subLocation: any) => ({ label: subLocation.subLocationName, value: subLocation.subLocationName, locationName: subLocation.locationName }))).filter((subLocation: any) => locationSelected.map((location: any) => location.value).includes(subLocation.locationName)))}
+                options={locationSelected?.length == 0 ? (
+                  subLocations.map((subLocation: any) => 
+                  ({ 
+                    locationId: subLocation.locationId,
+                    label: subLocation.subLocationName, 
+                    value: subLocation.subLocationId, 
+                    locationName: subLocation.locationName 
+                  }))) : 
+                  (
+                    subLocations.map((subLocation: any) => ({
+                      locationId: subLocation.locationId, 
+                      label: subLocation.subLocationName, 
+                      value: subLocation.subLocationId, 
+                      locationName: subLocation.locationName 
+                    })).filter((
+                      subLocation: any) => 
+                      locationSelected.some((location: any) => 
+                      location?.value == subLocation.locationId )
+                      ))
+                    }
                 value={subLocationSelected}
                 onChange={changeSubLocationSelectHandler}
                 labelledBy="Select Sub Location"
