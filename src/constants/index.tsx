@@ -4,9 +4,10 @@ let protocol = window.location.href.substring(0,5);
 
 export * as APP_ROUTES from "./routes";
 //Non Prod
-// export const Base_URL = 'https://localhost:44314/';
-export const Base_URL = 
-'https://cpt-api-dev.hcp.com:448/';
+export const Base_URL = 'https://localhost:44314/';
+
+// export const Base_URL = 
+// 'https://cpt-api-dev.hcp.com:448/';
 // // 'http://10.147.172.18:9192/';
 export const DASHBOARD_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Dashboard_Dev?rs:embed=true" 
 export const ALLOCATION_BY_MARKET_REPORT = "http://colo-sqlrptqa/Reports/powerbi/CPT/Allocation%20By%20Market_Dev?rs:embed=true"
@@ -42,6 +43,7 @@ export const GET_TOTAL_PTO_DAYS = `${Base_URL}api/v1/PTOs/GetPTODaysPerResource`
 export const POST_BULK_UPLOAD_EMPLOYEE = `${Base_URL}api/v1/Resources/BulkUploadResources`;
 export const POST_RESOURCE = `${Base_URL}api/v1/Resources/PostResources`;
 export const POST_HOLIDAY = `${Base_URL}api/v1/HolidaysList/PostHoliday`;
+export const BULK_POST_HOLIDAY = `${Base_URL}api/v1/HolidaysList/BulkInsertHolidays`;
 export const POST_MARKET = `${Base_URL}api/v1/Markets/PostMarket`;
 export const POST_PROJECT = `${Base_URL}api/v1/Projects/PostProject`;
 export const POST_BULK_UPLOAD_PROJECTS = `${Base_URL}api/v1/Projects/BulkUploadProjects`;

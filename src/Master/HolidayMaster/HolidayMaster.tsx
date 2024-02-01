@@ -14,7 +14,7 @@ import { filterActions } from "../../Store/Slices/Filters";
 import { modalFilterActions } from '../../Store/Slices/ModalFilters';
 import { PatternsAndMessages } from "../../utils/ValidationPatternAndMessage";
 import { validateForm, validateSingleFormGroup } from "../../utils/validations";
-import { DELETE_HOLIDAY, GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_SUB_LOCATIONS, POST_HOLIDAY, UPDATE_HOLIDAY } from "../../constants";
+import { BULK_POST_HOLIDAY, DELETE_HOLIDAY, GET_ALL_HOLIDAYS, GET_ALL_LOCATIONS, GET_ALL_MARKETS, GET_ALL_SUB_LOCATIONS, POST_HOLIDAY, UPDATE_HOLIDAY } from "../../constants";
 import { propTypes } from "react-bootstrap/esm/Image";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
@@ -612,12 +612,22 @@ const AddModal = (props: any) => {
   }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
-    let holidayStartDate=null;
+    let holidayStartDate: string | Date | null=null;
     if(date!=null){
       holidayStartDate= new Date(date);
       holidayStartDate.setDate(holidayStartDate.getDate());
       holidayStartDate = holidayStartDate.toLocaleDateString();
     }
+    var px;
+    let pl = subLocationSelected.map((sl: any)=> px = {
+      occasionName: occasion,
+      locationId: sl.locationId,
+      subLocationId: sl.value,
+      marketId: market,
+      holidayDate: holidayStartDate,
+      createdBy: username,
+    });
+    // console.log("Pl is: ", pl);
     let payload = {
       occasionName: occasion,
       locationId: locationSelected,
@@ -628,14 +638,15 @@ const AddModal = (props: any) => {
     };
     try {
       if(validateForm('#HolidayForm')){
-        const response = await fetch(`${POST_HOLIDAY}`, {
+        const response = await fetch(`${BULK_POST_HOLIDAY}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(pl),
         });
         const dataResponse = await response.json();
+        console.log("Response: ", dataResponse);
         if (dataResponse.length) {
           if (dataResponse[0].statusCode == "201") {
             console.log(dataResponse[0].statusReason);
@@ -646,6 +657,7 @@ const AddModal = (props: any) => {
             props.closeModal();
             toast.success("Holiday Added Successfully");
           } else toast.error(dataResponse[0].errorMessage);
+          console.log("Error in try block: ", dataResponse);
         } else toast.error("Some Error occured.");  
       }
     } catch {
