@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+const currentyear = (new Date().getFullYear());
 const initialState = {
   market: [],
   location :[],
   subLocation :[],
+  years : [{label: currentyear, value:currentyear}],
   status: [{label:'Active', value: 'Active'}],
   
   data: [],
@@ -26,6 +27,9 @@ const holidaySlice = createSlice({
     changeSubLocation(state, action) {
       state.subLocation = action.payload;
     },
+    changeYears(state, action){
+      state.years = action.payload;
+    },
     changeStatus(state, action) {
       state.status = action.payload;
     },
@@ -46,6 +50,7 @@ const holidaySlice = createSlice({
       state.location=[];
       state.subLocation=[];
       state.status=[];
+      state.years=[];
     }
     
   },

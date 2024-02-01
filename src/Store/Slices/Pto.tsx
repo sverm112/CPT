@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+const currentyear = (new Date().getFullYear());
 const initialState = {
   resourceName : [],
   resourceManager: [],
@@ -7,7 +7,7 @@ const initialState = {
   startDate: [],
   endDate: [],
   months: [],
-  years: [],
+  years: [{label:currentyear, value: currentyear}],
   numberOfDays: [],
   remarks: [],
   status: [{label:'Active', value: 'Active'}],
