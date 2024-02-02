@@ -90,7 +90,7 @@ const columns = [
   },
   {
     name: "Status",
-    selector: (row: { isActive: any }) => row.isActive =="false"?"Active":"InActive",
+    selector: (row: { isActive: any }) => row.isActive,
     sortable: true,
     reorder: true,
     filterable: true,
@@ -362,7 +362,7 @@ useEffect(()=>{
               <span className="Heading-P-Cls">Master</span>
               <span>Resource Details</span>
             </p>
-            <div className="btns employee">
+            <div className="btns employee" style={{marginLeft:"15px"}}>
               <div style={{display:'flex', width:'230px',float:'right', marginTop:'-15px'}}>
               <div className="DownloadEmployeeTemplate" >
                 <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
@@ -560,16 +560,15 @@ const AddModal = (props: any) => {
   function handleChange(event: any) {
     let partTimeCheck = document.getElementById('PartTimeField') as HTMLInputElement;
     if(partTimeCheck?.checked == true){
-      // console.log("Part time: ", event);
       setIsPartTime(true);
-      if(resourceType === "GTM" || resourceType ==="FTE"){
+      if(event.target.value === "GTM" || event.target.value ==="FTE"){
         setCapacityPerDay(4);
       }else{
         setCapacityPerDay(4.25);
       }
     }else{
       setIsPartTime(false);
-      if(resourceType === "GTM" || resourceType ==="FTE"){
+      if(event.target.value === "GTM" || event.target.value ==="FTE"){
         setCapacityPerDay(8);
       }else{
         setCapacityPerDay(8.5);
@@ -578,10 +577,13 @@ const AddModal = (props: any) => {
     }
   }
 function manageCheckBox(e: any){
+  setResourceType(e.target.value);
   if(e.target.value==="OGA" || e.target.value==="GTM" || e.target.value==="FTE"){
     setDisableCheckBox(false);
+    handleChange(e);
   }else{
     setDisableCheckBox(true);
+    handleChange(e);
   }
 }
   return (
@@ -686,7 +688,10 @@ function manageCheckBox(e: any){
                     className="form-control"
                     value={resourceType}
                     // onBlur={()=>validateSingleFormGroup(document.getElementById('AddResourceResourceTypeField'),'select')}
-                    onChange={(event) => {setResourceType(event.target.value);
+                    onChange={(event) => {
+                      setResourceType(event.target.value);
+                      console.log("Resource Type: ", resourceType);
+                      console.log("Resource Type Selected: ", event.target.value);
                       manageCheckBox(event);
                       validateSingleFormGroup(document.getElementById('AddResourceResourceTypeField'),'select');
                     }}

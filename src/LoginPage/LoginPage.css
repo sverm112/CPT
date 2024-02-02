@@ -1,10 +1,14 @@
 img{
 	width: 100%;
 }
+section.login {
+  z-index: 999;
+}
 .login {
     height: 100vh;
     width: 100%;
-    background: radial-gradient(#653d84, #332042);
+    /* background: radial-gradient(#653d84, #332042); */
+    background-color: #FBF9F4;
     position: relative;
 }
 .login_box {
@@ -47,8 +51,10 @@ img{
     margin: auto;
 }
 .left h3{
-  text-align: center;
-  margin-bottom: 40px;
+  text-align: left;
+  margin-bottom: 10px;
+  font-size: 33px;
+    color: #002677;
 }
 .left input {
     border: none;
@@ -63,7 +69,7 @@ img{
     font-size: 14px;
 }
 .left{
-	background: linear-gradient(-45deg, #dcd7e0, #fff);
+	/* background: linear-gradient(-45deg, #dcd7e0, #fff); */
 }
 input.submit,button.submit {
     border: none;
@@ -71,7 +77,7 @@ input.submit,button.submit {
     border-radius: 8px;
     display: block;
     margin: auto;
-    margin-top: 120px;
+    margin-top: 20px;
     background: #583672;
     color: #fff;
     font-weight: bold;
@@ -124,5 +130,84 @@ input.submit,button.submit {
     margin-top: -3px;
 }
 
+.Capcity-Planning-Tool
+{
+  font-weight: 700;
+  font-style: normal;
+  font-size: 25px !important;
+  letter-spacing: 0.46px;
+  color: #002677;
+  text-align: left;
+  line-height: 31px;
+  width: 325px;
+  height: 27px;
+}
 
 
+
+#u30 {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:0px;
+  height:0px;
+}
+#u31_div {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:99px;
+  height:14px;
+  background:inherit;
+  background-color:rgba(255, 255, 255, 0);
+  border:none;
+  border-radius:0px;
+  -moz-box-shadow:none;
+  -webkit-box-shadow:none;
+  box-shadow:none;
+  font-family:"OptumSans-Regular", "Optum Sans", sans-serif;
+  font-weight:400;
+  font-style:normal;
+  font-size:13px;
+  text-decoration:underline ;
+  color:#002677 !important;
+  text-align:left;
+  line-height:14px;
+}
+#u31 {
+  border-width:0px;
+  position:absolute;
+  left:5px;
+  top:390px;
+  width:99px;
+  height:14px;
+  display:flex;
+  font-family:"OptumSans-Regular", "Optum Sans", sans-serif;
+  font-weight:400;
+  font-style:normal;
+  font-size:13px;
+  text-decoration:underline ;
+  color:#002677;
+  text-align:left;
+  line-height:14px;
+}
+#u31 .text {
+  position:absolute;
+  align-self:flex-start;
+  padding:0px 0px 0px 0px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u31_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+
+ /* a{
+
+  color: #002677 !important;
+
+}  */
