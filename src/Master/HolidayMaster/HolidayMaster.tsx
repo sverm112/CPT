@@ -331,12 +331,23 @@ const UpdateModal = (props: any) =>{
   const subLocations = useSelector((state: any) => state.Filters.subLocations);
   const marketList = useSelector((state: any) => state.Market.data);
   const [holidayDate, setHolidayDate] = useState<Date | null>(new Date(props.initialValues.holidayDate));
-  
-  let location = formValues.locationId;
+  const locationSelected = useSelector((store: any) => store.LocationSublocation.location);
+  const subLocationSelected =  useSelector((store: any) => store.LocationSublocation.subLocation);
  
+  let location = formValues.locationId;
+  
+  useEffect(()=>{
+    // let xyz = locations.filter((l: any)=> l.locationId === formValues.locationId).map((l: any)=> l.locationName);
+    // console.log("Locations: ", xyz[0]);
+    dispatch(locationSublocationActions.changeLocation([{label:locations.filter((l: any)=> l.locationId === formValues.locationId).map((l: any)=> l.locationName)[0], value:formValues.locationId}]));
+    dispatch(locationSublocationActions.changeSubLocation([{label:subLocations.filter((sl: any)=> sl.subLocationId === formValues.subLocationId).map((sl: any)=> sl.subLocationName)[0], locationId: subLocations.filter((sl: any)=> sl.subLocationId === formValues.subLocationId).map((sl: any)=> sl.locationId)[0], locationName: subLocations.filter((sl: any)=> sl.subLocationId === formValues.subLocationId).map((sl: any)=> sl.locationName)[0], value:formValues.subLocationId}]));
+  },[]);
+
   const formSubmitHandler = async(event: any) => {
     event.preventDefault();
     let holidayStartDate=null;
+    console.log("Selected locations: ", locationSelected);
+    console.log("Selected Sub Locations: ", subLocationSelected);
     if(holidayDate!=null){
       holidayStartDate= new Date(holidayDate);
       holidayStartDate.setDate(holidayStartDate.getDate());
@@ -346,6 +357,7 @@ const UpdateModal = (props: any) =>{
       id: formValues.id,
       occasionName: formValues.occasionName,
       locationId: formValues.locationId,
+      // Modifications required for location and sub location
       subLocationId: formValues.subLocationId,
       marketId: formValues.marketId,
       holidayDate: holidayStartDate,
@@ -378,6 +390,13 @@ const UpdateModal = (props: any) =>{
 
   }
 
+  const changeLocationSelectHandler = (event: any) => {
+    dispatch(locationSublocationActions.changeLocation(event));
+    };
+  const changeSubLocationSelectHandler = (event: any) => {
+    dispatch(locationSublocationActions.changeSubLocation(event));
+  };
+
   const getHolidayDetails = async () => {
     const response = await fetch(`${GET_ALL_HOLIDAYS}`);
     let dataGet = await response.json();
@@ -405,7 +424,6 @@ const UpdateModal = (props: any) =>{
       [e.target.name]: e.target.value
     });
   };
-
   return (
     <>
       <Button
@@ -486,7 +504,53 @@ const UpdateModal = (props: any) =>{
                   <div className="error"></div>
                 </div>
               </div>
-              <div className="col-md-6 form-group" id="HolidayLocation">
+
+              <div className="col-md-6 form-group">
+              <label htmlFor="" className="form-label">
+                Location
+              </label>
+              <MultiSelect
+                options={locations.map((location: any) => ({ label: location.locationName, value: location.locationId }))}
+                value={locationSelected}
+                onChange={changeLocationSelectHandler}
+                labelledBy="Select Location"
+                valueRenderer={customValueRenderer}
+              />
+              
+            </div>
+            <div className="col-md-6 form-group">
+              <label htmlFor="" className="form-label">
+                Sub Location
+              </label>
+              <MultiSelect
+                options={locationSelected?.length == 0 ? (
+                  subLocations.map((subLocation: any) => 
+                  ({ 
+                    locationId: subLocation.locationId,
+                    label: subLocation.subLocationName, 
+                    value: subLocation.subLocationId, 
+                    locationName: subLocation.locationName 
+                  }))) : 
+                  (
+                    subLocations.map((subLocation: any) => ({
+                      locationId: subLocation.locationId, 
+                      label: subLocation.subLocationName, 
+                      value: subLocation.subLocationId, 
+                      locationName: subLocation.locationName 
+                    })).filter((
+                      subLocation: any) => 
+                      locationSelected.some((location: any) => 
+                      location?.value == subLocation.locationId )
+                      ))
+                    }
+                value={subLocationSelected}
+                onChange={changeSubLocationSelectHandler}
+                labelledBy="Select Sub Location"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+
+              {/* <div className="col-md-6 form-group" id="HolidayLocation">
                 <label className="form-label" htmlFor="holidayCountry">
                   Location
                 </label>
@@ -531,7 +595,7 @@ const UpdateModal = (props: any) =>{
                   </select>
                   <div className="error"></div>
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-6 form-group ">
                 <label className="form-label">Status</label>
                 <div className="dropdown">
