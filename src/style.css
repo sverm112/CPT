@@ -3,7 +3,10 @@
 a {
   text-decoration: none !important;
 }
+.Capcity-Planning-Tool{
 
+  color: #002677 !important;
+}
 .wrap-element {
     position: relative;
     overflow: hidden;
@@ -23,21 +26,31 @@ a {
 
 .bg-mainclass {
   margin-top: 90px;
-  background-color: #f7f7f7;
-  padding-left: 80px;
+  /* background-color: #FFFFFF; */
+  padding-left: 50px;
   margin-bottom: 20px;
   min-width: 200px !important;
+  /* overflow-x: hidden !important;
+   */
+
+   width: 96.8% !important;
 }
 
 .Page-Heading {
   margin-left: 5px;
-  padding-top: 20px;
+  padding-top: 0px;
 }
 
 h1.Heading-Cls {
-  font-family: inherit;
-  font-size: 22px;
-  font-weight: 400;
+  font-family:"OptumSans-Bold", "Optum Sans Bold", "Optum Sans", sans-serif; 
+   /* font-family: inherit;  */
+  /* font-size: 22px; */
+  /* font-weight: 400; */
+  font-weight: 650;
+  font-style: normal;
+  font-size: 34px;
+  color: #002677;
+
 }
 
 .Heading-P-Cls {
@@ -360,7 +373,9 @@ div.project>input.upload-input-btn {
 } */
 
 .btn {
-  background-color: #0078d7 !important
+  background-color: #002677 !important
+  /* background-color: #0078D7 !important */
+
 }
 
 button.btn.btn-primary {
@@ -451,7 +466,7 @@ label.form-label {
 
 
 .TableContentBorder{
-  border: 1px solid rgba(47,79,79, 0.2);
+  /* border: 1px solid rgba(47,79,79, 0.2); */
   background-color:#fff;
   border-bottom: none;
   border-right: none;
@@ -464,7 +479,7 @@ label.form-label {
   padding: 0px 9px 0px 9px !important;
   border-top-left-radius: 0px !important;
   border-bottom-left-radius: 0px !important;
-  background-color: #0078d7;
+  background-color: #002677;
 }
 
 .search-btn::-webkit-input-placeholder {
@@ -473,6 +488,7 @@ label.form-label {
 }
 
 .fade.modal.show {
+  top: -35px;
   height: 100% !important;
 }
 
@@ -557,6 +573,16 @@ button#export-excel-btn:hover {
   position:absolute !important; 
   width:50% !important;
   margin-left:85px !important; 
+  margin-top:-50px !important;
+  border-radius:5px !important; 
+  box-shadow:0 0 5px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.paAlertVisible{
+  font-size:small !important;
+  position:absolute !important; 
+  width:50% !important;
+  margin-left:103px !important; 
   margin-top:-50px !important;
   border-radius:5px !important; 
   box-shadow:0 0 5px 8px rgba(0, 0, 0, 0.1) !important;
@@ -732,7 +758,7 @@ button#export-excel-btn:hover {
 
 /* .HoverMultiSelect > */
 .DownloadAndDropdown > * > .rmsc > .dropdown-container > .dropdown-heading{
-  background-color: #0078d7;
+  background-color: #002677;
   color: #fff;
   width: 90px;
   border-radius: 5px;
@@ -747,3 +773,7 @@ button#export-excel-btn:hover {
   width: 170px;
 }
 
+body{
+
+  background: #FFFFFF !important;
+}

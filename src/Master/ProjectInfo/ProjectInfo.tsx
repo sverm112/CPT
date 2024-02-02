@@ -329,7 +329,7 @@ const sendBulkProjectsData = async (payload: any) => {
             <h1 className="Heading-Cls">Project Details</h1>
             <p>
               <span className="Heading-P-Cls">Master</span>
-              <span>Project Info</span>
+              <span>Project Details</span>
             </p>
             <div className="btns project">
               {/* <button type="button" className="btn btn-primary upload-button-btn" style={{ marginRight: "150px" }}>
@@ -346,7 +346,7 @@ const sendBulkProjectsData = async (payload: any) => {
 
             </div>
             
-            <div className="btns employee">
+            <div className="btns employee" style={{marginLeft:"12px"}}>
               <div style={{display:'flex', width:'220px',marginTop:'-15px',float:'right'}}>
               <div className="DownloadEmployeeTemplate"  >
                 <button  type="button" className="btn btn-primary download-button-btn" onClick={handleDownloadTemplate}>
@@ -673,6 +673,7 @@ const UpdateModal = (props: any) => {
   const [formValues, setFormValues] = useState(props.initialValues || {});
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
+    console.log("Program Manager in Form:", formValues.programManager);
     let payload = {
       id: formValues.id,
       projectCode: formValues.projectCode,
@@ -680,7 +681,7 @@ const UpdateModal = (props: any) => {
       projectModel: formValues.projectModel,
       expenseType: formValues.expenseType,
       marketId: formValues.marketId ,
-      programManager: formValues.programManager,
+      programManager: formValues.programManager !== null ? formValues.programManager : "",
       status: formValues.status,
       updatedBy: username,
     };

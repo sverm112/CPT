@@ -281,9 +281,9 @@ const PTO = () => {
             <h1 className="Heading-Cls">PTO Details</h1>
             <p>
               <span className="Heading-P-Cls">Master</span>
-              <span>PTO</span>
+              <span>PTO Details</span>
             </p>
-            <div className="btns market">
+            <div className="btns market" style={{marginLeft:"8px"}}>
               {action == "Add" && <AddModal showModal={showModal} openModal={openModal} closeModal={closeModal} />}
               {action == "Update" && <UpdateModal initialValues={updatePTODetails} showModal={showModal} openModal={openModal} closeModal={closeModal} />}
 
@@ -1011,8 +1011,8 @@ const UpdateModal = (props: any) => {
       id : formValues.id,
       resourceId : Number(formValues.resourceId),
       ptoTypeId : Number(formValues.ptoTypeId),
-      startDate : ptoStartDate,
-      enddDate : ptoEndDate,
+      startDate : startDate?.toLocaleDateString(),
+      enddDate : endDate?.toLocaleDateString(),
       month : month,
       year: year,
       numberOfDays : numberOfPTODays,
