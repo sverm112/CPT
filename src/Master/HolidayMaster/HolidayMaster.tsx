@@ -345,7 +345,7 @@ const UpdateModal = (props: any) =>{
 
   const formSubmitHandler = async(event: any) => {
     event.preventDefault();
-    let holidayStartDate=null;
+    let holidayStartDate: string | Date | null=null;
     console.log("Selected locations: ", locationSelected);
     console.log("Selected Sub Locations: ", subLocationSelected);
     if(holidayDate!=null){
@@ -353,6 +353,18 @@ const UpdateModal = (props: any) =>{
       holidayStartDate.setDate(holidayStartDate.getDate());
       holidayStartDate = holidayStartDate.toLocaleDateString();
     }
+
+    var px;
+    let pl = subLocationSelected.map((sl: any)=> px = {
+      occasionName: formValues.occasionName,
+      locationId: sl.locationId,
+      subLocationId: sl.value,
+      marketId: formValues.marketId,
+      holidayDate: holidayStartDate,
+      status: formValues.status,
+      updatedBy: username,
+      createdBy: username,
+    });
     let payload = {
       id: formValues.id,
       occasionName: formValues.occasionName,
@@ -363,15 +375,16 @@ const UpdateModal = (props: any) =>{
       holidayDate: holidayStartDate,
       status: formValues.status,
       updatedBy: username,
+      createdBy: username,
     };
     try {
       if(validateForm('#UpdateHolidayForm')){
-        const response = await fetch(`${UPDATE_HOLIDAY}`, {
-          method: "PUT",
+        const response = await fetch(`${BULK_POST_HOLIDAY}`, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(pl),
         });
         const dataResponse = await response.json();
         if (dataResponse.length) {
