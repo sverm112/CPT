@@ -118,6 +118,8 @@ const HolidayMaster = () => {
   const statusSelected = useSelector((store: any) => store.Holiday.status);
   const holidays = useSelector((store: any) => store.Holiday.data);
   const toggle = useSelector((store: any) => store.Holiday.toggle);
+  const yearSelected = useSelector((state: any) => state.Holiday.years);
+  const years = useSelector((state: any) =>state.Filters.years);
 
   const openModal = () => {
     setShowModal(true);
@@ -127,9 +129,11 @@ const HolidayMaster = () => {
     setAction("Add");
   }
 
+  const currentyear = (new Date().getFullYear());
   useEffect(()=>{
     dispatch(holidayActions.clearFilters());
     dispatch(holidayActions.changeStatus([{label:'Active', value:'Active'}]));
+    dispatch(holidayActions.changeYears([{label:currentyear, value:currentyear}]));
   },[])
 
   const changeLocationSelectHandler = (event: any) => {
@@ -185,11 +189,15 @@ const HolidayMaster = () => {
     const marketOptions = marketSelected.map((market: any) => market.value);
     const locationOptions = locationSelected.map((location: any) => location.value)
     const subLocationOptions = subLocationSelected.map((subLocation: any) => subLocation.value)
+    const yearsOptions = yearSelected.map((years: any) => years.value)
+console.log(yearsOptions, yearSelected)
+
     const statusOptions = statusSelected.map((status: any) => status.value);
     if ((!marketSelected.length) || (marketSelected.length > 0 && marketOptions.includes(holiday.marketName) == true)) {
       if ((!locationSelected.length) || (locationSelected.length > 0 && locationOptions.includes(holiday.locationName) == true))
         if ((!subLocationSelected.length) || (subLocationSelected.length > 0 && subLocationOptions.includes(holiday.subLocationName) == true))
           if ((!statusSelected.length ) || (statusSelected.length > 0 && statusOptions.includes(holiday.status)))
+            if ((!yearSelected.length ) || (yearSelected.length > 0 && yearsOptions.includes(Number(holiday.holidayDateString.slice(-4)))))
             return true;
     }
     return false;
@@ -255,6 +263,18 @@ const HolidayMaster = () => {
                 value={marketSelected}
                 onChange={changeMarketSelectHandler}
                 labelledBy="Select Market"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Year
+              </label>
+              <MultiSelect
+                options={years.map((year: any) => ({label:year, value: year }))}
+                value={yearSelected}
+                onChange={(event: any) => dispatch(holidayActions.changeYears(event))}
+                labelledBy="Select Month"
                 valueRenderer={customValueRenderer}
               />
             </div>

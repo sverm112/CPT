@@ -156,10 +156,11 @@ const PTO = () => {
     setShowModal(false);
     setAction("Add");
   }
-
+  const currentyear = (new Date().getFullYear());
   useEffect(()=>{
     dispatch(ptoActions.clearFilters());
     dispatch(ptoActions.changeStatus([{label:'Active', value:'Active'}]));
+    dispatch(ptoActions.changeYears([{label:currentyear, value:currentyear}]));
   },[])
   resources.map((resource: any) => {
     if (managers.indexOf(resource.manager) === -1) {
@@ -331,24 +332,24 @@ const PTO = () => {
             </div>
             <div className="col-md-2 form-group">
               <label htmlFor="" className="form-label">
-                Month
-              </label>
-              <MultiSelect
-                options={months.map((month: any) => ({label:month.name, value: month.id }))}
-                value={monthSelected}
-                onChange={(event: any) => dispatch(ptoActions.changeMonth(event))}
-                labelledBy="Select Month"
-                valueRenderer={customValueRenderer}
-              />
-            </div>
-            <div className="col-md-2 form-group">
-              <label htmlFor="" className="form-label">
                 Year
               </label>
               <MultiSelect
                 options={years.map((year: any) => ({label:year, value: year }))}
                 value={yearSelected}
                 onChange={(event: any) => dispatch(ptoActions.changeYears(event))}
+                labelledBy="Select Month"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Month
+              </label>
+              <MultiSelect
+                options={months.map((month: any) => ({label:month.name, value: month.id }))}
+                value={monthSelected}
+                onChange={(event: any) => dispatch(ptoActions.changeMonth(event))}
                 labelledBy="Select Month"
                 valueRenderer={customValueRenderer}
               />
