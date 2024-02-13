@@ -38,6 +38,10 @@ const modalFilterslice = createSlice({
     },
     changeYears(state, action){
       state.years = action.payload;
+    },
+    clearFilters(state){
+      state.subLocations=[];
+      state.status=[];
     }
   },
 });

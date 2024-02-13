@@ -457,6 +457,10 @@ const UpdateModal = (props: any) =>{
       [e.target.name]: e.target.value
     });
   };
+  
+  const fakeOptions = [
+    { label: "Select", value: "-10" },
+    ];
   return (
     <>
       <Button
@@ -556,14 +560,7 @@ const UpdateModal = (props: any) =>{
                 Sub Location
               </label>
               <MultiSelect
-                options={locationSelected?.length == 0 ? (
-                  subLocations.map((subLocation: any) => 
-                  ({ 
-                    locationId: subLocation.locationId,
-                    label: subLocation.subLocationName, 
-                    value: subLocation.subLocationId, 
-                    locationName: subLocation.locationName 
-                  }))) : 
+                options={locationSelected?.length == 0 ? fakeOptions : 
                   (
                     subLocations.map((subLocation: any) => ({
                       locationId: subLocation.locationId, 
@@ -679,6 +676,7 @@ const AddModal = (props: any) => {
   const locationSelected = useSelector((store: any) => store.LocationSublocation.location);
   const subLocationSelected =  useSelector((store: any) => store.LocationSublocation.subLocation);
  
+
   const getLocationDetails = async () => {
     const response = await fetch(`${GET_ALL_LOCATIONS}`);
     const dataGet = await response.json();
@@ -689,6 +687,11 @@ const AddModal = (props: any) => {
     const dataGet = await response.json();
     dispatch(modalFilterActions.changeSubLocations(dataGet));
   }
+
+      // if(locationSelected.length <= 0){
+      //   // getSubLocationDetails();
+      //   dispatch(modalFilterActions.clearFilters());
+      // }
 
   const resetFormFields = () => {
     const errorContainer = document.getElementsByClassName('error');
@@ -781,6 +784,10 @@ const AddModal = (props: any) => {
   const changeSubLocationSelectHandler = (event: any) => {
     dispatch(locationSublocationActions.changeSubLocation(event));
   };
+  const fakeOptions = [
+    { label: "Select", value: "-10" },
+    ];
+
   
   return (
     <>
@@ -872,23 +879,17 @@ const AddModal = (props: any) => {
                 labelledBy="Select Location"
                 valueRenderer={customValueRenderer}
               />
-              
+              <div className="error"></div>
             </div>
             <div className="col-md-6 form-group">
               <label htmlFor="" className="form-label">
                 Sub Location
               </label>
               <MultiSelect
-                options={locationSelected?.length == 0 ? (
-                  subLocations.map((subLocation: any) => 
-                  ({ 
-                    locationId: subLocation.locationId,
-                    label: subLocation.subLocationName, 
-                    value: subLocation.subLocationId, 
-                    locationName: subLocation.locationName 
-                  }))) : 
+                options={locationSelected?.length == 0 ? 
+                  fakeOptions : 
                   (
-                    subLocations.map((subLocation: any) => ({
+                    subLocations?.map((subLocation: any) => ({
                       locationId: subLocation.locationId, 
                       label: subLocation.subLocationName, 
                       value: subLocation.subLocationId, 
@@ -905,7 +906,7 @@ const AddModal = (props: any) => {
                 valueRenderer={customValueRenderer}
               />
             </div>
-                  {/* <div className="error"></div> */}
+            <div className="error" id="#sublocationError"></div>
                 
             </div>
             <div className="row">
