@@ -595,7 +595,7 @@ const UpdateModal = (props: any) =>{
                 valueRenderer={customValueRenderer}
               />
               
-              <div className="error staticError" style={{marginTop:"-4px"}}>
+              <div className="error staticError" style={{marginTop:"-20px !important"}}>
 
               </div>
             </div>
@@ -944,7 +944,7 @@ const AddModal = (props: any) => {
                 valueRenderer={customValueRenderer}
               />
             </div>
-            <div className="error staticError" style={{marginTop:"-4px"}} id="#sublocationError"></div>
+            <div className="error staticError" style={{marginTop:"-20px !important"}} id="#sublocationError"></div>
                 
             </div>
             <div className="row">
