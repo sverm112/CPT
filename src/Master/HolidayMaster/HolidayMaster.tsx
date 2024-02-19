@@ -560,6 +560,7 @@ const UpdateModal = (props: any) =>{
                 Sub Location
               </label>
               <MultiSelect
+                disabled={locationSelected?.length == 0 ? true : false}
                 options={locationSelected?.length == 0 ? fakeOptions : 
                   (
                     subLocations.map((subLocation: any) => ({
@@ -886,6 +887,7 @@ const AddModal = (props: any) => {
                 Sub Location
               </label>
               <MultiSelect
+                disabled={locationSelected?.length == 0 ? true : false}
                 options={locationSelected?.length == 0 ? 
                   fakeOptions : 
                   (
