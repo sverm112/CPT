@@ -398,6 +398,19 @@ const UpdateModal = (props: any) =>{
       createdBy: username,
     };
     try {
+      
+      if(locationSelected.length == 0){
+        const eContainer = document.getElementsByClassName('staticError');
+        // for(let i=0; i < eContainer.length; i++){
+          eContainer[0].textContent='Location can\'t be empty.';
+        // }
+      }
+      if(subLocationSelected.length == 0){
+        const eContainer = document.getElementsByClassName('staticError');
+        // for(let i=0; i < eContainer.length; i++){
+          eContainer[1].textContent='Sub Location can\'t be empty.';
+        // }
+      }
       if(validateForm('#UpdateHolidayForm')){
         const response = await fetch(`${BULK_POST_HOLIDAY}`, {
           method: "POST",
@@ -553,7 +566,9 @@ const UpdateModal = (props: any) =>{
                 labelledBy="Select Location"
                 valueRenderer={customValueRenderer}
               />
-              
+              <div className="error staticError" style={{marginTop:"-4px"}}>
+
+              </div>
             </div>
             <div className="col-md-6 form-group">
               <label htmlFor="" className="form-label">
@@ -579,6 +594,10 @@ const UpdateModal = (props: any) =>{
                 labelledBy="Select Sub Location"
                 valueRenderer={customValueRenderer}
               />
+              
+              <div className="error staticError" style={{marginTop:"-4px"}}>
+
+              </div>
             </div>
 
               {/* <div className="col-md-6 form-group" id="HolidayLocation">
@@ -699,6 +718,10 @@ const AddModal = (props: any) => {
     for(let i=0; i < errorContainer.length; i++){
       errorContainer[i].textContent='';
     }
+    const eContainer = document.getElementsByClassName('staticError');
+    for(let i=0; i < eContainer.length; i++){
+      eContainer[i].textContent='';
+    }
     setOccasion("");
     dispatch(locationSublocationActions.clearFilters());
     setMarket("0");
@@ -713,6 +736,7 @@ const AddModal = (props: any) => {
   }
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
+    console.log("Sublocations: ",subLocationSelected)
     let holidayStartDate: string | Date | null=null;
     if(date!=null){
       holidayStartDate= new Date(date);
@@ -738,6 +762,18 @@ const AddModal = (props: any) => {
       createdBy: username
     };
     try {
+      if(locationSelected.length == 0){
+        const eContainer = document.getElementsByClassName('staticError');
+        // for(let i=0; i < eContainer.length; i++){
+          eContainer[0].textContent='Location can\'t be empty.';
+        // }
+      }
+      if(subLocationSelected.length == 0){
+        const eContainer = document.getElementsByClassName('staticError');
+        // for(let i=0; i < eContainer.length; i++){
+          eContainer[1].textContent='Sub Location can\'t be empty.';
+        // }
+      }
       if(validateForm('#HolidayForm')){
         const response = await fetch(`${BULK_POST_HOLIDAY}`, {
           method: "POST",
@@ -880,7 +916,7 @@ const AddModal = (props: any) => {
                 labelledBy="Select Location"
                 valueRenderer={customValueRenderer}
               />
-              <div className="error"></div>
+              <div className="error staticError" style={{marginTop:"-4px"}}></div>
             </div>
             <div className="col-md-6 form-group">
               <label htmlFor="" className="form-label">
@@ -908,7 +944,7 @@ const AddModal = (props: any) => {
                 valueRenderer={customValueRenderer}
               />
             </div>
-            <div className="error" id="#sublocationError"></div>
+            <div className="error staticError" style={{marginTop:"-4px"}} id="#sublocationError"></div>
                 
             </div>
             <div className="row">
