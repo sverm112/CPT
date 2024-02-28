@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  roles :[ "Developer","Director", "Manager", "QA", "Technical Analyst", "Technical Writer"],
+  roles :["Business Analyst", "Developer","Director", "Manager", "QA", "Technical Analyst", "Technical Writer"],
   // ,"Developer","Dev Manager","Technical Writer","Manager","Director","Technical Analyst","QA","QA Manager","Sr. Developer","Sr. QA","Technical Lead"
   resourceTypes : ["OGA","GTM","FTE"],
   status : ["Active","Closed","InActive","Pending"],
