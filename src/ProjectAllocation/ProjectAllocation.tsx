@@ -288,7 +288,9 @@ const ProjectAllocation = () => {
   const statusSelected = useSelector((state: any) => state.ProjectAllocation.status);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-
+  const yearSelected = useSelector((state: any) => state.ProjectAllocation.years);
+  const years = useSelector((state: any) =>state.Filters.years);
+  
   const openModal = () => {
     setShowModal(true);
   }
@@ -349,6 +351,7 @@ const ProjectAllocation = () => {
     let dataGet = await response.json();
     dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDateString ,enddDate:row.enddDateString,updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
     dispatch(projectAllocationActions.changeData(dataGet));
+    console.log("Project Allocation Data: ", dataGet);
     setTimeout(()=>setIsLoading(false), 2000);
   };
   useEffect(() => {
@@ -386,6 +389,7 @@ const ProjectAllocation = () => {
     const statusOptions = statusSelected.map((status: any) => status.value);
     const projectNameOptions = projectNameSelected.map((project: any)=>project.value);
     const projectMarketOptions = projectMarketSelected.map((projectMarket: any) => projectMarket.value);
+    const yearOptions = yearSelected.map((year: any) => year.value);
     const expenseTypeOptions = expenseTypeSelected.map((expenseType: any) => expenseType.value);
     if ((!resourceMarketSelected.length) || (resourceMarketSelected.length > 0 && resourceMarketOptions.includes(projectAllocation.resourceMarket) == true)) {
       if ((!resourceTypeSelected.length) || (resourceTypeSelected.length > 0 && resourceTypeOptions.includes(projectAllocation.resourceType) == true)) {
@@ -398,8 +402,10 @@ const ProjectAllocation = () => {
                             if (locationSelected == "0" || locationSelected == projectAllocation.location){
                               if((startDate == null) ? true : (new Date(projectAllocation.enddDate) >= startDate)){
                                 if((endDate == null) ? true : (new Date(projectAllocation.startDate) <= endDate)){
-                                  if((!projectNameSelected.length) || (projectNameSelected.length > 0 && projectNameOptions.includes(projectAllocation.projectName)))
-                                  return true;       
+                                  if((!yearSelected.length) || (yearSelected.length > 0 && yearOptions.includes(parseInt(projectAllocation.enddDate.slice(6,10))) == true)){
+                                    if((!projectNameSelected.length) || (projectNameSelected.length > 0 && projectNameOptions.includes(projectAllocation.projectName)))
+                                      return true;       
+                                  }
                                 }
                               }
                             }
@@ -672,7 +678,19 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                 </select>
               </div>
             </div>
-            <div className="col-md-2 form-group" style={{whiteSpace:'nowrap'}}>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Year
+              </label>
+              <MultiSelect
+                options={years.map((year: any) => ({label:year, value: year }))}
+                value={yearSelected}
+                onChange={(event: any) => dispatch(projectAllocationActions.changeYears(event))}
+                labelledBy="Select Year"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            {/* <div className="col-md-2 form-group" style={{whiteSpace:'nowrap'}}>
               <label htmlFor="" className="form-label">
                 Resource Market
               </label>
@@ -683,7 +701,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                 labelledBy="Select Resource Market"
                 valueRenderer={customValueRenderer}
               />
-            </div>
+            </div> */}
             <div className=" col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Status

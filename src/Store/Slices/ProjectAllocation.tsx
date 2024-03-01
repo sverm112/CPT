@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const currentyear = (new Date().getFullYear());
+
 const initialState = {
   data: [],
   resourceMarket :[],
@@ -12,6 +14,7 @@ const initialState = {
   location : '0',
   currentPage: "1",
   pageSize: "10",
+  years: [{label:currentyear, value: currentyear}],
   toggle: false,
   startDate:[],
   endDate:[],
@@ -44,6 +47,9 @@ const projectAllocationSlice = createSlice({
     },
     changeStatus(state, action) {
       state.status = action.payload;
+    },
+    changeYears(state, action){
+      state.years = action.payload;
     },
     changeLocation(state,action){
       state.location=action.payload
