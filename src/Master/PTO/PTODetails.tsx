@@ -15,10 +15,11 @@ import { ptoActions } from "../../Store/Slices/Pto";
 import { filterActions } from "../../Store/Slices/Filters";
 import DatePicker from "react-date-picker";
 import { employeeActions } from "../../Store/Slices/Employee";
-import { DELETE_PTO, GET_ALL_PTOS, GET_ALL_PTO_TYPES, GET_ALL_RESOURCES, POST_PTO, UPDATE_PTO } from "../../constants";
+import { DELETE_PTO, GET_ALL_PROJECT_ALLOCATIONS, GET_ALL_PTOS, GET_ALL_PTO_TYPES, GET_ALL_RESOURCES, POST_PTO, UPDATE_PTO } from "../../constants";
 import { RotatingLines } from "react-loader-spinner";
 import { closeNav } from "../../SideBar/SideBarJs";
 import { start } from "repl";
+import { projectAllocationActions } from "../../Store/Slices/ProjectAllocation";
 
 const columns = [
   {
@@ -555,6 +556,13 @@ const handleEndDateChange = (e: any) =>{
     }
   }
 
+  const getProjectAllocationDetails = async () => {
+    const response = await fetch(`${GET_ALL_PROJECT_ALLOCATIONS}`);
+    let dataGet = await response.json();
+    dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDateString ,enddDate:row.enddDateString,updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
+    dispatch(projectAllocationActions.changeData(dataGet));
+  };
+
   const formSubmitHandler = async (event: any) => {
     event.preventDefault();
     const startYear = startDate?.getFullYear();
@@ -639,7 +647,8 @@ const handleEndDateChange = (e: any) =>{
               dispatch(ptoActions.changeToggle());
               resetFormFields();
               props.closeModal();
-              toast.success("PTO Added Successfully")
+              toast.success("PTO Added Successfully");
+              getProjectAllocationDetails();
             } else toast.error(dataResponse[0].errorMessage);
           } else toast.error("Some Error occured.");
         }
@@ -992,6 +1001,14 @@ const UpdateModal = (props: any) => {
     selectedResourceDetails.resourceName = filteredResource[0].resourceName
     selectedResourceDetails.resourceManager = filteredResource[0].manager
   }
+
+  const getProjectAllocationDetails = async () => {
+    const response = await fetch(`${GET_ALL_PROJECT_ALLOCATIONS}`);
+    let dataGet = await response.json();
+    dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDateString ,enddDate:row.enddDateString,updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
+    dispatch(projectAllocationActions.changeData(dataGet));
+  };
+
   const formSubmitHandler = async (event: any) => {
     
     event.preventDefault();
@@ -1037,7 +1054,8 @@ const UpdateModal = (props: any) => {
               console.log(dataResponse[0].recordsCreated);
               dispatch(ptoActions.changeToggle());
               props.closeModal();
-              toast.success("PTO Updated Successfully")
+              toast.success("PTO Updated Successfully");
+              getProjectAllocationDetails();
             } else toast.error(dataResponse[0].errorMessage);
           } else toast.error("Some Error occured.");
         console.log(payload);
@@ -1074,6 +1092,7 @@ const UpdateModal = (props: any) => {
     const response = await fetch(`${DELETE_PTO}/${formValues.id}`);
     getPTODetails();
     props.closeModal();
+    getProjectAllocationDetails();
   }
 
   const handleChange = (e: any) => {

@@ -351,9 +351,9 @@ const ProjectAllocation = () => {
     let dataGet = await response.json();
     dataGet=dataGet.map((row:any)=>({...row,startDate:row.startDateString ,enddDate:row.enddDateString,updatedDate : row.updatedDate?.slice(0,10),createdDate:row.createdDate?.slice(0,10)}))
     dispatch(projectAllocationActions.changeData(dataGet));
-    console.log("Project Allocation Data: ", dataGet);
     setTimeout(()=>setIsLoading(false), 2000);
   };
+
   useEffect(() => {
     getProjectAllocationDetails();
   }, [toggle]);
@@ -678,19 +678,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                 </select>
               </div>
             </div>
-            <div className="col-md-2 form-group">
-              <label htmlFor="" className="form-label">
-                Year
-              </label>
-              <MultiSelect
-                options={years.map((year: any) => ({label:year, value: year }))}
-                value={yearSelected}
-                onChange={(event: any) => dispatch(projectAllocationActions.changeYears(event))}
-                labelledBy="Select Year"
-                valueRenderer={customValueRenderer}
-              />
-            </div>
-            {/* <div className="col-md-2 form-group" style={{whiteSpace:'nowrap'}}>
+            <div className="col-md-2 form-group" style={{whiteSpace:'nowrap'}}>
               <label htmlFor="" className="form-label">
                 Resource Market
               </label>
@@ -701,7 +689,7 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                 labelledBy="Select Resource Market"
                 valueRenderer={customValueRenderer}
               />
-            </div> */}
+            </div>
             <div className=" col-md-2 form-group">
               <label htmlFor="" className="form-label">
                 Status
@@ -753,6 +741,18 @@ filteredProjectAllocations.map((projectAllocation:any)=>{
                 value={expenseTypeSelected}
                 onChange={changeExpenseTypeSelectHandler}
                 labelledBy="Select Expense Type"
+                valueRenderer={customValueRenderer}
+              />
+            </div>
+            <div className="col-md-2 form-group">
+              <label htmlFor="" className="form-label">
+                Year
+              </label>
+              <MultiSelect
+                options={years.map((year: any) => ({label:year, value: year }))}
+                value={yearSelected}
+                onChange={(event: any) => dispatch(projectAllocationActions.changeYears(event))}
+                labelledBy="Select Year"
                 valueRenderer={customValueRenderer}
               />
             </div>
