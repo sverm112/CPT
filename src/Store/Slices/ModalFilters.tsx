@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  roles :["Business Analyst", "Developer","Director", "Manager", "QA", "Technical Analyst", "Technical Writer"],
+  roles :[ "Developer","Director", "Manager", "QA", "Technical Analyst", "Technical Writer"],
   // ,"Developer","Dev Manager","Technical Writer","Manager","Director","Technical Analyst","QA","QA Manager","Sr. Developer","Sr. QA","Technical Lead"
   resourceTypes : ["OGA","GTM","FTE"],
   status : ["Active","Closed","InActive","Pending"],
@@ -14,8 +14,8 @@ const initialState = {
   years : [2020, 2021,2022,2023,2024,2025,2026,2027,2028,2029,2030]
 };
 
-const filterSlice = createSlice({
-  name: "filters",
+const modalFilterslice = createSlice({
+  name: "modalFilters",
   initialState: initialState,
   reducers: {
     changeRole(state, action) {
@@ -38,8 +38,12 @@ const filterSlice = createSlice({
     },
     changeYears(state, action){
       state.years = action.payload;
+    },
+    clearFilters(state){
+      state.subLocations=[];
+      state.status=[];
     }
   },
 });
-export const filterActions = filterSlice.actions;
-export default filterSlice.reducer;
+export const modalFilterActions = modalFilterslice.actions;
+export default modalFilterslice.reducer;
